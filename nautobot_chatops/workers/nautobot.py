@@ -11,6 +11,7 @@ from nautobot.dcim.choices import DeviceStatusChoices
 from nautobot.dcim.models import Device, Site, DeviceRole, DeviceType, Manufacturer, Rack, Region, Cable
 from nautobot.ipam.models import VLAN, Prefix, VLANGroup, Role
 from nautobot.tenancy.models import Tenant
+from nautobot.extras.models import Status
 
 from nautobot_chatops.choices import CommandStatusChoices
 from nautobot_chatops.workers import subcommand_of, handle_subcommands
@@ -171,7 +172,7 @@ def get_filtered_connections(device, interface_ct):
     return (
         Cable.objects.filter(
             _termination_a_device=device,
-            status="connected",
+            status__slug="connected",
             termination_a_type=interface_ct.pk,
             termination_b_type=interface_ct.pk,
         )
@@ -179,7 +180,7 @@ def get_filtered_connections(device, interface_ct):
         .exclude(_termination_a_device=None)
         | Cable.objects.filter(
             _termination_b_device=device,
-            status="connected",
+            status__slug="connected",
             termination_a_type=interface_ct.pk,
             termination_b_type=interface_ct.pk,
         )
@@ -222,7 +223,7 @@ def get_vlans(dispatcher, filter_type, filter_value_1):
             return False
         elif filter_type == "status":
             vlans = VLAN.objects.all()
-            choices = [(vlan.status, str(vlan.status)) for vlan in vlans]
+            choices = [(vlan.status.name, str(vlan.status.slug)) for vlan in vlans]
             choices = list(sorted(set(choices)))
         elif filter_type == "site":
             choices = [
@@ -272,7 +273,7 @@ def get_vlans(dispatcher, filter_type, filter_value_1):
                 f'VLAN "{filter_value_1}" not found',
             )
     elif filter_type == "status":
-        vlans = VLAN.objects.filter(status=filter_value_1)
+        vlans = VLAN.objects.filter(status__slug=filter_value_1)
         if not vlans:
             dispatcher.send_error(f"VLAN with status {filter_value_1} not found")
             return (
@@ -396,7 +397,7 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
         elif filter_type == "all":
             # 1 param slash command
             connections = (
-                Cable.objects.filter(status="connected", termination_a_type=interface_ct.pk)
+                Cable.objects.filter(status__slug="connected", termination_a_type=interface_ct.pk)
                 .exclude(_termination_b_device=None)
                 .exclude(_termination_a_device=None)
             )
@@ -618,12 +619,12 @@ def change_device_status(dispatcher, device_name, status):
             f"nautobot change-device-status {device_name}",
             f"Change Nautobot Device Status for {device_name}",
             [(choice[1], choice[0]) for choice in DeviceStatusChoices.CHOICES],
-            default=(device.status.capitalize(), device.status),
+            default=(device.status.name, device.status.slug),
             confirm=True,
         )
         return False  # command did not run to completion and therefore should not be logged
 
-    device.status = status
+    device.status = Status.objects.get_for_model(Device).get(slug=status)
     try:
         device.clean_fields()
     except ValidationError:
@@ -818,7 +819,6 @@ def get_rack(dispatcher, site_slug, rack_id):
         dispatcher.prompt_from_menu(f"nautobot get-rack {site_slug}", "Select a rack", rack_options)
         return False  # command did not run to completion and therefore should not be logged
 
-    rack_id = int(rack_id)
     try:
         rack = Rack.objects.get(id=rack_id)
     except Rack.DoesNotExist:
