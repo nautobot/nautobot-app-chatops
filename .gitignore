@@ -1,0 +1,8 @@
+*.egg-info
+__pycache__
+*.swp
+dist
+creds.env
+ngrok
+.idea
+.vscode

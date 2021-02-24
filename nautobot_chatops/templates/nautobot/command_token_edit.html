@@ -1,0 +1,15 @@
+{% extends 'generic/object_edit.html' %}
+{% load static %}
+{% load form_helpers %}
+
+<h1>{% block title %}{% if obj.pk %}Editing{% else %}Add a new{% endif %} Nautobot Command Token{% endblock %}</h1>
+
+{% block form %}
+<div class="panel panel-default">
+    <div class="panel-body">
+        {% render_field form.platform %}
+        {% render_field form.comment %}
+        {% render_field form.token %}
+    </div>
+</div>
+{% endblock %}

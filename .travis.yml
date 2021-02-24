@@ -1,0 +1,69 @@
+---
+stages:
+  - name: "lint"
+  - name: "test"
+  - name: "deploy-github"
+    if: "tag IS present"
+  # - name: "deploy-pypi"
+  #   if: "tag IS present"
+
+language: "python"
+python:
+  - 3.6
+  - 3.7
+  - 3.8
+
+# env:
+#   matrix:
+#   - NAUTOBOT_VER=v1.0.0a1
+
+services:
+  - "docker"
+
+# --------------------------------------------------------------------------
+# Tests
+# --------------------------------------------------------------------------
+before_script:
+  - "pip install invoke toml docker-compose poetry"
+  - "cp creds.env.example creds.env"
+script:
+  - "invoke build --nocache"
+  - "invoke unittest"
+
+jobs:
+  include:
+    - stage: "lint"
+      before_script:
+        - "pip install invoke toml docker-compose"
+        - "cp creds.env.example creds.env"
+        - "invoke build --nocache"
+      script:
+        - "invoke black"
+        - "invoke bandit"  # Bandit fails to function on > Py3.8 https://github.com/PyCQA/bandit/issues/639
+        - "invoke pydocstyle"
+        - "invoke flake8"
+        - "invoke yamllint"
+        - "invoke pylint"
+
+    - stage: "deploy-github"
+      before_script:
+        - "pip install poetry"
+      script:
+        - "poetry version $TRAVIS_TAG"
+        - "poetry build"
+      deploy:
+        provider: "releases"
+        api_key: "$GITHUB_AUTH_TOKEN"
+        file_glob: true
+        file: "dist/*"
+        skip_cleanup: true
+        on:
+          all_branches: true
+
+    # - stage: "deploy-pypi"
+    #   before_script:
+    #     - "pip install poetry"
+    #   script:
+    #     - "poetry version $TRAVIS_TAG"
+    #     - "poetry config pypi-token.pypi $PYPI_TOKEN"
+    #     - "poetry publish --build"

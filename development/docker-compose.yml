@@ -1,0 +1,49 @@
+---
+x-nautobot-common: &nautobot-common
+  build:
+    args:
+      NAUTOBOT_VERSION: "${NAUTOBOT_VERSION}"
+      NAUTOBOT_SRC_URL: "${NAUTOBOT_SRC_URL}"
+      nautobot_ver: "${NAUTOBOT_VERSION}"
+      python_ver: "${PYTHON_VER}"
+    context: "../"
+    dockerfile: "development/Dockerfile"
+  image: "nautobot-plugin-chatops/nautobot:${NAUTOBOT_VER}-py${PYTHON_VER}"
+  depends_on:
+    - "postgres"
+    - "redis"
+  env_file:
+    - "./dev.env"
+    - "../creds.env"
+  volumes:
+    - "../:/source"
+  tty: true
+
+version: "3"
+services:
+  nautobot:
+    <<: *nautobot-common
+    command: >
+      sh -c "nautobot-server migrate &&
+             nautobot-server runserver 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
+  worker:
+    <<: *nautobot-common
+    command: "sh -c 'nautobot-server rqworker_metrics'"
+    ports:
+      - "8001:8001"
+  postgres:
+    image: "postgres:13"
+    env_file: "./dev.env"
+    volumes:
+      - "pgdata_nautobot_chatops:/var/lib/postgresql/data"
+  redis:
+    image: "redis:6-alpine"
+    command:
+      - "sh"
+      - "-c"  # this is to evaluate the $REDIS_PASSWORD from the env
+      - "redis-server --appendonly yes --requirepass $$REDIS_PASSWORD"  ## $$ because of docker-compose
+    env_file: "./dev.env"
+volumes:
+  pgdata_nautobot_chatops: {}

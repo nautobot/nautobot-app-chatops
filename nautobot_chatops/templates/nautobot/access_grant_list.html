@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load buttons %}
+{% load helpers %}
+
+{% block content %}
+<div class="pull-right noprint">
+{% if permissions.add %}{% add_button "plugins:nautobot_chatops:accessgrant_add" %}{% endif %}
+<!-- TODO: "configure", "import", "export" buttons once functionality is implemented -->
+</div>
+
+<h1>{% block title %}Nautobot Access Grants{% endblock %}</h1>
+
+<div class="row">
+    <div class="col-md-9">
+        {% include 'utilities/obj_table.html' with bulk_delete_url="plugins:nautobot_chatops:accessgrant_bulk_delete" %}
+    </div>
+    <div class="col-md-3 noprint">
+        {% include 'inc/search_panel.html' %}
+    </div>
+</div>
+{% endblock %}

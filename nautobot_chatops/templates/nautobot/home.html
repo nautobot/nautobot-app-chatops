@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block header %}
+    <div class="pull-right noprint">
+        {% if request.user.is_authenticated %}
+            <!-- <button type="button" class="btn btn-default" data-toggle="modal" data-target="#tableconfig"
+                title="Configure command history table"><i class="mdi mdi-cog"></i> Configure</button> -->
+        {% endif %}
+    </div>
+    {{ block.super }}
+    <h1>{% block title %}Nautobot Command Usage Records{% endblock %}</h1>
+{% endblock header %}
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-4">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <strong>
+                    <span class="pull-right"># of calls</span>
+                    Command
+                </strong>
+            </div>
+            <div class="list-group" style="max-height: none;">
+                {% for command_name, command_data in commands.items|dictsort:"0.lower" %}
+                    <div class="list-group-item disabled">
+                        <span class="badge">{{ command_data.count }}</span>
+                        <h4 class="list-group-item-heading">
+                            <a href="?command={{ command_name }}">
+                                {{ command_name }}
+                            </a><br>
+                            <small>{{ command_data.doc }}</small>
+                        </h4>
+                    </div>
+                    {% for subcommand_name, subcommand_data in command_data.subcommands.items|dictsort:"0.lower" %}
+                        <div class="list-group-item" style="padding-top: 5px; padding-bottom: 0px;">
+                            <span class="badge">{{ subcommand_data.count }}</span>
+                            <h5 class="list-group-item-heading">
+                                <a href="?command={{ command_name }}&subcommand={{ subcommand_name }}">
+                                    {{ subcommand_name }}
+                                </a><br>
+                                <small>{{ subcommand_data.doc }}</small>
+                            </h5>
+                        </div>
+                    {% empty %}
+                        <div class="list-group-item" style="padding-top: 5px; padding-bottom: 0px;">
+                            <small>(no subcommands)</small>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="col-sm-8">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <a class="pull-right" href="?">Clear filters</a>
+                <strong>Command History</strong>
+            </div>
+                {% include 'inc/table.html' %}
+        </div>
+    </div>
+</div>
+{% endblock content %}
