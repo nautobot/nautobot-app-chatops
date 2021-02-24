@@ -1,5 +1,5 @@
 """Nautobot plugin implementing a chatbot."""
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 
 
 from nautobot.extras.plugins import PluginConfig
