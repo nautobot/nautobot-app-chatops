@@ -64,12 +64,11 @@ class ServiceUnavailableException(MMException):
     """Mattermost API is currently in maintenance mode."""
 
 
-# Using Marek's api wrapper from Thousand Eyes.
 def error_report(function):
     """Wrapper to catch api errors and raise appropriate Exceptions."""
 
-    def inner(*args, **kwargs):
-        """Innner wrapper to catch api errors and raise appropriate Exceptions."""
+    def inner(*args, **kwargs):  # pylint: disable=inconsistent-return-statements
+        """Inner wrapper to catch api errors and raise appropriate Exceptions."""
         try:
             return function(*args, **kwargs)
         except HTTPError as e:
