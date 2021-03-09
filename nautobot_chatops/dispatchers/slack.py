@@ -36,6 +36,7 @@ class SlackDispatcher(Dispatcher):
         """Init a SlackDispatcher."""
         super().__init__(*args, **kwargs)
         self.slack_client = WebClient(token=settings.PLUGINS_CONFIG["nautobot_chatops"]["slack_api_token"])
+        self.slack_menu_limit = 100
 
     @classmethod
     @BACKEND_ACTION_LOOKUP.time()
@@ -272,20 +273,32 @@ class SlackDispatcher(Dispatcher):
         # In Slack, a textentry element can ONLY be sent in a modal dialog
         return self.send_blocks(blocks, callback_id=action_id, ephemeral=True, modal=True, title=title)
 
-    def prompt_from_menu(self, action_id, help_text, choices, default=(None, None), confirm=False):
+    def prompt_from_menu(self, action_id, help_text, choices, default=(None, None), confirm=False, tracker=0):
         """Prompt the user for a selection from a menu.
 
         Args:
           action_id (str): Identifier string to attach to the "submit" action.
           help_text (str): Markdown string to display as help text.
           choices (list): List of (display, value) tuples
-          default (tuple): Default (display, valud) to pre-select.
+          default (tuple): Default (display, value) to pre-select.
           confirm (bool): If True, prompt the user to confirm their selection (if the platform supports this)
+          tracker (int): If set, starts displaying choices at index location from all choices,
+                         as Slack only displays 100 options at a time
         """
-        # TODO: Slack limits an option list to no more than 100 items. How can we work around this?
-        if len(choices) > 100:
-            self.send_warning("More than 100 options are available. Slack limits us to the first 100.")
-            choices = choices[:100]
+        choice_length = len(choices)
+        if choice_length > self.slack_menu_limit:
+            self.send_warning(
+                f"More than {self.slack_menu_limit} options are available. Slack limits us to only displaying {self.slack_menu_limit} options at a time."
+            )
+            new_tracker = tracker + self.slack_menu_limit - 1
+            if tracker == 0:
+                choices = choices[: self.slack_menu_limit - 1]  # 1 is to leave space for 'next' insert
+            else:
+                choices = choices[tracker:new_tracker]
+            if choice_length > new_tracker:
+                # Only insert a 'next' tracker if we still have more choices left to see
+                choices.append(("Next...", f"menu_track...{new_tracker}"))
+
         menu = self.select_element(action_id, choices, default=default, confirm=confirm)
         cancel_button = {
             "type": "button",

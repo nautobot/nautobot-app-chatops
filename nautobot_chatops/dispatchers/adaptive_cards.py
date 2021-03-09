@@ -144,7 +144,7 @@ class AdaptiveCardsDispatcher(Dispatcher):
         blocks = [self.markdown_block(help_text), self.actions_block("TODO", [textentry, buttons])]
         return self.send_blocks(blocks, ephemeral=True, title=title)
 
-    def prompt_from_menu(self, action_id, help_text, choices, default=(None, None), confirm=False):
+    def prompt_from_menu(self, action_id, help_text, choices, default=(None, None), confirm=False, tracker=0):
         """Prompt the user to make a selection from a menu of choices.
 
         Args:
@@ -153,6 +153,7 @@ class AdaptiveCardsDispatcher(Dispatcher):
           choices (list): List of (display, value) tuples
           default (tuple): Default (display, valud) to pre-select.
           confirm (bool): If True, prompt the user to confirm their selection (if the platform supports this)
+          tracker (int): Only used for Slack, as it has a hard display limit of 100
         """
         menu = self.select_element("param_0", choices, default=default, confirm=confirm)
         buttons = {
