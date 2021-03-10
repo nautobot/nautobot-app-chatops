@@ -27,7 +27,6 @@ def nautobot(subcommand, **kwargs):
     return handle_subcommands("nautobot", subcommand, **kwargs)
 
 
-# TODO Wed morning: Left off here.  need to test get-device-facts, then get-devices, then all others that I haven't tested yet
 def is_menu_track_item(item):
     """Return True if value starts with 'menu_track' for dealing with Slack menu display limit."""
     try:
@@ -68,7 +67,7 @@ def prompt_for_vlan(action_id, help_text, dispatcher, filter_type, vlans=None):
         choices = [(f"{vlan.vid}: {vlan.name}", str(vlan.vid)) for vlan in vlans]
     else:
         choices = [(vlan.name, vlan.name) for vlan in vlans]
-    return dispatcher.prompt_from_menu(action_id, help_text, choices, tracker=menu_tracker_value(device_name))
+    return dispatcher.prompt_from_menu(action_id, help_text, choices)
 
 
 def prompt_for_device_filter_type(action_id, help_text, dispatcher):
@@ -212,7 +211,7 @@ def get_vlans(dispatcher, filter_type, filter_value_1):
     if not filter_type:
         prompt_for_vlan_filter_type("nautobot get-vlans", "select a vlan filter", dispatcher)
         return False
-    if not filter_value_1 or is_menu_track_item(filter_value_1):
+    if not filter_value_1:
         # One parameter Slash Command All
         if filter_type == "all":
             vlans = VLAN.objects.all()
@@ -268,7 +267,7 @@ def get_vlans(dispatcher, filter_type, filter_value_1):
                 f'VLAN "{filter_type}" "{filter_value_1}" not found',
             )
 
-        dispatcher.prompt_from_menu(f"nautobot get-vlans {filter_type}", f"Select a {filter_type}", choices, tracker=menu_tracker_value(filter_value_1))
+        dispatcher.prompt_from_menu(f"nautobot get-vlans {filter_type}", f"Select a {filter_type}", choices)
         return False
 
     if filter_type == "name":
@@ -631,14 +630,13 @@ def change_device_status(dispatcher, device_name, status):
         prompt_for_device("nautobot change-device-status", "Change Nautobot Device Status", dispatcher)
         return False  # command did not run to completion and therefore should not be logged
 
-    if not status or is_menu_track_item(status):
+    if not status:
         dispatcher.prompt_from_menu(
             f"nautobot change-device-status {device_name}",
             f"Change Nautobot Device Status for {device_name}",
             [(choice[1], choice[0]) for choice in DeviceStatusChoices.CHOICES],
             default=(device.status.name, device.status.slug),
             confirm=True,
-            tracker=menu_tracker_value(status),
         )
         return False  # command did not run to completion and therefore should not be logged
 
@@ -667,7 +665,6 @@ def change_device_status(dispatcher, device_name, status):
     return CommandStatusChoices.STATUS_SUCCEEDED
 
 
-# TODO: Left off here.  works for get-device-facts.  need to make work for sites, then all other commands that use menus
 @subcommand_of("nautobot")
 def get_device_facts(dispatcher, device_name):
     """Get detailed facts about a device from Nautobot in YAML format."""
@@ -887,7 +884,7 @@ def get_circuits(dispatcher, filter_type, filter_value):
         prompt_for_circuit_filter_type("nautobot get-circuits", "Select a circuit filter", dispatcher)
         return False  # command did not run to completion and therefore should not be logged
 
-    if (filter_type != "all" and not filter_value) or is_menu_track_item(filter_value):
+    if filter_type != "all" and not filter_value:
         if filter_type == "type":
             choices = [(ctype.name, ctype.slug) for ctype in CircuitType.objects.all()]
         elif filter_type == "provider":
@@ -902,7 +899,7 @@ def get_circuits(dispatcher, filter_type, filter_value):
             dispatcher.send_error(f"No matching entries found for {filter_type}")
             return (CommandStatusChoices.STATUS_SUCCEEDED, f'No matching entries found for "{filter_type}"')
 
-        dispatcher.prompt_from_menu(f"nautobot get-circuits {filter_type}", f"Select a circuit {filter_type}", choices, tracker=menu_tracker_value(filter_value))
+        dispatcher.prompt_from_menu(f"nautobot get-circuits {filter_type}", f"Select a circuit {filter_type}", choices)
         return False  # command did not run to completion and therefore should not be logged
 
     if filter_type == "all":
