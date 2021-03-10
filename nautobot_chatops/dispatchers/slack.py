@@ -297,7 +297,7 @@ class SlackDispatcher(Dispatcher):
                 choices = choices[tracker:new_tracker]
             if choice_length > new_tracker:
                 # Only insert a 'next' tracker if we still have more choices left to see
-                choices.append(("Next...", f"menu_track...{new_tracker}"))
+                choices.append(("Next...", f"menu_track-{new_tracker}"))
 
         menu = self.select_element(action_id, choices, default=default, confirm=confirm)
         cancel_button = {
