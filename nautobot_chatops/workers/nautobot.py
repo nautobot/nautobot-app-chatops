@@ -56,7 +56,7 @@ def prompt_for_device(action_id, help_text, dispatcher, devices=None, tracker=0)
     return dispatcher.prompt_from_menu(action_id, help_text, choices, tracker=tracker)
 
 
-def prompt_for_vlan(action_id, help_text, dispatcher, filter_type, vlans=None):
+def prompt_for_vlan(action_id, help_text, dispatcher, filter_type, filter_value_1, vlans=None):
     """Prompt the user to select a valid vlan id from a drop-down menu."""
     if vlans is None:
         vlans = VLAN.objects.all().order_by("vid", "name")
@@ -67,7 +67,7 @@ def prompt_for_vlan(action_id, help_text, dispatcher, filter_type, vlans=None):
         choices = [(f"{vlan.vid}: {vlan.name}", str(vlan.vid)) for vlan in vlans]
     else:
         choices = [(vlan.name, vlan.name) for vlan in vlans]
-    return dispatcher.prompt_from_menu(action_id, help_text, choices)
+    return dispatcher.prompt_from_menu(action_id, help_text, choices, tracker=menu_tracker_value(filter_value_1))
 
 
 def prompt_for_device_filter_type(action_id, help_text, dispatcher):
@@ -211,7 +211,7 @@ def get_vlans(dispatcher, filter_type, filter_value_1):
     if not filter_type:
         prompt_for_vlan_filter_type("nautobot get-vlans", "select a vlan filter", dispatcher)
         return False
-    if not filter_value_1:
+    if not filter_value_1 or is_menu_track_item(filter_value_1):
         # One parameter Slash Command All
         if filter_type == "all":
             vlans = VLAN.objects.all()
@@ -229,12 +229,12 @@ def get_vlans(dispatcher, filter_type, filter_value_1):
         # Two parameter Slash Commands
         elif filter_type == "id":
             prompt_for_vlan(
-                f"nautobot get-vlans {filter_type}", f"select a vlan {filter_type}", dispatcher, filter_type
+                f"nautobot get-vlans {filter_type}", f"select a vlan {filter_type}", dispatcher, filter_type, filter_value_1
             )
             return False
         elif filter_type == "name":
             prompt_for_vlan(
-                f"nautobot get-vlans {filter_type}", f"select a vlan {filter_type}", dispatcher, filter_type
+                f"nautobot get-vlans {filter_type}", f"select a vlan {filter_type}", dispatcher, filter_type, filter_value_1
             )
             return False
         elif filter_type == "status":
@@ -267,7 +267,7 @@ def get_vlans(dispatcher, filter_type, filter_value_1):
                 f'VLAN "{filter_type}" "{filter_value_1}" not found',
             )
 
-        dispatcher.prompt_from_menu(f"nautobot get-vlans {filter_type}", f"Select a {filter_type}", choices)
+        dispatcher.prompt_from_menu(f"nautobot get-vlans {filter_type}", f"Select a {filter_type}", choices, tracker=menu_tracker_value(filter_value_1))
         return False
 
     if filter_type == "name":
@@ -884,7 +884,7 @@ def get_circuits(dispatcher, filter_type, filter_value):
         prompt_for_circuit_filter_type("nautobot get-circuits", "Select a circuit filter", dispatcher)
         return False  # command did not run to completion and therefore should not be logged
 
-    if filter_type != "all" and not filter_value:
+    if filter_type != "all" and (not filter_value or is_menu_track_item(filter_value)):
         if filter_type == "type":
             choices = [(ctype.name, ctype.slug) for ctype in CircuitType.objects.all()]
         elif filter_type == "provider":
@@ -899,7 +899,7 @@ def get_circuits(dispatcher, filter_type, filter_value):
             dispatcher.send_error(f"No matching entries found for {filter_type}")
             return (CommandStatusChoices.STATUS_SUCCEEDED, f'No matching entries found for "{filter_type}"')
 
-        dispatcher.prompt_from_menu(f"nautobot get-circuits {filter_type}", f"Select a circuit {filter_type}", choices)
+        dispatcher.prompt_from_menu(f"nautobot get-circuits {filter_type}", f"Select a circuit {filter_type}", choices, tracker=menu_tracker_value(filter_value))
         return False  # command did not run to completion and therefore should not be logged
 
     if filter_type == "all":
