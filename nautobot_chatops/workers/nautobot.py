@@ -797,7 +797,8 @@ def get_rack(dispatcher, site_slug, rack_id):
     if not site_slug:
         # Only include sites with a non-zero number of racks
         site_options = [
-            (site.name, site.slug) for site in Site.objects.annotate(Count("racks")).filter(racks__count__gt=0).order_by("name", "name")
+            (site.name, site.slug)
+            for site in Site.objects.annotate(Count("racks")).filter(racks__count__gt=0).order_by("name", "name")
         ]
         if not site_options:
             dispatcher.send_error("No sites with associated racks were found")
