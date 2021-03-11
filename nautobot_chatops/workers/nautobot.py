@@ -229,12 +229,20 @@ def get_vlans(dispatcher, filter_type, filter_value_1):
         # Two parameter Slash Commands
         elif filter_type == "id":
             prompt_for_vlan(
-                f"nautobot get-vlans {filter_type}", f"select a vlan {filter_type}", dispatcher, filter_type, filter_value_1
+                f"nautobot get-vlans {filter_type}",
+                f"select a vlan {filter_type}",
+                dispatcher,
+                filter_type,
+                filter_value_1,
             )
             return False
         elif filter_type == "name":
             prompt_for_vlan(
-                f"nautobot get-vlans {filter_type}", f"select a vlan {filter_type}", dispatcher, filter_type, filter_value_1
+                f"nautobot get-vlans {filter_type}",
+                f"select a vlan {filter_type}",
+                dispatcher,
+                filter_type,
+                filter_value_1,
             )
             return False
         elif filter_type == "status":
@@ -267,7 +275,12 @@ def get_vlans(dispatcher, filter_type, filter_value_1):
                 f'VLAN "{filter_type}" "{filter_value_1}" not found',
             )
 
-        dispatcher.prompt_from_menu(f"nautobot get-vlans {filter_type}", f"Select a {filter_type}", choices, tracker=menu_tracker_value(filter_value_1))
+        dispatcher.prompt_from_menu(
+            f"nautobot get-vlans {filter_type}",
+            f"Select a {filter_type}",
+            choices,
+            tracker=menu_tracker_value(filter_value_1),
+        )
         return False
 
     if filter_type == "name":
@@ -670,7 +683,12 @@ def get_device_facts(dispatcher, device_name):
     """Get detailed facts about a device from Nautobot in YAML format."""
 
     if not device_name or is_menu_track_item(device_name):
-        prompt_for_device("nautobot get-device-facts", "Get Nautobot Device Facts", dispatcher, tracker=menu_tracker_value(device_name))
+        prompt_for_device(
+            "nautobot get-device-facts",
+            "Get Nautobot Device Facts",
+            dispatcher,
+            tracker=menu_tracker_value(device_name),
+        )
         return False  # command did not run to completion and therefore should not be logged
 
     try:
@@ -734,7 +752,12 @@ def get_devices(dispatcher, filter_type, filter_value):
             dispatcher.send_error("No data found to filter by")
             return (CommandStatusChoices.STATUS_SUCCEEDED, f'No "{filter_type}" data found')
 
-        dispatcher.prompt_from_menu(f"nautobot get-devices {filter_type}", f"Select a {filter_type}", choices, tracker=menu_tracker_value(filter_value))
+        dispatcher.prompt_from_menu(
+            f"nautobot get-devices {filter_type}",
+            f"Select a {filter_type}",
+            choices,
+            tracker=menu_tracker_value(filter_value),
+        )
         return False  # command did not run to completion and therefore should not be logged
 
     if filter_type == "name":
@@ -819,7 +842,9 @@ def get_rack(dispatcher, site_slug, rack_id):
         if not site_options:
             dispatcher.send_error("No sites with associated racks were found")
             return (CommandStatusChoices.STATUS_SUCCEEDED, "No sites with associated racks were found")
-        dispatcher.prompt_from_menu("nautobot get-rack", "Select a site", site_options, tracker=menu_tracker_value(site_slug))
+        dispatcher.prompt_from_menu(
+            "nautobot get-rack", "Select a site", site_options, tracker=menu_tracker_value(site_slug)
+        )
         return False  # command did not run to completion and therefore should not be logged
 
     try:
@@ -833,7 +858,9 @@ def get_rack(dispatcher, site_slug, rack_id):
         if not rack_options:
             dispatcher.send_error(f"No racks associated with site {site_slug} were found")
             return (CommandStatusChoices.STATUS_SUCCEEDED, f'No racks found for site "{site_slug}"')
-        dispatcher.prompt_from_menu(f"nautobot get-rack {site_slug}", "Select a rack", rack_options, tracker=menu_tracker_value(rack_id))
+        dispatcher.prompt_from_menu(
+            f"nautobot get-rack {site_slug}", "Select a rack", rack_options, tracker=menu_tracker_value(rack_id)
+        )
         return False  # command did not run to completion and therefore should not be logged
 
     try:
@@ -899,7 +926,12 @@ def get_circuits(dispatcher, filter_type, filter_value):
             dispatcher.send_error(f"No matching entries found for {filter_type}")
             return (CommandStatusChoices.STATUS_SUCCEEDED, f'No matching entries found for "{filter_type}"')
 
-        dispatcher.prompt_from_menu(f"nautobot get-circuits {filter_type}", f"Select a circuit {filter_type}", choices, tracker=menu_tracker_value(filter_value))
+        dispatcher.prompt_from_menu(
+            f"nautobot get-circuits {filter_type}",
+            f"Select a circuit {filter_type}",
+            choices,
+            tracker=menu_tracker_value(filter_value),
+        )
         return False  # command did not run to completion and therefore should not be logged
 
     if filter_type == "all":
