@@ -28,7 +28,7 @@ try:
     BOT_ID = API.people.me().id
 except (AccessTokenError, ApiError):
     logger.warning(
-        "Missing or invalid WEBEX_TEAMS_ACCESS_TOKEN setting. "
+        "Missing or invalid WEBEX_TEAMS_TOKEN setting. "
         "This may be ignored if you are not running Nautobot as a WebEx Teams chatbot."
     )
     API = None
