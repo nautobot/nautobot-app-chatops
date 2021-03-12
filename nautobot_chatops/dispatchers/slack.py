@@ -273,17 +273,18 @@ class SlackDispatcher(Dispatcher):
         # In Slack, a textentry element can ONLY be sent in a modal dialog
         return self.send_blocks(blocks, callback_id=action_id, ephemeral=True, modal=True, title=title)
 
-    def prompt_from_menu(self, action_id, help_text, choices, default=(None, None), confirm=False, tracker=0):
+    def prompt_from_menu(self, action_id, help_text, choices, tracker=0, confirm_choices={}):
         """Prompt the user for a selection from a menu.
 
         Args:
           action_id (str): Identifier string to attach to the "submit" action.
           help_text (str): Markdown string to display as help text.
           choices (list): List of (display, value) tuples
-          default (tuple): Default (display, value) to pre-select.
-          confirm (bool): If True, prompt the user to confirm their selection (if the platform supports this)
           tracker (int): If set, starts displaying choices at index location from all choices,
                          as Slack only displays 100 options at a time
+          confirm_choices (dict):  List of dictionaries containing the dialog parameters.
+            - default (tuple): Default (display, value) to pre-select.
+            - confirm (bool): If True, prompt the user to confirm their selection (if the platform supports this)
         """
         choice_length = len(choices)
         if choice_length > self.slack_menu_limit:
@@ -299,7 +300,12 @@ class SlackDispatcher(Dispatcher):
                 # Only insert a 'next' tracker if we still have more choices left to see
                 choices.append(("Next...", f"menu_track-{new_tracker}"))
 
-        menu = self.select_element(action_id, choices, default=default, confirm=confirm)
+        menu = self.select_element(
+            action_id,
+            choices,
+            default=confirm_choices.get("default", (None, None)),
+            confirm=confirm_choices.get("confirm", False),
+        )
         cancel_button = {
             "type": "button",
             "text": self.text_element("Cancel"),
@@ -354,7 +360,10 @@ class SlackDispatcher(Dispatcher):
             action_id = f"param_{i}"
             if dialog["type"] == "select":
                 menu = self.select_element(
-                    action_id, dialog["choices"], dialog.get("default", (None, None)), dialog.get("confirm", False)
+                    action_id,
+                    dialog["choices"],
+                    default=dialog.get("default", (None, None)),
+                    confirm=dialog.get("confirm", False),
                 )
                 blocks.append(self._input_block(action_id, dialog["label"], menu))
             if dialog["type"] == "text":

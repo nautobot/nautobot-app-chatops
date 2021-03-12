@@ -194,16 +194,17 @@ class Dispatcher:
         """
         raise NotImplementedError
 
-    def prompt_from_menu(self, action_id, help_text, choices, default=(None, None), confirm=False, tracker=0):
+    def prompt_from_menu(self, action_id, help_text, choices, tracker=0, confirm_choices={}):
         """Prompt the user to make a selection from a menu of choices.
 
         Args:
           action_id (str): Identifier string to attach to the "submit" action.
           help_text (str): Markdown string to display as help text.
           choices (list): List of (display, value) tuples
-          default (tuple): Default (display, valud) to pre-select.
-          confirm (bool): If True, prompt the user to confirm their selection (if the platform supports this)
-          tracker (int): Only used for Slack, as it has a hard display limit of 100
+          tracker (int): Used for apps that have a menu selection display limit.
+          confirm_choices (dict):  List of dictionaries containing the dialog parameters.
+            - default (tuple): Default (display, value) to pre-select.
+            - confirm (bool): If True, prompt the user to confirm their selection (if the platform supports this)
         """
         raise NotImplementedError
 

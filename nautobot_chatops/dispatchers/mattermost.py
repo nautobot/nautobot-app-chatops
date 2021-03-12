@@ -480,20 +480,24 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
         # In Mattermost, a textentry element can ONLY be sent in a modal Interactive dialog
         return self.send_blocks(blocks, callback_id=action_id, ephemeral=False, modal=True, title=title)
 
-    def prompt_from_menu(self, action_id, help_text, choices, default=(None, None), confirm=False, tracker=0):
+    def prompt_from_menu(self, action_id, help_text, choices, tracker=0, confirm_choices={}):
         """Prompt the user for a selection from a menu.
 
         Args:
           action_id (str): Identifier string to attach to the "submit" action.
           help_text (str): Markdown string to display as help text.
           choices (list): List of (display, value) tuples
-          default (tuple): Default (display, valud) to pre-select.
-          confirm (bool): If True, prompt the user to confirm their selection (if the platform supports this)
-          tracker (int): Only used for Slack, as it has a hard display limit of 100
+          confirm_choices (dict):  List of dictionaries containing the dialog parameters.
+            - default (tuple): Default (display, value) to pre-select.
+            - confirm (bool): If True, prompt the user to confirm their selection (if the platform supports this)
         """
         # Default and Confirm options can only be done in Interactive Dialog.  Since the prompt_from_menu is
         # using Ephemeral we will build the basic select.  multi_input_dialog will use the Interactive Dialog.
-        logger.info("Ignoring: prompt_from_menu cannot use provided default: %s or confirm: %s", default, confirm)
+        logger.info(
+            "Ignoring: prompt_from_menu cannot use provided default: %s or confirm: %s",
+            confirm_choices.get("default", (None, None)),
+            confirm_choices.get("confirm", False),
+        )
         menu = self.select_element(action_id, choices)
         cancel_button = {
             "id": "Cancel",
