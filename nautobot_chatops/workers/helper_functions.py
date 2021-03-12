@@ -1,6 +1,15 @@
 """Helper functions for nautobot.py worker."""
 
 
+NETBOX_LOGO_PATH = "nautobot/NautobotLogoSquare.png"
+NETBOX_LOGO_ALT = "Nautobot Logo"
+
+
+def nautobot_logo(dispatcher):
+    """Construct an image_element containing the locally hosted Nautobot logo."""
+    return dispatcher.image_element(dispatcher.static_url(NETBOX_LOGO_PATH), alt_text=NETBOX_LOGO_ALT)
+
+
 def menu_item_check(item):
     """Return True if value starts with 'menu_offset' for dealing with Slack menu display limit."""
     if item:
@@ -36,3 +45,54 @@ def add_asterisk(device, filter_type, value):
     else:
         # Else, the device does not match the filter, so annotate it with an asterisk:
         return f"*{device}"
+
+
+def prompt_for_device_filter_type(action_id, help_text, dispatcher):
+    """Prompt the user to select a valid device filter type from a drop-down menu."""
+    choices = [
+        ("Name", "name"),
+        ("Site", "site"),
+        ("Role", "role"),
+        ("Model", "model"),
+        ("Manufacturer", "manufacturer"),
+    ]
+    return dispatcher.prompt_from_menu(action_id, help_text, choices)
+
+
+def prompt_for_interface_filter_type(action_id, help_text, dispatcher):
+    """Prompt the user to select a valid device filter type from a drop-down menu."""
+    choices = [
+        ("Device", "device"),
+        ("Model", "model"),
+        ("Region", "region"),
+        ("Role", "role"),
+        ("Site", "site"),
+        ("All (no filter)", "all"),
+    ]
+    return dispatcher.prompt_from_menu(action_id, help_text, choices)
+
+
+def prompt_for_vlan_filter_type(action_id, help_text, dispatcher):
+    """Prompt the user to select a valid VLAN filter type from a drop-down menu."""
+    choices = [
+        ("VLAN ID", "id"),
+        ("Group", "group"),
+        ("Name", "name"),
+        ("Role", "role"),
+        ("Site", "site"),
+        ("Status", "status"),
+        ("Tenant", "tenant"),
+        ("All (no filter)", "all"),
+    ]
+    return dispatcher.prompt_from_menu(action_id, help_text, choices)
+
+
+def prompt_for_circuit_filter_type(action_id, help_text, dispatcher):
+    """Prompt the user to select a valid device filter type from a drop-down menu."""
+    choices = [
+        ("Provider", "provider"),
+        ("Site", "site"),
+        ("Type", "type"),
+        ("All (no filter)", "all"),
+    ]
+    return dispatcher.prompt_from_menu(action_id, help_text, choices)

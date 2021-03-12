@@ -15,11 +15,7 @@ from nautobot.extras.models import Status
 
 from nautobot_chatops.choices import CommandStatusChoices
 from nautobot_chatops.workers import subcommand_of, handle_subcommands
-from nautobot_chatops.workers.helper_functions import add_asterisk, menu_item_check, menu_offset_value
-
-
-NETBOX_LOGO_PATH = "nautobot/NautobotLogoSquare.png"
-NETBOX_LOGO_ALT = "Nautobot Logo"
+from nautobot_chatops.workers.helper_functions import *
 
 
 @job("default")
@@ -53,51 +49,6 @@ def prompt_for_vlan(action_id, help_text, dispatcher, filter_type, filter_value_
     else:
         choices = [(vlan.name, vlan.name) for vlan in vlans]
     return dispatcher.prompt_from_menu(action_id, help_text, choices, offset=menu_offset_value(filter_value_1))
-
-
-def prompt_for_device_filter_type(action_id, help_text, dispatcher):
-    """Prompt the user to select a valid device filter type from a drop-down menu."""
-    choices = [
-        ("Name", "name"),
-        ("Site", "site"),
-        ("Role", "role"),
-        ("Model", "model"),
-        ("Manufacturer", "manufacturer"),
-    ]
-    return dispatcher.prompt_from_menu(action_id, help_text, choices)
-
-
-def prompt_for_interface_filter_type(action_id, help_text, dispatcher):
-    """Prompt the user to select a valid device filter type from a drop-down menu."""
-    choices = [
-        ("Device", "device"),
-        ("Model", "model"),
-        ("Region", "region"),
-        ("Role", "role"),
-        ("Site", "site"),
-        ("All (no filter)", "all"),
-    ]
-    return dispatcher.prompt_from_menu(action_id, help_text, choices)
-
-
-def prompt_for_vlan_filter_type(action_id, help_text, dispatcher):
-    """Prompt the user to select a valid VLAN filter type from a drop-down menu."""
-    choices = [
-        ("VLAN ID", "id"),
-        ("Group", "group"),
-        ("Name", "name"),
-        ("Role", "role"),
-        ("Site", "site"),
-        ("Status", "status"),
-        ("Tenant", "tenant"),
-        ("All (no filter)", "all"),
-    ]
-    return dispatcher.prompt_from_menu(action_id, help_text, choices)
-
-
-def nautobot_logo(dispatcher):
-    """Construct an image_element containing the locally hosted Nautobot logo."""
-    return dispatcher.image_element(dispatcher.static_url(NETBOX_LOGO_PATH), alt_text=NETBOX_LOGO_ALT)
 
 
 def send_interface_connection_table(dispatcher, connections, filter_type, value):
@@ -880,17 +831,6 @@ def get_rack(dispatcher, site_slug, rack_id):
     table = "\n".join(f"{unit['id']:2d} | {unit['device'].name if unit['device'] else ''}" for unit in units)
     dispatcher.send_snippet(table)
     return CommandStatusChoices.STATUS_SUCCEEDED
-
-
-def prompt_for_circuit_filter_type(action_id, help_text, dispatcher):
-    """Prompt the user to select a valid device filter type from a drop-down menu."""
-    choices = [
-        ("Provider", "provider"),
-        ("Site", "site"),
-        ("Type", "type"),
-        ("All (no filter)", "all"),
-    ]
-    return dispatcher.prompt_from_menu(action_id, help_text, choices)
 
 
 @subcommand_of("nautobot")
