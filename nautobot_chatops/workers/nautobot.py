@@ -603,8 +603,8 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
 @subcommand_of("nautobot")
 def get_device_status(dispatcher, device_name):
     """Get the status of a device in Nautobot."""
-    if not device_name:
-        prompt_for_device("nautobot get-device-status", "Get Nautobot Device Status", dispatcher)
+    if not device_name or is_menu_track_item(device_name):
+        prompt_for_device("nautobot get-device-status", "Get Nautobot Device Status", dispatcher, tracker=menu_tracker_value(device_name))
         return False  # command did not run to completion and therefore should not be logged
 
     try:
@@ -632,8 +632,8 @@ def get_device_status(dispatcher, device_name):
 @subcommand_of("nautobot")
 def change_device_status(dispatcher, device_name, status):
     """Set the status of a device in Nautobot."""
-    if not device_name:
-        prompt_for_device("nautobot change-device-status", "Change Nautobot Device Status", dispatcher)
+    if not device_name or is_menu_track_item(device_name):
+        prompt_for_device("nautobot change-device-status", "Change Nautobot Device Status", dispatcher, tracker=menu_tracker_value(device_name))
         return False  # command did not run to completion and therefore should not be logged
 
     try:
@@ -643,13 +643,14 @@ def change_device_status(dispatcher, device_name, status):
         prompt_for_device("nautobot change-device-status", "Change Nautobot Device Status", dispatcher)
         return False  # command did not run to completion and therefore should not be logged
 
-    if not status:
+    if not status or is_menu_track_item(status):
+        confirm_choices = {"default": (device.status.name, device.status.slug), "confirm": True}
         dispatcher.prompt_from_menu(
             f"nautobot change-device-status {device_name}",
             f"Change Nautobot Device Status for {device_name}",
             [(choice[1], choice[0]) for choice in DeviceStatusChoices.CHOICES],
-            default=(device.status.name, device.status.slug),
-            confirm=True,
+            confirm_choices=confirm_choices,
+            tracker=menu_tracker_value(status)
         )
         return False  # command did not run to completion and therefore should not be logged
 
