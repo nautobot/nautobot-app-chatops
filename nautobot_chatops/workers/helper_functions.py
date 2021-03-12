@@ -1,20 +1,20 @@
 """Helper functions for nautobot.py worker."""
 
 
-def is_menu_track_item(item):
-    """Return True if value starts with 'menu_track' for dealing with Slack menu display limit."""
+def is_menu_offset_item(item):
+    """Return True if value starts with 'menu_offset' for dealing with Slack menu display limit."""
     try:
-        return item.startswith("menu_track-")
+        return item.startswith("menu_offset-")
     except AttributeError:
         return False
 
 
-def menu_tracker_value(item):
-    """Return value of menu tracker if too many choices for Slack to handle."""
-    menu_tracker = 0
-    if item and is_menu_track_item(item):
-        menu_tracker = int(item.replace("menu_track-", ""))  # Index tracking when too many choices to display
-    return menu_tracker
+def menu_offset_value(item):
+    """Return value of menu offset if too many choices for Slack to handle."""
+    menu_offset = 0
+    if item and is_menu_offset_item(item):
+        menu_offset = int(item.replace("menu_offset-", ""))  # Index tracking when too many choices to display
+    return menu_offset
 
 
 def add_asterisk(device, filter_type, value):

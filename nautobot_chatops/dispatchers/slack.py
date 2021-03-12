@@ -273,14 +273,14 @@ class SlackDispatcher(Dispatcher):
         # In Slack, a textentry element can ONLY be sent in a modal dialog
         return self.send_blocks(blocks, callback_id=action_id, ephemeral=True, modal=True, title=title)
 
-    def prompt_from_menu(self, action_id, help_text, choices, tracker=0, confirm_choices={}):
+    def prompt_from_menu(self, action_id, help_text, choices, offset=0, confirm_choices={}):
         """Prompt the user for a selection from a menu.
 
         Args:
           action_id (str): Identifier string to attach to the "submit" action.
           help_text (str): Markdown string to display as help text.
           choices (list): List of (display, value) tuples
-          tracker (int): If set, starts displaying choices at index location from all choices,
+          offset (int): If set, starts displaying choices at index location from all choices,
                          as Slack only displays 100 options at a time
           confirm_choices (dict):  List of dictionaries containing the dialog parameters.
             - default (tuple): Default (display, value) to pre-select.
@@ -291,14 +291,14 @@ class SlackDispatcher(Dispatcher):
             self.send_warning(
                 f"More than {self.slack_menu_limit} options are available. Slack limits us to only displaying {self.slack_menu_limit} options at a time."
             )
-            new_tracker = tracker + self.slack_menu_limit - 1
-            if tracker == 0:
+            new_offset = offset + self.slack_menu_limit - 1
+            if offset == 0:
                 choices = choices[: self.slack_menu_limit - 1]  # 1 is to leave space for 'next' insert
             else:
-                choices = choices[tracker:new_tracker]
-            if choice_length > new_tracker:
-                # Only insert a 'next' tracker if we still have more choices left to see
-                choices.append(("Next...", f"menu_track-{new_tracker}"))
+                choices = choices[offset:new_offset]
+            if choice_length > new_offset:
+                # Only insert a 'next' offset if we still have more choices left to see
+                choices.append(("Next...", f"menu_offset-{new_offset}"))
 
         menu = self.select_element(
             action_id,

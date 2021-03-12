@@ -194,14 +194,14 @@ class Dispatcher:
         """
         raise NotImplementedError
 
-    def prompt_from_menu(self, action_id, help_text, choices, tracker=0, confirm_choices={}):
+    def prompt_from_menu(self, action_id, help_text, choices, offset=0, confirm_choices={}):
         """Prompt the user to make a selection from a menu of choices.
 
         Args:
           action_id (str): Identifier string to attach to the "submit" action.
           help_text (str): Markdown string to display as help text.
           choices (list): List of (display, value) tuples
-          tracker (int): Used for apps that have a menu selection display limit.
+          offset (int): Used for apps that have a menu selection display limit.
           confirm_choices (dict):  List of dictionaries containing the dialog parameters.
             - default (tuple): Default (display, value) to pre-select.
             - confirm (bool): If True, prompt the user to confirm their selection (if the platform supports this)
