@@ -194,7 +194,7 @@ class Dispatcher:
         """
         raise NotImplementedError
 
-    def prompt_from_menu(self, action_id, help_text, choices, offset=0, confirm_choices={}):
+    def prompt_from_menu(self, action_id, help_text, choices, offset=0, confirm_choices=None):
         """Prompt the user to make a selection from a menu of choices.
 
         Args:

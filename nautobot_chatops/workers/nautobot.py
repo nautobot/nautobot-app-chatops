@@ -15,7 +15,16 @@ from nautobot.extras.models import Status
 
 from nautobot_chatops.choices import CommandStatusChoices
 from nautobot_chatops.workers import subcommand_of, handle_subcommands
-from nautobot_chatops.workers.helper_functions import *
+from nautobot_chatops.workers.helper_functions import (
+    add_asterisk,
+    menu_offset_value,
+    nautobot_logo,
+    menu_item_check,
+    prompt_for_circuit_filter_type,
+    prompt_for_device_filter_type,
+    prompt_for_interface_filter_type,
+    prompt_for_vlan_filter_type,
+)
 
 
 @job("default")
@@ -620,7 +629,6 @@ def change_device_status(dispatcher, device_name, status):
 @subcommand_of("nautobot")
 def get_device_facts(dispatcher, device_name):
     """Get detailed facts about a device from Nautobot in YAML format."""
-
     if menu_item_check(device_name):
         prompt_for_device(
             "nautobot get-device-facts",

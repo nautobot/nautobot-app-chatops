@@ -147,7 +147,7 @@ class AdaptiveCardsDispatcher(Dispatcher):
         blocks = [self.markdown_block(help_text), self.actions_block("TODO", [textentry, buttons])]
         return self.send_blocks(blocks, ephemeral=True, title=title)
 
-    def prompt_from_menu(self, action_id, help_text, choices, offset=0, confirm_choices={}):
+    def prompt_from_menu(self, action_id, help_text, choices, offset=0, confirm_choices=None):
         """Prompt the user to make a selection from a menu of choices.
 
         Args:
@@ -159,6 +159,7 @@ class AdaptiveCardsDispatcher(Dispatcher):
             - default (tuple): Default (display, value) to pre-select.
             - confirm (bool): If True, prompt the user to confirm their selection (if the platform supports this)
         """
+        confirm_choices = confirm_choices or {}
         menu = self.select_element(
             "param_0",
             choices,

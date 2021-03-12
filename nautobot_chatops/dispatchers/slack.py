@@ -273,7 +273,7 @@ class SlackDispatcher(Dispatcher):
         # In Slack, a textentry element can ONLY be sent in a modal dialog
         return self.send_blocks(blocks, callback_id=action_id, ephemeral=True, modal=True, title=title)
 
-    def prompt_from_menu(self, action_id, help_text, choices, offset=0, confirm_choices={}):
+    def prompt_from_menu(self, action_id, help_text, choices, offset=0, confirm_choices=None):
         """Prompt the user for a selection from a menu.
 
         Args:
@@ -286,6 +286,7 @@ class SlackDispatcher(Dispatcher):
             - default (tuple): Default (display, value) to pre-select.
             - confirm (bool): If True, prompt the user to confirm their selection (if the platform supports this)
         """
+        confirm_choices = confirm_choices or {}
         choice_length = len(choices)
         if choice_length > self.slack_menu_limit:
             self.send_warning(
