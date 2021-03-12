@@ -70,11 +70,11 @@ def prompt_for_interface_filter_type(action_id, help_text, dispatcher):
     """Prompt the user to select a valid device filter type from a drop-down menu."""
     choices = [
         ("Device", "device"),
-        ("Site", "site"),
-        ("Role", "role"),
-        ("Region", "region"),
         ("Model", "model"),
-        ("All", "all"),
+        ("Region", "region"),
+        ("Role", "role"),
+        ("Site", "site"),
+        ("All (no filter)", "all"),
     ]
     return dispatcher.prompt_from_menu(action_id, help_text, choices)
 
@@ -83,13 +83,13 @@ def prompt_for_vlan_filter_type(action_id, help_text, dispatcher):
     """Prompt the user to select a valid VLAN filter type from a drop-down menu."""
     choices = [
         ("VLAN ID", "id"),
-        ("Site", "site"),
         ("Group", "group"),
         ("Name", "name"),
-        ("Tenant", "tenant"),
-        ("Status", "status"),
         ("Role", "role"),
-        ("All", "all"),
+        ("Site", "site"),
+        ("Status", "status"),
+        ("Tenant", "tenant"),
+        ("All (no filter)", "all"),
     ]
     return dispatcher.prompt_from_menu(action_id, help_text, choices)
 
@@ -797,7 +797,8 @@ def get_rack(dispatcher, site_slug, rack_id):
     if not site_slug:
         # Only include sites with a non-zero number of racks
         site_options = [
-            (site.name, site.slug) for site in Site.objects.annotate(Count("racks")).filter(racks__count__gt=0)
+            (site.name, site.slug)
+            for site in Site.objects.annotate(Count("racks")).filter(racks__count__gt=0).order_by("name", "name")
         ]
         if not site_options:
             dispatcher.send_error("No sites with associated racks were found")
@@ -852,10 +853,10 @@ def get_rack(dispatcher, site_slug, rack_id):
 def prompt_for_circuit_filter_type(action_id, help_text, dispatcher):
     """Prompt the user to select a valid device filter type from a drop-down menu."""
     choices = [
-        ("All (no filter)", "all"),
-        ("Type", "type"),
         ("Provider", "provider"),
         ("Site", "site"),
+        ("Type", "type"),
+        ("All (no filter)", "all"),
     ]
     return dispatcher.prompt_from_menu(action_id, help_text, choices)
 
