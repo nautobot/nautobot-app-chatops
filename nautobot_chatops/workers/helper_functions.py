@@ -1,18 +1,20 @@
 """Helper functions for nautobot.py worker."""
 
 
-def is_menu_offset_item(item):
+def menu_item_check(item):
     """Return True if value starts with 'menu_offset' for dealing with Slack menu display limit."""
-    try:
-        return item.startswith("menu_offset-")
-    except AttributeError:
-        return False
+    if item:
+        try:
+            return item.startswith("menu_offset-")
+        except AttributeError:
+            return False
+    return True
 
 
 def menu_offset_value(item):
     """Return value of menu offset if too many choices for Slack to handle."""
     menu_offset = 0
-    if item and is_menu_offset_item(item):
+    if item and menu_item_check(item):
         menu_offset = int(item.replace("menu_offset-", ""))  # Index tracking when too many choices to display
     return menu_offset
 
