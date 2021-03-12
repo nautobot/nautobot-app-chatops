@@ -15,6 +15,7 @@ from nautobot.extras.models import Status
 
 from nautobot_chatops.choices import CommandStatusChoices
 from nautobot_chatops.workers import subcommand_of, handle_subcommands
+from nautobot_chatops.workers.helper_functions import add_asterisk, is_menu_track_item, menu_tracker_value
 
 
 NETBOX_LOGO_PATH = "nautobot/NautobotLogoSquare.png"
@@ -25,22 +26,6 @@ NETBOX_LOGO_ALT = "Nautobot Logo"
 def nautobot(subcommand, **kwargs):
     """Interact with Nautobot."""
     return handle_subcommands("nautobot", subcommand, **kwargs)
-
-
-def is_menu_track_item(item):
-    """Return True if value starts with 'menu_track' for dealing with Slack menu display limit."""
-    try:
-        return item.startswith("menu_track-")
-    except AttributeError:
-        return False
-
-
-def menu_tracker_value(item):
-    """Return value of menu tracker if too many choices for Slack to handle."""
-    menu_tracker = 0
-    if item and is_menu_track_item(item):
-        menu_tracker = int(item.replace("menu_track-", ""))  # Index tracking when too many choices to display
-    return menu_tracker
 
 
 def prompt_for_device(action_id, help_text, dispatcher, devices=None, tracker=0):
@@ -113,25 +98,6 @@ def prompt_for_vlan_filter_type(action_id, help_text, dispatcher):
 def nautobot_logo(dispatcher):
     """Construct an image_element containing the locally hosted Nautobot logo."""
     return dispatcher.image_element(dispatcher.static_url(NETBOX_LOGO_PATH), alt_text=NETBOX_LOGO_ALT)
-
-
-def add_asterisk(device, filter_type, value):
-    """Add asterisks to devices that are not of value `value` but are connected to those devices in the requested grouping."""
-    if filter_type == "all":
-        return str(device)
-    elif filter_type == "device":
-        return str(device)
-    elif filter_type == "site" and device.site == value:
-        return str(device)
-    elif filter_type == "role" and device.device_role == value:
-        return str(device)
-    elif filter_type == "region" and device.site.region == value:
-        return str(device)
-    elif filter_type == "model" and device.device_type == value:
-        return str(device)
-    else:
-        # Else, the device does not match the filter, so annotate it with an asterisk:
-        return f"*{device}"
 
 
 def send_interface_connection_table(dispatcher, connections, filter_type, value):
