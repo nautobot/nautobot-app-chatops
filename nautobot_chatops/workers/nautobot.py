@@ -417,16 +417,24 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
                 f'Unknown filter type "{filter_type}"',
             )  # command did not run to completion and therefore should not be logged
 
-        if filter_type != "device":
+        if filter_type != "device" or is_menu_track_item(filter_type):
             dispatcher.prompt_from_menu(
-                f"nautobot get-interface-connections {filter_type}", f"Select a {filter_type}", choices
+                f"nautobot get-interface-connections {filter_type}",
+                f"Select a {filter_type}",
+                choices,
+                tracker=menu_tracker_value(filter_type),
             )
         else:
-            dispatcher.prompt_from_menu(f"nautobot get-interface-connections {filter_type}", "Select a site", choices)
+            dispatcher.prompt_from_menu(
+                f"nautobot get-interface-connections {filter_type}",
+                "Select a site",
+                choices,
+                tracker=menu_tracker_value(filter_type),
+            )
         return False  # command did not run to completion and therefore should not be logged
 
     # 3 param slash command
-    if filter_type == "device" and not filter_value_2:
+    if filter_type == "device" and (not filter_value_2 or is_menu_track_item(filter_value_2)):
         try:
             site = Site.objects.get(slug=filter_value_1)
         except Site.DoesNotExist:
@@ -438,7 +446,10 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
 
         device_options = [(device.name, str(device.name)) for device in Device.objects.filter(site=site)]
         dispatcher.prompt_from_menu(
-            f"nautobot get-interface-connections {filter_type} {filter_value_1}", "Select a device", device_options
+            f"nautobot get-interface-connections {filter_type} {filter_value_1}",
+            "Select a device",
+            device_options,
+            tracker=menu_tracker_value(filter_value_2),
         )
         return False
 
