@@ -94,7 +94,7 @@ class MattermostSlashCommandView(View):
             "user_name": request.POST.get("user_name"),
             "response_url": request.POST.get("response_url"),
             "trigger_id": request.POST.get("trigger_id"),
-            "integration_url": request.build_absolute_uri("/api/plugins/nautobot/mattermost/interaction/"),
+            "integration_url": request.build_absolute_uri("/api/plugins/chatops/mattermost/interaction/"),
             "token": request.headers.get("Authorization"),
         }
 
@@ -149,7 +149,7 @@ class MattermostInteractionView(View):
             "post_id": data.get("post_id"),
             "request_scheme": request.get_host(),
             "request_host": request.get_host(),
-            "integration_url": request.build_absolute_uri("/api/plugins/nautobot/mattermost/interaction/"),
+            "integration_url": request.build_absolute_uri("/api/plugins/chatops/mattermost/interaction/"),
         }
 
         # Check for channel_name if channel_id is present

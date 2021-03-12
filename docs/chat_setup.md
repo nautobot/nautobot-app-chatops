@@ -111,7 +111,7 @@ publicly accessible HTTP endpoint for the chat platform(s) to connect to.
 1. Login to https://developer.webex.com and select "Start building apps", then "Create a New App", then "Create a Bot".
    - Enter the bot name, username, icon (you can use `nautobot_logo.png` from this directory), and description,
      and select "Add Bot"
-2. Configure the displayed Bot Access Token string as the `webex_teams_access_token` in your `.creds.env` file.
+2. Configure the displayed Bot Access Token string as the `webex_teams_token` in your `.creds.env` file.
    It can't be recovered later, so if you lose it you'll need to log in and regenerate a new token.
 3. Currently the bot does not automatically register its own webhooks (although this is a capability that WebEx Teams
    provides, TODO?) so you'll need to set them up yourself.
