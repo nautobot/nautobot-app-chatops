@@ -24,6 +24,7 @@ BACKEND_ACTION_SNIPPET = backend_action_sum.labels("slack", "send_snippet")
 class SlackDispatcher(Dispatcher):
     """Dispatch messages and cards to Slack."""
 
+    # pylint: disable=too-many-public-methods
     platform_name = "Slack"
     platform_slug = "slack"
 
@@ -286,9 +287,13 @@ class SlackDispatcher(Dispatcher):
         """
         choice_length = len(choices)
         if choice_length > self.slack_menu_limit:
-            self.send_warning(
-                f"More than {self.slack_menu_limit} options are available. Slack limits us to only displaying {self.slack_menu_limit} options at a time."
-            )
+            try:
+                # Since we are showing "Next..." at the end, this isn't required to show to users anymore
+                self.send_warning(
+                    f"More than {self.slack_menu_limit} options are available. Slack limits us to only displaying {self.slack_menu_limit} options at a time."
+                )
+            except SlackApiError:
+                pass
             new_offset = offset + self.slack_menu_limit - 1
             if offset == 0:
                 choices = choices[: self.slack_menu_limit - 1]  # 1 is to leave space for 'next' insert

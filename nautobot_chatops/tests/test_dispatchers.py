@@ -8,6 +8,8 @@ from nautobot_chatops.dispatchers.slack import SlackDispatcher
 from nautobot_chatops.dispatchers.webex_teams import WebExTeamsDispatcher
 from nautobot_chatops.dispatchers.mattermost import MattermostDispatcher
 
+from slack.errors import SlackApiError
+
 
 class TestSlackDispatcher(TestCase):
     """Test the SlackDispatcher class."""
@@ -75,6 +77,47 @@ class TestSlackDispatcher(TestCase):
         self.assertNotEqual(element, None)
         self.assertIn("hello world!", str(element))
 
+    def test_prompt_from_menu_error(self):
+        """Make sure prompt_from_menu() errors out properly."""
+        with self.assertRaises(SlackApiError):
+            self.dispatcher.prompt_from_menu("action_id", "help_text", [])
+
+    def test_get_prompt_from_menu_choices(self):
+        """Make sure get_prompt_from_menu_choices() is implemented."""
+        choices = [("switch01", "switch01"), ("switch02", "switch02"), ("switch03", "switch03")]
+
+        response = self.dispatcher.get_prompt_from_menu_choices(choices)
+        self.assertEqual(response, choices)
+
+        choices = list()
+        for i in range(1, 101):
+            choices.append((f"switch{i}", f"switch{i}"))
+        response = self.dispatcher.get_prompt_from_menu_choices(choices)
+        self.assertEqual(response, choices)
+
+        choices = list()
+        for i in range(1, 511):
+            choices.append((f"switch{i}", f"switch{i}"))
+
+        expected_choices = choices[:99]
+        expected_choices.append(("Next...", "menu_offset-99"))
+        response = self.dispatcher.get_prompt_from_menu_choices(choices)
+        self.assertEqual(response, expected_choices)
+
+        expected_choices = choices[99:198]
+        expected_choices.append(("Next...", "menu_offset-198"))
+        response = self.dispatcher.get_prompt_from_menu_choices(choices, offset=99)
+        self.assertEqual(response, expected_choices)
+
+        expected_choices = choices[363:462]
+        expected_choices.append(("Next...", "menu_offset-462"))
+        response = self.dispatcher.get_prompt_from_menu_choices(choices, offset=363)
+        self.assertEqual(response, expected_choices)
+
+        expected_choices = choices[500:]
+        response = self.dispatcher.get_prompt_from_menu_choices(choices, offset=500)
+        self.assertEqual(response, expected_choices)
+
 
 class TestMSTeamsDispatcher(TestSlackDispatcher):
     """Test the MSTeamsDispatcher class."""
@@ -84,6 +127,14 @@ class TestMSTeamsDispatcher(TestSlackDispatcher):
     enable_opt_name = "enable_ms_teams"
 
     # Includes all of the test cases defined in TestSlackDispatcher, but uses MSTeamsDispatcher instead
+
+    def test_prompt_from_menu_error(self):
+        """Not implemented."""
+        pass
+
+    def test_get_prompt_from_menu_choices(self):
+        """Not implemented."""
+        pass
 
 
 class TestWebExTeamsDispatcher(TestSlackDispatcher):
@@ -95,6 +146,14 @@ class TestWebExTeamsDispatcher(TestSlackDispatcher):
 
     # Includes all of the test cases defined in TestSlackDispatcher, but uses WebExTeamsDispatcher instead
 
+    def test_prompt_from_menu_error(self):
+        """Not implemented."""
+        pass
+
+    def test_get_prompt_from_menu_choices(self):
+        """Not implemented."""
+        pass
+
 
 class TestMattermostDispatcher(TestSlackDispatcher):
     """Test the MattermostDispatcher class."""
@@ -104,3 +163,11 @@ class TestMattermostDispatcher(TestSlackDispatcher):
     enable_opt_name = "enable_mattermost"
 
     # Includes all of the test cases defined in TestSlackDispatcher, but uses MattermostDispatcher instead
+
+    def test_prompt_from_menu_error(self):
+        """Not implemented."""
+        pass
+
+    def test_get_prompt_from_menu_choices(self):
+        """Not implemented."""
+        pass
