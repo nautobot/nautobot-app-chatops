@@ -273,6 +273,32 @@ class SlackDispatcher(Dispatcher):
         # In Slack, a textentry element can ONLY be sent in a modal dialog
         return self.send_blocks(blocks, callback_id=action_id, ephemeral=True, modal=True, title=title)
 
+    def get_prompt_from_menu_choices(self, choices, offset=0):
+        """Returns choices list to accommodate for Slack menu limits.
+
+        Args:
+          choices (list): List of (display, value) tuples
+          offset (int): If set, starts displaying choices at index location from all choices,
+                         as Slack only displays 100 options at a time
+
+        Returns:
+          choices (list): List of (display, value) tuples accommodating for Slack menu limits
+        """
+        choice_length = len(choices)
+        if choice_length > self.slack_menu_limit:
+            self.send_warning(
+                f"More than {self.slack_menu_limit} options are available. Slack limits us to only displaying {self.slack_menu_limit} options at a time."
+            )
+            new_offset = offset + self.slack_menu_limit - 1
+            if offset == 0:
+                choices = choices[: self.slack_menu_limit - 1]  # 1 is to leave space for 'next' insert
+            else:
+                choices = choices[offset:new_offset]
+            if choice_length > new_offset:
+                # Only insert a 'next' offset if we still have more choices left to see
+                choices.append(("Next...", f"menu_offset-{new_offset}"))
+        return choices
+
     def prompt_from_menu(self, action_id, help_text, choices, offset=0, confirm_choices=None):
         """Prompt the user for a selection from a menu.
 
@@ -287,19 +313,7 @@ class SlackDispatcher(Dispatcher):
             - confirm (bool): If True, prompt the user to confirm their selection (if the platform supports this)
         """
         confirm_choices = confirm_choices or {}
-        choice_length = len(choices)
-        if choice_length > self.slack_menu_limit:
-            self.send_warning(
-                f"More than {self.slack_menu_limit} options are available. Slack limits us to only displaying {self.slack_menu_limit} options at a time."
-            )
-            new_offset = offset + self.slack_menu_limit - 1
-            if offset == 0:
-                choices = choices[: self.slack_menu_limit - 1]  # 1 is to leave space for 'next' insert
-            else:
-                choices = choices[offset:new_offset]
-            if choice_length > new_offset:
-                # Only insert a 'next' offset if we still have more choices left to see
-                choices.append(("Next...", f"menu_offset-{new_offset}"))
+        choices = self.get_prompt_from_menu_choices(choices, offset=offset)
 
         menu = self.select_element(
             action_id,
