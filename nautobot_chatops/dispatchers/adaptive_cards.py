@@ -147,25 +147,20 @@ class AdaptiveCardsDispatcher(Dispatcher):
         blocks = [self.markdown_block(help_text), self.actions_block("TODO", [textentry, buttons])]
         return self.send_blocks(blocks, ephemeral=True, title=title)
 
-    def prompt_from_menu(self, action_id, help_text, choices, offset=0, confirm_choices=None):
+    def prompt_from_menu(
+        self, action_id, help_text, choices, default=(None, None), confirm=False, offset=0
+    ):  # pylint: disable=too-many-arguments
         """Prompt the user to make a selection from a menu of choices.
 
         Args:
           action_id (str): Identifier string to attach to the "submit" action.
           help_text (str): Markdown string to display as help text.
-          choices (list): List of (display, value) tuples
+          choices (list): List of (display, value) tuples.
+          default (tuple): Default (display, value) to pre-select.
+          confirm (bool): If True, prompt the user to confirm their selection (if the platform supports this).
           offset (int): Used for apps that have a menu selection display limit.
-          confirm_choices (dict):  List of dictionaries containing the dialog parameters.
-            - default (tuple): Default (display, value) to pre-select.
-            - confirm (bool): If True, prompt the user to confirm their selection (if the platform supports this)
         """
-        confirm_choices = confirm_choices or {}
-        menu = self.select_element(
-            "param_0",
-            choices,
-            default=confirm_choices.get("default", (None, None)),
-            confirm=confirm_choices.get("confirm", False),
-        )
+        menu = self.select_element("param_0", choices, default=default, confirm=confirm)
         buttons = {
             "type": "ActionSet",
             "id": "action",

@@ -304,28 +304,22 @@ class SlackDispatcher(Dispatcher):
                 choices.append(("Next...", f"menu_offset-{new_offset}"))
         return choices
 
-    def prompt_from_menu(self, action_id, help_text, choices, offset=0, confirm_choices=None):
+    def prompt_from_menu(
+        self, action_id, help_text, choices, default=(None, None), confirm=False, offset=0
+    ):  # pylint: disable=too-many-arguments
         """Prompt the user for a selection from a menu.
 
         Args:
           action_id (str): Identifier string to attach to the "submit" action.
           help_text (str): Markdown string to display as help text.
-          choices (list): List of (display, value) tuples
+          choices (list): List of (display, value) tuples.
+          default (tuple): Default (display, value) to pre-select.
+          confirm (bool): If True, prompt the user to confirm their selection (if the platform supports this).
           offset (int): If set, starts displaying choices at index location from all choices,
-                         as Slack only displays 100 options at a time
-          confirm_choices (dict):  List of dictionaries containing the dialog parameters.
-            - default (tuple): Default (display, value) to pre-select.
-            - confirm (bool): If True, prompt the user to confirm their selection (if the platform supports this)
+                         as Slack only displays 100 options at a time.
         """
-        confirm_choices = confirm_choices or {}
         choices = self.get_prompt_from_menu_choices(choices, offset=offset)
-
-        menu = self.select_element(
-            action_id,
-            choices,
-            default=confirm_choices.get("default", (None, None)),
-            confirm=confirm_choices.get("confirm", False),
-        )
+        menu = self.select_element(action_id, choices, default=default, confirm=confirm)
         cancel_button = {
             "type": "button",
             "text": self.text_element("Cancel"),

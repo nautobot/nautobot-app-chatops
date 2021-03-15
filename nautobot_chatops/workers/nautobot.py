@@ -591,12 +591,12 @@ def change_device_status(dispatcher, device_name, status):
         return False  # command did not run to completion and therefore should not be logged
 
     if menu_item_check(status):
-        confirm_choices = {"default": (device.status.name, device.status.slug), "confirm": True}
         dispatcher.prompt_from_menu(
             f"nautobot change-device-status {device_name}",
             f"Change Nautobot Device Status for {device_name}",
             [(choice[1], choice[0]) for choice in DeviceStatusChoices.CHOICES],
-            confirm_choices=confirm_choices,
+            default=(device.status.name, device.status.slug),
+            confirm=True,
             offset=menu_offset_value(status),
         )
         return False  # command did not run to completion and therefore should not be logged
