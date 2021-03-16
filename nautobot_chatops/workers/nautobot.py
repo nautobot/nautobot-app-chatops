@@ -331,7 +331,7 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
             "nautobot get-interface-connections", "Select an interface connection filter", dispatcher
         )
         return False  # command did not run to completion and therefore should not be logged
-    if not filter_value_1:
+    if menu_item_check(filter_value_1):
         if ("device" or "site") in filter_type:
             # Since the device filter prompts the user to pick a site first in order to further query devices located in the chosen site, the device filter will start off with choices of all the sites with one or more devices.
             choices = [
@@ -377,19 +377,19 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
                 f'Unknown filter type "{filter_type}"',
             )  # command did not run to completion and therefore should not be logged
 
-        if filter_type != "device" or menu_item_check(filter_type):
+        if filter_type != "device":
             dispatcher.prompt_from_menu(
                 f"nautobot get-interface-connections {filter_type}",
                 f"Select a {filter_type}",
                 choices,
-                offset=menu_offset_value(filter_type),
+                offset=menu_offset_value(filter_value_1),
             )
         else:
             dispatcher.prompt_from_menu(
                 f"nautobot get-interface-connections {filter_type}",
                 "Select a site",
                 choices,
-                offset=menu_offset_value(filter_type),
+                offset=menu_offset_value(filter_value_1),
             )
         return False  # command did not run to completion and therefore should not be logged
 
