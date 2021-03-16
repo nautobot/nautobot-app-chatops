@@ -381,23 +381,17 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
             # Since the device filter prompts the user to pick a site first in order to further query devices located in the chosen site, the device filter will start off with choices of all the sites with one or more devices.
             choices = [
                 (site.name, site.slug)
-                for site in Site.objects.annotate(Count("devices"))
-                .filter(devices__count__gt=0)
-                .order_by("name")
+                for site in Site.objects.annotate(Count("devices")).filter(devices__count__gt=0).order_by("name")
             ]
         elif filter_type == "role":
             choices = [
                 (role.name, role.slug)
-                for role in DeviceRole.objects.annotate(Count("devices"))
-                .filter(devices__count__gt=0)
-                .order_by("name")
+                for role in DeviceRole.objects.annotate(Count("devices")).filter(devices__count__gt=0).order_by("name")
             ]
         elif filter_type == "region":
             choices = [
                 (region.name, region.slug)
-                for region in Region.objects.annotate(Count("sites"))
-                .filter(sites__count__gt=0)
-                .order_by("name")
+                for region in Region.objects.annotate(Count("sites")).filter(sites__count__gt=0).order_by("name")
             ]
         elif filter_type == "model":
             choices = [
