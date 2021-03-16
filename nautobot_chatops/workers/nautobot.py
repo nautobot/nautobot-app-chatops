@@ -377,7 +377,7 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
         )
         return False  # command did not run to completion and therefore should not be logged
     if not filter_value_1:
-        if ("device" or "site") in filter_type:
+        if filter_type in ["device", "site"]:
             # Since the device filter prompts the user to pick a site first in order to further query devices located in the chosen site, the device filter will start off with choices of all the sites with one or more devices.
             choices = [
                 (site.name, site.slug) for site in Site.objects.annotate(Count("devices")).filter(devices__count__gt=0)
