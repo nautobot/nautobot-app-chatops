@@ -10,14 +10,17 @@ A multi-platform ChatOps bot plugin for [Nautobot](https://github.com/nautobot/n
 
 ## Installation
 
-The plugin is available as a Python package in pypi and can be installed with pip
+The plugin is available as a Python package in PyPI and can be installed with `pip3` after logging in with the `nautobot` user account.
+
 ```shell
-pip install nautobot-chatops
+sudo -iu nautobot
+pip3 install nautobot-chatops
 ```
 
 > The plugin is compatible with Nautobot 1.0.0beta1 and higher
 
 Once installed, the plugin needs to be enabled in your `nautobot_config.py`
+
 ```python
 # In your nautobot_config.py
 PLUGINS = ["nautobot_chatops"]
