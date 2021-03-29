@@ -2,6 +2,7 @@
 
 import json
 import logging
+import os
 import time
 
 from django.conf import settings
@@ -37,7 +38,7 @@ class SlackDispatcher(Dispatcher):
         """Init a SlackDispatcher."""
         super().__init__(*args, **kwargs)
         self.slack_client = WebClient(token=settings.PLUGINS_CONFIG["nautobot_chatops"]["slack_api_token"])
-        self.slack_menu_limit = 100
+        self.slack_menu_limit = int(os.getenv("SLACK_MENU_LIMIT", 100))
 
     @classmethod
     @BACKEND_ACTION_LOOKUP.time()
