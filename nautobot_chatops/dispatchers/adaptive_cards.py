@@ -90,7 +90,10 @@ class AdaptiveCardsDispatcher(Dispatcher):
         for i, dialog in enumerate(dialog_list):
             if dialog["type"] == "select":
                 menu = self.select_element(
-                    f"param_{i}", dialog["choices"], dialog.get("default", (None, None)), dialog.get("confirm", False)
+                    f"param_{i}",
+                    dialog["choices"],
+                    default=dialog.get("default", (None, None)),
+                    confirm=dialog.get("confirm", False),
                 )
                 blocks.append(self.text_element(dialog["label"]))
                 blocks.append(menu)
@@ -144,15 +147,18 @@ class AdaptiveCardsDispatcher(Dispatcher):
         blocks = [self.markdown_block(help_text), self.actions_block("TODO", [textentry, buttons])]
         return self.send_blocks(blocks, ephemeral=True, title=title)
 
-    def prompt_from_menu(self, action_id, help_text, choices, default=(None, None), confirm=False):
+    def prompt_from_menu(
+        self, action_id, help_text, choices, default=(None, None), confirm=False, offset=0
+    ):  # pylint: disable=too-many-arguments
         """Prompt the user to make a selection from a menu of choices.
 
         Args:
           action_id (str): Identifier string to attach to the "submit" action.
           help_text (str): Markdown string to display as help text.
-          choices (list): List of (display, value) tuples
-          default (tuple): Default (display, valud) to pre-select.
-          confirm (bool): If True, prompt the user to confirm their selection (if the platform supports this)
+          choices (list): List of (display, value) tuples.
+          default (tuple): Default (display, value) to pre-select.
+          confirm (bool): If True, prompt the user to confirm their selection (if the platform supports this).
+          offset (int): Used for apps that have a menu selection display limit.
         """
         menu = self.select_element("param_0", choices, default=default, confirm=confirm)
         buttons = {

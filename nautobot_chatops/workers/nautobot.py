@@ -15,10 +15,16 @@ from nautobot.extras.models import Status
 
 from nautobot_chatops.choices import CommandStatusChoices
 from nautobot_chatops.workers import subcommand_of, handle_subcommands
-
-
-NETBOX_LOGO_PATH = "nautobot/NautobotLogoSquare.png"
-NETBOX_LOGO_ALT = "Nautobot Logo"
+from nautobot_chatops.workers.helper_functions import (
+    add_asterisk,
+    menu_offset_value,
+    nautobot_logo,
+    menu_item_check,
+    prompt_for_circuit_filter_type,
+    prompt_for_device_filter_type,
+    prompt_for_interface_filter_type,
+    prompt_for_vlan_filter_type,
+)
 
 
 @job("default")
@@ -27,7 +33,7 @@ def nautobot(subcommand, **kwargs):
     return handle_subcommands("nautobot", subcommand, **kwargs)
 
 
-def prompt_for_device(action_id, help_text, dispatcher, devices=None):
+def prompt_for_device(action_id, help_text, dispatcher, devices=None, offset=0):
     """Prompt the user to select a valid device from a drop-down menu."""
     # In the previous implementation, we grouped the devices into subgroups by site.
     # Unfortunately, while this is possible in Slack, the Adaptive Cards spec (MS Teams / WebEx Teams) can't do it.
@@ -37,10 +43,10 @@ def prompt_for_device(action_id, help_text, dispatcher, devices=None):
         dispatcher.send_error("No devices were found")
         return (CommandStatusChoices.STATUS_FAILED, "No devices found")
     choices = [(f"{device.site.name}: {device.name}", device.name) for device in devices]
-    return dispatcher.prompt_from_menu(action_id, help_text, choices)
+    return dispatcher.prompt_from_menu(action_id, help_text, choices, offset=offset)
 
 
-def prompt_for_vlan(action_id, help_text, dispatcher, filter_type, vlans=None):
+def prompt_for_vlan(action_id, help_text, dispatcher, filter_type, filter_value_1, vlans=None):
     """Prompt the user to select a valid vlan id from a drop-down menu."""
     if vlans is None:
         vlans = VLAN.objects.all().order_by("vid", "name")
@@ -51,71 +57,7 @@ def prompt_for_vlan(action_id, help_text, dispatcher, filter_type, vlans=None):
         choices = [(f"{vlan.vid}: {vlan.name}", str(vlan.vid)) for vlan in vlans]
     else:
         choices = [(vlan.name, vlan.name) for vlan in vlans]
-    return dispatcher.prompt_from_menu(action_id, help_text, choices)
-
-
-def prompt_for_device_filter_type(action_id, help_text, dispatcher):
-    """Prompt the user to select a valid device filter type from a drop-down menu."""
-    choices = [
-        ("Name", "name"),
-        ("Site", "site"),
-        ("Role", "role"),
-        ("Model", "model"),
-        ("Manufacturer", "manufacturer"),
-    ]
-    return dispatcher.prompt_from_menu(action_id, help_text, choices)
-
-
-def prompt_for_interface_filter_type(action_id, help_text, dispatcher):
-    """Prompt the user to select a valid device filter type from a drop-down menu."""
-    choices = [
-        ("Device", "device"),
-        ("Model", "model"),
-        ("Region", "region"),
-        ("Role", "role"),
-        ("Site", "site"),
-        ("All (no filter)", "all"),
-    ]
-    return dispatcher.prompt_from_menu(action_id, help_text, choices)
-
-
-def prompt_for_vlan_filter_type(action_id, help_text, dispatcher):
-    """Prompt the user to select a valid VLAN filter type from a drop-down menu."""
-    choices = [
-        ("VLAN ID", "id"),
-        ("Group", "group"),
-        ("Name", "name"),
-        ("Role", "role"),
-        ("Site", "site"),
-        ("Status", "status"),
-        ("Tenant", "tenant"),
-        ("All (no filter)", "all"),
-    ]
-    return dispatcher.prompt_from_menu(action_id, help_text, choices)
-
-
-def nautobot_logo(dispatcher):
-    """Construct an image_element containing the locally hosted Nautobot logo."""
-    return dispatcher.image_element(dispatcher.static_url(NETBOX_LOGO_PATH), alt_text=NETBOX_LOGO_ALT)
-
-
-def add_asterisk(device, filter_type, value):
-    """Add asterisks to devices that are not of value `value` but are connected to those devices in the requested grouping."""
-    if filter_type == "all":
-        return str(device)
-    elif filter_type == "device":
-        return str(device)
-    elif filter_type == "site" and device.site == value:
-        return str(device)
-    elif filter_type == "role" and device.device_role == value:
-        return str(device)
-    elif filter_type == "region" and device.site.region == value:
-        return str(device)
-    elif filter_type == "model" and device.device_type == value:
-        return str(device)
-    else:
-        # Else, the device does not match the filter, so annotate it with an asterisk:
-        return f"*{device}"
+    return dispatcher.prompt_from_menu(action_id, help_text, choices, offset=menu_offset_value(filter_value_1))
 
 
 def send_interface_connection_table(dispatcher, connections, filter_type, value):
@@ -195,7 +137,7 @@ def get_vlans(dispatcher, filter_type, filter_value_1):
     if not filter_type:
         prompt_for_vlan_filter_type("nautobot get-vlans", "select a vlan filter", dispatcher)
         return False
-    if not filter_value_1:
+    if menu_item_check(filter_value_1):
         # One parameter Slash Command All
         if filter_type == "all":
             vlans = VLAN.objects.all()
@@ -213,12 +155,20 @@ def get_vlans(dispatcher, filter_type, filter_value_1):
         # Two parameter Slash Commands
         elif filter_type == "id":
             prompt_for_vlan(
-                f"nautobot get-vlans {filter_type}", f"select a vlan {filter_type}", dispatcher, filter_type
+                f"nautobot get-vlans {filter_type}",
+                f"select a vlan {filter_type}",
+                dispatcher,
+                filter_type,
+                filter_value_1,
             )
             return False
         elif filter_type == "name":
             prompt_for_vlan(
-                f"nautobot get-vlans {filter_type}", f"select a vlan {filter_type}", dispatcher, filter_type
+                f"nautobot get-vlans {filter_type}",
+                f"select a vlan {filter_type}",
+                dispatcher,
+                filter_type,
+                filter_value_1,
             )
             return False
         elif filter_type == "status":
@@ -251,7 +201,12 @@ def get_vlans(dispatcher, filter_type, filter_value_1):
                 f'VLAN "{filter_type}" "{filter_value_1}" not found',
             )
 
-        dispatcher.prompt_from_menu(f"nautobot get-vlans {filter_type}", f"Select a {filter_type}", choices)
+        dispatcher.prompt_from_menu(
+            f"nautobot get-vlans {filter_type}",
+            f"Select a {filter_type}",
+            choices,
+            offset=menu_offset_value(filter_value_1),
+        )
         return False
 
     if filter_type == "name":
@@ -376,7 +331,7 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
             "nautobot get-interface-connections", "Select an interface connection filter", dispatcher
         )
         return False  # command did not run to completion and therefore should not be logged
-    if not filter_value_1:
+    if menu_item_check(filter_value_1):
         if filter_type in ["device", "site"]:
             # Since the device filter prompts the user to pick a site first in order to further query devices located in the chosen site, the device filter will start off with choices of all the sites with one or more devices.
             choices = [
@@ -428,14 +383,22 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
 
         if filter_type != "device":
             dispatcher.prompt_from_menu(
-                f"nautobot get-interface-connections {filter_type}", f"Select a {filter_type}", choices
+                f"nautobot get-interface-connections {filter_type}",
+                f"Select a {filter_type}",
+                choices,
+                offset=menu_offset_value(filter_value_1),
             )
         else:
-            dispatcher.prompt_from_menu(f"nautobot get-interface-connections {filter_type}", "Select a site", choices)
+            dispatcher.prompt_from_menu(
+                f"nautobot get-interface-connections {filter_type}",
+                "Select a site",
+                choices,
+                offset=menu_offset_value(filter_value_1),
+            )
         return False  # command did not run to completion and therefore should not be logged
 
     # 3 param slash command
-    if filter_type == "device" and not filter_value_2:
+    if filter_type == "device" and menu_item_check(filter_value_2):
         try:
             site = Site.objects.get(slug=filter_value_1)
         except Site.DoesNotExist:
@@ -447,7 +410,10 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
 
         device_options = [(device.name, str(device.name)) for device in Device.objects.filter(site=site)]
         dispatcher.prompt_from_menu(
-            f"nautobot get-interface-connections {filter_type} {filter_value_1}", "Select a device", device_options
+            f"nautobot get-interface-connections {filter_type} {filter_value_1}",
+            "Select a device",
+            device_options,
+            offset=menu_offset_value(filter_value_2),
         )
         return False
 
@@ -578,8 +544,13 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
 @subcommand_of("nautobot")
 def get_device_status(dispatcher, device_name):
     """Get the status of a device in Nautobot."""
-    if not device_name:
-        prompt_for_device("nautobot get-device-status", "Get Nautobot Device Status", dispatcher)
+    if menu_item_check(device_name):
+        prompt_for_device(
+            "nautobot get-device-status",
+            "Get Nautobot Device Status",
+            dispatcher,
+            offset=menu_offset_value(device_name),
+        )
         return False  # command did not run to completion and therefore should not be logged
 
     try:
@@ -607,8 +578,13 @@ def get_device_status(dispatcher, device_name):
 @subcommand_of("nautobot")
 def change_device_status(dispatcher, device_name, status):
     """Set the status of a device in Nautobot."""
-    if not device_name:
-        prompt_for_device("nautobot change-device-status", "Change Nautobot Device Status", dispatcher)
+    if menu_item_check(device_name):
+        prompt_for_device(
+            "nautobot change-device-status",
+            "Change Nautobot Device Status",
+            dispatcher,
+            offset=menu_offset_value(device_name),
+        )
         return False  # command did not run to completion and therefore should not be logged
 
     try:
@@ -618,13 +594,14 @@ def change_device_status(dispatcher, device_name, status):
         prompt_for_device("nautobot change-device-status", "Change Nautobot Device Status", dispatcher)
         return False  # command did not run to completion and therefore should not be logged
 
-    if not status:
+    if menu_item_check(status):
         dispatcher.prompt_from_menu(
             f"nautobot change-device-status {device_name}",
             f"Change Nautobot Device Status for {device_name}",
             [(choice[1], choice[0]) for choice in DeviceStatusChoices.CHOICES],
             default=(device.status.name, device.status.slug),
             confirm=True,
+            offset=menu_offset_value(status),
         )
         return False  # command did not run to completion and therefore should not be logged
 
@@ -656,8 +633,13 @@ def change_device_status(dispatcher, device_name, status):
 @subcommand_of("nautobot")
 def get_device_facts(dispatcher, device_name):
     """Get detailed facts about a device from Nautobot in YAML format."""
-    if not device_name:
-        prompt_for_device("nautobot get-device-facts", "Get Nautobot Device Facts", dispatcher)
+    if menu_item_check(device_name):
+        prompt_for_device(
+            "nautobot get-device-facts",
+            "Get Nautobot Device Facts",
+            dispatcher,
+            offset=menu_offset_value(device_name),
+        )
         return False  # command did not run to completion and therefore should not be logged
 
     try:
@@ -701,7 +683,7 @@ def get_devices(dispatcher, filter_type, filter_value):
         prompt_for_device_filter_type("nautobot get-devices", "Select a device filter", dispatcher)
         return False  # command did not run to completion and therefore should not be logged
 
-    if not filter_value:
+    if menu_item_check(filter_value):
         if filter_type == "name":
             dispatcher.prompt_for_text(f"nautobot get-devices {filter_type}", "Enter device name", "Device name")
             return False  # command did not run to completion and therefore should not be logged
@@ -721,7 +703,12 @@ def get_devices(dispatcher, filter_type, filter_value):
             dispatcher.send_error("No data found to filter by")
             return (CommandStatusChoices.STATUS_SUCCEEDED, f'No "{filter_type}" data found')
 
-        dispatcher.prompt_from_menu(f"nautobot get-devices {filter_type}", f"Select a {filter_type}", choices)
+        dispatcher.prompt_from_menu(
+            f"nautobot get-devices {filter_type}",
+            f"Select a {filter_type}",
+            choices,
+            offset=menu_offset_value(filter_value),
+        )
         return False  # command did not run to completion and therefore should not be logged
 
     if filter_type == "name":
@@ -798,7 +785,7 @@ def get_devices(dispatcher, filter_type, filter_value):
 @subcommand_of("nautobot")
 def get_rack(dispatcher, site_slug, rack_id):
     """Get information about a specific rack from Nautobot."""
-    if not site_slug:
+    if menu_item_check(site_slug):
         # Only include sites with a non-zero number of racks
         site_options = [
             (site.name, site.slug)
@@ -807,7 +794,9 @@ def get_rack(dispatcher, site_slug, rack_id):
         if not site_options:
             dispatcher.send_error("No sites with associated racks were found")
             return (CommandStatusChoices.STATUS_SUCCEEDED, "No sites with associated racks were found")
-        dispatcher.prompt_from_menu("nautobot get-rack", "Select a site", site_options)
+        dispatcher.prompt_from_menu(
+            "nautobot get-rack", "Select a site", site_options, offset=menu_offset_value(site_slug)
+        )
         return False  # command did not run to completion and therefore should not be logged
 
     try:
@@ -816,12 +805,14 @@ def get_rack(dispatcher, site_slug, rack_id):
         dispatcher.send_error(f"Site {site_slug} not found")
         return (CommandStatusChoices.STATUS_FAILED, f'Site "{site_slug}" not found')
 
-    if not rack_id:
+    if menu_item_check(rack_id):
         rack_options = [(rack.name, str(rack.id)) for rack in Rack.objects.filter(site=site)]
         if not rack_options:
             dispatcher.send_error(f"No racks associated with site {site_slug} were found")
             return (CommandStatusChoices.STATUS_SUCCEEDED, f'No racks found for site "{site_slug}"')
-        dispatcher.prompt_from_menu(f"nautobot get-rack {site_slug}", "Select a rack", rack_options)
+        dispatcher.prompt_from_menu(
+            f"nautobot get-rack {site_slug}", "Select a rack", rack_options, offset=menu_offset_value(rack_id)
+        )
         return False  # command did not run to completion and therefore should not be logged
 
     try:
@@ -854,17 +845,6 @@ def get_rack(dispatcher, site_slug, rack_id):
     return CommandStatusChoices.STATUS_SUCCEEDED
 
 
-def prompt_for_circuit_filter_type(action_id, help_text, dispatcher):
-    """Prompt the user to select a valid device filter type from a drop-down menu."""
-    choices = [
-        ("Provider", "provider"),
-        ("Site", "site"),
-        ("Type", "type"),
-        ("All (no filter)", "all"),
-    ]
-    return dispatcher.prompt_from_menu(action_id, help_text, choices)
-
-
 @subcommand_of("nautobot")
 def get_circuits(dispatcher, filter_type, filter_value):
     """Get a filtered list of circuits from Nautobot."""
@@ -872,7 +852,7 @@ def get_circuits(dispatcher, filter_type, filter_value):
         prompt_for_circuit_filter_type("nautobot get-circuits", "Select a circuit filter", dispatcher)
         return False  # command did not run to completion and therefore should not be logged
 
-    if filter_type != "all" and not filter_value:
+    if filter_type != "all" and menu_item_check(filter_value):
         if filter_type == "type":
             choices = [(ctype.name, ctype.slug) for ctype in CircuitType.objects.all()]
         elif filter_type == "provider":
@@ -887,7 +867,12 @@ def get_circuits(dispatcher, filter_type, filter_value):
             dispatcher.send_error(f"No matching entries found for {filter_type}")
             return (CommandStatusChoices.STATUS_SUCCEEDED, f'No matching entries found for "{filter_type}"')
 
-        dispatcher.prompt_from_menu(f"nautobot get-circuits {filter_type}", f"Select a circuit {filter_type}", choices)
+        dispatcher.prompt_from_menu(
+            f"nautobot get-circuits {filter_type}",
+            f"Select a circuit {filter_type}",
+            choices,
+            offset=menu_offset_value(filter_value),
+        )
         return False  # command did not run to completion and therefore should not be logged
 
     if filter_type == "all":
