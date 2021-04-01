@@ -76,13 +76,12 @@ publicly accessible HTTP endpoint for the chat platform(s) to connect to.
 
 #### Azure
 1. Login to https://portal.azure.com and select "Create a Resource".
-2. Use the search box to locate "Bot Channels Registration", then select "Bot Channels Registration" under section nMarketplace.
+2. Use the search box to locate "Bot Channels Registration", then select "Bot Channels Registration" under section Marketplace.
 3. Configure the bot handle, subscription, resource group, and location. Create new resource group. It can be named the same as the bot handle for simplicity.
 4. Be sure to select the "F0" (free) pricing tier, rather than the default "S1" paid tier.
 5. For the "Messaging endpoint", enter your service URL (`https://<server>/api/plugins/chatops/ms_teams/messages/`)
 6. Select "Create" and wait for the "Deployment succeeded" pop-up to appear in your browser.
-7. Once completed, in the top search bar, enter "Bot Services", then select "Bot Services" under section "Services".
-6a. Select the name of the bot you just created (not the resource group)
+7. Once completed, in the top search bar, enter "Bot Services", then select "Bot Services" under section "Services". Select the name of the bot you just created (not the resource group).
 8. In the sidebar to the left, select "Channels" and select the "Microsoft Teams" icon, labeled "Configure Microsoft Teams channel". All of the default settings here are fine, so just click "Save".
 9. In the sidebar to the left, under Settings, select "Configuration". Copy the "Microsoft App ID" that is displayed (it's greyed out, but can be selected for copying), then click the "Manage" link above the App ID field.
 10. On the new "Certificates & secrets" page, click "New client secret". (You may have to delete one of the existing secrets first, as there is a maximum limit). Copy the newly generated secret, as there's no way to recover it once you leave the page - you will have to return to this page and generate a new secret if you lose it.
