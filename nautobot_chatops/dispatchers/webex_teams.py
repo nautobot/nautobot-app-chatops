@@ -125,36 +125,21 @@ class WebExTeamsDispatcher(AdaptiveCardsDispatcher):
         This table is outputted at a max of 120 characters per line, but this varies based on the data in Nautobot.
         This table is dynamically rendered up to the maximum allowable charaters for each posting.
         """
-        row_counter = 0
-        header_not_set = True
-        while row_counter < len(rows):
-            start_row = row_counter
-            table_length = 0
-            table = Texttable(max_width=120)
-            table.set_deco(Texttable.HEADER)
-            if header_not_set:
-                table.header(header)
-            # Force all columns to be shown as text. Otherwise long numbers (such as account #) get abbreviated as 123.4e10
-            table.set_cols_dtype(["t" for item in header])
+        table = Texttable(max_width=120)
+        table.set_deco(Texttable.HEADER)
+        table.header(header)
+        # Force all columns to be shown as text. Otherwise long numbers (such as account #) get abbreviated as 123.4e10
+        table.set_cols_dtype(["t" for item in header])
+        table.add_rows(rows, header=False)
 
-            while True:
-                try:
-                    table.add_rows([rows[row_counter]], header=False)
-                except IndexError:
-                    # We're at the end of the rows being output.  Break loop
-                    break
-                table_length = len(table.draw())
-                # Length of table has exceeded maximum allowable characters by Webex.  Break loop
-                if table_length >= self.webex_msg_char_limit:
-                    break
-                row_counter += 1
+        char_count = 0
+        table_snippet = ""
 
-            # We've now exceeded the maxmium allowable characters from the last row added
-            # Reset the table and redraw with 1 less row
-            table.reset()
-            if header_not_set:
-                table.header(header)
-            table.add_rows(rows[start_row:row_counter], header=False)
-            self.send_snippet(table.draw())
-            # Only show header on first pass if multiple passes
-            header_not_set = False
+        for line in table.draw().splitlines():
+            if char_count > self.webex_msg_char_limit:
+                self.send_snippet(table_snippet)
+                table_snippet = ""
+                char_count = 0
+            table_snippet += line + "\n"
+            char_count = len(table_snippet)
+        self.send_snippet(table_snippet)
