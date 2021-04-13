@@ -1,5 +1,7 @@
 """Dispatcher implementation for sending content to WebEx Teams."""
 import logging
+import os
+
 from webexteamssdk import WebexTeamsAPI
 from webexteamssdk.exceptions import ApiError
 from django.conf import settings
@@ -30,6 +32,7 @@ class WebExTeamsDispatcher(AdaptiveCardsDispatcher):
         """Init a WebExTeamsDispatcher."""
         super().__init__(*args, **kwargs)
         self.client = WebexTeamsAPI(access_token=settings.PLUGINS_CONFIG["nautobot_chatops"]["webex_teams_token"])
+        self.webex_msg_char_limit = int(os.getenv("WEBEX_MSG_CHAR_LIMIT", "7439"))
 
     @classmethod
     @BACKEND_ACTION_LOOKUP.time()
@@ -122,7 +125,6 @@ class WebExTeamsDispatcher(AdaptiveCardsDispatcher):
         This table is outputted at a max of 120 characters per line, but this varies based on the data in Nautobot.
         This table is dynamically rendered up to the maximum allowable charaters for each posting.
         """
-        webex_max_char = 7439
         row_counter = 0
         header_not_set = True
         while row_counter < len(rows):
@@ -143,7 +145,7 @@ class WebExTeamsDispatcher(AdaptiveCardsDispatcher):
                     break
                 table_length = len(table.draw())
                 # Length of table has exceeded maximum allowable characters by Webex.  Break loop
-                if table_length >= webex_max_char:
+                if table_length >= self.webex_msg_char_limit:
                     break
                 row_counter += 1
 
