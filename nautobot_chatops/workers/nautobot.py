@@ -766,13 +766,13 @@ def get_devices(dispatcher, filter_type, filter_value):
     header = ["Name", "Status", "Tenant", "Site", "Rack", "Role", "Type", "IP Address"]
     rows = [
         (
-            device.name,
-            device.status,
+            str(device.name),
+            str(device.status),
             str(device.tenant) if device.tenant else "",
             str(device.site),
             str(device.rack) if device.rack else "",
-            device.device_role,
-            device.device_type,
+            str(device.device_role),
+            str(device.device_type),
             str(device.primary_ip.address).split("/")[0] if device.primary_ip else "",
         )
         for device in devices
