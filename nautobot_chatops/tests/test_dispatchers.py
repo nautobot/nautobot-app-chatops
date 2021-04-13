@@ -9,6 +9,7 @@ from nautobot_chatops.dispatchers.webex_teams import WebExTeamsDispatcher
 from nautobot_chatops.dispatchers.mattermost import MattermostDispatcher
 
 from slack.errors import SlackApiError
+from unittest.mock import patch
 
 
 class TestSlackDispatcher(TestCase):
@@ -153,6 +154,23 @@ class TestWebExTeamsDispatcher(TestSlackDispatcher):
     def test_get_prompt_from_menu_choices(self):
         """Not implemented."""
         pass
+
+    @patch("nautobot_chatops.dispatchers.webex_teams.WebExTeamsDispatcher.send_markdown")
+    def test_send_large_table(self, mock_send_markdown):
+        """Make sure send_large_table() is implemented."""
+        header = ["Name", "Status", "Tenant", "Site", "Rack", "Role", "Type", "IP Address"]
+        rows = []
+        expected_arg0 = '```\n'
+        for i in range(0, 300):
+            rows.append((f"Switch0{i}", 'Active', '', 'test01', '', 'role01', '3560', '1.2.3.4'))
+            if i >= 200:
+                expected_arg0 += f'Switch0{i}   Active            test01          role01   3560   1.2.3.4   \n'
+        expected_arg0 += "\n```"
+
+        self.dispatcher.send_large_table(header, rows)
+
+        self.assertTrue(mock_send_markdown.called)
+        self.assertEqual(mock_send_markdown.call_args[0][0], expected_arg0)
 
 
 class TestMattermostDispatcher(TestSlackDispatcher):
