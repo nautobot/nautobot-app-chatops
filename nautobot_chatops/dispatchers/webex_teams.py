@@ -136,7 +136,9 @@ class WebExTeamsDispatcher(AdaptiveCardsDispatcher):
         table_snippet = ""
 
         for line in table.draw().splitlines():
-            if char_count > self.webex_msg_char_limit:
+            # +1 is for the length of '\n'
+            line_len = len(line) + 1
+            if char_count + line_len > self.webex_msg_char_limit:
                 self.send_snippet(table_snippet)
                 table_snippet = ""
                 char_count = 0
