@@ -161,7 +161,7 @@ class TestWebExTeamsDispatcher(TestSlackDispatcher):
         header = ["Name", "Status", "Tenant", "Site", "Rack", "Role", "Type", "IP Address"]
         rows = []
         expected_arg0 = "```\n"
-        
+
         for i in range(0, 300):
             rows.append((f"Switch0{i}", "Active", "", "test01", "", "role01", "3560", "1.2.3.4"))
             if i >= 200:
