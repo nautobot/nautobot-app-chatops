@@ -8,9 +8,41 @@ A multi-platform ChatOps bot plugin for [Nautobot](https://github.com/nautobot/n
 - Automatic generation of basic help menus (accessed via `help`, `/command help`, or `/command sub-command help`)
 - Metrics of command usage via the `nautobot_capacity_metrics` plugin.
 
+## Installation
+
+The plugin is available as a Python package in PyPI and can be installed with `pip3` after logging in with the `nautobot` user account.
+
+```shell
+sudo -iu nautobot
+pip3 install nautobot-chatops
+```
+
+> The plugin is compatible with Nautobot 1.0.0beta1 and higher
+
+Once installed, the plugin needs to be enabled in your `nautobot_config.py`
+
+```python
+# In your nautobot_config.py
+PLUGINS = ["nautobot_chatops"]
+
+PLUGINS_CONFIG = {
+    "nautobot_chatops": {
+         #     ADD YOUR SETTINGS HERE
+    }
+}
+```
+
+Nautobot supports `Slack`, `MS Teams` and `Webex Teams` as backends but by default all of them are disabled. You need to explicitly enable the chat platform(s) that you want to use in the `PLUGINS_CONFIG` with one or more of `enable_slack`, `enable_ms_teams` or `enable_webex_teams`.
+
+The plugin behavior can be controlled with the following list of general settings:
+
+| Configuration Setting        | Description | Mandatory? | Default |
+| ---------------------------- | ----------- | ---------- | ------- |
+| `delete_input_on_submission` | After prompting the user for additional inputs, delete the input prompt from the chat history | No | `False` |
+
 ## Documentation
 
-- [Installation Guide](docs/chat_setup.md)
+- [Full Installation Guide](docs/chat_setup.md)
 - [Design](docs/design.md)
 - [Contributing](docs/contributing.md)
 - [FAQ](docs/FAQ.md)
