@@ -1,4 +1,5 @@
 """Tests for Nautobot dispatcher class implementations."""
+from unittest.mock import patch
 
 from django.conf import settings
 from django.test import TestCase
@@ -8,8 +9,7 @@ from nautobot_chatops.dispatchers.slack import SlackDispatcher
 from nautobot_chatops.dispatchers.webex_teams import WebExTeamsDispatcher
 from nautobot_chatops.dispatchers.mattermost import MattermostDispatcher
 
-from slack.errors import SlackApiError
-from unittest.mock import patch
+from slack_sdk.errors import SlackApiError
 
 
 class TestSlackDispatcher(TestCase):

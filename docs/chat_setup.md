@@ -1,5 +1,37 @@
 # Installing Nautobot Chatops
 
+## Installation
+
+The plugin is available as a Python package in PyPI and can be installed with `pip3` after logging in with the `nautobot` user account.
+
+```shell
+sudo -iu nautobot
+pip3 install nautobot-chatops
+```
+
+> The plugin is compatible with Nautobot 1.0.0beta1 and higher
+
+Once installed, the plugin needs to be enabled in your `nautobot_config.py`
+
+```python
+# In your nautobot_config.py
+PLUGINS = ["nautobot_chatops"]
+
+PLUGINS_CONFIG = {
+    "nautobot_chatops": {
+         #     ADD YOUR SETTINGS HERE
+    }
+}
+```
+
+Nautobot supports `Slack`, `MS Teams` and `Webex Teams` as backends but by default all of them are disabled. You need to explicitly enable the chat platform(s) that you want to use in the `PLUGINS_CONFIG` with one or more of `enable_slack`, `enable_ms_teams` or `enable_webex_teams`.
+
+The plugin behavior can be controlled with the following list of general settings:
+
+| Configuration Setting        | Description | Mandatory? | Default |
+| ---------------------------- | ----------- | ---------- | ------- |
+| `delete_input_on_submission` | After prompting the user for additional inputs, delete the input prompt from the chat history | No | `False` |
+
 ## General setup
 
 Install this plugin into Nautobot and enable it in `nautobot_config.py` under `PLUGINS`, as described in `README.md`.
@@ -18,7 +50,7 @@ publicly accessible HTTP endpoint for the chat platform(s) to connect to.
 | `slack_signing_secret`       | **Yes**    | --      |
 | `slack_slash_command_prefix` | No         | `"/"`   |
 
-1. Log in to https://api.slack.com/apps and select "Create New App".
+1. Log in to [https://api.slack.com/apps](https://api.slack.com/apps) and select "Create New App".
    - Enter "Nautobot Chatops" as the "App Name"
    - Select your preferred Slack workspace as the "Development Slack Workspace"
    - Click "Create App"
@@ -66,6 +98,10 @@ publicly accessible HTTP endpoint for the chat platform(s) to connect to.
    directory if desired.
 7. Proceed to the general process to "Grant access to the chatbot" below.
 
+> **Note** You will need to invite the chatbot to each channel that it will belong to with `@Nautobot`.
+
+![slack invite](./images/slack_invite.png)
+
 ### Setup for Microsoft Teams
 
 | Configuration Setting        | Mandatory? | Default |
@@ -75,7 +111,8 @@ publicly accessible HTTP endpoint for the chat platform(s) to connect to.
 | `microsoft_app_password`     | **Yes**    | --      |
 
 #### Azure
-1. Login to https://portal.azure.com and select "Create a Resource".
+
+1. Login to [https://portal.azure.com](https://portal.azure.com) and select "Create a Resource".
 2. Use the search box to locate "Bot Channels Registration", then select "Bot Channels Registration" under section Marketplace.
 3. Configure the bot handle, subscription, resource group, and location. Create new resource group. It can be named the same as the bot handle for simplicity.
 4. Be sure to select the "F0" (free) pricing tier, rather than the default "S1" paid tier.
@@ -87,6 +124,7 @@ publicly accessible HTTP endpoint for the chat platform(s) to connect to.
 10. On the new "Certificates & secrets" page, click "New client secret". (You may have to delete one of the existing secrets first, as there is a maximum limit). Copy the newly generated secret, as there's no way to recover it once you leave the page - you will have to return to this page and generate a new secret if you lose it.
 
 #### MS Teams Client
+
 1. Now to deploy the bot to your team. In the Microsoft Teams client, select "Apps" from the sidebar to the left.
 2. Use the search bar to find "App Studio" and select and open it. If it isn't currently installed, install it first.
 3. Select the "Manifest editor" tab at the top of the window.
@@ -108,22 +146,22 @@ publicly accessible HTTP endpoint for the chat platform(s) to connect to.
 | `webex_teams_token`          | **Yes**    | --      |
 | `webex_teams_signing_secret` | **Yes**    | --      |
 
-1. Login to https://developer.webex.com and select "Start building apps", then "Create a New App", then "Create a Bot".
+1. Login to [https://developer.webex.com](https://developer.webex.com) and select "Start building apps", then "Create a New App", then "Create a Bot".
    - Enter the bot name, username, icon (you can use `nautobot_logo.png` from this directory), and description,
      and select "Add Bot"
 2. Configure the displayed Bot Access Token string as the `webex_teams_token` in your `.creds.env` file.
    It can't be recovered later, so if you lose it you'll need to log in and regenerate a new token.
 3. Currently the bot does not automatically register its own webhooks (although this is a capability that WebEx Teams
    provides, TODO?) so you'll need to set them up yourself.
-   - Go to https://developer.webex.com/docs/api/v1/webhooks
+   - Go to [https://developer.webex.com/docs/api/v1/webhooks](https://developer.webex.com/docs/api/v1/webhooks)
    - *For all of these API calls, be sure you deselect "Use personal access token" and instead specify the
      Bot Access Token string as the authorization instead.*
-   - If desired, you can use https://developer.webex.com/docs/api/v1/webhooks/list-webhooks to query for existing
+   - If desired, you can use [https://developer.webex.com/docs/api/v1/webhooks/list-webhooks](https://developer.webex.com/docs/api/v1/webhooks/list-webhooks) to query for existing
      webhooks. There should be none if this is a new deployment.
-   - Use https://developer.webex.com/docs/api/v1/webhooks/create-a-webhook (again, with the bot access token) to create
+   - Use [https://developer.webex.com/docs/api/v1/webhooks/create-a-webhook](https://developer.webex.com/docs/api/v1/webhooks/create-a-webhook) (again, with the bot access token) to create
      a new webhook with the following parameters:
      - name: "nautobot messages"
-     - targetUrl: "https://<server>/api/plugins/chatops/webex_teams/"
+     - targetUrl: "https://\<server\>/api/plugins/chatops/webex_teams/"
      - resource: "messages"
      - event: "created"
      - secret: (enter a secret string that you don't mind having passed around as plaintext)
@@ -199,6 +237,8 @@ Therefore, in this version, access to the chatbot defaults to "deny all" when in
 single subcommand of a single command) of access can be granted through Nautobot.
 
 The access grants are maintained in Nautobot's database for persistence, and are change-logged like other Nautobot records.
+
+![access grants](./images/nb_plugins_grants.png)
 
 Note that access grants are based on the chat platform's internal ID values for users, channels, and organizations;
 although you can and should attach a user-friendly name to each access grant for reference, it is the ID value that
