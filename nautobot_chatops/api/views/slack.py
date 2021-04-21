@@ -17,7 +17,7 @@ from nautobot_chatops.dispatchers.slack import SlackDispatcher
 from nautobot_chatops.utils import check_and_enqueue_command
 from nautobot_chatops.metrics import signature_error_cntr
 from django.conf import settings
-from slack.web.client import WebClient
+from slack_sdk import WebClient
 
 
 SLASH_PREFIX = settings.PLUGINS_CONFIG["nautobot_chatops"].get("slack_slash_command_prefix")
