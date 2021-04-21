@@ -6,9 +6,9 @@ import os
 import time
 
 from django.conf import settings
-from slack.web.client import WebClient
-from slack.webhook.client import WebhookClient
-from slack.errors import SlackApiError, SlackClientError
+from slack_sdk import WebClient
+from slack_sdk.webhook.client import WebhookClient
+from slack_sdk.errors import SlackApiError, SlackClientError
 
 from .base import Dispatcher
 from nautobot_chatops.metrics import backend_action_sum
