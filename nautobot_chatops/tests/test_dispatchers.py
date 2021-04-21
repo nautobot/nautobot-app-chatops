@@ -1,4 +1,5 @@
 """Tests for Nautobot dispatcher class implementations."""
+from unittest.mock import patch
 
 from django.conf import settings
 from django.test import TestCase
@@ -153,6 +154,46 @@ class TestWebExTeamsDispatcher(TestSlackDispatcher):
     def test_get_prompt_from_menu_choices(self):
         """Not implemented."""
         pass
+
+    @patch("nautobot_chatops.dispatchers.webex_teams.WebExTeamsDispatcher.send_markdown")
+    def test_send_large_table(self, mock_send_markdown):
+        """Make sure send_large_table() is implemented."""
+        header = ["Name", "Status", "Tenant", "Site", "Rack", "Role", "Type", "IP Address"]
+        rows = []
+        expected_arg0 = "```\n"
+
+        for i in range(0, 300):
+            rows.append((f"Switch0{i}", "Active", "", "test01", "", "role01", "3560", "1.2.3.4"))
+            if i >= 298:
+                expected_arg0 += f"Switch0{i}   Active            test01          role01   3560   1.2.3.4   \n"
+        expected_arg0 += "\n```"
+
+        self.dispatcher.send_large_table(header, rows)
+
+        # Make sure the outputs include proper formatting for WebEx
+        self.assertTrue(mock_send_markdown.called)
+        self.assertEqual(mock_send_markdown.call_args[0][0], expected_arg0)
+
+        total_message_length = 0
+        # Make sure no individual call exceeded the Webex message length limit
+        for call_args in mock_send_markdown.call_args_list:
+            # pylint: disable=no-member
+            self.assertLessEqual(len(call_args[0][0]), self.dispatcher.webex_msg_char_limit)
+            total_message_length += len(call_args[0][0])
+
+        # Make sure the total message length was in excess of the Webex limit
+        # pylint: disable=no-member
+        self.assertGreater(total_message_length, self.dispatcher.webex_msg_char_limit)
+
+        # Make sure content was appropriately divided amongst the separate messages:
+        # Header should only be in the first call, not in subsequent ones
+        self.assertIn("Tenant ", mock_send_markdown.call_args_list[0][0][0])
+        for call_args in mock_send_markdown.call_args_list[1:]:
+            self.assertNotIn("Tenant ", call_args[0][0])
+
+        # Make sure the first row appears in the first send, and the last row appears in the last send
+        self.assertIn("Switch00 ", mock_send_markdown.call_args_list[0][0][0])
+        self.assertIn("Switch0299 ", mock_send_markdown.call_args_list[-1][0][0])
 
 
 class TestMattermostDispatcher(TestSlackDispatcher):

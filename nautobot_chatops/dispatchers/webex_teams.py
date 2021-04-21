@@ -1,11 +1,15 @@
 """Dispatcher implementation for sending content to WebEx Teams."""
 import logging
+import os
+
 from webexteamssdk import WebexTeamsAPI
 from webexteamssdk.exceptions import ApiError
 from django.conf import settings
 
 from .adaptive_cards import AdaptiveCardsDispatcher
 from nautobot_chatops.metrics import backend_action_sum
+
+from texttable import Texttable
 
 logger = logging.getLogger("rq.worker")
 
@@ -28,6 +32,7 @@ class WebExTeamsDispatcher(AdaptiveCardsDispatcher):
         """Init a WebExTeamsDispatcher."""
         super().__init__(*args, **kwargs)
         self.client = WebexTeamsAPI(access_token=settings.PLUGINS_CONFIG["nautobot_chatops"]["webex_teams_token"])
+        self.webex_msg_char_limit = int(os.getenv("WEBEX_MSG_CHAR_LIMIT", "7439"))
 
     @classmethod
     @BACKEND_ACTION_LOOKUP.time()
@@ -112,3 +117,31 @@ class WebExTeamsDispatcher(AdaptiveCardsDispatcher):
         # It also doesn't seem to let you use @mentions inside an adaptive card (block).
         # So for now we just use the user name throughout.
         return f"{self.context.get('user_name')}"
+
+    def send_large_table(self, header, rows):
+        """Send a large table of data to the user/channel.
+
+        Webex Teams has a character limit per message of 7439 characters.
+        This table is outputted at a max of 120 characters per line, but this varies based on the data in Nautobot.
+        This table is dynamically rendered up to the maximum allowable charaters for each posting.
+        """
+        table = Texttable(max_width=120)
+        table.set_deco(Texttable.HEADER)
+        table.header(header)
+        # Force all columns to be shown as text. Otherwise long numbers (such as account #) get abbreviated as 123.4e10
+        table.set_cols_dtype(["t" for item in header])
+        table.add_rows(rows, header=False)
+
+        char_count = 0
+        table_snippet = ""
+
+        for line in table.draw().splitlines():
+            # +1 is for the length of '\n'
+            line_len = len(line) + 1
+            if char_count + line_len > self.webex_msg_char_limit:
+                self.send_snippet(table_snippet)
+                table_snippet = ""
+                char_count = 0
+            table_snippet += line + "\n"
+            char_count = len(table_snippet)
+        self.send_snippet(table_snippet)
