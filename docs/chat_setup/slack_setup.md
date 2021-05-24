@@ -1,4 +1,4 @@
-# Slack Setup
+# Slack Setup 
 
 These are the four distinct configuration values you will need to configure in `nautobot_config.py`.
 
