@@ -28,4 +28,4 @@
    - Change the `resource` to "attachmentActions" and run the API call again to create a second webhook.
 4. Configure the `webex_teams_signing_secret` in your `.creds.env` to match the secret string that you selected in
    step 3 above.
-5. Proceed to the general process to "Grant access to the chatbot" below.
+5. Proceed to the [Nautobot Server Preparation and Configuration](./chat_setup.md#Nautobot Server Preparation and Configuration) section.

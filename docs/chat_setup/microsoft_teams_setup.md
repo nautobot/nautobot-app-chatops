@@ -34,4 +34,4 @@
 9. Select your updated app package zip file.
 10. After a few moments, the Nautobot app will appear in the window. Select it and click "Add".
 11. Configure the `microsoft_app_id` and `microsoft_app_password` for the plugin with the App ID and client secret values from step 8 in your `.creds.env` file (on the Nautobot server, not in the MS Teams client).
-12. Proceed to the general process to "Grant access to the chatbot" below.
+12. Proceed to the [Nautobot Server Preparation and Configuration](./chat_setup.md#Nautobot Server Preparation and Configuration) section.
