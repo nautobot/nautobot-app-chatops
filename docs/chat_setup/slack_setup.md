@@ -1,11 +1,33 @@
 # Slack Setup
 
+These are the four distinct configuration values you will need to configure in `nautobot_config.py`.
+
 | Configuration Setting        | Mandatory? | Default |
 | ---------------------------- | ---------- | ------- |
 | `enable_slack`               | **Yes**    | False   |
 | `slack_api_token`            | **Yes**    | --      |
 | `slack_signing_secret`       | **Yes**    | --      |
 | `slack_slash_command_prefix` | No         | `"/"`   |
+
+These values will be used in the `nautobot_config.py` file, once we get to the section where we cover server configuration.
+For now, take a mental note that in this section where we are configuring the Slack application, we will need to explicitly note the
+`slack_api_token` and `slack_signing_secret` values when they are presented.
+
+Example config snippet from `nautobot_config.py` for configuring chatops with Slack:
+```python
+# Enable installed plugins. Add the name of each plugin to the list.
+PLUGINS = ["nautobot_chatops"]
+
+PLUGINS_CONFIG = {
+    'nautobot_chatops': {
+        'enable_slack': True,
+        'slack_api_token': '<slack-api-token>',
+        'slack_signing_secret': '<slack-signing-secret>',
+        'slack_slash_command_prefix': '/network2-'
+    }
+}
+```
+> Note: this example uses a configured `slack_slash_command_prefix` value of `/network2-` (for use in Slack as `/network2-nautobot`); if not explicitly configured, this value defaults to `/` (for use as `/nautobot`).
 
 1. Log in to [https://api.slack.com/apps](https://api.slack.com/apps) and select "Create New App".
    - Enter "Nautobot Chatops" as the "App Name"
@@ -17,8 +39,8 @@
      like `https://<server>/api/plugins/chatops/slack/interaction/` (note the trailing slash)
    - Select "Save Changes"
 3. On the "Basic Information" page for your app, under "Add features and functionality", select "Slash Commands"
-   - Decide now whether your setup requires a command prefix to disambiguate this bot's commands from those understood
-     by other bots (such as if you have multiple older Nautobot Chatops versions also enabled), such as `/nautobot-` or `/na-`
+   - Decide now whether your setup requires a slack slash command prefix to disambiguate this bot's commands from those understood
+     by other bots (such as if you have multiple older Nautobot Chatops versions also enabled), such as `/nautobot-` or `/network2-`
    - This part is a bit tedious, but for each supported command (e.g. `/nautobot`, `/grafana`) you will need to:
      - Select "Create New Command"
      - Enter the command text, the request URL (`https://<server>/api/plugins/chatops/slack/slash_command/` in all cases),
@@ -30,6 +52,9 @@
      (`/nautobot get-devices`) whether or not you also define them as first-class slash-commands in their own right.
    - TODO: we need a helper script that could be easily run to generate a full listing of subcommands so that a new
      deployer can know what all they need to set up!
+> Note: if you want to interact with Nautobot to retrieve data without doing any custom code development, your slash command must
+> be `/nautobot` or end with `nautobot` following the configured slack_slash_command_prefix. For example, the
+> `/na-nautobot` command would have a `slack_slash_command_prefix` of `/network2-`
 4. On the "Basic Information" page for your app, under "App Credentials", find the "Signing Secret" and click "Show".
    You will need to configure this value for the plugin as the `slack_signing_secret` value, such as through the
    `.creds.env` file. If this value is not correctly configured, the bot will be unable to validate that inbound
@@ -53,8 +78,13 @@
 6. Returning to the "Basic Information" page for your app, under "Display Information", you can specify the name,
    description, icon, and accent/background color for the app. You can use the `nautobot_logo.png` from this
    directory if desired.
-7. Proceed to the general process to "Grant access to the chatbot" below.
+7. Proceed to the [Nautobot Server Preparation and Configuration](./chat_setup.md#Nautobot Server Preparation and Configuration) section.
 
-> **Note** You will need to invite the chatbot to each channel that it will belong to with `@Nautobot`.
+> **Note** In the Slack app, you will need to invite the chatbot to each channel that it will belong to with `@<app name>`.
+> For example, when an app named `Nautobot Chatops` is installed to the workspace:
+> 1. A message is displayed in the channel, saying that the integration`Nautobot Chatops` has been added
+> 2. You `@Nautobot Chatops` in the channel
+> 3. You are prompted to add `Nautobot Chatops` to the channel
 
-![slack invite](../images/slack_invite.png)
+![slack integration invite](../images/add_nautobot.png)
+
