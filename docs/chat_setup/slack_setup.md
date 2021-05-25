@@ -80,7 +80,7 @@ PLUGINS_CONFIG = {
    directory if desired.
 7. Proceed to the [Nautobot Server Preparation and Configuration](./chat_setup.md#Nautobot Server Preparation and Configuration) section.
 
-> **Note** In the Slack app, you will need to invite the chatbot to each channel that it will belong to with `@<app name>`.
+> **Note**: In the Slack app, you will need to invite the chatbot to each channel that it will belong to with `@<app name>`.
 > For example, when an app named `Nautobot Chatops` is installed to the workspace:
 > 1. A message is displayed in the channel, saying that the integration`Nautobot Chatops` has been added
 > 2. You `@Nautobot Chatops` in the channel
