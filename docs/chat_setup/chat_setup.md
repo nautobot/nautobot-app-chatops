@@ -1,5 +1,21 @@
 # Installing Nautobot Chatops
 
+There are four main phases to enable Nautobot chatops:
+1. Configure the specific chat platform
+2. Install the plugin
+3. Configure `nautobot_config.py` to support chatops
+4. Grant access to the chatbot in the Nautobot Web UI
+
+## Platform-specific setup
+
+### [Setup for Slack](./slack_setup.md)
+
+### [Setup for Microsoft Teams](./microsoft_teams_setup.md)
+
+### [Setup for WebEx Teams](./webex_teams_setup.md)
+
+### [Setup for Mattermost](./mattermost_setup.md)
+
 ## Installation
 
 The plugin is available as a Python package in PyPI and can be installed with `pip3` after logging in with the `nautobot` user account.
@@ -24,7 +40,8 @@ PLUGINS_CONFIG = {
 }
 ```
 
-Nautobot supports `Slack`, `MS Teams` and `Webex Teams` as backends but by default all of them are disabled. You need to explicitly enable the chat platform(s) that you want to use in the `PLUGINS_CONFIG` with one or more of `enable_slack`, `enable_ms_teams` or `enable_webex_teams`.
+Nautobot supports `Slack`, `MS Teams`, `Mattermost`, and `Webex Teams` as backends but by default all of them are disabled. 
+You need to explicitly enable the chat platform(s) that you want to use in the `PLUGINS_CONFIG` with one or more of `enable_slack`, `enable_ms_teams`, `enable_mattermost`, or `enable_webex_teams`.
 
 The plugin behavior can be controlled with the following list of general settings:
 
@@ -32,45 +49,36 @@ The plugin behavior can be controlled with the following list of general setting
 | ---------------------------- | ----------- | ---------- | ------- |
 | `delete_input_on_submission` | After prompting the user for additional inputs, delete the input prompt from the chat history | No | `False` |
 
-## General setup
+TODO: clarify the above statement, starting from "The plugin behavior can be controlled . . ."
 
-Install this plugin into Nautobot and enable it in `nautobot_config.py` under `PLUGINS`, as described in `README.md`.
-There are no general mandatory settings in `PLUGINS_CONFIG`, but see below for platform-specific setup requirements.
-If you're running Nautobot locally on a laptop or similar, you may need to install and run `ngrok` to provide a
+## Server Configuration
+
+Enable the `nautobot-chatops` plugin in `nautobot_config.py` under `PLUGINS`, as described in `README.md`.
+There are no general mandatory settings in `PLUGINS_CONFIG`, but there are platform-specific requirements.
+You will use some values from your chat platform-specific configuration in the prior section to configure chatops in `nautobot_config.py`.
+
+Below is a sample configuration snippet in `nautobot_config.py` that enables Slack. The `slack_api_token` and `slack_signing_secret` could also be stored in a `.creds.env` instead, and then refer to the defined variables in `PLUGINS_CONFIG`.
+
+```python
+# Enable installed plugins. Add the name of each plugin to the list.
+PLUGINS = ["nautobot_chatops"]
+
+PLUGINS_CONFIG = {
+    'nautobot_chatops': {
+        'enable_slack': True,
+        'slack_api_token': 'xoxb-2078939598626-2078997105202-3QupQHVC3lEhyGtKPpK62fGB',
+        'slack_signing_secret': '1be5e964569d52a2e74f13fcefb1213f',
+    }
+}
+```
+
+Restart the `nautobot` and `nautobot-worker` process after updating `nautobot_config.py`.
+
+> Note: If you're running Nautobot locally on a laptop or similar, you may need to install and run `ngrok` to provide a
 publicly accessible HTTP endpoint for the chat platform(s) to connect to.
 
-## Platform-specific setup
-
-### [Setup for Slack](./slack_setup.md)
-
-### [Setup for Microsoft Teams](./microsoft_teams_setup.md)
-
-### [Setup for WebEx Teams](./webex_teams_setup.md)
-
-### [Setup for Mattermost](./mattermost_setup.md)
-
-## Add Command Token to database
-
-Nautobot provides an HTTP endpoint(s) for each supported chat platform.
-These endpoints implement authentication to prevent arbitrary HTTP requests from being accepted.
-Some platforms this `signing_secret` is valid for all commands, other platforms, such as Mattermost,
-create a seperate `token` for every slash command.  Keeping the records for Mattermost tokens in the
-`.creds.env` file would not be sustainable.  
-
-To solve this issue, the plugin has the option to store Command Tokens to the Nautobot Database.
-In Nautobot, open Nautobot and go to the Plugins and select Command Tokens. Below is an example to
-get you started.
-
-### Example: Adding tokens for Mattermost
-
-Here is an example that supports Mattermost.
-
-| Platform    | Comment   | Token            |
-| ----------- | ---------- | ---------------- |
-| Mattermost  | `nautobot`   | `x0xb5hj5ga5tge` |
-| Mattermost  | `clear`    | `x7g7ag9ohkafbe` |
-
-**Note:** The Comment field is optional and used to help the user when there are multiple tokens.
+> Note: Some chat platforms, such as Slack, require a signed certificate from a trusted provider on the Nautobot server in order 
+> to allow the application platform to communicate with the Nautobot server
 
 ## Grant access to the chatbot
 
