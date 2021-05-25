@@ -6,6 +6,16 @@ There are four main phases to enable Nautobot chatops:
 3. Configure `nautobot_config.py` to support chatops
 4. Grant access to the chatbot in the Nautobot Web UI
 
+## Requirements
+
+* Functioning Nautobot installation
+* Publicly accessible URL for Nautobot or ability/permission to use ngrok to get a publicly accessible URL for Nautobot
+* `sudo` access on the Nautobot server
+* Administrative access within the Nautobot Web UI
+
+> Note: Some chat platforms, such as Slack, require a signed certificate from a trusted provider on the Nautobot server in order 
+> to allow the application platform to communicate with the Nautobot server
+
 ## Platform-specific setup
 
 ### [Setup for Slack](./slack_setup.md)
@@ -16,7 +26,7 @@ There are four main phases to enable Nautobot chatops:
 
 ### [Setup for Mattermost](./mattermost_setup.md)
 
-## Installation
+## Plug-In Installation
 
 The plugin is available as a Python package in PyPI and can be installed with `pip3` after logging in with the `nautobot` user account.
 
@@ -58,12 +68,13 @@ As the `nautobot` user, you will now edit the `nautobot_config.py` file.
 There are also some platform-specific requirements to configure.  
 Some values from your chat platform-specific configuration in the prior section are configured in `nautobot_config.py`.
 
-Below is a sample configuration snippet in `nautobot_config.py` that enables Slack. 
+Below is a sample configuration snippet in `nautobot_config.py` that enables Slack. This is meant to serve as a general example of
+how to configure and enable the chatops plugin.
 
-Note a few details:
+Note a few details about this example:
 * You must add `"nautobot_chatops"` to the list defined by `PLUGINS`
 * The `slack_api_token` and `slack_signing_secret` values were taken from the values presented in the Slack platform-specific setup.
-* The `slack_api_token` and `slack_signing_secret` could also be stored in a `.creds.env` instead, and then refer to the defined variables in `PLUGINS_CONFIG`.
+* Alternately, the `slack_api_token` and `slack_signing_secret` values could also be stored in a `.creds.env`, then referred to by those defined environment variables in `PLUGINS_CONFIG`.
 
 ```python
 # Enable installed plugins. Add the name of each plugin to the list.
@@ -79,12 +90,6 @@ PLUGINS_CONFIG = {
 ```
 
 As a sudo-enabled user, restart the `nautobot` and `nautobot-worker` process after updating `nautobot_config.py`.
-
-> Note: If you're running Nautobot locally on a laptop or similar, you may need to install and run `ngrok` to provide a
-publicly accessible HTTP endpoint for the chat platform(s) to connect to.
-
-> Note: Some chat platforms, such as Slack, require a signed certificate from a trusted provider on the Nautobot server in order 
-> to allow the application platform to communicate with the Nautobot server
 
 ## Grant access to the chatbot
 
@@ -155,3 +160,7 @@ Other commands are harmless fun and can be used by any user in the organization 
 | `network` | `status`   | user         | any     | `*`         |
 | `weather` | `*`        | channel      | any     | `*`         |
 | `weather` | `*`        | user         | any     | `*`         |
+
+## Test Your Chatbot
+
+Now test your chatbot within your specific chat application.
