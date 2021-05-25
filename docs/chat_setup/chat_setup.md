@@ -91,7 +91,7 @@ PLUGINS_CONFIG = {
 
 As a sudo-enabled user, restart the `nautobot` and `nautobot-worker` process after updating `nautobot_config.py`.
 
-## Grant access to the chatbot
+## Grant Access to the Chatbot
 
 Nautobot provides an HTTP endpoint(s) for each supported chat platform.
 Although these endpoints do implement authentication to prevent arbitrary HTTP requests from triggering bot actions,
@@ -117,7 +117,7 @@ error message to use to define a new access grant.
 The specific access grants you will want to define will depend on your operational requirements,
 but some examples are provided below to help you get started.
 
-### Example: unrestricted access within a single organization
+### Example: Unrestricted Access Within a Single Organization
 
 In the simplest realistic configuration example, access to all chatbot commands is granted for all users and
 all channels in a single organization scope.
@@ -128,7 +128,7 @@ all channels in a single organization scope.
 | `*`     | `*`        | channel      | any    | `*`         |
 | `*`     | `*`        | user         | any    | `*`         |
 
-### Example: split command access to different channels
+### Example: Split Command Access to Different Channels
 
 In this example, Nautobot is providing two separate command groupings, each of which is intended for use by a
 different team within the organization. Each team has a dedicated channel on the chat platform, to which access is
@@ -141,7 +141,7 @@ already controlled by other means, so we can allow all users within a given chan
 | `devops`  | `*`        | channel      | devops  | `C3030I566` |
 | `*`       | `*`        | user         | any     | `*`         |
 
-### Example: restrict specific command and subcommand to specific users in a specific channel
+### Example: Restrict Specific Command and Subcommand to Specific Users in a Specific Channel
 
 In this example, Nautobot has a potentially-destructive subcommand that should only be used by a handful of admin users.
 Other subcommands under this subcommand can be used by anyone in the devops channel.

@@ -1,4 +1,4 @@
-# Webex Teams Setup
+# Webex Setup
 
 | Configuration Setting        | Mandatory? | Default |
 | ---------------------------- | ---------- | ------- |

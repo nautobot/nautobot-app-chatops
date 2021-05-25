@@ -23,11 +23,9 @@ PLUGINS_CONFIG = {
         'enable_slack': True,
         'slack_api_token': '<slack-api-token>',
         'slack_signing_secret': '<slack-signing-secret>',
-        'slack_slash_command_prefix': '/network2-'
     }
 }
 ```
-> Note: this example uses a configured `slack_slash_command_prefix` value of `/network2-` (for use in Slack as `/network2-nautobot`); if not explicitly configured, this value defaults to `/` (for use as `/nautobot`).
 
 1. Log in to [https://api.slack.com/apps](https://api.slack.com/apps) and select "Create New App".
    - Enter "Nautobot Chatops" as the "App Name"
@@ -56,8 +54,8 @@ PLUGINS_CONFIG = {
 > be `/nautobot` or end with `nautobot` following the configured slack_slash_command_prefix. For example, the
 > `/na-nautobot` command would have a `slack_slash_command_prefix` of `/network2-`
 4. On the "Basic Information" page for your app, under "App Credentials", find the "Signing Secret" and click "Show".
-   You will need to configure this value for the plugin as the `slack_signing_secret` value, such as through the
-   `.creds.env` file. If this value is not correctly configured, the bot will be unable to validate that inbound
+   You will need to configure this value for the plugin as the `slack_signing_secret` value, such as through an
+   `.env` file. If this value is not correctly configured, the bot will be unable to validate that inbound
    notifications it receives have been properly signed by the Slack server.
 5. In the sidebar to the left, select "OAuth & Permissions".
    - Under "Scopes", select "Add an OAuth Scope", and add the following scopes:
@@ -73,8 +71,8 @@ PLUGINS_CONFIG = {
       - `mpim:read`
    - At the top of this page, select "Install App to Workspace" and confirm it.
    - There should now be a "Bot User OAuth Access Token" displayed, typically a string starting with `xoxb-`.
-     You will need to configure this value for the plugin as the `slack_api_token` value, such as through the
-     `.creds.env` file. If this value is not properly configured, the bot will be unable to send content to the user.
+     You will need to configure this value for the plugin as the `slack_api_token` value, either directly or through an
+     `.env` file. If this value is not properly configured, the bot will be unable to send content to the user.
 6. Returning to the "Basic Information" page for your app, under "Display Information", you can specify the name,
    description, icon, and accent/background color for the app. You can use the `nautobot_logo.png` from this
    directory if desired.
@@ -88,4 +86,46 @@ PLUGINS_CONFIG = {
 
 ![slack integration invite](../images/add_nautobot.png)
 
- 
+ # Configuring Multiple Chatbots in a Workspace
+
+Chatbots from multilple Nautobot implementations can exist in a single Slack workspace and even channel.
+
+They will be differentiated in the workspace using the `slack_slash_command_prefix` value in `PLUGINS_CONFIG`.
+
+Here is an example `nautobot_config.py` for the first Nautobot chatbot implementation in the workspace. 
+This chatbot will be called in the workspace using `/nautobot`.
+```python
+# Enable installed plugins. Add the name of each plugin to the list.
+PLUGINS = ["nautobot_chatops"]
+
+PLUGINS_CONFIG = {
+    'nautobot_chatops': {
+        'enable_slack': True,
+        'slack_api_token': '<slack-api-token>',
+        'slack_signing_secret': '<slack-signing-secret>',
+    }
+}
+```
+
+Here is an example `nautobot_config.py` for a second Nautobot chatbot implementation in the workspace.
+This configuration explicitly configures the `slack_slash_command_prefix` key/value.
+This chatbot will be called in the workspace using `/network2-nautobot`.
+
+```python
+# Enable installed plugins. Add the name of each plugin to the list.
+PLUGINS = ["nautobot_chatops"]
+
+PLUGINS_CONFIG = {
+    'nautobot_chatops': {
+        'enable_slack': True,
+        'slack_api_token': '<slack-api-token>',
+        'slack_signing_secret': '<slack-signing-secret>',
+        'slack_slash_command_prefix': '/network2-'
+    }
+}
+```
+
+> NOTE: by default, your slash command must end with `nautobot`. If no `slack_slash_command_prefix` is specified,
+> the slash command will be `/nautobot`. If a `slack_slash_command_prefix` is specified, the slash command will be `<slack_slash_command_prefix>nautobot`.
+
+> NOTE: Custom chatbot development allows for chatbot slash commands such as `/grafana` and `/meraki`.

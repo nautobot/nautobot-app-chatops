@@ -29,7 +29,7 @@
 
 **Note:** For every Slash Command created for Mattermost, a separate token will be generated.
 
-## Add Command Token to database
+## Add Command Token to Database
 
 Nautobot provides an HTTP endpoint(s) for each supported chat platform.
 These endpoints implement authentication to prevent arbitrary HTTP requests from being accepted.
