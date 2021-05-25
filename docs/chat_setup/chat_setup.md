@@ -53,11 +53,17 @@ TODO: clarify the above statement, starting from "The plugin behavior can be con
 
 ## Server Configuration
 
-Enable the `nautobot-chatops` plugin in `nautobot_config.py` under `PLUGINS`, as described in `README.md`.
-There are no general mandatory settings in `PLUGINS_CONFIG`, but there are platform-specific requirements.
-You will use some values from your chat platform-specific configuration in the prior section to configure chatops in `nautobot_config.py`.
+As the `nautobot` user, you will now edit the `nautobot_config.py` file.  
 
-Below is a sample configuration snippet in `nautobot_config.py` that enables Slack. The `slack_api_token` and `slack_signing_secret` could also be stored in a `.creds.env` instead, and then refer to the defined variables in `PLUGINS_CONFIG`.
+There are also some platform-specific requirements to configure.  
+Some values from your chat platform-specific configuration in the prior section are configured in `nautobot_config.py`.
+
+Below is a sample configuration snippet in `nautobot_config.py` that enables Slack. 
+
+Note a few details:
+* You must add `"nautobot_chatops"` to the list defined by `PLUGINS`
+* The `slack_api_token` and `slack_signing_secret` values were taken from the values presented in the Slack platform-specific setup.
+* The `slack_api_token` and `slack_signing_secret` could also be stored in a `.creds.env` instead, and then refer to the defined variables in `PLUGINS_CONFIG`.
 
 ```python
 # Enable installed plugins. Add the name of each plugin to the list.
@@ -72,7 +78,7 @@ PLUGINS_CONFIG = {
 }
 ```
 
-Restart the `nautobot` and `nautobot-worker` process after updating `nautobot_config.py`.
+As a sudo-enabled user, restart the `nautobot` and `nautobot-worker` process after updating `nautobot_config.py`.
 
 > Note: If you're running Nautobot locally on a laptop or similar, you may need to install and run `ngrok` to provide a
 publicly accessible HTTP endpoint for the chat platform(s) to connect to.
