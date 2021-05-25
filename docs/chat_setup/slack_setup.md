@@ -84,7 +84,7 @@ PLUGINS_CONFIG = {
 > For example, when an app named `Nautobot Chatops` is installed to the workspace:
 > 1. A message is displayed in the channel, saying that the integration`Nautobot Chatops` has been added
 > 2. You `@Nautobot Chatops` in the channel
-> 3. You are prompted to add `Nautobot Chatops` to the channel
+> 3. You are prompted to add `@Nautobot Chatops` to the channel
 
 ![slack integration invite](../images/add_nautobot.png)
 
