@@ -74,7 +74,7 @@ how to configure and enable the chatops plugin.
 Note a few details about this example:
 * You must add `"nautobot_chatops"` to the list defined by `PLUGINS`
 * The `slack_api_token` and `slack_signing_secret` values were taken from the values presented in the Slack platform-specific setup.
-* Alternately, the `slack_api_token` and `slack_signing_secret` values could also be stored in a `.creds.env`, then referred to by those defined environment variables in `PLUGINS_CONFIG`.
+* Alternately, the `slack_api_token` and `slack_signing_secret` values could also be stored in an `.env` file, then referred to by those defined environment variables in `PLUGINS_CONFIG`.
 
 ```python
 # Enable installed plugins. Add the name of each plugin to the list.
