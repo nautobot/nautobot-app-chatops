@@ -27,7 +27,7 @@ slack-sdk = "^3.4.2"
 cryptography = "^3.4.7"
 
 [tool.poetry.dev-dependencies]
-black = "*"
+black = "^20.8b1"
 yamllint = "*"
 bandit = "*"
 pylint = "*"
