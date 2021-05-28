@@ -35,7 +35,7 @@ jobs:
     - stage: "lint"
       before_script:
         - "pip install invoke toml docker-compose"
-        - "cp creds.env.example creds.env"
+        - "cp development/creds.example.env development/creds.env"
         - "invoke build --nocache"
       script:
         - "invoke black"
