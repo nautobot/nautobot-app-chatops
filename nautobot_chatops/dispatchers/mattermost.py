@@ -71,7 +71,7 @@ def error_report(function):
         """Inner wrapper to catch api errors and raise appropriate Exceptions."""
         try:
             return function(*args, **kwargs)
-        except HTTPError as e:
+        except HTTPError as e:  # pylint: disable=invalid-name
             if e.response.status_code == 400:
                 raise BadRequestException("Malformatted requests: {}".format(e.response.text))
             if e.response.status_code == 401:
@@ -457,7 +457,7 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
         # Bot accounts cannot delete Ephemeral Messages.
         try:
             self.mm_client.delete(f"/posts/{post_id}")
-        except ForbiddenException as e:
+        except ForbiddenException as e: # pylint: disable=invalid-name
             logger.info("Ignoring 403 exception as this is likely an Emphemeral post: %s ", e)
 
     # Prompt the user for various basic inputs

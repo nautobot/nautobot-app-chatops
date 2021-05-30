@@ -66,18 +66,18 @@ def generate_packages(context, nautobot_ver=NAUTOBOT_VER, python_ver=PYTHON_VER)
         nautobot_ver (str): Nautobot version to use to build the container
         python_ver (str): Will use the Python version docker image to build from
     """
-    CONTAINER_NAME = f"{BUILD_NAME}_nautobot_package"
+    container_name = f"{BUILD_NAME}_nautobot_package"
     context.run(
-        f"docker rm {CONTAINER_NAME} || true",
+        f"docker rm {container_name} || true",
         env={"NAUTOBOT_VER": nautobot_ver, "PYTHON_VER": python_ver},
         pty=True,
     )
     context.run(
-        f"docker-compose  -f {COMPOSE_FILE} -p {BUILD_NAME} run --name {CONTAINER_NAME} -w /source nautobot poetry build",
+        f"docker-compose  -f {COMPOSE_FILE} -p {BUILD_NAME} run --name {container_name} -w /source nautobot poetry build",
         env={"NAUTOBOT_VER": nautobot_ver, "PYTHON_VER": python_ver},
     )
     context.run(
-        f"docker cp {CONTAINER_NAME}:/source/dist .",
+        f"docker cp {container_name}:/source/dist .",
         env={"NAUTOBOT_VER": nautobot_ver, "PYTHON_VER": python_ver},
         pty=True,
     )

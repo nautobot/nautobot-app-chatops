@@ -23,7 +23,6 @@ disable=
   bare-except,                    # TODO
   consider-iterating-dictionary,  # TODO
   f-string-without-interpolation, # TODO
-  invalid-name,                   # TODO
   logging-fstring-interpolation,  # TODO
   missing-class-docstring,        # TODO
   missing-function-docstring,     # TODO

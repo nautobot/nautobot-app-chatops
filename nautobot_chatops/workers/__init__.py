@@ -21,8 +21,8 @@ from nautobot_chatops.metrics import request_command_cntr, command_histogram
 logger = logging.getLogger("rq.worker")
 
 
-_registry_initialized = False
-_commands_registry = {}
+_registry_initialized = False # pylint: disable=invalid-name
+_commands_registry = {} # pylint: disable=invalid-name
 """Registry of commands and their subcommands.
 
 Populated by calling nautobot_chatops.workers.get_commands_registry()
@@ -53,8 +53,8 @@ _commands_registry = {
 
 def get_commands_registry():
     """Populate and return the _commands_registry dictionary with all known commands, subcommands, and workers."""
-    global _commands_registry  # pylint: disable=global-statement
-    global _registry_initialized  # pylint: disable=global-statement
+    global _commands_registry  # pylint: disable=global-statement,invalid-name
+    global _registry_initialized  # pylint: disable=global-statement,invalid-name
     if _registry_initialized:
         # Already populated, don't regenerate it
         return _commands_registry
@@ -172,7 +172,7 @@ def subcommand_of(command):
 
     def subcommand(func):
         """Constructs the wrapper function for the decorated function."""
-        global _commands_registry  # pylint: disable=global-statement
+        global _commands_registry  # pylint: disable=global-statement,invalid-name
 
         sig = inspect.signature(func)
         # What are the positional args of func?
@@ -220,7 +220,7 @@ def add_subcommand(command_name, command_func, subcommand_name, subcommand_spec)
         'doc': "docstring"
     }
     """
-    global _commands_registry  # pylint: disable=global-statement
+    global _commands_registry  # pylint: disable=global-statement,invalid-name
 
     # See issue #20 - depending on code structure, it's possible we may process a subcommand before we
     # have actually processed its parent command. This is normal and we need to handle it.
