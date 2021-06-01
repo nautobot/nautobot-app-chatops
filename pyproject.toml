@@ -59,6 +59,14 @@ exclude = '''
                      # the root of the project
 )
 '''
+
+[tool.pylint]
+max-args=6
+max-public-methods=22
+max-line-length=120
+ignore-imports=['yes']
+min-similarity-lines=12
+
 [build-system]
 requires = ["poetry_core>=1.0.0"]
 build-backend = "poetry.masonry.api"
