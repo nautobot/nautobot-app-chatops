@@ -26,6 +26,8 @@ from nautobot_chatops.workers.helper_functions import (
     prompt_for_vlan_filter_type,
 )
 
+# pylint: disable=line-too-long
+
 
 @job("default")
 def nautobot(subcommand, **kwargs):

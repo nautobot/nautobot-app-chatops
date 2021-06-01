@@ -13,6 +13,8 @@ from nautobot_chatops.metrics import backend_action_sum
 
 logger = logging.getLogger("rq.worker")
 
+# pylint: disable=abstract-method,line-too-long
+
 # Create a metric to track time spent and requests made.
 BACKEND_ACTION_LOOKUP = backend_action_sum.labels("mattermost", "platform_lookup")
 BACKEND_ACTION_MARKDOWN = backend_action_sum.labels("mattermost", "send_markdown")
@@ -369,6 +371,7 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
         except MMException as mattermost_error:
             self.send_exception(mattermost_error)
 
+    # pylint: disable=arguments-differ
     @BACKEND_ACTION_BLOCKS.time()
     def send_blocks(self, blocks, callback_id=None, ephemeral=False, modal=False, title="Your attention please!"):
         """Send a series of formatting blocks to the user/channel specified by the context.
@@ -574,6 +577,7 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
         """Mark text as bold."""
         return f"**{text}**"
 
+    # pylint: disable=arguments-differ
     def actions_block(self, action_id, actions):
         """Construct a block consisting of a set of action elements."""
         # Mattermost doesn't use the "block_id", but it ignores the input.
@@ -601,6 +605,7 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
         """Construct a basic Markdown-formatted text element."""
         return text
 
+    # pylint: disable=arguments-differ
     def select_element(self, action_id, choices):
         """Construct a basic selection menu with the given choices.
 

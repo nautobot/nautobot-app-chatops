@@ -15,6 +15,8 @@ from nautobot_chatops.metrics import backend_action_sum
 
 logger = logging.getLogger("rq.worker")
 
+# pylint: disable=abstract-method,line-too-long
+
 # Create a metric to track time spent and requests made.
 BACKEND_ACTION_LOOKUP = backend_action_sum.labels("slack", "platform_lookup")
 BACKEND_ACTION_MARKDOWN = backend_action_sum.labels("slack", "send_markdown")
@@ -151,6 +153,7 @@ class SlackDispatcher(Dispatcher):
         except SlackClientError as slack_error:
             self.send_exception(slack_error)
 
+    # pylint: disable=arguments-differ
     @BACKEND_ACTION_BLOCKS.time()
     def send_blocks(self, blocks, callback_id=None, ephemeral=False, modal=False, title="Your attention please!"):
         """Send a series of formatting blocks to the user/channel specified by the context.

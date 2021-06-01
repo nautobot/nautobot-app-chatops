@@ -19,6 +19,8 @@ BACKEND_ACTION_MARKDOWN = backend_action_sum.labels("webex_teams", "send_markdow
 BACKEND_ACTION_BLOCKS = backend_action_sum.labels("webex_teams", "send_blocks")
 BACKEND_ACTION_SNIPPET = backend_action_sum.labels("webex_teams", "send_snippet")
 
+# pylint: disable=abstract-method
+
 
 class WebExTeamsDispatcher(AdaptiveCardsDispatcher):
     """Dispatch cards and messages to WebEx Teams."""

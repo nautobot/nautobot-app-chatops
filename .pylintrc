@@ -15,11 +15,6 @@ notes=FIXME,
 # All of the other disabled messages need to be revisited and
 # most likely re-enabled and fixed in the code base.
 disable=
-  bad-continuation,
-  line-too-long,
-  abstract-method,                # TODO
-  arguments-differ,               # TODO
-  attribute-defined-outside-init, # TODO
   bare-except,                    # TODO
   consider-iterating-dictionary,  # TODO
   f-string-without-interpolation, # TODO
@@ -61,3 +56,8 @@ ignore-imports=yes
 # Increase "duplicate code" lines to 12 from default 4.
 # Choose 12 per Josh VanDerra
 min-similarity-lines=12
+
+[FORMAT]
+
+#Changing the max line length to 120
+max-line-length=120
