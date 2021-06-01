@@ -69,6 +69,7 @@ class WebExTeamsView(View):
 
     http_method_names = ["post"]
 
+    # pylint: disable=too-many-locals,too-many-return-statements,too-many-branches
     def post(self, request, *args, **kwargs):
         """Process an inbound HTTP POST request."""
         if not API:

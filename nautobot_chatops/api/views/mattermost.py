@@ -17,6 +17,7 @@ from nautobot_chatops.metrics import signature_error_cntr
 from nautobot_chatops.models import CommandToken
 from nautobot_chatops.choices import CommandTokenPlatformChoices
 
+# pylint: disable=logging-fstring-interpolation
 
 logger = logging.getLogger(__name__)
 
@@ -121,6 +122,7 @@ class MattermostInteractionView(View):
 
     http_method_names = ["post"]
 
+    # pylint: disable=too-many-locals,too-many-return-statements,too-many-branches,too-many-statements
     def post(self, request, *args, **kwargs):
         """Handle an inbound HTTP POST request representing a user interaction with a UI element."""
         valid, reason = verify_signature(request)

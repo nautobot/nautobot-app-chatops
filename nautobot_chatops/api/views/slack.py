@@ -11,13 +11,14 @@ from django.http import HttpResponse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
+from slack_sdk import WebClient
 
 from nautobot_chatops.workers import get_commands_registry, commands_help, parse_command_string
 from nautobot_chatops.dispatchers.slack import SlackDispatcher
 from nautobot_chatops.utils import check_and_enqueue_command
 from nautobot_chatops.metrics import signature_error_cntr
-from django.conf import settings
-from slack_sdk import WebClient
+
+# pylint: disable=logging-fstring-interpolation
 
 
 SLASH_PREFIX = settings.PLUGINS_CONFIG["nautobot_chatops"].get("slack_slash_command_prefix")
@@ -119,6 +120,7 @@ class SlackInteractionView(View):
 
     http_method_names = ["post"]
 
+    # pylint: disable=too-many-locals,too-many-return-statements,too-many-branches,too-many-statements
     def post(self, request, *args, **kwargs):
         """Handle an inbound HTTP POST request representing a user interaction with a UI element."""
         valid, reason = verify_signature(request)
