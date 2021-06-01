@@ -36,7 +36,7 @@ def verify_signature(request):
         # in these cases, we have to load the request.body
         try:
             data = json.loads(request.body)
-        except ValueError as e:
+        except ValueError as e:  # pylint:disable=invalid-name
             logger.info("No request body to decode, setting data to empty dict. Error: %s", e)
             data = {}
         if request.POST.items():
@@ -100,7 +100,7 @@ class MattermostSlashCommandView(View):
 
         try:
             command, subcommand, params = parse_command_string(f"{command} {params}")
-        except ValueError as e:
+        except ValueError as e:  # pylint: disable=invalid-name
             logger.error("%s", e)
             return HttpResponse(status=400, reason=f"'Error: {e}' encountered on '{command} {params}")
 
@@ -131,7 +131,7 @@ class MattermostInteractionView(View):
         # in these cases, we have to load the request.body
         try:
             data = json.loads(request.body)
-        except ValueError as e:
+        except ValueError as e:  # pylint: disable=invalid-name
             logger.info("No request body to decode, setting data to empty dict. Error: %s", e)
             data = {}
         if request.POST.dict():
@@ -216,7 +216,7 @@ class MattermostInteractionView(View):
                 # out and adds them to selected_value.
                 try:
                     cmds = shlex.split(callback_id)
-                except ValueError as e:
+                except ValueError as e:  # pylint: disable=invalid-name
                     logger.error("Mattermost: %s", e)
                     return HttpResponse(status=400, reason=f"Error: {e} encountered when processing {callback_id}")
                 for i, cmd in enumerate(cmds):
@@ -249,7 +249,7 @@ class MattermostInteractionView(View):
         logger.info(f"action_id: {action_id}, selected_value: {selected_value}")
         try:
             command, subcommand, params = parse_command_string(f"{action_id} {selected_value}")
-        except ValueError as e:
+        except ValueError as e:  # pylint: disable=invalid-name
             logger.error("%s", e)
             return HttpResponse(status=400, reason=f"Error: {e} encountered on command '{action_id} {selected_value}'")
         logger.info(f"command: {command}, subcommand: {subcommand}, params: {params}")

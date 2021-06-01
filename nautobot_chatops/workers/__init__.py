@@ -21,8 +21,8 @@ from nautobot_chatops.metrics import request_command_cntr, command_histogram
 logger = logging.getLogger("rq.worker")
 
 
-_registry_initialized = False # pylint: disable=invalid-name
-_commands_registry = {} # pylint: disable=invalid-name
+_registry_initialized = False  # pylint: disable=invalid-name
+_commands_registry = {}  # pylint: disable=invalid-name
 """Registry of commands and their subcommands.
 
 Populated by calling nautobot_chatops.workers.get_commands_registry()

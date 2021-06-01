@@ -95,7 +95,7 @@ class SlackSlashCommandView(View):
         }
         try:
             command, subcommand, params = parse_command_string(f"{command} {params}")
-        except ValueError as e:
+        except ValueError as e:  # pylint: disable=invalid-name
             logger.error("%s", e)
             # Tried sending 400 error, but the friendly message never made it to slack.
             return HttpResponse(f"'Error: {e}' encountered on command '{command} {params}'.")
@@ -188,7 +188,7 @@ class SlackInteractionView(View):
                 # out and adds them to selected_value.
                 try:
                     cmds = shlex.split(callback_id)
-                except ValueError as e:
+                except ValueError as e:  # pylint: disable=invalid-name
                     logger.error("%s", e)
                     return HttpResponse(f"Error: {e} encountered when processing {callback_id}")
                 for i, cmd in enumerate(cmds):
@@ -233,7 +233,7 @@ class SlackInteractionView(View):
         logger.info(f"action_id: {action_id}, selected_value: {selected_value}")
         try:
             command, subcommand, params = parse_command_string(f"{action_id} {selected_value}")
-        except ValueError as e:
+        except ValueError as e:  # pylint: disable=invalid-name
             logger.error("%s", e)
             # Tried sending 400 error, but the friendly message never made it to slack.
             return HttpResponse(f"'Error: {e}' encountered on command '{action_id} {selected_value}'.")

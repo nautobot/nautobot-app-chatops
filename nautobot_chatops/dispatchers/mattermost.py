@@ -457,7 +457,7 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
         # Bot accounts cannot delete Ephemeral Messages.
         try:
             self.mm_client.delete(f"/posts/{post_id}")
-        except ForbiddenException as e: # pylint: disable=invalid-name
+        except ForbiddenException as e:  # pylint: disable=invalid-name
             logger.info("Ignoring 403 exception as this is likely an Emphemeral post: %s ", e)
 
     # Prompt the user for various basic inputs
