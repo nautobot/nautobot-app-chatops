@@ -3,6 +3,8 @@
 import os
 from invoke import task
 
+# pylint: disable=line-too-long
+
 PYTHON_VER = os.getenv("PYTHON_VER", "3.7")
 NAUTOBOT_VER = os.getenv("NAUTOBOT_VER", "master")
 

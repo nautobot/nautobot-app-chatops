@@ -7,6 +7,8 @@ from distutils.util import strtobool
 from django.core.exceptions import ImproperlyConfigured
 from nautobot.core.settings import *  # noqa: F401,F403 pylint: disable=wildcard-import,unused-wildcard-import
 
+# pylint: disable=line-too-long
+
 
 def is_truthy(arg):
     """Convert "truthy" strings into Booleans.
