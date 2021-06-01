@@ -9,6 +9,7 @@ from nautobot_chatops.utils import create_command_log
 from nautobot_chatops.workers import get_commands_registry
 
 
+# pylint: disable=unused-argument
 @job("default")
 def clear(subcommand, params, dispatcher_class=None, context=None, **kwargs):
     """Scroll the chat history out of view."""

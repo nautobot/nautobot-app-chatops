@@ -10,8 +10,8 @@ from slack_sdk import WebClient
 from slack_sdk.webhook.client import WebhookClient
 from slack_sdk.errors import SlackApiError, SlackClientError
 
-from .base import Dispatcher
 from nautobot_chatops.metrics import backend_action_sum
+from .base import Dispatcher
 
 logger = logging.getLogger("rq.worker")
 
@@ -42,6 +42,7 @@ class SlackDispatcher(Dispatcher):
         self.slack_client = WebClient(token=settings.PLUGINS_CONFIG["nautobot_chatops"]["slack_api_token"])
         self.slack_menu_limit = int(os.getenv("SLACK_MENU_LIMIT", "100"))
 
+    # pylint: disable=too-many-branches
     @classmethod
     @BACKEND_ACTION_LOOKUP.time()
     def platform_lookup(cls, item_type, item_name):
@@ -238,6 +239,7 @@ class SlackDispatcher(Dispatcher):
         """Send an error message to the user/channel specified by the context."""
         self.send_markdown(f":warning: {self.bold(message)} :warning:", ephemeral=True)
 
+    # pylint: disable=unnecessary-pass
     def send_busy_indicator(self):
         """Send a "typing" indicator to show that work is in progress."""
         # Currently the Slack Events API does not support the "user_typing" event.
@@ -253,6 +255,7 @@ class SlackDispatcher(Dispatcher):
             text=f"Sorry @{self.context.get('user_name')}, an error occurred :sob:\n```{exception}```",
         )
 
+    # pylint: disable=no-self-use
     def delete_message(self, response_url):
         """Delete a message that was previously sent."""
         WebhookClient(response_url).send_dict({"delete_original": "true"})

@@ -42,6 +42,7 @@ class CommandLog(BaseModel):
     @property
     def status_label_class(self):
         """Bootstrap CSS label class for each status value."""
+        # pylint: disable=no-else-return
         if self.status == CommandStatusChoices.STATUS_SUCCEEDED:
             return "success"
         elif self.status == CommandStatusChoices.STATUS_BLOCKED:

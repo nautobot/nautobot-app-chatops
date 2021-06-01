@@ -114,6 +114,7 @@ class AccessGrantCreateView(PermissionRequiredMixin, ObjectEditView):
     default_return_url = "plugins:nautobot_chatops:accessgrant_list"
 
 
+# pylint: disable=too-many-ancestors
 class AccessGrantView(AccessGrantCreateView):
     """View for editing an existing AccessGrant."""
 
@@ -151,6 +152,7 @@ class CommandTokenCreateView(PermissionRequiredMixin, ObjectEditView):
     default_return_url = "plugins:nautobot_chatops:commandtoken_list"
 
 
+# pylint: disable=too-many-ancestors
 class CommandTokenView(CommandTokenCreateView):
     """View for editing an existing CommandToken."""
 

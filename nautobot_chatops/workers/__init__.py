@@ -6,12 +6,12 @@ one of the platform-specific ``views``, handle it appropriately, then dispatch i
 back to the chat using the provided ``dispatchers`` instance's generic API.
 """
 
-import pkg_resources
-import logging
 from datetime import datetime, timezone
 import inspect
 from functools import wraps
+import logging
 import shlex
+import pkg_resources
 
 from nautobot_chatops.choices import CommandStatusChoices
 from nautobot_chatops.models import CommandLog

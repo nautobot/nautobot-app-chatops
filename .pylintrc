@@ -14,32 +14,7 @@ notes=FIXME,
 # Black handles line-too-long for us
 # All of the other disabled messages need to be revisited and
 # most likely re-enabled and fixed in the code base.
-disable=
-  bare-except,                    # TODO
-  consider-iterating-dictionary,  # TODO
-  f-string-without-interpolation, # TODO
-  logging-fstring-interpolation,  # TODO
-  missing-class-docstring,        # TODO
-  missing-function-docstring,     # TODO
-  missing-module-docstring,       # TODO
-  no-else-return,                 # TODO
-  no-self-use,                    # TODO
-  redefined-outer-name,           # TODO
-  reimported,                     # TODO
-  too-few-public-methods,         # TODO
-  too-many-ancestors,             # TODO
-  too-many-branches,              # TODO
-  too-many-instance-attributes,   # TODO
-  too-many-locals,                # TODO
-  too-many-return-statements,     # TODO
-  too-many-statements,            # TODO
-  undefined-all-variable,         # TODO
-  ungrouped-imports,              # TODO
-  unnecessary-pass,               # TODO
-  unused-argument,                # TODO
-  wrong-import-order,             # TODO
-  raise-missing-from,             # TODO
-  django-not-configured,          # TODO
+disable=django-not-configured
 
 [DESIGN]
 

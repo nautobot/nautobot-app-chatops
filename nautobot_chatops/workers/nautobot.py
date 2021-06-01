@@ -2,8 +2,8 @@
 
 from django.core.exceptions import ValidationError
 from django.db.models import Count
-from django_rq import job
 from django.contrib.contenttypes.models import ContentType
+from django_rq import job
 
 from nautobot.dcim.models.device_components import Interface
 from nautobot.circuits.models import Circuit, CircuitType, Provider, CircuitTermination
@@ -26,7 +26,7 @@ from nautobot_chatops.workers.helper_functions import (
     prompt_for_vlan_filter_type,
 )
 
-# pylint: disable=line-too-long
+# pylint: disable=line-too-long,too-many-return-statements,too-many-branches
 
 
 @job("default")
@@ -133,9 +133,11 @@ def get_filtered_connections(device, interface_ct):
     )
 
 
+# pylint: disable=too-many-statements
 @subcommand_of("nautobot")
 def get_vlans(dispatcher, filter_type, filter_value_1):
     """Return a filtered list of VLANS based on filter type and/or filter_value_1."""
+    # pylint: disable=no-else-return
     if not filter_type:
         prompt_for_vlan_filter_type("nautobot get-vlans", "select a vlan filter", dispatcher)
         return False
@@ -324,6 +326,7 @@ def get_vlans(dispatcher, filter_type, filter_value_1):
     return CommandStatusChoices.STATUS_SUCCEEDED
 
 
+# pylint: disable=too-many-statements
 @subcommand_of("nautobot")
 def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_value_2):
     """Return a filtered list of interface connections based on filter type, filter_value_1 and/or filter_value_2."""
@@ -430,6 +433,7 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
                 f'Device "{filter_value_2}" not found',
             )  # command did not run to completion and therefore should not be logged
         connections = get_filtered_connections(device, interface_ct)
+        # pylint: disable=no-else-return
         if len(connections) == 0:
             dispatcher.send_warning("Filtered list is empty")
             return (
@@ -501,6 +505,7 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
             CommandStatusChoices.STATUS_FAILED,
             f'Unknown filter type "{filter_type}"',
         )  # command did not run to completion and therefore should not be logged
+    # pylint: disable=no-else-return
     if filter_type != "region" and len(devices) == 0:
         dispatcher.send_warning("Filtered interface connection list is empty")
         return (
@@ -678,6 +683,7 @@ def get_device_facts(dispatcher, device_name):
     return CommandStatusChoices.STATUS_SUCCEEDED
 
 
+# pylint: disable=too-many-statements
 @subcommand_of("nautobot")
 def get_devices(dispatcher, filter_type, filter_value):
     """Get a filtered list of devices from Nautobot."""
@@ -685,6 +691,7 @@ def get_devices(dispatcher, filter_type, filter_value):
         prompt_for_device_filter_type("nautobot get-devices", "Select a device filter", dispatcher)
         return False  # command did not run to completion and therefore should not be logged
 
+    # pylint: disable=no-else-return
     if menu_item_check(filter_value):
         if filter_type == "name":
             dispatcher.prompt_for_text(f"nautobot get-devices {filter_type}", "Enter device name", "Device name")

@@ -8,12 +8,12 @@ from requests.exceptions import HTTPError
 
 from django.conf import settings
 
-from .base import Dispatcher
 from nautobot_chatops.metrics import backend_action_sum
+from .base import Dispatcher
 
 logger = logging.getLogger("rq.worker")
 
-# pylint: disable=abstract-method,line-too-long
+# pylint: disable=abstract-method,line-too-long,raise-missing-from
 
 # Create a metric to track time spent and requests made.
 BACKEND_ACTION_LOOKUP = backend_action_sum.labels("mattermost", "platform_lookup")
@@ -584,6 +584,7 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
         # Leaving in place to pass the testing.
         return {"block_id": action_id, "actions": actions}
 
+    # pylint: disable=no-self-use
     def _input_block(self, block_id, label, element):
         """Construct a block consisting of Input elements."""
         element["display_name"] = label

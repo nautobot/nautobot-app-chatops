@@ -5,11 +5,10 @@ import os
 from webexteamssdk import WebexTeamsAPI
 from webexteamssdk.exceptions import ApiError
 from django.conf import settings
-
-from .adaptive_cards import AdaptiveCardsDispatcher
-from nautobot_chatops.metrics import backend_action_sum
-
 from texttable import Texttable
+
+from nautobot_chatops.metrics import backend_action_sum
+from .adaptive_cards import AdaptiveCardsDispatcher
 
 logger = logging.getLogger("rq.worker")
 

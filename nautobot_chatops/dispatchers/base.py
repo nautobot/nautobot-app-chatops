@@ -70,6 +70,7 @@ class Dispatcher:
         """
         raise NotImplementedError
 
+    # pylint: disable=no-else-return
     def static_url(self, path):
         """Construct an absolute URL for the given static file path, such as "nautobot/NautobotLogoSquare.png"."""
         static_path = str(static(path))
@@ -143,6 +144,7 @@ class Dispatcher:
         """
         raise NotImplementedError
 
+    # pylint: disable=no-self-use
     def needs_permission_to_send_image(self):
         """Return True if this bot needs to ask the user for permission to post an image."""
         return False
@@ -215,10 +217,12 @@ class Dispatcher:
         """Markup for a mention of the username/userid specified in our context."""
         raise NotImplementedError
 
+    # pylint: disable=no-self-use
     def bold(self, text):
         """Mark text as bold."""
         return f"**{text}**"
 
+    # pylint: disable=no-self-use
     def monospace(self, text):
         """Mark text as monospace."""
         return f"`{text}`"
