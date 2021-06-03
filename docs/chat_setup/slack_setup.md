@@ -129,3 +129,5 @@ PLUGINS_CONFIG = {
 > the slash command will be `/nautobot`. If a `slack_slash_command_prefix` is specified, the slash command will be `<slack_slash_command_prefix>nautobot`.
 
 > NOTE: Custom chatbot development allows for chatbot slash commands such as `/grafana` and `/meraki`.
+
+[Chat Setup](./chat_setup.md)
