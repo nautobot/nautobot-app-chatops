@@ -51,3 +51,5 @@ Here is an example that supports Mattermost.
 | Mattermost  | `clear`    | `x7g7ag9ohkafbe` |
 
 **Note:** The Comment field is optional and used to help the user when there are multiple tokens.
+
+[Chat Setup](./chat_setup.md)
