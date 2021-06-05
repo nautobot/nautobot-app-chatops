@@ -18,7 +18,7 @@ Each command can be executed with `invoke <command>`. All commands support the a
 
 Note that for a functional development environment (being able to actually use the created Nautobot/Nautobot instance
 as a chat bot) you must specify platform-specific configuration parameters as described in
-[`chat_setup.md`](chat_setup.md). For the development environment, these parameters are specified by copying the
+[`chat_setup.md`](chat_setup/chat_setup.md). For the development environment, these parameters are specified by copying the
 provided `creds.env.example` file to `creds.env` and customizing the contents of the copied file appropriately.
 
 ```
