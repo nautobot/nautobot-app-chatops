@@ -60,12 +60,33 @@ exclude = '''
 )
 '''
 
-[tool.pylint]
+[tool.pylint.master]
+# Including the pylint_django plugin
+load-plugins="pylint_django"
+
+[tool.pylint.message_control]
+disable=""",
+    django-not-configured,
+    too-few-public-methods,
+    """
+
+[tool.pylint.miscellaneous]
+notes=""",
+    FIXME,
+    XXX,
+    """
+
+[tool.pylint.design]
 max-args=6
 max-public-methods=22
-max-line-length=120
-ignore-imports=['yes']
+
+
+[tool.pylint.similarities]
+ignore-imports= true
 min-similarity-lines=12
+
+[tool.pylint.format]
+max-line-length=120
 
 [build-system]
 requires = ["poetry_core>=1.0.0"]

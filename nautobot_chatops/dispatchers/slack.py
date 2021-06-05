@@ -15,7 +15,7 @@ from .base import Dispatcher
 
 logger = logging.getLogger("rq.worker")
 
-# pylint: disable=abstract-method,line-too-long
+# pylint: disable=abstract-method
 
 # Create a metric to track time spent and requests made.
 BACKEND_ACTION_LOOKUP = backend_action_sum.labels("slack", "platform_lookup")
@@ -297,7 +297,8 @@ class SlackDispatcher(Dispatcher):
             try:
                 # Since we are showing "Next..." at the end, this isn't required to show to users anymore
                 self.send_warning(
-                    f"More than {self.slack_menu_limit} options are available. Slack limits us to only displaying {self.slack_menu_limit} options at a time."
+                    f"More than {self.slack_menu_limit} options are available. \
+                     Slack limits us to only displaying {self.slack_menu_limit} options at a time."
                 )
             except SlackApiError:
                 pass

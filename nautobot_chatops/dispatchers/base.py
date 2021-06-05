@@ -70,14 +70,12 @@ class Dispatcher:
         """
         raise NotImplementedError
 
-    # pylint: disable=no-else-return
     def static_url(self, path):
         """Construct an absolute URL for the given static file path, such as "nautobot/NautobotLogoSquare.png"."""
         static_path = str(static(path))
         if static_path.startswith("http"):
             return static_path
-        else:
-            return f"{self.context['request_scheme']}://{self.context['request_host']}{static_path}"
+        return f"{self.context['request_scheme']}://{self.context['request_host']}{static_path}"
 
     # More complex APIs for presenting structured data - these typically build on the more basic functions below
 

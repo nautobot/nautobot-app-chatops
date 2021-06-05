@@ -26,7 +26,7 @@ from nautobot_chatops.workers.helper_functions import (
     prompt_for_vlan_filter_type,
 )
 
-# pylint: disable=line-too-long,too-many-return-statements,too-many-branches
+# pylint: disable=too-many-return-statements,too-many-branches
 
 
 @job("default")
@@ -338,7 +338,9 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
         return False  # command did not run to completion and therefore should not be logged
     if menu_item_check(filter_value_1):
         if filter_type in ["device", "site"]:
-            # Since the device filter prompts the user to pick a site first in order to further query devices located in the chosen site, the device filter will start off with choices of all the sites with one or more devices.
+            # Since the device filter prompts the user to pick a site first in order to further
+            # query devices located in the chosen site, the device filter will start off with
+            # choices of all the sites with one or more devices.
             choices = [
                 (site.name, site.slug)
                 for site in Site.objects.annotate(Count("devices")).filter(devices__count__gt=0).order_by("name")
@@ -540,7 +542,8 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
             "nautobot",
             "get-interface-connections",
             [("Filter type", filter_type), ("Filter value 1", filter_value_1)],
-            "Interface Connection List, Note that a `(*)` indicates the device isn’t in the grouping requested, but is connected to a device that is.",
+            "Interface Connection List, Note that a `(*)` indicates the device isn’t in \
+             the grouping requested, but is connected to a device that is.",
             nautobot_logo(dispatcher),
         )
     )
@@ -630,7 +633,8 @@ def change_device_status(dispatcher, device_name, status):
                 nautobot_logo(dispatcher),
             ),
             dispatcher.markdown_block(
-                f"Nautobot status for {dispatcher.bold(device_name)} successfully changed to {dispatcher.monospace(status)}."
+                f"Nautobot status for {dispatcher.bold(device_name)} \
+                successfully changed to {dispatcher.monospace(status)}."
             ),
         ]
     )

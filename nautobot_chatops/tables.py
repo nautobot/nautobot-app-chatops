@@ -35,7 +35,6 @@ class CommandLogTable(BaseTable):
         template_code='<span class="label label-{{record.status_label_class}}">{{ record.status }}</span>'
     )
 
-    # pylint: disable=too-few-public-methods
     class Meta(BaseTable.Meta):
         """Metaclass attributes of CommandLogTable."""
 
@@ -77,7 +76,6 @@ class AccessGrantTable(BaseTable):
         verbose_name="",
     )
 
-    # pylint: disable=too-few-public-methods
     class Meta(BaseTable.Meta):
         """Metaclass attributes of AccessGrantTable."""
 
@@ -107,7 +105,6 @@ class CommandTokenTable(BaseTable):
         verbose_name="",
     )
 
-    # pylint: disable=too-few-public-methods
     class Meta(BaseTable.Meta):
         """Metaclass attributes of CommandTokenTable."""
 
