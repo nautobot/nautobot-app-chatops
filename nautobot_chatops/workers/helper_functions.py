@@ -30,9 +30,8 @@ def menu_offset_value(item):
 
 # pylint: disable=too-many-return-statements
 def add_asterisk(device, filter_type, value):
-    # pylint: disable=no-else-return
-    """Add asterisks to devices that are not of value `value`
-    but are connected to those devices in the requested grouping."""
+    # pylint: disable=no-else-return,line-too-long
+    """Add asterisks to devices that are not of value `value` but are connected to those devices in the requested grouping."""
     if filter_type == "all":
         return str(device)
     elif filter_type == "device":
