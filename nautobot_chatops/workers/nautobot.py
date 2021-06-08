@@ -542,8 +542,8 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
             "nautobot",
             "get-interface-connections",
             [("Filter type", filter_type), ("Filter value 1", filter_value_1)],
-            "Interface Connection List, Note that a `(*)` indicates the device isn’t in \
-             the grouping requested, but is connected to a device that is.",
+            "Interface Connection List, Note that a `(*)` indicates the device isn’t in "
+            "the grouping requested, but is connected to a device that is.",
             nautobot_logo(dispatcher),
         )
     )
@@ -633,8 +633,8 @@ def change_device_status(dispatcher, device_name, status):
                 nautobot_logo(dispatcher),
             ),
             dispatcher.markdown_block(
-                f"Nautobot status for {dispatcher.bold(device_name)} \
-                successfully changed to {dispatcher.monospace(status)}."
+                f"Nautobot status for {dispatcher.bold(device_name)} "
+                f"successfully changed to {dispatcher.monospace(status)}."
             ),
         ]
     )

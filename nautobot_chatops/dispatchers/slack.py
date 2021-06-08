@@ -297,8 +297,8 @@ class SlackDispatcher(Dispatcher):
             try:
                 # Since we are showing "Next..." at the end, this isn't required to show to users anymore
                 self.send_warning(
-                    f"More than {self.slack_menu_limit} options are available. \
-                     Slack limits us to only displaying {self.slack_menu_limit} options at a time."
+                    f"More than {self.slack_menu_limit} options are available."
+                    f"Slack limits us to only displaying {self.slack_menu_limit} options at a time."
                 )
             except SlackApiError:
                 pass

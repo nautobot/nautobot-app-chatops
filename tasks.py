@@ -74,8 +74,8 @@ def generate_packages(context, nautobot_ver=NAUTOBOT_VER, python_ver=PYTHON_VER)
         pty=True,
     )
     context.run(
-        f"docker-compose  -f {COMPOSE_FILE} -p {BUILD_NAME} run --name {container_name} \
-        -w /source nautobot poetry build",
+        f"docker-compose  -f {COMPOSE_FILE} -p {BUILD_NAME} run --name {container_name} "
+        "-w /source nautobot poetry build",
         env={"NAUTOBOT_VER": nautobot_ver, "PYTHON_VER": python_ver},
     )
     context.run(
@@ -222,8 +222,8 @@ def create_user(context, user="admin", nautobot_ver=NAUTOBOT_VER, python_ver=PYT
     DEFAULT_ENV["PYTHON_VER"] = python_ver
 
     context.run(
-        f"docker-compose -f {COMPOSE_FILE} -p {BUILD_NAME} run nautobot nautobot-server createsuperuser \
-         --username {user}",
+        f"docker-compose -f {COMPOSE_FILE} -p {BUILD_NAME} run nautobot "
+        f"nautobot-server createsuperuser --username {user}",
         env=DEFAULT_ENV,
         pty=True,
     )
@@ -249,8 +249,8 @@ def makemigrations(context, name="", nautobot_ver=NAUTOBOT_VER, python_ver=PYTHO
 
     if name:
         context.run(
-            f"docker-compose -f {COMPOSE_FILE} -p {BUILD_NAME} run nautobot nautobot-server makemigrations \
-            --name {name}",
+            f"docker-compose -f {COMPOSE_FILE} -p {BUILD_NAME} run nautobot "
+            f"nautobot-server makemigrations --name {name}",
             env=DEFAULT_ENV,
         )
     else:
