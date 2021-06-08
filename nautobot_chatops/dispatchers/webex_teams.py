@@ -5,11 +5,10 @@ import os
 from webexteamssdk import WebexTeamsAPI
 from webexteamssdk.exceptions import ApiError
 from django.conf import settings
-
-from .adaptive_cards import AdaptiveCardsDispatcher
-from nautobot_chatops.metrics import backend_action_sum
-
 from texttable import Texttable
+
+from nautobot_chatops.metrics import backend_action_sum
+from .adaptive_cards import AdaptiveCardsDispatcher
 
 logger = logging.getLogger("rq.worker")
 
@@ -18,6 +17,8 @@ BACKEND_ACTION_LOOKUP = backend_action_sum.labels("webex_teams", "platform_looku
 BACKEND_ACTION_MARKDOWN = backend_action_sum.labels("webex_teams", "send_markdown")
 BACKEND_ACTION_BLOCKS = backend_action_sum.labels("webex_teams", "send_blocks")
 BACKEND_ACTION_SNIPPET = backend_action_sum.labels("webex_teams", "send_snippet")
+
+# pylint: disable=abstract-method
 
 
 class WebExTeamsDispatcher(AdaptiveCardsDispatcher):

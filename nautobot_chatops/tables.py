@@ -12,6 +12,7 @@ class CommandLogTable(BaseTable):
 
     runtime = TemplateColumn(template_code="{{ record.runtime | shorter_timedelta }}")
 
+    # pylint: disable=line-too-long
     platform = TemplateColumn(
         template_code='<span class="label" style="background-color: #{{ record.platform_color }}">{{ record.platform }}</span>'
     )

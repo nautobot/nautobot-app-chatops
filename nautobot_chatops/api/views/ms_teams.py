@@ -117,6 +117,7 @@ class MSTeamsMessagesView(View):
 
     http_method_names = ["post"]
 
+    # pylint: disable=too-many-locals,too-many-branches,too-many-statements
     def post(self, request, *args, **kwargs):
         """Process an inbound HTTP POST request."""
         body = json.loads(request.body)
