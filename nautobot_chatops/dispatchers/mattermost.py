@@ -420,7 +420,7 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
             self.send_exception(mm_error)
 
     @BACKEND_ACTION_SNIPPET.time()
-    def send_snippet(self, text):
+    def send_snippet(self, text, title=None):
         """Send a longer chunk of text as a file snippet."""
         channel = [self.context.get("channel_id")]
         logger.info("Sending snippet to %s: %s", channel, text)

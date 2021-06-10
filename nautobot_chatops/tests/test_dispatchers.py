@@ -119,6 +119,22 @@ class TestSlackDispatcher(TestCase):
         response = self.dispatcher.get_prompt_from_menu_choices(choices, offset=500)
         self.assertEqual(response, expected_choices)
 
+    @patch("nautobot_chatops.dispatchers.slack.SlackDispatcher.send_snippet")
+    def test_send_snippet_no_title(self, mock_send_snippet):
+        """Make sure send_snippet can be called with no title."""
+        self.dispatcher.send_snippet("Testing snippet.")
+        args = mock_send_snippet.call_args[0]
+        self.assertTrue(mock_send_snippet.called)
+        self.assertEqual(args, ("Testing snippet.",))
+
+    @patch("nautobot_chatops.dispatchers.slack.SlackDispatcher.send_snippet")
+    def test_send_snippet_title(self, mock_send_snippet):
+        """Make sure send_snippet can be called with title."""
+        self.dispatcher.send_snippet("Testing snippet.", "Test snippet title.")
+        args = mock_send_snippet.call_args[0]
+        self.assertTrue(mock_send_snippet.called)
+        self.assertEqual(args, ("Testing snippet.", "Test snippet title."))
+
 
 class TestMSTeamsDispatcher(TestSlackDispatcher):
     """Test the MSTeamsDispatcher class."""
@@ -137,6 +153,14 @@ class TestMSTeamsDispatcher(TestSlackDispatcher):
         """Not implemented."""
         pass
 
+    def test_send_snippet_no_title(self):
+        """Not implemented."""
+        pass
+
+    def test_send_snippet_title(self):
+        """Not implemented."""
+        pass
+
 
 class TestWebExTeamsDispatcher(TestSlackDispatcher):
     """Test the WebExTeamsDispatcher class."""
@@ -152,6 +176,14 @@ class TestWebExTeamsDispatcher(TestSlackDispatcher):
         pass
 
     def test_get_prompt_from_menu_choices(self):
+        """Not implemented."""
+        pass
+
+    def test_send_snippet_no_title(self):
+        """Not implemented."""
+        pass
+
+    def test_send_snippet_title(self):
         """Not implemented."""
         pass
 
@@ -210,5 +242,13 @@ class TestMattermostDispatcher(TestSlackDispatcher):
         pass
 
     def test_get_prompt_from_menu_choices(self):
+        """Not implemented."""
+        pass
+
+    def test_send_snippet_no_title(self):
+        """Not implemented."""
+        pass
+
+    def test_send_snippet_title(self):
         """Not implemented."""
         pass
