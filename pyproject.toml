@@ -75,25 +75,12 @@ notes=""",
     XXX,
     """
 
-[tool.pylint.design]
-max-args=6
-max-public-methods=22
-
-
-[tool.pylint.similarities]
-ignore-imports= true
-min-similarity-lines=12
-
 [tool.pylint.format]
 max-line-length=120
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
-
-[tool.pylint.master]
-# Include the pylint_django plugin to avoid spurious warnings about Django patterns
-load-plugins="pylint_django"
 
 [tool.pylint.basic]
 # No docstrings required for private methods (Pylint default), or for test_ functions, or for inner Meta classes.
@@ -136,13 +123,6 @@ disable = """
     wrong-import-order,
     raise-missing-from,
     django-not-configured,
-    """
-
-[tool.pylint.miscellaneous]
-# Don't flag TODO as a failure, let us commit with things that still need to be done in the code
-notes = """,
-    FIXME,
-    XXX,
     """
 
 [tool.pylint.similarities]
