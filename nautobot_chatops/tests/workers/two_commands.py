@@ -16,11 +16,13 @@ def second_command(subcommand, **kwargs):
     return handle_subcommands("second_command", subcommand, **kwargs)
 
 
+# pylint: disable=unused-argument
 @subcommand_of("first_command")
 def first_subcommand(dispatcher, *args):
     """Do the first thing of the first command."""
 
 
+# pylint: disable=unused-argument
 @subcommand_of("second_command")
 def second_subcommand(dispatcher, *args):
     """Do the second thing of the second command."""

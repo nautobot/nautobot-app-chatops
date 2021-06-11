@@ -10,10 +10,12 @@ from slack_sdk import WebClient
 from slack_sdk.webhook.client import WebhookClient
 from slack_sdk.errors import SlackApiError, SlackClientError
 
-from .base import Dispatcher
 from nautobot_chatops.metrics import backend_action_sum
+from .base import Dispatcher
 
 logger = logging.getLogger("rq.worker")
+
+# pylint: disable=abstract-method
 
 # Create a metric to track time spent and requests made.
 BACKEND_ACTION_LOOKUP = backend_action_sum.labels("slack", "platform_lookup")
@@ -40,6 +42,7 @@ class SlackDispatcher(Dispatcher):
         self.slack_client = WebClient(token=settings.PLUGINS_CONFIG["nautobot_chatops"]["slack_api_token"])
         self.slack_menu_limit = int(os.getenv("SLACK_MENU_LIMIT", "100"))
 
+    # pylint: disable=too-many-branches
     @classmethod
     @BACKEND_ACTION_LOOKUP.time()
     def platform_lookup(cls, item_type, item_name):
@@ -151,6 +154,7 @@ class SlackDispatcher(Dispatcher):
         except SlackClientError as slack_error:
             self.send_exception(slack_error)
 
+    # pylint: disable=arguments-differ
     @BACKEND_ACTION_BLOCKS.time()
     def send_blocks(self, blocks, callback_id=None, ephemeral=False, modal=False, title="Your attention please!"):
         """Send a series of formatting blocks to the user/channel specified by the context.
@@ -235,6 +239,7 @@ class SlackDispatcher(Dispatcher):
         """Send an error message to the user/channel specified by the context."""
         self.send_markdown(f":warning: {self.bold(message)} :warning:", ephemeral=True)
 
+    # pylint: disable=unnecessary-pass
     def send_busy_indicator(self):
         """Send a "typing" indicator to show that work is in progress."""
         # Currently the Slack Events API does not support the "user_typing" event.
@@ -250,6 +255,7 @@ class SlackDispatcher(Dispatcher):
             text=f"Sorry @{self.context.get('user_name')}, an error occurred :sob:\n```{exception}```",
         )
 
+    # pylint: disable=no-self-use
     def delete_message(self, response_url):
         """Delete a message that was previously sent."""
         WebhookClient(response_url).send_dict({"delete_original": "true"})
@@ -291,7 +297,8 @@ class SlackDispatcher(Dispatcher):
             try:
                 # Since we are showing "Next..." at the end, this isn't required to show to users anymore
                 self.send_warning(
-                    f"More than {self.slack_menu_limit} options are available. Slack limits us to only displaying {self.slack_menu_limit} options at a time."
+                    f"More than {self.slack_menu_limit} options are available."
+                    f"Slack limits us to only displaying {self.slack_menu_limit} options at a time."
                 )
             except SlackApiError:
                 pass

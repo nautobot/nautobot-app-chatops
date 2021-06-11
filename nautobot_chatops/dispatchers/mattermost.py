@@ -8,10 +8,12 @@ from requests.exceptions import HTTPError
 
 from django.conf import settings
 
-from .base import Dispatcher
 from nautobot_chatops.metrics import backend_action_sum
+from .base import Dispatcher
 
 logger = logging.getLogger("rq.worker")
+
+# pylint: disable=abstract-method,line-too-long,raise-missing-from
 
 # Create a metric to track time spent and requests made.
 BACKEND_ACTION_LOOKUP = backend_action_sum.labels("mattermost", "platform_lookup")
@@ -71,50 +73,50 @@ def error_report(function):
         """Inner wrapper to catch api errors and raise appropriate Exceptions."""
         try:
             return function(*args, **kwargs)
-        except HTTPError as e:
-            if e.response.status_code == 400:
-                raise BadRequestException("Malformatted requests: {}".format(e.response.text))
-            if e.response.status_code == 401:
+        except HTTPError as err:
+            if err.response.status_code == 400:
+                raise BadRequestException("Malformatted requests: {}".format(err.response.text))
+            if err.response.status_code == 401:
                 raise UnauthorizedException(
-                    "Invalid credentials provided or account is locked: {}".format(e.response.text)
+                    "Invalid credentials provided or account is locked: {}".format(err.response.text)
                 )
-            if e.response.status_code == 403:
+            if err.response.status_code == 403:
                 raise ForbiddenException(
                     "Insufficient permissions to execute request (ie, any POST method as a regular user): {}".format(
-                        e.response.text
+                        err.response.text
                     )
                 )
-            if e.response.status_code == 404:
+            if err.response.status_code == 404:
                 raise NotFoundException(
-                    "Attempting to access an endpoint that does not exist: {}".format(e.response.text)
+                    "Attempting to access an endpoint that does not exist: {}".format(err.response.text)
                 )
-            if e.response.status_code == 405:
+            if err.response.status_code == 405:
                 raise MethodNotAllowedException(
                     "Wrong request type for target endpoint (ie, POSTing data to a GET endpoint): {}".format(
-                        e.response.text
+                        err.response.text
                     )
                 )
-            if e.response.status_code == 406:
+            if err.response.status_code == 406:
                 raise NotAcceptableException(
                     "Content Type of the data returned does not match the Accept header of the request: {}".format(
-                        e.response.text
+                        err.response.text
                     )
                 )
-            if e.response.status_code == 415:
+            if err.response.status_code == 415:
                 raise UnsupportedMediaTypeException(
-                    "Attempting to POST data in incorrect format: {}".format(e.response.text)
+                    "Attempting to POST data in incorrect format: {}".format(err.response.text)
                 )
-            if e.response.status_code == 429:
+            if err.response.status_code == 429:
                 raise MMRateLimit(
-                    "You have exceeded the max number of requests per 1-minute period: {}".format(e.response.text)
+                    "You have exceeded the max number of requests per 1-minute period: {}".format(err.response.text)
                 )
-            if e.response.status_code == 500:
+            if err.response.status_code == 500:
                 raise InternalServerErrorException(
-                    "Contact support if you see this error type: {}".format(e.response.text)
+                    "Contact support if you see this error type: {}".format(err.response.text)
                 )
-            if e.response.status_code == 503:
+            if err.response.status_code == 503:
                 raise ServiceUnavailableException(
-                    "The Mattermost API is currently in maintenance mode: {}".format(e.response.text)
+                    "The Mattermost API is currently in maintenance mode: {}".format(err.response.text)
                 )
 
     return inner
@@ -369,6 +371,7 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
         except MMException as mattermost_error:
             self.send_exception(mattermost_error)
 
+    # pylint: disable=arguments-differ
     @BACKEND_ACTION_BLOCKS.time()
     def send_blocks(self, blocks, callback_id=None, ephemeral=False, modal=False, title="Your attention please!"):
         """Send a series of formatting blocks to the user/channel specified by the context.
@@ -457,8 +460,8 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
         # Bot accounts cannot delete Ephemeral Messages.
         try:
             self.mm_client.delete(f"/posts/{post_id}")
-        except ForbiddenException as e:
-            logger.info("Ignoring 403 exception as this is likely an Emphemeral post: %s ", e)
+        except ForbiddenException as exc:
+            logger.info("Ignoring 403 exception as this is likely an Emphemeral post: %s ", exc)
 
     # Prompt the user for various basic inputs
     def prompt_for_text(self, action_id, help_text, label, title="Your attention please!"):
@@ -580,6 +583,7 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
         # Leaving in place to pass the testing.
         return {"block_id": action_id, "actions": actions}
 
+    # pylint: disable=no-self-use
     def _input_block(self, block_id, label, element):
         """Construct a block consisting of Input elements."""
         element["display_name"] = label

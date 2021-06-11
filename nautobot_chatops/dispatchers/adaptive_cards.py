@@ -2,6 +2,8 @@
 
 from .base import Dispatcher
 
+# pylint: disable=abstract-method
+
 
 class AdaptiveCardsDispatcher(Dispatcher):
     """Semi-abstract class for chat platforms that use Adaptive Cards for presentation."""

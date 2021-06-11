@@ -1,8 +1,9 @@
 """Testing tool for slack deployment."""
 
 from django.core.management.base import BaseCommand
-from nautobot_chatops.dispatchers.slack import SlackDispatcher
 from texttable import Texttable
+
+from nautobot_chatops.dispatchers.slack import SlackDispatcher
 
 
 class Command(BaseCommand):

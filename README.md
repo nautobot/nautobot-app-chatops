@@ -10,7 +10,7 @@ A multi-platform ChatOps bot plugin for [Nautobot](https://github.com/nautobot/n
 
 ## Documentation
 
-- [Installation Guide](docs/chat_setup.md)
+- [Installation Guide](docs/chat_setup/chat_setup.md)
 - [Design](docs/design.md)
 - [Contributing](docs/contributing.md)
 - [FAQ](docs/FAQ.md)

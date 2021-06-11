@@ -75,8 +75,7 @@ class Dispatcher:
         static_path = str(static(path))
         if static_path.startswith("http"):
             return static_path
-        else:
-            return f"{self.context['request_scheme']}://{self.context['request_host']}{static_path}"
+        return f"{self.context['request_scheme']}://{self.context['request_host']}{static_path}"
 
     # More complex APIs for presenting structured data - these typically build on the more basic functions below
 
@@ -143,6 +142,7 @@ class Dispatcher:
         """
         raise NotImplementedError
 
+    # pylint: disable=no-self-use
     def needs_permission_to_send_image(self):
         """Return True if this bot needs to ask the user for permission to post an image."""
         return False
@@ -215,10 +215,12 @@ class Dispatcher:
         """Markup for a mention of the username/userid specified in our context."""
         raise NotImplementedError
 
+    # pylint: disable=no-self-use
     def bold(self, text):
         """Mark text as bold."""
         return f"**{text}**"
 
+    # pylint: disable=no-self-use
     def monospace(self, text):
         """Mark text as monospace."""
         return f"`{text}`"
