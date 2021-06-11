@@ -6,7 +6,7 @@ from nautobot.utilities.testing import APITestCase, APIViewTestCases
 from nautobot_chatops.models import CommandToken
 
 
-class AppTest(APITestCase):
+class AppTest(APITestCase):  # pylint: disable=too-many-ancestors
     """Test cases for the Nautobot_chatops App."""
 
     def test_root(self):
@@ -17,7 +17,7 @@ class AppTest(APITestCase):
         self.assertEqual(response.status_code, 200)
 
 
-class CommandTokenTest(APIViewTestCases.APIViewTestCase):
+class CommandTokenTest(APIViewTestCases.APIViewTestCase):  # pylint: disable=too-many-ancestors
     """Tests for the CommandToken Endpoint."""
 
     model = CommandToken

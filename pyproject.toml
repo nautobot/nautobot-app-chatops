@@ -86,45 +86,6 @@ build-backend = "poetry.core.masonry.api"
 # No docstrings required for private methods (Pylint default), or for test_ functions, or for inner Meta classes.
 no-docstring-rgx="^(_|test_|Meta$)"
 
-[tool.pylint.messages_control]
-# Line length is enforced by Black, so pylint doesn't need to check it.
-# Pylint and Black disagree about how to format multi-line arrays; Black wins.
-# TODO #50 Cleanup list, copied from the .pylintrc
-disable = """
-    line-too-long,
-    bad-continuation,
-    too-few-public-methods,
-    too-many-ancestors,
-    too-many-instance-attributes,
-    duplicate-code,
-    abstract-method,
-    arguments-differ,
-    attribute-defined-outside-init,
-    bare-except,
-    consider-iterating-dictionary,
-    f-string-without-interpolation,
-    invalid-name,
-    logging-fstring-interpolation,
-    missing-class-docstring,
-    missing-function-docstring,
-    missing-module-docstring,
-    no-else-return,
-    no-self-use,
-    redefined-outer-name,
-    reimported,
-    too-many-branches,
-    too-many-locals,
-    too-many-return-statements,
-    too-many-statements,
-    undefined-all-variable,
-    ungrouped-imports,
-    unnecessary-pass,
-    unused-argument,
-    wrong-import-order,
-    raise-missing-from,
-    django-not-configured,
-    """
-
 [tool.pylint.similarities]
 min-similarity-lines=12
 
