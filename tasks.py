@@ -376,6 +376,8 @@ def tests(context, failfast=False):
     pydocstyle(context)
     print("Running pylint...")
     pylint(context)
+    print("Running yamllint...")
+    yamllint(context)
     print("Running unit tests...")
     unittest(context, failfast=failfast)
     print("All tests have passed!")
