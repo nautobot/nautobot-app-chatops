@@ -39,7 +39,8 @@ class NautobotChatOpsConfig(PluginConfig):
         "mattermost_api_token": None,
         "mattermost_url": None,
     }
-    # TODO dgarros : Define min and max version when things stabilize
+
+    max_version = "1.999"
     min_version = "1.0.0"
     # max_version = ""
     caching_config = {}
