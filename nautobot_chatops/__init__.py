@@ -19,7 +19,7 @@ class NautobotChatOpsConfig(PluginConfig):
     default_settings = {
         "enable_slack": False,
         "enable_ms_teams": False,
-        "enable_webex_teams": False,
+        "enable_webex": False,
         # Should menus, text input fields, etc. be deleted from the chat history after the user makes a selection?
         "delete_input_on_submission": False,
         # Slack-specific settings
@@ -31,9 +31,9 @@ class NautobotChatOpsConfig(PluginConfig):
         # Microsoft-Teams-specific settings
         "microsoft_app_id": None,
         "microsoft_app_password": None,
-        # WebEx-Teams-specific settings
-        "webex_teams_token": None,
-        "webex_teams_signing_secret": None,
+        # WebEx-specific settings
+        "webex_token": None,
+        "webex_signing_secret": None,
         "enable_mattermost": False,
         # Mattermost-specific settings
         "mattermost_api_token": None,

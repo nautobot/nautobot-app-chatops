@@ -219,20 +219,19 @@ PLUGINS_CONFIG = {
     "nautobot_chatops": {
         "enable_slack": True,
         "enable_ms_teams": True,
-        "enable_webex_teams": True,
+        "enable_webex": True,
         "microsoft_app_id": os.environ.get("MICROSOFT_APP_ID"),
         "microsoft_app_password": os.environ.get("MICROSOFT_APP_PASSWORD"),
         "slack_api_token": os.environ.get("SLACK_API_TOKEN"),
         "slack_signing_secret": os.environ.get("SLACK_SIGNING_SECRET"),
         "slack_slash_command_prefix": os.environ.get("SLACK_SLASH_COMMAND_PREFIX", "/"),
-        "webex_teams_token": os.environ.get("WEBEX_TEAMS_ACCESS_TOKEN"),
-        "webex_teams_signing_secret": os.environ.get("WEBEX_TEAMS_SIGNING_SECRET"),
+        "webex_token": os.environ.get("WEBEX_ACCESS_TOKEN"),
+        "webex_signing_secret": os.environ.get("WEBEX_SIGNING_SECRET"),
         "enable_mattermost": True,
         "mattermost_api_token": os.environ.get("MATTERMOST_API_TOKEN"),
         "mattermost_url": os.environ.get("MATTERMOST_URL"),
     },
 }
-
 
 # When determining the primary IP address for a device, IPv6 is preferred over IPv4 by default. Set this to True to
 # prefer IPv4 instead.

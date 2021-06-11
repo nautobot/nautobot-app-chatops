@@ -1,4 +1,4 @@
-"""Views to receive inbound notifications from WebEx Teams, parse them, and enqueue worker actions."""
+"""Views to receive inbound notifications from WebEx, parse them, and enqueue worker actions."""
 
 import hashlib
 import hmac
@@ -16,20 +16,20 @@ from webexteamssdk import WebexTeamsAPI
 from webexteamssdk.exceptions import AccessTokenError, ApiError
 
 from nautobot_chatops.workers import get_commands_registry, commands_help, parse_command_string
-from nautobot_chatops.dispatchers.webex_teams import WebExTeamsDispatcher
+from nautobot_chatops.dispatchers.webex import WebExDispatcher
 from nautobot_chatops.utils import check_and_enqueue_command
 
 logger = logging.getLogger(__name__)
 
-TOKEN = settings.PLUGINS_CONFIG["nautobot_chatops"]["webex_teams_token"]
+TOKEN = settings.PLUGINS_CONFIG["nautobot_chatops"]["webex_token"]
 
 try:
     API = WebexTeamsAPI(access_token=TOKEN)
     BOT_ID = API.people.me().id
 except (AccessTokenError, ApiError):
     logger.warning(
-        "Missing or invalid WEBEX_TEAMS_TOKEN setting. "
-        "This may be ignored if you are not running Nautobot as a WebEx Teams chatbot."
+        "Missing or invalid WEBEX_TOKEN setting. "
+        "This may be ignored if you are not running Nautobot as a WebEx chatbot."
     )
     API = None
     BOT_ID = None
@@ -39,12 +39,12 @@ except (AccessTokenError, ApiError):
 
 def generate_signature(request):
     """Calculate the expected signature of a given request."""
-    signing_secret = settings.PLUGINS_CONFIG["nautobot_chatops"].get("webex_teams_signing_secret").encode("utf-8")
+    signing_secret = settings.PLUGINS_CONFIG["nautobot_chatops"].get("webex_signing_secret").encode("utf-8")
     return hmac.new(signing_secret, request.body, digestmod=hashlib.sha1).hexdigest()
 
 
 def verify_signature(request):
-    """Verify that a given request was legitimately signed by WebEx Teams.
+    """Verify that a given request was legitimately signed by WebEx.
 
     https://developer.webex.com/docs/api/guides/webhooks#handling-requests-from-webex-teams
 
@@ -64,8 +64,8 @@ def verify_signature(request):
 
 
 @method_decorator(csrf_exempt, name="dispatch")
-class WebExTeamsView(View):
-    """Handle all supported inbound notifications from WebEx Teams."""
+class WebExView(View):
+    """Handle all supported inbound notifications from WebEx."""
 
     http_method_names = ["post"]
 
@@ -100,14 +100,14 @@ class WebExTeamsView(View):
             "message_id": data.get("messageId") or data.get("id"),
         }
 
-        # In WebEx Teams, the webhook doesn't contain the user/channel/org names. We have to call back for them.
+        # In WebEx, the webhook doesn't contain the user/channel/org names. We have to call back for them.
         # For whatever reason, API.organizations.get() is only permitted by admin users, which the bot is not.
         # context["org_name"] = API.organizations.get(context["org_id"]).displayName
         context["channel_name"] = API.rooms.get(context["channel_id"]).title
         context["user_name"] = API.people.get(context["user_id"]).displayName
 
         if body.get("resource") == "messages":
-            # In WebEx Teams, the webhook notification doesn't contain the message text. We have to call back for it.
+            # In WebEx, the webhook notification doesn't contain the message text. We have to call back for it.
             message = API.messages.get(context["message_id"])
             command = message.text.strip()
             # Check for a mention of the bot in the HTML (i.e., if this is not a direct message), and remove it if so.
@@ -117,11 +117,11 @@ class WebExTeamsView(View):
                     command = re.sub(bot_mention.group(1), "", command).strip()
             command, subcommand, params = parse_command_string(command)
         elif body.get("resource") == "attachmentActions":
-            # In WebEx Teams, the webhook notification doesn't contain the action details. We have to call back for it.
+            # In WebEx, the webhook notification doesn't contain the action details. We have to call back for it.
             action = API.attachment_actions.get(body.get("data", {}).get("id"))
             if settings.PLUGINS_CONFIG["nautobot_chatops"].get("delete_input_on_submission"):
                 # Delete the card that this action was triggered from
-                WebExTeamsDispatcher(context).delete_message(context["message_id"])
+                WebExDispatcher(context).delete_message(context["message_id"])
             if action.inputs.get("action") == "cancel":
                 return HttpResponse(status=200)
             command, subcommand, params = parse_command_string(action.inputs.get("action"))
@@ -136,7 +136,7 @@ class WebExTeamsView(View):
         registry = get_commands_registry()
 
         if command not in registry:
-            WebExTeamsDispatcher(context).send_markdown(commands_help())
+            WebExDispatcher(context).send_markdown(commands_help())
             return HttpResponse(status=200)
 
-        return check_and_enqueue_command(registry, command, subcommand, params, context, WebExTeamsDispatcher)
+        return check_and_enqueue_command(registry, command, subcommand, params, context, WebExDispatcher)

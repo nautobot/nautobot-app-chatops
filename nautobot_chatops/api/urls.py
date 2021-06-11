@@ -23,11 +23,11 @@ if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_ms_teams"):
         path("ms_teams/messages/", MSTeamsMessagesView.as_view(), name="ms_teams_messages"),
     ]
 
-if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_webex_teams"):
-    from nautobot_chatops.api.views.webex_teams import WebExTeamsView
+if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_webex"):
+    from nautobot_chatops.api.views.webex import WebExView
 
     urlpatterns += [
-        path("webex_teams/", WebExTeamsView.as_view(), name="webex_teams"),
+        path("webex/", WebExView.as_view(), name="webex"),
     ]
 
 if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_mattermost"):

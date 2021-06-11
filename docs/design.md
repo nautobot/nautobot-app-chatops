@@ -8,7 +8,7 @@ By delivering this as a Nautobot Chatops plugin, we gain the following benefits:
 ## Code structure
 
 The design goal of this plugin is to be able to write chatbot commands once and have them run anywhere
-(Slack, Microsoft Teams, WebEx Teams, etc.). Toward that end, it's divided into three layers:
+(Slack, Microsoft Teams, WebEx, etc.). Toward that end, it's divided into three layers:
 
 1. input (`nautobot_chatops.views`)
 
@@ -33,7 +33,7 @@ The design goal of this plugin is to be able to write chatbot commands once and 
 2. worker (`nautobot_chatops.workers`)
 
    - This layer is *completely ignorant* of chat platforms. All code in this layer does not know or care about the
-     difference between Slack, WebEx Teams, Microsoft Teams, or any other platform we may support in the future.
+     difference between Slack, WebEx, Microsoft Teams, or any other platform we may support in the future.
 
    - Each `job` worker function acts on the provided parameters, then invokes generic methods on its provided
      `Dispatcher` class to post to the channel, prompt the user for more information, or whatever other user-facing

@@ -44,8 +44,8 @@ class Dispatcher:
         if settings.PLUGINS_CONFIG["nautobot_chatops"].get("ms_teams"):
             from .ms_teams import MSTeamsDispatcher
 
-        if settings.PLUGINS_CONFIG["nautobot_chatops"].get("webex_teams"):
-            from .webex_teams import WebExTeamsDispatcher
+        if settings.PLUGINS_CONFIG["nautobot_chatops"].get("webex"):
+            from .webex import WebExDispatcher
 
         subclasses = set()
         classes = [cls]
@@ -94,7 +94,7 @@ class Dispatcher:
     def send_large_table(self, header, rows):
         """Send a large table of data to the user/channel.
 
-        The below default implementation works for both Slack and WebEx Teams.
+        The below default implementation works for both Slack and WebEx.
         """
         table = Texttable(max_width=120)
         table.set_deco(Texttable.HEADER)
