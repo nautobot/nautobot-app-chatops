@@ -18,7 +18,7 @@ include = [
 
 [tool.poetry.dependencies]
 python = "^3.6"
-nautobot = "^1.0.0"
+nautobot = "*"
 nautobot-capacity-metrics = "*"
 texttable = "^1.6.2"
 PyJWT = "^2.1.0"
@@ -75,26 +75,17 @@ notes=""",
     XXX,
     """
 
+[tool.pylint.design]
+max-args=6
+max-public-methods=22
+
+[tool.pylint.similarities]
+ignore-imports= true
+min-similarity-lines=12
+
 [tool.pylint.format]
 max-line-length=120
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
-
-[tool.pylint.basic]
-# No docstrings required for private methods (Pylint default), or for test_ functions, or for inner Meta classes.
-no-docstring-rgx="^(_|test_|Meta$)"
-
-[tool.pylint.similarities]
-min-similarity-lines=12
-
-# Don't call it "duplicate code" just because two files have the same set of import headers
-ignore-imports=true
-
-[tool.pylint.design]
-# Default setting is max-args=5
-max-args=6
-# Default setting is max-public-methods=20
-max-public-methods=22
-
