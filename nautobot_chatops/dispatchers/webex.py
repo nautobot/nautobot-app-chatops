@@ -32,7 +32,13 @@ class WebExDispatcher(AdaptiveCardsDispatcher):
     def __init__(self, *args, **kwargs):
         """Init a WebExDispatcher."""
         super().__init__(*args, **kwargs)
-        self.client = WebexTeamsAPI(access_token=settings.PLUGINS_CONFIG["nautobot_chatops"]["webex_token"])
+        # v1.4.0 Deprecation warning
+        if "webex_token" in settings.PLUGINS_CONFIG["nautobot_chatops"]:
+            access_token = settings.PLUGINS_CONFIG["nautobot_chatops"]["webex_token"]
+        else:
+            access_token = settings.PLUGINS_CONFIG["nautobot_chatops"]["webex_teams_token"]
+            logger.warning("The 'webex_teams_token' setting is deprecated, please use 'webex_token' instead.")
+        self.client = WebexTeamsAPI(access_token=access_token)
         self.webex_msg_char_limit = int(os.getenv("WEBEX_MSG_CHAR_LIMIT", "7439"))
 
     @classmethod

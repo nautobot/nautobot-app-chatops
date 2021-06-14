@@ -1,11 +1,13 @@
 """Django urlpatterns declaration for nautobot_chatops plugin."""
 
+import logging
 from django.urls import path
 
 from django.conf import settings
 from nautobot_chatops.api.views.lookup import AccessLookupView
 
 
+logger = logging.getLogger(__name__)
 urlpatterns = [path("lookup/", AccessLookupView.as_view(), name="access_lookup")]
 
 if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_slack"):
@@ -23,11 +25,21 @@ if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_ms_teams"):
         path("ms_teams/messages/", MSTeamsMessagesView.as_view(), name="ms_teams_messages"),
     ]
 
-if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_webex"):
+# v1.4.0 - Preserve backwards compatibility with variable name until 2.0.0
+if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_webex") or settings.PLUGINS_CONFIG["nautobot_chatops"].get(
+    "enable_webex_teams"
+):
+    if (
+        "enable_webex_teams" in settings.PLUGINS_CONFIG["nautobot_chatops"]
+        and "enable_webex" not in settings.PLUGINS_CONFIG["nautobot_chatops"]
+    ):
+        # v1.4.0 Deprecation warning
+        logger.warning("The 'enable_webex_teams' setting is deprecated. Please use 'enable_webex' instead.")
     from nautobot_chatops.api.views.webex import WebExView
 
     urlpatterns += [
         path("webex/", WebExView.as_view(), name="webex"),
+        path("webex_teams/", WebExView.as_view(), name="webex_teams"),  # Deprecated v1.4.0
     ]
 
 if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_mattermost"):

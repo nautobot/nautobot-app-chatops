@@ -21,7 +21,12 @@ from nautobot_chatops.utils import check_and_enqueue_command
 
 logger = logging.getLogger(__name__)
 
-TOKEN = settings.PLUGINS_CONFIG["nautobot_chatops"]["webex_token"]
+# v1.4.0 Deprecation warning
+if "webex_token" in settings.PLUGINS_CONFIG["nautobot_chatops"]:
+    TOKEN = settings.PLUGINS_CONFIG["nautobot_chatops"]["webex_token"]
+else:
+    TOKEN = settings.PLUGINS_CONFIG["nautobot_chatops"]["webex_teams_token"]
+    logger.warning("The 'webex_teams_token' setting is deprecated, please use 'webex_token' instead")
 
 try:
     API = WebexTeamsAPI(access_token=TOKEN)
@@ -39,7 +44,14 @@ except (AccessTokenError, ApiError):
 
 def generate_signature(request):
     """Calculate the expected signature of a given request."""
-    signing_secret = settings.PLUGINS_CONFIG["nautobot_chatops"].get("webex_signing_secret").encode("utf-8")
+    # v1.4.0 Deprecation warning
+    if "webex_signing_secret" in settings.PLUGINS_CONFIG["nautobot_chatops"]:
+        signing_secret = settings.PLUGINS_CONFIG["nautobot_chatops"].get("webex_signing_secret").encode("utf-8")
+    else:
+        signing_secret = settings.PLUGINS_CONFIG["nautobot_chatops"].get("webex_teams_signing_secret").encode("utf-8")
+        logger.warning(
+            "The 'webex_teams_signing_secret' setting is deprecated, please use 'webex_signing_secret' instead"
+        )
     return hmac.new(signing_secret, request.body, digestmod=hashlib.sha1).hexdigest()
 
 
