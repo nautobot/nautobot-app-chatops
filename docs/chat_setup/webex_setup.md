@@ -30,4 +30,13 @@
    step 3 above.
 5. Proceed to the [Nautobot Server Preparation and Configuration](./chat_setup.md#Nautobot Server Preparation and Configuration) section.
 
+## Deprecation Warning
+
+As of Nautobot ChatOps Plugin v1.4.0, the PLUGIN_CONFIG settings for Webex has changed to align with the official renaming of `Webex Teams` to `Webex`:
+
+- `webex_teams_token` is deprecated. Use `webex_token` instead.
+- `webex_teams_signing_secret` is deprecated. Use `webex_signing_secret` instead.
+
+Both settings will currently work, however support for `webex_teams_token` and `webex_teams_signing_secret` will be removed in v2.0.0.
+
 [Chat Setup](./chat_setup.md)
