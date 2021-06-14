@@ -22,11 +22,20 @@ from nautobot_chatops.utils import check_and_enqueue_command
 logger = logging.getLogger(__name__)
 
 # v1.4.0 Deprecation warning
-if "webex_token" in settings.PLUGINS_CONFIG["nautobot_chatops"]:
-    TOKEN = settings.PLUGINS_CONFIG["nautobot_chatops"]["webex_token"]
-else:
+if (
+    "webex_teams_token" in settings.PLUGINS_CONFIG["nautobot_chatops"]
+    and "webex_token" not in settings.PLUGINS_CONFIG["nautobot_chatops"]
+):
     TOKEN = settings.PLUGINS_CONFIG["nautobot_chatops"]["webex_teams_token"]
     logger.warning("The 'webex_teams_token' setting is deprecated, please use 'webex_token' instead")
+else:
+    try:
+        TOKEN = settings.PLUGINS_CONFIG["nautobot_chatops"]["webex_token"]
+    except KeyError as err:
+        ERROR_MSG = "The 'webex_token' setting must be configured"
+        logger.error(ERROR_MSG)
+        raise KeyError(ERROR_MSG) from err
+
 
 try:
     API = WebexTeamsAPI(access_token=TOKEN)
@@ -45,13 +54,22 @@ except (AccessTokenError, ApiError):
 def generate_signature(request):
     """Calculate the expected signature of a given request."""
     # v1.4.0 Deprecation warning
-    if "webex_signing_secret" in settings.PLUGINS_CONFIG["nautobot_chatops"]:
-        signing_secret = settings.PLUGINS_CONFIG["nautobot_chatops"].get("webex_signing_secret").encode("utf-8")
-    else:
+    if (
+        "webex_teams_signing_secret" in settings.PLUGINS_CONFIG["nautobot_chatops"]
+        and "webex_signing_secret" not in settings.PLUGINS_CONFIG["nautobot_chatops"]
+    ):
         signing_secret = settings.PLUGINS_CONFIG["nautobot_chatops"].get("webex_teams_signing_secret").encode("utf-8")
         logger.warning(
             "The 'webex_teams_signing_secret' setting is deprecated, please use 'webex_signing_secret' instead"
         )
+    else:
+        try:
+            signing_secret = settings.PLUGINS_CONFIG["nautobot_chatops"]["webex_signing_secret"].encode("utf-8")
+        except KeyError as err:
+            error_msg = "The 'webex_token' setting must be configured"
+            logger.error(error_msg)
+            raise KeyError(error_msg) from err
+
     return hmac.new(signing_secret, request.body, digestmod=hashlib.sha1).hexdigest()
 
 
