@@ -41,11 +41,14 @@ class Dispatcher:
         if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_slack"):
             from .slack import SlackDispatcher
 
-        if settings.PLUGINS_CONFIG["nautobot_chatops"].get("ms_teams"):
+        if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_ms_teams"):
             from .ms_teams import MSTeamsDispatcher
 
-        if settings.PLUGINS_CONFIG["nautobot_chatops"].get("webex"):
+        if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_webex"):
             from .webex import WebExDispatcher
+
+        if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_mattermost"):
+            from .mattermost import MattermostDispatcher
 
         subclasses = set()
         classes = [cls]
