@@ -121,6 +121,20 @@ class TestSlackDispatcher(TestCase):
         response = self.dispatcher.get_prompt_from_menu_choices(choices, offset=500)
         self.assertEqual(response, expected_choices)
 
+    def test_send_snippet_no_title(self):
+        """Make sure files_upload is called with no title."""
+        with patch.object(self.dispatcher.slack_client, "files_upload") as mocked_files_upload:
+            self.dispatcher.send_snippet("Testing files upload.")
+            mocked_files_upload.assert_called_with(channels="456def", content="Testing files upload.", title=None)
+
+    def test_send_snippet_title(self):
+        """Make sure files_upload is called with title."""
+        with patch.object(self.dispatcher.slack_client, "files_upload") as mocked_files_upload:
+            self.dispatcher.send_snippet("Testing files upload.", "Testing files upload title.")
+            mocked_files_upload.assert_called_with(
+                channels="456def", content="Testing files upload.", title="Testing files upload title."
+            )
+
 
 class TestMSTeamsDispatcher(TestSlackDispatcher):
     """Test the MSTeamsDispatcher class."""
@@ -139,6 +153,16 @@ class TestMSTeamsDispatcher(TestSlackDispatcher):
         """Not implemented."""
         pass
 
+    def test_send_snippet_no_title(self):
+        """Not implemented."""
+        # pylint: disable W0221
+        pass
+
+    def test_send_snippet_title(self):
+        """Not implemented."""
+        # pylint: disable W0221
+        pass
+
 
 class TestWebExTeamsDispatcher(TestSlackDispatcher):
     """Test the WebExTeamsDispatcher class."""
@@ -155,6 +179,16 @@ class TestWebExTeamsDispatcher(TestSlackDispatcher):
 
     def test_get_prompt_from_menu_choices(self):
         """Not implemented."""
+        pass
+
+    def test_send_snippet_no_title(self):
+        """Not implemented."""
+        # pylint: disable W0221
+        pass
+
+    def test_send_snippet_title(self):
+        """Not implemented."""
+        # pylint: disable W0221
         pass
 
     @patch("nautobot_chatops.dispatchers.webex_teams.WebExTeamsDispatcher.send_markdown")
@@ -213,4 +247,14 @@ class TestMattermostDispatcher(TestSlackDispatcher):
 
     def test_get_prompt_from_menu_choices(self):
         """Not implemented."""
+        pass
+
+    def test_send_snippet_no_title(self):
+        """Not implemented."""
+        # pylint: disable W0221
+        pass
+
+    def test_send_snippet_title(self):
+        """Not implemented."""
+        # pylint: disable W0221
         pass
