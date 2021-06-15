@@ -120,7 +120,7 @@ class WebExDispatcher(AdaptiveCardsDispatcher):
         self.client.messages.create(roomId=self.context["channel_id"], files=[image_path])
 
     @BACKEND_ACTION_SNIPPET.time()
-    def send_snippet(self, text):
+    def send_snippet(self, text, title=None):
         """Send a longer chunk of text as a file snippet."""
         return self.send_markdown(f"```\n{text}\n```")
 

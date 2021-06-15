@@ -174,7 +174,7 @@ class Dispatcher:
         """Send a series of formatting blocks to the user/channel specified by the context."""
         raise NotImplementedError
 
-    def send_snippet(self, text):
+    def send_snippet(self, text, title=None):
         """Send a longer chunk of text as a snippet or file attachment."""
         raise NotImplementedError
 

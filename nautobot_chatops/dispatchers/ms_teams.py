@@ -170,7 +170,7 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
         )
 
     @BACKEND_ACTION_SNIPPET.time()
-    def send_snippet(self, text):
+    def send_snippet(self, text, title=None):
         """Send a longer chunk of text as a snippet or file attachment."""
         self.send_markdown(f"```\n{text}\n```")
 

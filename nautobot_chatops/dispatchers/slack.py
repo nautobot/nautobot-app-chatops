@@ -208,7 +208,7 @@ class SlackDispatcher(Dispatcher):
             self.send_exception(slack_error)
 
     @BACKEND_ACTION_SNIPPET.time()
-    def send_snippet(self, text):
+    def send_snippet(self, text, title=None):
         """Send a longer chunk of text as a file snippet."""
         if self.context.get("channel_name") == "directmessage":
             channels = [self.context.get("user_id")]
@@ -217,7 +217,7 @@ class SlackDispatcher(Dispatcher):
         channels = ",".join(channels)
         logger.info("Sending snippet to %s: %s", channels, text)
         try:
-            self.slack_client.files_upload(channels=channels, content=text)
+            self.slack_client.files_upload(channels=channels, content=text, title=title)
         except SlackClientError as slack_error:
             self.send_exception(slack_error)
 
