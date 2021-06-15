@@ -1,10 +1,14 @@
 """Generic base class modeling the API for sending messages to a generic chat platform."""
 
+import logging
+
 from django.templatetags.static import static
 
 from django.conf import settings
 
 from texttable import Texttable
+
+logger = logging.getLogger("rq.worker")
 
 
 class Dispatcher:
@@ -49,6 +53,9 @@ class Dispatcher:
             "nautobot_chatops"
         ].get("enable_webex_teams"):
             from .webex import WebExDispatcher
+
+            if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_webex_teams"):
+                logger.warning("The 'enable_webex_teams' setting is deprecated, please use 'enable_webex' instead.")
 
         if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_mattermost"):
             from .mattermost import MattermostDispatcher
