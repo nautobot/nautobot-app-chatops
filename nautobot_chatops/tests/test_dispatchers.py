@@ -125,11 +125,13 @@ class TestSlackDispatcher(TestCase):
             self.dispatcher.send_snippet("Testing files upload.")
             mocked_files_upload.assert_called_with(channels="456def", content="Testing files upload.", title=None)
 
-    def test_send_snippet_no_title(self):
+    def test_send_snippet_title(self):
         """Make sure files_upload is called with title."""
         with patch.object(self.dispatcher.slack_client, "files_upload") as mocked_files_upload:
-            self.dispatcher.send_snippet("Testing files upload.", 'Testing files upload title.')
-            mocked_files_upload.assert_called_with(channels="456def", content="Testing files upload.", title='Testing files upload title.')
+            self.dispatcher.send_snippet("Testing files upload.", "Testing files upload title.")
+            mocked_files_upload.assert_called_with(
+                channels="456def", content="Testing files upload.", title="Testing files upload title."
+            )
 
 
 class TestMSTeamsDispatcher(TestSlackDispatcher):
