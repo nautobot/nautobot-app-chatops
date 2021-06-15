@@ -44,7 +44,10 @@ class Dispatcher:
         if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_ms_teams"):
             from .ms_teams import MSTeamsDispatcher
 
-        if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_webex"):
+        # v1.4.0 backwards compatibility
+        if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_webex") or settings.PLUGINS_CONFIG[
+            "nautobot_chatops"
+        ].get("enable_webex_teams"):
             from .webex import WebExDispatcher
 
         if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_mattermost"):
