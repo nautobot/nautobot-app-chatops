@@ -3,7 +3,7 @@
 from django.urls import reverse
 
 from nautobot.utilities.testing import APITestCase, APIViewTestCases
-from nautobot_chatops.models import CommandToken
+from nautobot_chatops.models import AccessGrant, CommandToken
 
 
 class AppTest(APITestCase):  # pylint: disable=too-many-ancestors
@@ -35,3 +35,23 @@ class CommandTokenTest(APIViewTestCases.APIViewTestCase):  # pylint: disable=too
         CommandToken.objects.create(comment="Test 1", platform="mattermost", token="token1")
         CommandToken.objects.create(comment="Test 2", platform="mattermost", token="token2")
         CommandToken.objects.create(comment="Test 3", platform="mattermost", token="token3")
+
+
+class AccessGrantTest(APIViewTestCases.APIViewTestCase):  # pylint: disable=too-many-ancestors
+    """Tests for the AccessGrant Endpoint."""
+
+    model = AccessGrant
+    brief_fields = ["command", "display", "grant_type", "id", "name", "subcommand", "value"]
+    create_data = [
+        {"command": "*", "subcommand": "*", "grant_type": "organization", "name": "test4", "value": "*"},
+        {"command": "*", "subcommand": "*", "grant_type": "channel", "name": "test5", "value": "*"},
+        {"command": "*", "subcommand": "*", "grant_type": "user", "name": "test6", "value": "*"},
+    ]
+    bulk_update_data = {"command": "nautobot"}
+
+    @classmethod
+    def setUpTestData(cls):
+        """Generate test data for the AccessGrant Endpoint."""
+        AccessGrant.objects.create(command="*", subcommand="*", grant_type="organization", name="test1", value="*")
+        AccessGrant.objects.create(command="*", subcommand="*", grant_type="channel", name="test2", value="*")
+        AccessGrant.objects.create(command="*", subcommand="*", grant_type="user", name="test3", value="*")

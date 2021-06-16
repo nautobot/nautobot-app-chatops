@@ -2,9 +2,9 @@
 from rest_framework.routers import APIRootView
 from nautobot.core.api.views import ModelViewSet
 
-from nautobot_chatops.api.serializers import CommandTokenSerializer
-from nautobot_chatops.models import CommandToken
-from nautobot_chatops.filters import CommandTokenFilter
+from nautobot_chatops.api.serializers import AccessGrantSerializer, CommandTokenSerializer
+from nautobot_chatops.models import AccessGrant, CommandToken
+from nautobot_chatops.filters import AccessGrantFilter, CommandTokenFilter
 
 
 class NautobotChatopsRootView(APIRootView):
@@ -21,3 +21,11 @@ class CommandTokenViewSet(ModelViewSet):  # pylint: disable=too-many-ancestors
     queryset = CommandToken.objects.all()
     serializer_class = CommandTokenSerializer
     filterset_class = CommandTokenFilter
+
+
+class AccessGrantViewSet(ModelViewSet):  # pylint: disable=too-many-ancestors
+    """API viewset for interacting with AccessGrant objects."""
+
+    queryset = AccessGrant.objects.all()
+    serializer_class = AccessGrantSerializer
+    filterset_class = AccessGrantFilter
