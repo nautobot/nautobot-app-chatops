@@ -88,6 +88,7 @@ PLUGINS_CONFIG = {
     }
 }
 ```
+After editing the `nautobot_config.py` file, as the `nautobot` user, run the `nautobot-server migrate` command.
 
 As a sudo-enabled user, restart the `nautobot` and `nautobot-worker` process after updating `nautobot_config.py`.
 
