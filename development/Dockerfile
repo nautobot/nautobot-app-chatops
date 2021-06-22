@@ -1,8 +1,9 @@
 
 ARG PYTHON_VER
 ARG NAUTOBOT_VER
-# FROM ghcr.io/nautobot/nautobot-dev:${NAUTOBOT_VER}-py${PYTHON_VER}
-FROM networktocode/nautobot-dev:${NAUTOBOT_VER}-py${PYTHON_VER}
+# Switching to ghcr.io image for now so we don't hit dockerhub rate limit.
+FROM ghcr.io/nautobot/nautobot-dev:${NAUTOBOT_VER}-py${PYTHON_VER}
+# FROM networktocode/nautobot-dev:${NAUTOBOT_VER}-py${PYTHON_VER}
 
 WORKDIR /source
 

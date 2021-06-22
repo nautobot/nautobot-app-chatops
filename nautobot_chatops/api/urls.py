@@ -5,7 +5,7 @@ from django.urls import path
 from django.conf import settings
 from nautobot.core.api import OrderedDefaultRouter
 from nautobot_chatops.api.views.lookup import AccessLookupView
-from nautobot_chatops.api.views.generic import CommandTokenViewSet, NautobotChatopsRootView
+from nautobot_chatops.api.views.generic import AccessGrantViewSet, CommandTokenViewSet, NautobotChatopsRootView
 
 
 urlpatterns = [path("lookup/", AccessLookupView.as_view(), name="access_lookup")]
@@ -43,6 +43,7 @@ if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_mattermost"):
 router = OrderedDefaultRouter()
 router.APIRootView = NautobotChatopsRootView
 router.register("commandtoken", CommandTokenViewSet)
+router.register("accessgrant", AccessGrantViewSet)
 
 app_name = "nautobot_chatops-api"
 
