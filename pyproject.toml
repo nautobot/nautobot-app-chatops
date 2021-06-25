@@ -79,7 +79,6 @@ notes=""",
 max-args=6
 max-public-methods=22
 
-
 [tool.pylint.similarities]
 ignore-imports= true
 min-similarity-lines=12
@@ -90,4 +89,3 @@ max-line-length=120
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
-

@@ -13,9 +13,8 @@ python:
   - 3.7
   - 3.8
 
-# env:
-#   matrix:
-#   - NAUTOBOT_VER=v1.0.0a1
+env:
+  - "INVOKE_NAUTOBOT_CHATOPS_NAUTOBOT_VER=1.0.2"
 
 services:
   - "docker"
@@ -25,18 +24,19 @@ services:
 # --------------------------------------------------------------------------
 before_script:
   - "pip install invoke toml docker-compose poetry"
-  - "cp creds.env.example creds.env"
+  - "cp development/creds.example.env development/creds.env"
+  - "poetry add nautobot==$INVOKE_NAUTOBOT_CHATOPS_NAUTOBOT_VER"
 script:
-  - "invoke build --nocache"
-  - "invoke unittest"
+  - "INVOKE_NAUTOBOT_CHATOPS_PYTHON_VER=$TRAVIS_PYTHON_VERSION invoke build --no-cache"
+  - "INVOKE_NAUTOBOT_CHATOPS_PYTHON_VER=$TRAVIS_PYTHON_VERSION invoke unittest"
 
 jobs:
   include:
     - stage: "lint"
       before_script:
         - "pip install invoke toml docker-compose"
-        - "cp creds.env.example creds.env"
-        - "invoke build --nocache"
+        - "cp development/creds.example.env development/creds.env"
+        - "invoke build"
       script:
         - "invoke black"
         - "invoke bandit"

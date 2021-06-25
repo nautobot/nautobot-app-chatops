@@ -218,19 +218,20 @@ PLUGINS = ["nautobot_chatops", "nautobot_capacity_metrics"]
 PLUGINS_CONFIG = {
     "nautobot_chatops": {
         "enable_slack": True,
-        "enable_ms_teams": True,
-        "enable_webex": True,
-        "microsoft_app_id": os.environ.get("MICROSOFT_APP_ID"),
-        "microsoft_app_password": os.environ.get("MICROSOFT_APP_PASSWORD"),
-        "slack_api_token": os.environ.get("SLACK_API_TOKEN"),
-        "slack_signing_secret": os.environ.get("SLACK_SIGNING_SECRET"),
-        "slack_slash_command_prefix": os.environ.get("SLACK_SLASH_COMMAND_PREFIX", "/"),
-        "webex_token": os.environ.get("WEBEX_ACCESS_TOKEN"),
-        "webex_signing_secret": os.environ.get("WEBEX_SIGNING_SECRET"),
+        "slack_api_token": "xoxb-302086025268-1789283963110-626QdVTImN2Kz9AImX8ENzfm",
+        "slack_signing_secret": "65c946c311a7ada06869aa4a10ed10bc",
+        "enable_webex": True,  # Bot ID: Y2lzY29zcGFyazovL3VzL0FQUExJQ0FUSU9OL2IwN2ZmZDE5LTE0MWMtNDU3Yi04YWFjLWYwZTVhNGIzMTBiNg
+        "webex_token": "YzRjMzUyNWUtOGIyMC00NWVkLTgyNjEtM2M3N2Y4ZGI1NDI3MWU4MjcyMjYtOGEx_P0A1_2c3ec108-8b9a-43ee-a498-1d08ed437a7d",
+        "webex_signing_secret": "Abcdefg1234567",
         "enable_mattermost": True,
-        "mattermost_api_token": os.environ.get("MATTERMOST_API_TOKEN"),
-        "mattermost_url": os.environ.get("MATTERMOST_URL"),
-    },
+        "mattermost_api_token": "89rjriwm3t8ft84j6qkgxmzuie",
+        "mattermost_url": "https://mattvntc.cloud.mattermost.com",
+        "enable_ms_teams": True,
+        "microsoft_app_id": "c5824845-0131-429a-8772-11bd39236f49",
+        "microsoft_app_password": "7cyO_z.pX-w2-l5Jx5_PF1chT9xe59W-0U"
+        # 'microsoft_app_id': '9408c821-1982-44bb-9cc7-f5828434395f',  # netconfig
+        # 'microsoft_app_password': 'qi~S_kBzeEPy-_._Bo1RYrzNUt564ztJ2Q'  # netconfig
+    }
 }
 
 # When determining the primary IP address for a device, IPv6 is preferred over IPv4 by default. Set this to True to

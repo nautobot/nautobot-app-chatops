@@ -52,7 +52,7 @@ PLUGINS_CONFIG = {
      deployer can know what all they need to set up!
 > Note: if you want to interact with Nautobot to retrieve data without doing any custom code development, your slash command must
 > be `/nautobot` or end with `nautobot` following the configured slack_slash_command_prefix. For example, the
-> `/na-nautobot` command would have a `slack_slash_command_prefix` of `/network2-`
+> `/network2-nautobot` command would have a `slack_slash_command_prefix` of `/network2-`
 4. On the "Basic Information" page for your app, under "App Credentials", find the "Signing Secret" and click "Show".
    You will need to configure this value for the plugin as the `slack_signing_secret` value, such as through an
    `.env` file. If this value is not correctly configured, the bot will be unable to validate that inbound
