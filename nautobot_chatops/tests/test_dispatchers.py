@@ -181,6 +181,14 @@ class TestWebExDispatcher(TestSlackDispatcher):
         """Not implemented."""
         pass
 
+    def test_send_snippet_no_title(self):
+        """Not implemented."""
+        pass
+
+    def test_send_snippet_title(self):
+        """Not implemented."""
+        pass
+
     @patch("nautobot_chatops.dispatchers.webex.WebExDispatcher.send_markdown")
     def test_send_large_table(self, mock_send_markdown):
         """Make sure send_large_table() is implemented."""
