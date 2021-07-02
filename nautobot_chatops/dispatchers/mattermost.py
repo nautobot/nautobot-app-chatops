@@ -406,13 +406,6 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
                     },
                     dialog_url=self.context.get("integration_url"),
                 )
-                # This is added as select menus are not issueing a valid trigger_id or the trigger_id is expired (default 3 second.)
-                # TODO Remove once bug has been corrected. https://github.com/networktocode-llc/nautobot-plugin-chatops/issues/83
-                self.mm_client.chat_post_ephemeral(
-                    channel_id=self.context.get("channel_id"),
-                    user_id=self.context.get("user_id"),
-                    message=f"If the dialog does not appear, copy this command and resend: /{callback_id}",
-                )
             elif ephemeral:
                 self.mm_client.chat_post_ephemeral(
                     channel_id=self.context.get("channel_id"), user_id=self.context.get("user_id"), blocks=blocks
@@ -461,7 +454,7 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
         try:
             self.mm_client.delete(f"/posts/{post_id}")
         except ForbiddenException as exc:
-            logger.info("Ignoring 403 exception as this is likely an Emphemeral post: %s ", exc)
+            logger.info("Ignoring 403 exception as this is likely an Ephemeral post: %s ", exc)
 
     # Prompt the user for various basic inputs
     def prompt_for_text(self, action_id, help_text, label, title="Your attention please!"):
