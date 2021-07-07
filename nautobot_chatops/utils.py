@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 import logging
 
 from django.db.models import Q
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django_rq import get_queue
 
 from nautobot_chatops.choices import AccessGrantTypeChoices, CommandStatusChoices
@@ -49,7 +49,9 @@ def create_command_log(dispatcher, registry, command, subcommand, params=()):
     )
 
 
-def check_and_enqueue_command(registry, command, subcommand, params, context, dispatcher_class):
+def check_and_enqueue_command(
+    registry, command, subcommand, params, context, dispatcher_class
+):  # pylint:disable=too-many-statements
     """Check whether the given command is permitted by any access grants, and enqueue it if permitted.
 
     For a command/subcommand to be permitted, we must have:
@@ -73,10 +75,16 @@ def check_and_enqueue_command(registry, command, subcommand, params, context, di
     context.update({"command": command, "subcommand": subcommand})
     dispatcher = dispatcher_class(context)
 
+    # Mattermost requires at minimum an empty json response.
+    response = HttpResponse()
+    if dispatcher.platform_slug == "mattermost":
+        data = {}
+        response = JsonResponse(data)
+
     if command not in registry or "function" not in registry[command] or not callable(registry[command]["function"]):
         logger.error("Invalid/unknown command '%s'. Check registry:\n%s", command, registry)
         dispatcher.send_error(f"Something has gone wrong; I don't know how to handle command '{command}'.")
-        return HttpResponse()
+        return response
 
     command_log = create_command_log(dispatcher, registry, command, subcommand, params)
 
@@ -103,7 +111,7 @@ def check_and_enqueue_command(registry, command, subcommand, params, context, di
         command_log.details = f"Not permitted in organization {label}"
         command_log.runtime = datetime.now(timezone.utc) - command_log.start_time
         command_log.save()
-        return HttpResponse()
+        return response
 
     chan_grants = access_grants.filter(grant_type=AccessGrantTypeChoices.TYPE_CHANNEL)
     if "channel_id" not in context or not chan_grants.filter(Q(value="*") | Q(value=context["channel_id"])):
@@ -119,7 +127,7 @@ def check_and_enqueue_command(registry, command, subcommand, params, context, di
         command_log.details = f"Not permitted in channel {label}"
         command_log.runtime = datetime.now(timezone.utc) - command_log.start_time
         command_log.save()
-        return HttpResponse()
+        return response
 
     user_grants = access_grants.filter(grant_type=AccessGrantTypeChoices.TYPE_USER)
     if "user_id" not in context or not user_grants.filter(Q(value="*") | Q(value=context["user_id"])):
@@ -135,7 +143,7 @@ def check_and_enqueue_command(registry, command, subcommand, params, context, di
         command_log.details = f"Not permitted by user {label}"
         command_log.runtime = datetime.now(timezone.utc) - command_log.start_time
         command_log.save()
-        return HttpResponse()
+        return response
 
     # If we made it here, we're permitted. Enqueue it for the worker
     get_queue("default").enqueue(
@@ -145,4 +153,4 @@ def check_and_enqueue_command(registry, command, subcommand, params, context, di
         dispatcher_class=dispatcher_class,
         context=context,
     )
-    return HttpResponse()
+    return response
