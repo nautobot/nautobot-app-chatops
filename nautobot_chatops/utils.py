@@ -103,7 +103,10 @@ def check_and_enqueue_command(
         if "org_name" in context:
             label += f" ({context['org_name']})"
         logger.warning("Blocked %s %s: organization %s is not granted access", command, subcommand, label)
-        dispatcher.send_error(f"Access to this bot and/or command is not permitted in organization {label}")
+        dispatcher.send_error(
+            f"Access to this bot and/or command is not permitted in organization {label}, "
+            "please validate the organization has an appropriate Access Grant in Nautobot"
+        )
         request_command_cntr.labels(
             dispatcher.platform_slug, command, subcommand, CommandStatusChoices.STATUS_BLOCKED
         ).inc()
@@ -119,7 +122,10 @@ def check_and_enqueue_command(
         if "channel_name" in context:
             label += f" ({context['channel_name']})"
         logger.warning("Blocked %s %s: channel %s is not granted access", command, subcommand, label)
-        dispatcher.send_error(f"Access to this bot and/or command is not permitted in channel {label}")
+        dispatcher.send_error(
+            f"Access to this bot and/or command is not permitted in channel {label}, "
+            "please validate the channel has an appropriate Access Grant in Nautobot"
+        )
         request_command_cntr.labels(
             dispatcher.platform_slug, command, subcommand, CommandStatusChoices.STATUS_BLOCKED
         ).inc()
@@ -135,7 +141,10 @@ def check_and_enqueue_command(
         if "user_name" in context:
             label += f" ({context['user_name']})"
         logger.warning("Blocked %s %s: user %s is not granted access", command, subcommand, label)
-        dispatcher.send_error(f"Access to this bot and/or command is not permitted by user {label}")
+        dispatcher.send_error(
+            f"Access to this bot and/or command is not permitted by user {label}, "
+            "please validate the user has an appropriate Access Grant in Nautobot"
+        )
         request_command_cntr.labels(
             dispatcher.platform_slug, command, subcommand, CommandStatusChoices.STATUS_BLOCKED
         ).inc()

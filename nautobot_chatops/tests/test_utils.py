@@ -61,7 +61,8 @@ class TestCheckAndEnqueue(TestCase):
         )
         self.assertEqual(
             MockDispatcher.error,
-            "Access to this bot and/or command is not permitted in organization 11",
+            "Access to this bot and/or command is not permitted in organization 11, "
+            "please validate the organization has an appropriate Access Grant in Nautobot",
         )
         mock_get_queue.assert_not_called()
 
@@ -84,7 +85,8 @@ class TestCheckAndEnqueue(TestCase):
         )
         self.assertEqual(
             MockDispatcher.error,
-            "Access to this bot and/or command is not permitted in channel 111",
+            "Access to this bot and/or command is not permitted in channel 111, "
+            "please validate the channel has an appropriate Access Grant in Nautobot",
         )
         mock_get_queue.assert_not_called()
 
@@ -107,7 +109,8 @@ class TestCheckAndEnqueue(TestCase):
         )
         self.assertEqual(
             MockDispatcher.error,
-            "Access to this bot and/or command is not permitted by user 1111",
+            "Access to this bot and/or command is not permitted by user 1111, "
+            "please validate the user has an appropriate Access Grant in Nautobot",
         )
         mock_get_queue.assert_not_called()
 
@@ -269,7 +272,8 @@ class TestCheckAndEnqueue(TestCase):
             )
             self.assertEqual(
                 MockDispatcher.error,
-                "Access to this bot and/or command is not permitted in organization 22",
+                "Access to this bot and/or command is not permitted in organization 22, "
+                "please validate the organization has an appropriate Access Grant in Nautobot",
             )
             mock_get_queue.assert_not_called()
 
@@ -304,7 +308,8 @@ class TestCheckAndEnqueue(TestCase):
             )
             self.assertEqual(
                 MockDispatcher.error,
-                "Access to this bot and/or command is not permitted in organization 33",
+                "Access to this bot and/or command is not permitted in organization 33, "
+                "please validate the organization has an appropriate Access Grant in Nautobot",
             )
             mock_get_queue.assert_not_called()
 
@@ -323,7 +328,8 @@ class TestCheckAndEnqueue(TestCase):
             )
             self.assertEqual(
                 MockDispatcher.error,
-                "Access to this bot and/or command is not permitted by user 9999",
+                "Access to this bot and/or command is not permitted by user 9999, "
+                "please validate the user has an appropriate Access Grant in Nautobot",
             )
             mock_get_queue.assert_not_called()
 
@@ -342,7 +348,8 @@ class TestCheckAndEnqueue(TestCase):
             )
             self.assertEqual(
                 MockDispatcher.error,
-                "Access to this bot and/or command is not permitted in channel 999",
+                "Access to this bot and/or command is not permitted in channel 999, "
+                "please validate the channel has an appropriate Access Grant in Nautobot",
             )
             mock_get_queue.assert_not_called()
 
@@ -361,6 +368,7 @@ class TestCheckAndEnqueue(TestCase):
             )
             self.assertEqual(
                 MockDispatcher.error,
-                "Access to this bot and/or command is not permitted in organization 99",
+                "Access to this bot and/or command is not permitted in organization 99, "
+                "please validate the organization has an appropriate Access Grant in Nautobot",
             )
             mock_get_queue.assert_not_called()
