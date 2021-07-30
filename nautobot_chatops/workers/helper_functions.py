@@ -1,13 +1,13 @@
 """Helper functions for nautobot.py worker."""
 
 
-NETBOX_LOGO_PATH = "nautobot/NautobotLogoSquare.png"
-NETBOX_LOGO_ALT = "Nautobot Logo"
+NAUTOBOT_LOGO_PATH = "nautobot/NautobotLogoSquare.png"
+NAUTOBOT_LOGO_ALT = "Nautobot Logo"
 
 
 def nautobot_logo(dispatcher):
     """Construct an image_element containing the locally hosted Nautobot logo."""
-    return dispatcher.image_element(dispatcher.static_url(NETBOX_LOGO_PATH), alt_text=NETBOX_LOGO_ALT)
+    return dispatcher.image_element(dispatcher.static_url(NAUTOBOT_LOGO_PATH), alt_text=NAUTOBOT_LOGO_ALT)
 
 
 def menu_item_check(item):
