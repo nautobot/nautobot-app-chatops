@@ -22,10 +22,9 @@ from nautobot_chatops.utils import check_and_enqueue_command
 logger = logging.getLogger(__name__)
 
 # v1.4.0 Deprecation warning
-if (
-    "webex_teams_token" in settings.PLUGINS_CONFIG["nautobot_chatops"]
-    and "webex_token" not in settings.PLUGINS_CONFIG["nautobot_chatops"]
-):
+if settings.PLUGINS_CONFIG["nautobot_chatops"].get("webex_teams_token") and not settings.PLUGINS_CONFIG[
+    "nautobot_chatops"
+].get("webex_token"):
     TOKEN = settings.PLUGINS_CONFIG["nautobot_chatops"]["webex_teams_token"]
     logger.warning("The 'webex_teams_token' setting is deprecated, please use 'webex_token' instead")
 else:
@@ -54,10 +53,9 @@ except (AccessTokenError, ApiError):
 def generate_signature(request):
     """Calculate the expected signature of a given request."""
     # v1.4.0 Deprecation warning
-    if (
-        "webex_teams_signing_secret" in settings.PLUGINS_CONFIG["nautobot_chatops"]
-        and "webex_signing_secret" not in settings.PLUGINS_CONFIG["nautobot_chatops"]
-    ):
+    if settings.PLUGINS_CONFIG["nautobot_chatops"].get("webex_teams_token") and not settings.PLUGINS_CONFIG[
+        "nautobot_chatops"
+    ].get("webex_token"):
         signing_secret = settings.PLUGINS_CONFIG["nautobot_chatops"].get("webex_teams_signing_secret").encode("utf-8")
         logger.warning(
             "The 'webex_teams_signing_secret' setting is deprecated, please use 'webex_signing_secret' instead"

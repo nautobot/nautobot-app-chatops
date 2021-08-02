@@ -31,10 +31,9 @@ if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_ms_teams"):
 if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_webex") or settings.PLUGINS_CONFIG["nautobot_chatops"].get(
     "enable_webex_teams"
 ):
-    if (
-        "enable_webex_teams" in settings.PLUGINS_CONFIG["nautobot_chatops"]
-        and "enable_webex" not in settings.PLUGINS_CONFIG["nautobot_chatops"]
-    ):
+    if settings.PLUGINS_CONFIG["nautobot_chatops"].get("webex_teams_token") and not settings.PLUGINS_CONFIG[
+        "nautobot_chatops"
+    ].get("webex_token"):
         # v1.4.0 Deprecation warning
         logger.warning("The 'enable_webex_teams' setting is deprecated. Please use 'enable_webex' instead.")
     from nautobot_chatops.api.views.webex import WebExView
