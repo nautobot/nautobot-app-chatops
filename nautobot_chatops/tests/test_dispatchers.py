@@ -7,7 +7,7 @@ from slack_sdk.errors import SlackApiError
 
 from nautobot_chatops.dispatchers.ms_teams import MSTeamsDispatcher
 from nautobot_chatops.dispatchers.slack import SlackDispatcher
-from nautobot_chatops.dispatchers.webex_teams import WebExTeamsDispatcher
+from nautobot_chatops.dispatchers.webex import WebExDispatcher
 from nautobot_chatops.dispatchers.mattermost import MattermostDispatcher
 
 
@@ -164,14 +164,14 @@ class TestMSTeamsDispatcher(TestSlackDispatcher):
         pass
 
 
-class TestWebExTeamsDispatcher(TestSlackDispatcher):
-    """Test the WebExTeamsDispatcher class."""
+class TestWebExDispatcher(TestSlackDispatcher):
+    """Test the WebExDispatcher class."""
 
-    dispatcher_class = WebExTeamsDispatcher
-    platform_name = "WebEx Teams"
-    enable_opt_name = "enable_webex_teams"
+    dispatcher_class = WebExDispatcher
+    platform_name = "WebEx"
+    enable_opt_name = "enable_webex"
 
-    # Includes all of the test cases defined in TestSlackDispatcher, but uses WebExTeamsDispatcher instead
+    # Includes all of the test cases defined in TestSlackDispatcher, but uses WebExDispatcher instead
 
     def test_prompt_from_menu_error(self):
         """Not implemented."""
@@ -183,15 +183,13 @@ class TestWebExTeamsDispatcher(TestSlackDispatcher):
 
     def test_send_snippet_no_title(self):
         """Not implemented."""
-        # pylint: disable W0221
         pass
 
     def test_send_snippet_title(self):
         """Not implemented."""
-        # pylint: disable W0221
         pass
 
-    @patch("nautobot_chatops.dispatchers.webex_teams.WebExTeamsDispatcher.send_markdown")
+    @patch("nautobot_chatops.dispatchers.webex.WebExDispatcher.send_markdown")
     def test_send_large_table(self, mock_send_markdown):
         """Make sure send_large_table() is implemented."""
         header = ["Name", "Status", "Tenant", "Site", "Rack", "Role", "Type", "IP Address"]
