@@ -1,6 +1,7 @@
 """Nautobot plugin implementing a chatbot."""
-__version__ = "1.1.0"
+import toml
 
+__version__ = toml.load("pyproject.toml")["tool"]["poetry"]["version"]
 
 from nautobot.extras.plugins import PluginConfig
 
