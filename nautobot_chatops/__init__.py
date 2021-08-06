@@ -1,7 +1,11 @@
 """Nautobot plugin implementing a chatbot."""
-import toml
+try:
+    from importlib import metadata
+except ImportError:
+    # Python version < 3.8
+    import importlib_metadata as metadata
 
-__version__ = toml.load("pyproject.toml")["tool"]["poetry"]["version"]
+__version__ = metadata.version(__name__)
 
 from nautobot.extras.plugins import PluginConfig
 
