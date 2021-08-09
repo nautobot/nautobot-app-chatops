@@ -204,7 +204,11 @@ class SlackInteractionView(View):
                 for blk_id in sorted_params:
                     for act_id in values[blk_id].values():
                         if act_id["type"] == "static_select":
-                            value = act_id["selected_option"]["value"]
+                            try:
+                                value = act_id["selected_option"]["value"]
+                            except (AttributeError, TypeError):
+                                # Error is thrown if no option selected and field is optional
+                                value = None
                         elif act_id["type"] == "plain_text_input":
                             value = act_id["value"]
                         else:
