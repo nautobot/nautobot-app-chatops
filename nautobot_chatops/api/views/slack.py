@@ -217,10 +217,10 @@ class SlackInteractionView(View):
 
                         # If an optional parameter is passed, it is returned as a NoneType.
                         # We instead want to return an empty string, otherwise 'None' is returned as a string.
-                        if not value:
-                            selected_value += ""
-                        else:
+                        if value:
                             selected_value += f" '{value}'"
+                        else:
+                            selected_value += " ''"
 
             # Original un-modified single-field handling below
             else:
@@ -249,6 +249,12 @@ class SlackInteractionView(View):
             logger.error("%s", err)
             # Tried sending 400 error, but the friendly message never made it to slack.
             return HttpResponse(f"'Error: {err}' encountered on command '{action_id} {selected_value}'.")
+        
+        # Convert empty parameter strings to NoneType
+        for idx, param in enumerate(params):
+            if not param:
+                params[idx] = None
+    
         logger.info(f"command: {command}, subcommand: {subcommand}, params: {params}")
 
         registry = get_commands_registry()
