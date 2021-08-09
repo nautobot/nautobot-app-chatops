@@ -376,7 +376,7 @@ class SlackDispatcher(Dispatcher):
             - choices: A list of tuples which populates the choices in a dropdown selector
             - default: (optional) Default choice of a select menu or initial value to put in a text field.
             - confirm: (optional) If set to True, it will display a "Are you sure?" dialog upon submit.
-            - optional: (optional) If set to True, the field can is not required and will return an empty variable of NoneType if left blank.
+            - optional: (optional) If set to True, the field will return NoneType is not specified.
         """
         blocks = []
         callback_id = f"{command} {sub_command}"

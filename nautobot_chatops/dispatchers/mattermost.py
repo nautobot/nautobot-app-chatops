@@ -639,7 +639,7 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
           choices (list): List of (display, value) tuples
           default (tuple: Default (display, value) to preselect
           confirm (bool): If true (and the platform supports it), prompt the user to confirm their selection
-            - optional: (optional) If set to True, the field can is not required and will return an empty variable of NoneType if left blank
+          optional: (optional) If set to True, the field will return NoneType is not specified.
         """
         default_text, default_value = default
         logger.info("Ignoring: select_element_interactive has no confirm: %s", confirm)

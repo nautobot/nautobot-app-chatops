@@ -124,6 +124,7 @@ class MattermostInteractionView(View):
 
     @staticmethod
     def get_selected_value(cmd):
+        """Returns formatted selected value if one exists."""
         if cmd:
             return f" '{cmd}'"
         else:
