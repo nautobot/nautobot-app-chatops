@@ -129,7 +129,8 @@ class Dispatcher:
                 {
                     type: "text",
                     label: "text displayed next to field"
-                    default: "default-value"
+                    default: "default-value",
+                    optional: True
                 }
 
             Dictionary Fields
@@ -139,6 +140,7 @@ class Dispatcher:
             - choices: A list of tuples which populates the choices in a dropdown selector
             - default: (optional) Default choice of a select menu or initial value to put in a text field.
             - confirm: (optional) If set to True, it will display a "Are you sure?" dialog upon submit.
+            - optional: (optional) If set to True, the field can is not required and will return an empty variable of NoneType if left blank.
         """
         raise NotImplementedError
 
