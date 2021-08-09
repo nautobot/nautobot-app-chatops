@@ -249,12 +249,12 @@ class SlackInteractionView(View):
             logger.error("%s", err)
             # Tried sending 400 error, but the friendly message never made it to slack.
             return HttpResponse(f"'Error: {err}' encountered on command '{action_id} {selected_value}'.")
-        
+
         # Convert empty parameter strings to NoneType
         for idx, param in enumerate(params):
             if not param:
                 params[idx] = None
-    
+
         logger.info(f"command: {command}, subcommand: {subcommand}, params: {params}")
 
         registry = get_commands_registry()
