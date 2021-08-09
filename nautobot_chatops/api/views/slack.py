@@ -205,13 +205,19 @@ class SlackInteractionView(View):
                     for act_id in values[blk_id].values():
                         if act_id["type"] == "static_select":
                             value = act_id["selected_option"]["value"]
-                            selected_value += f" '{value}'"
                         elif act_id["type"] == "plain_text_input":
                             value = act_id["value"]
-                            selected_value += f" '{value}'"
                         else:
                             logger.error(f"Unhandled dialog type {act_id['type']}")
                             return HttpResponse(status=500)
+
+                        # If an optional parameter is passed, it is returned as a NoneType.
+                        # We instead want to return an empty string, otherwise 'None' is returned as a string.
+                        if not value:
+                            selected_value += ""
+                        else:
+                            selected_value += f" '{value}'"
+
             # Original un-modified single-field handling below
             else:
                 block_id = sorted(values.keys())[0]
