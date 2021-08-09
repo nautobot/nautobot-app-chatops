@@ -22,7 +22,7 @@ There are four main phases to enable Nautobot chatops:
 
 ### [Setup for Microsoft Teams](./microsoft_teams_setup.md)
 
-### [Setup for WebEx Teams](./webex_teams_setup.md)
+### [Setup for WebEx](./webex_setup.md)
 
 ### [Setup for Mattermost](./mattermost_setup.md)
 
@@ -51,7 +51,7 @@ PLUGINS_CONFIG = {
 ```
 
 Nautobot supports `Slack`, `MS Teams`, `Mattermost`, and `Webex` as backends but by default all of them are disabled. 
-You need to explicitly enable the chat platform(s) that you want to use in the `PLUGINS_CONFIG` with one or more of `enable_slack`, `enable_ms_teams`, `enable_mattermost`, or `enable_webex_teams`.
+You need to explicitly enable the chat platform(s) that you want to use in the `PLUGINS_CONFIG` with one or more of `enable_slack`, `enable_ms_teams`, `enable_mattermost`, or `enable_webex`.
 
 The plugin behavior can be controlled with the following list of general settings:
 

@@ -1,10 +1,14 @@
 """Generic base class modeling the API for sending messages to a generic chat platform."""
 
+import logging
+
 from django.templatetags.static import static
 
 from django.conf import settings
 
 from texttable import Texttable
+
+logger = logging.getLogger("rq.worker")
 
 
 class Dispatcher:
@@ -41,11 +45,20 @@ class Dispatcher:
         if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_slack"):
             from .slack import SlackDispatcher
 
-        if settings.PLUGINS_CONFIG["nautobot_chatops"].get("ms_teams"):
+        if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_ms_teams"):
             from .ms_teams import MSTeamsDispatcher
 
-        if settings.PLUGINS_CONFIG["nautobot_chatops"].get("webex_teams"):
-            from .webex_teams import WebExTeamsDispatcher
+        # v1.4.0 backwards compatibility
+        if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_webex") or settings.PLUGINS_CONFIG[
+            "nautobot_chatops"
+        ].get("enable_webex_teams"):
+            from .webex import WebExDispatcher
+
+            if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_webex_teams"):
+                logger.warning("The 'enable_webex_teams' setting is deprecated, please use 'enable_webex' instead.")
+
+        if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_mattermost"):
+            from .mattermost import MattermostDispatcher
 
         subclasses = set()
         classes = [cls]
@@ -94,7 +107,7 @@ class Dispatcher:
     def send_large_table(self, header, rows):
         """Send a large table of data to the user/channel.
 
-        The below default implementation works for both Slack and WebEx Teams.
+        The below default implementation works for both Slack and WebEx.
         """
         table = Texttable(max_width=120)
         table.set_deco(Texttable.HEADER)

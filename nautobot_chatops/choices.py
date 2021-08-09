@@ -41,6 +41,6 @@ class CommandTokenPlatformChoices(ChoiceSet):
     MATTERMOST = "mattermost"
     SLACK = "slack"
     MS_TEAMS = "microsoft_teams"
-    WEBEX_TEAMS = "webex_teams"
+    WEBEX = "webex"
 
     CHOICES = ((MATTERMOST, "Mattermost"),)

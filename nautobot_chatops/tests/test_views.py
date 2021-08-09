@@ -9,9 +9,9 @@ from nautobot_chatops.api.views.slack import (
     verify_signature as slack_verify_signature,
     generate_signature as slack_generate_signature,
 )
-from nautobot_chatops.api.views.webex_teams import (
-    verify_signature as webex_teams_verify_signature,
-    generate_signature as webex_teams_generate_signature,
+from nautobot_chatops.api.views.webex import (
+    verify_signature as webex_verify_signature,
+    generate_signature as webex_generate_signature,
 )
 from nautobot_chatops.api.views.mattermost import verify_signature as mattermost_verify_signature
 from nautobot_chatops.choices import CommandTokenPlatformChoices
@@ -25,10 +25,10 @@ class TestSignatureVerification(TestCase):
         """Per-test-case initialization."""
         self.factory = RequestFactory()
 
-        settings.PLUGINS_CONFIG["nautobot_chatops"]["webex_teams_signing_secret"] = "helloworld"
+        settings.PLUGINS_CONFIG["nautobot_chatops"]["webex_signing_secret"] = "helloworld"
         settings.PLUGINS_CONFIG["nautobot_chatops"]["slack_signing_secret"] = "helloworld"
         settings.PLUGINS_CONFIG["nautobot_chatops"]["enable_slack"] = True
-        settings.PLUGINS_CONFIG["nautobot_chatops"]["enable_webex_teams"] = True
+        settings.PLUGINS_CONFIG["nautobot_chatops"]["enable_webex"] = True
         settings.PLUGINS_CONFIG["nautobot_chatops"]["enable_mattermost"] = True
         CommandToken.objects.create(
             comment="*",
@@ -81,12 +81,12 @@ class TestSignatureVerification(TestCase):
         valid, reason = slack_verify_signature(request_4)
         self.assertTrue(valid)
 
-    def test_verify_signature_webex_teams(self):
-        """Validate the WebEx Teams_verify_signature function."""
+    def test_verify_signature_webex(self):
+        """Validate the WebEx verify_signature function."""
         data = {
             "id": "Y2lzY29zcGFyazo",
             "name": "ntc-nautobot-poc messages",
-            "targetUrl": "https://abc123.ngrok.io/api/plugins/nautobot/webex_teams/",
+            "targetUrl": "https://abc123.ngrok.io/api/plugins/nautobot/webex/",
             "resource": "messages",
             "event": "created",
             "orgId": "Y2lzY29zcGFyazo",
@@ -107,14 +107,14 @@ class TestSignatureVerification(TestCase):
         }
         # The URL doesn't matter as we're testing the function directly, not the view
         request_1 = self.factory.post("/test", content_type="application/json", json=data)
-        valid, reason = webex_teams_verify_signature(request_1)
+        valid, reason = webex_verify_signature(request_1)
         self.assertFalse(valid)
         self.assertEqual(reason, "Missing X-Spark-Signature header")
 
         request_2 = self.factory.post(
             "/test", content_type="application/json", json=data, HTTP_X_SPARK_SIGNATURE="abc123"
         )
-        valid, reason = webex_teams_verify_signature(request_2)
+        valid, reason = webex_verify_signature(request_2)
         self.assertFalse(valid)
         self.assertEqual(reason, "Incorrect signature")
 
@@ -122,9 +122,9 @@ class TestSignatureVerification(TestCase):
             "/test",
             content_type="application/json",
             json=data,
-            HTTP_X_SPARK_SIGNATURE=webex_teams_generate_signature(request_1),
+            HTTP_X_SPARK_SIGNATURE=webex_generate_signature(request_1),
         )
-        valid, reason = webex_teams_verify_signature(request_3)
+        valid, reason = webex_verify_signature(request_3)
         self.assertTrue(valid)
 
     def test_verify_signature_mattermost(self):

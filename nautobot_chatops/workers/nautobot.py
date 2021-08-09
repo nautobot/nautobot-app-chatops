@@ -38,7 +38,7 @@ def nautobot(subcommand, **kwargs):
 def prompt_for_device(action_id, help_text, dispatcher, devices=None, offset=0):
     """Prompt the user to select a valid device from a drop-down menu."""
     # In the previous implementation, we grouped the devices into subgroups by site.
-    # Unfortunately, while this is possible in Slack, the Adaptive Cards spec (MS Teams / WebEx Teams) can't do it.
+    # Unfortunately, while this is possible in Slack, the Adaptive Cards spec (MS Teams / WebEx) can't do it.
     if devices is None:
         devices = Device.objects.all().order_by("site", "name")
     if not devices:
