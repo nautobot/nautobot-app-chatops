@@ -1,5 +1,5 @@
 """Tests for Nautobot dispatcher class implementations."""
-from unittest.mock import patch
+from unittest.mock import patch, MagicMock
 
 from django.conf import settings
 from django.test import TestCase
@@ -135,6 +135,51 @@ class TestSlackDispatcher(TestCase):
                 channels="456def", content="Testing files upload.", title="Testing files upload title."
             )
 
+    @patch("nautobot_chatops.dispatchers.slack.SlackDispatcher.send_blocks")
+    def test_multi_input_dialog(self, mock_send_blocks):
+        dialog_list = [
+            {
+                "type": "text",
+                "label": "Required Text",
+                "default": "abc",
+                "optional": False,
+            },
+            {
+                "type": "text",
+                "label": "Optional",
+                "default": "",
+                "optional": True
+            },
+        ]
+
+        response = self.dispatcher.multi_input_dialog(
+            "nautobot", "test-multi-input-dialog", "Test Optional Vars", dialog_list
+        )
+
+        self.assertEqual(mock_send_blocks.call_args[0][0][0]["type"], "input")
+        self.assertEqual(mock_send_blocks.call_args[0][0][0]["block_id"], "param_0")
+        self.assertEqual(mock_send_blocks.call_args[0][0][0]["label"]["type"], "plain_text")
+        self.assertEqual(mock_send_blocks.call_args[0][0][0]["label"]["text"], "Required Text")
+        self.assertEqual(mock_send_blocks.call_args[0][0][0]["element"]["type"], "plain_text_input")
+        self.assertEqual(mock_send_blocks.call_args[0][0][0]["element"]["action_id"], "param_0")
+        self.assertEqual(mock_send_blocks.call_args[0][0][0]["element"]["placeholder"]["type"], "plain_text")
+        self.assertEqual(mock_send_blocks.call_args[0][0][0]["element"]["placeholder"]["text"], "Required Text")
+        self.assertEqual(mock_send_blocks.call_args[0][0][0]["element"]["initial_value"], "abc")
+        self.assertFalse(mock_send_blocks.call_args[0][0][0]["optional"])
+        
+        self.assertEqual(mock_send_blocks.call_args[0][0][1]["type"], "input")
+        self.assertEqual(mock_send_blocks.call_args[0][0][1]["block_id"], "param_1")
+        self.assertEqual(mock_send_blocks.call_args[0][0][1]["label"]["type"], "plain_text")
+        self.assertEqual(mock_send_blocks.call_args[0][0][1]["label"]["text"], "Optional")
+        self.assertEqual(mock_send_blocks.call_args[0][0][1]["element"]["type"], "plain_text_input")
+        self.assertEqual(mock_send_blocks.call_args[0][0][1]["element"]["action_id"], "param_1")
+        self.assertEqual(mock_send_blocks.call_args[0][0][1]["element"]["placeholder"]["type"], "plain_text")
+        self.assertEqual(mock_send_blocks.call_args[0][0][1]["element"]["placeholder"]["text"], "Optional")
+        self.assertEqual(mock_send_blocks.call_args[0][0][1]["element"]["initial_value"], "")
+        self.assertTrue(mock_send_blocks.call_args[0][0][1]["optional"])
+
+        self.assertIsInstance(response, MagicMock)
+
 
 class TestMSTeamsDispatcher(TestSlackDispatcher):
     """Test the MSTeamsDispatcher class."""
@@ -163,6 +208,11 @@ class TestMSTeamsDispatcher(TestSlackDispatcher):
         # pylint: disable W0221
         pass
 
+    def test_multi_input_dialog(self):
+        """Not implemented."""
+        # pylint: disable W0221
+        pass
+
 
 class TestWebExDispatcher(TestSlackDispatcher):
     """Test the WebExDispatcher class."""
@@ -187,6 +237,11 @@ class TestWebExDispatcher(TestSlackDispatcher):
 
     def test_send_snippet_title(self):
         """Not implemented."""
+        pass
+
+    def test_multi_input_dialog(self):
+        """Not implemented."""
+        # pylint: disable W0221
         pass
 
     @patch("nautobot_chatops.dispatchers.webex.WebExDispatcher.send_markdown")
@@ -253,6 +308,11 @@ class TestMattermostDispatcher(TestSlackDispatcher):
         pass
 
     def test_send_snippet_title(self):
+        """Not implemented."""
+        # pylint: disable W0221
+        pass
+
+    def test_multi_input_dialog(self):
         """Not implemented."""
         # pylint: disable W0221
         pass
