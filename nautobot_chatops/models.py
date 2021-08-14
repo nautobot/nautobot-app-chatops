@@ -28,9 +28,11 @@ class CommandLog(BaseModel):
 
     command = models.CharField(max_length=64, help_text="Command issued")
     subcommand = models.CharField(max_length=64, help_text="Sub-command issued")
-    params = ArrayField(
-        ArrayField(models.CharField(default="", max_length=255)), default=list, help_text="user_input_parameters"
-    )
+
+    def params_default():
+        return []
+
+    params = models.JSONField(default=params_default, help_text="user_input_parameters")
 
     status = models.CharField(
         max_length=32,
