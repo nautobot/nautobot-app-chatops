@@ -79,17 +79,17 @@ class Migration(migrations.Migration):
         ),
     ]
 
-    if connection.vendor == 'postgresql':
+    if connection.vendor == "postgresql":
         operations.append(
             migrations.AddField(
-                model_name='commandlog',
-                name='params',
+                model_name="commandlog",
+                name="params",
                 field=django.contrib.postgres.fields.ArrayField(
                     base_field=django.contrib.postgres.fields.ArrayField(
                         base_field=models.CharField(default="", max_length=255), size=None
                     ),
                     default=list,
                     size=None,
-                )
+                ),
             ),
         )

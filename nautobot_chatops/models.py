@@ -2,7 +2,6 @@
 
 from django.core.exceptions import ValidationError
 from django.db import models
-from django.contrib.postgres.fields import ArrayField
 
 from nautobot.utilities.fields import ColorField
 from nautobot.extras.models.change_logging import ChangeLoggedModel
@@ -29,7 +28,12 @@ class CommandLog(BaseModel):
     command = models.CharField(max_length=64, help_text="Command issued")
     subcommand = models.CharField(max_length=64, help_text="Sub-command issued")
 
+    @staticmethod
     def params_default():
+        """Provide default for the params field.
+
+        Per Django docs, the default must be a value or a callable.
+        """
         return []
 
     params = models.JSONField(default=params_default, help_text="user_input_parameters")

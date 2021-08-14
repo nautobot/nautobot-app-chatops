@@ -7,13 +7,13 @@ import nautobot_chatops.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('nautobot_chatops', '0001_initial'),
+        ("nautobot_chatops", "0001_initial"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='commandlog',
-            name='params1',
+            model_name="commandlog",
+            name="params1",
             field=models.JSONField(default=nautobot_chatops.models.CommandLog.params_default),
         ),
     ]
