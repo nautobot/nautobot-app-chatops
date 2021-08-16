@@ -365,7 +365,8 @@ class SlackDispatcher(Dispatcher):
                 {
                     type: "text",
                     label: "text displayed next to field"
-                    default: "default-value"
+                    default: "default-value",
+                    optional: True
                 }
 
             Dictionary Fields
@@ -375,6 +376,7 @@ class SlackDispatcher(Dispatcher):
             - choices: A list of tuples which populates the choices in a dropdown selector
             - default: (optional) Default choice of a select menu or initial value to put in a text field.
             - confirm: (optional) If set to True, it will display a "Are you sure?" dialog upon submit.
+            - optional: (optional) If set to True, the field will return NoneType is not specified.
         """
         blocks = []
         callback_id = f"{command} {sub_command}"
@@ -387,7 +389,7 @@ class SlackDispatcher(Dispatcher):
                     default=dialog.get("default", (None, None)),
                     confirm=dialog.get("confirm", False),
                 )
-                blocks.append(self._input_block(action_id, dialog["label"], menu))
+                blocks.append(self._input_block(action_id, dialog["label"], menu, dialog.get("optional", False)))
             if dialog["type"] == "text":
                 textentry = {
                     "type": "plain_text_input",
@@ -395,7 +397,8 @@ class SlackDispatcher(Dispatcher):
                     "placeholder": self.text_element(dialog["label"]),
                     "initial_value": dialog.get("default", "") or "",
                 }
-                blocks.append(self._input_block(action_id, dialog["label"], textentry))
+
+                blocks.append(self._input_block(action_id, dialog["label"], textentry, dialog.get("optional", False)))
 
         return self.send_blocks(blocks, callback_id=callback_id, modal=True, ephemeral=False, title=dialog_title)
 
@@ -411,10 +414,10 @@ class SlackDispatcher(Dispatcher):
         """Construct a block consisting of a set of action elements."""
         return {"type": "actions", "block_id": block_id, "elements": actions}
 
-    def _input_block(self, block_id, label, element):
+    def _input_block(self, block_id, label, element, optional):
         """Construct a block consisting of Input elements."""
         text_obj = self.text_element(label)
-        return {"type": "input", "block_id": block_id, "label": text_obj, "element": element}
+        return {"type": "input", "block_id": block_id, "label": text_obj, "element": element, "optional": optional}
 
     def markdown_block(self, text):
         """Construct a simple Markdown-formatted text block."""

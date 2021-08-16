@@ -531,7 +531,8 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
                 {
                     type: "text",
                     label: "text displayed next to field"
-                    default: "default-value"
+                    default: "default-value",
+                    optional: True
                 }
 
             Dictionary Fields
@@ -541,6 +542,7 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
             - choices: A list of tuples which populates the choices in a dropdown selector
             - default: (optional) Default choice of a select menu or initial value to put in a text field.
             - confirm: (optional) If set to True, it will display a "Are you sure?" dialog upon submit.
+            - optional: (optional) If set to True, the field can is not required and will return an empty variable of NoneType if left blank.
         """
         blocks = []
         callback_id = f"{command} {sub_command}"
@@ -548,7 +550,11 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
             action_id = f"param_{i}"
             if dialog["type"] == "select":
                 select_menu = self.select_element_interactive(
-                    action_id, dialog["choices"], dialog.get("default", (None, None)), dialog.get("confirm", False)
+                    action_id,
+                    dialog["choices"],
+                    dialog.get("default", (None, None)),
+                    dialog.get("confirm", False),
+                    dialog.get("optional", False),
                 )
                 blocks.append(self._input_block(action_id, dialog["label"], select_menu))
             if dialog["type"] == "text":
@@ -557,6 +563,7 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
                     "name": action_id,
                     "display_name": self.text_element(dialog["label"]),
                     "default": dialog.get("default", "") or "",
+                    "optional": dialog.get("optional", False),
                 }
                 blocks.append(self._input_block(action_id, dialog["label"], text_entry))
 
@@ -624,7 +631,7 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
 
         return data
 
-    def select_element_interactive(self, action_id, choices, default=(None, None), confirm=False):
+    def select_element_interactive(self, action_id, choices, default=(None, None), confirm=False, optional=False):
         """Construct a basic selection menu for a dialog with the given choices.
 
         Args:
@@ -632,6 +639,7 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
           choices (list): List of (display, value) tuples
           default (tuple: Default (display, value) to preselect
           confirm (bool): If true (and the platform supports it), prompt the user to confirm their selection
+          optional: (optional) If set to True, the field will return NoneType is not specified.
         """
         default_text, default_value = default
         logger.info("Ignoring: select_element_interactive has no confirm: %s", confirm)
@@ -640,6 +648,7 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
             "name": action_id,
             "placeholder": self.text_element("Select an option"),
             "options": [{"text": self.text_element(choice), "value": value} for choice, value in choices],
+            "optional": optional,
         }
 
         if default_text and default_value:

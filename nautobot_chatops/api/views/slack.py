@@ -204,14 +204,24 @@ class SlackInteractionView(View):
                 for blk_id in sorted_params:
                     for act_id in values[blk_id].values():
                         if act_id["type"] == "static_select":
-                            value = act_id["selected_option"]["value"]
-                            selected_value += f" '{value}'"
+                            try:
+                                value = act_id["selected_option"]["value"]
+                            except (AttributeError, TypeError):
+                                # Error is thrown if no option selected and field is optional
+                                value = None
                         elif act_id["type"] == "plain_text_input":
                             value = act_id["value"]
-                            selected_value += f" '{value}'"
                         else:
                             logger.error(f"Unhandled dialog type {act_id['type']}")
                             return HttpResponse(status=500)
+
+                        # If an optional parameter is passed, it is returned as a NoneType.
+                        # We instead want to return an empty string, otherwise 'None' is returned as a string.
+                        if value:
+                            selected_value += f" '{value}'"
+                        else:
+                            selected_value += " ''"
+
             # Original un-modified single-field handling below
             else:
                 block_id = sorted(values.keys())[0]
@@ -239,6 +249,12 @@ class SlackInteractionView(View):
             logger.error("%s", err)
             # Tried sending 400 error, but the friendly message never made it to slack.
             return HttpResponse(f"'Error: {err}' encountered on command '{action_id} {selected_value}'.")
+
+        # Convert empty parameter strings to NoneType
+        for idx, param in enumerate(params):
+            if not param:
+                params[idx] = None
+
         logger.info(f"command: {command}, subcommand: {subcommand}, params: {params}")
 
         registry = get_commands_registry()

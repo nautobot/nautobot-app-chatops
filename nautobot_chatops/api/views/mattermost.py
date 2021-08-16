@@ -122,6 +122,14 @@ class MattermostInteractionView(View):
 
     http_method_names = ["post"]
 
+    @staticmethod
+    def get_selected_value(cmd):
+        """Returns formatted selected value if one exists."""
+        if cmd:
+            return f" '{cmd}'"
+        else:
+            return " ''"
+
     # pylint: disable=too-many-locals,too-many-return-statements,too-many-branches,too-many-statements
     def post(self, request, *args, **kwargs):
         """Handle an inbound HTTP POST request representing a user interaction with a UI element."""
@@ -222,15 +230,16 @@ class MattermostInteractionView(View):
                     logger.error("Mattermost: %s", err)
                     return HttpResponse(status=400, reason=f"Error: {err} encountered when processing {callback_id}")
                 for i, cmd in enumerate(cmds):
-                    if i == 2:
-                        selected_value += f"'{cmd}'"
-                    elif i > 2:
-                        selected_value += f" '{cmd}'"
+                    if i > 1:
+                        selected_value += self.get_selected_value(cmd)
                 action_id = f"{cmds[0]} {cmds[1]}"
 
                 sorted_params = sorted(values.keys())
                 for blk_id in sorted_params:
-                    selected_value += f" '{values[blk_id]}'"
+                    selected_value += self.get_selected_value(values[blk_id])
+
+                # Remove leading space
+                selected_value = selected_value[1:]
 
             # Original un-modified single-field handling below
             else:
@@ -256,6 +265,11 @@ class MattermostInteractionView(View):
             return HttpResponse(
                 status=400, reason=f"Error: {err} encountered on command '{action_id} {selected_value}'"
             )
+        # Convert empty parameter strings to NoneType
+        for idx, param in enumerate(params):
+            if not param:
+                params[idx] = None
+
         logger.info(f"command: {command}, subcommand: {subcommand}, params: {params}")
 
         registry = get_commands_registry()
