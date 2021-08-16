@@ -308,7 +308,31 @@ class TestMattermostDispatcher(TestSlackDispatcher):
         # pylint: disable W0221
         pass
 
-    def test_multi_input_dialog(self):
-        """Not implemented."""
-        # pylint: disable=W0221
-        pass
+    @patch("nautobot_chatops.dispatchers.mattermost.MattermostDispatcher.send_blocks")
+    def test_multi_input_dialog(self, mock_send_blocks):
+        """Make sure multi_input_dialog() is implemented."""
+        dialog_list = [
+            {
+                "type": "text",
+                "label": "Required Text",
+                "default": "abc",
+                "optional": False,
+            },
+            {"type": "text", "label": "Optional", "default": "", "optional": True},
+        ]
+
+        response = self.dispatcher.multi_input_dialog(
+            "nautobot", "test-multi-input-dialog", "Test Optional Vars", dialog_list
+        )
+
+        self.assertEqual(mock_send_blocks.call_args[0][0][0]["type"], "text")
+        self.assertEqual(mock_send_blocks.call_args[0][0][0]["name"], "param_0")
+        self.assertEqual(mock_send_blocks.call_args[0][0][0]["display_name"], "Required Text")
+        self.assertFalse(mock_send_blocks.call_args[0][0][0]["optional"])
+
+        self.assertEqual(mock_send_blocks.call_args[0][0][1]["type"], "text")
+        self.assertEqual(mock_send_blocks.call_args[0][0][1]["name"], "param_1")
+        self.assertEqual(mock_send_blocks.call_args[0][0][1]["display_name"], "Optional")
+        self.assertTrue(mock_send_blocks.call_args[0][0][1]["optional"])
+
+        self.assertIsInstance(response, MagicMock)
