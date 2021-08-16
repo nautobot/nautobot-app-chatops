@@ -27,14 +27,12 @@ def is_truthy(arg):
 
 # Enforce required configuration parameters
 for key in [
-    "ALLOWED_HOSTS",
-    "POSTGRES_DB",
-    "POSTGRES_USER",
-    "POSTGRES_HOST",
-    "POSTGRES_PASSWORD",
-    "REDIS_HOST",
-    "REDIS_PASSWORD",
-    "SECRET_KEY",
+    "NAUTOBOT_ALLOWED_HOSTS",
+    "NAUTOBOT_DB_USER",
+    "NAUTOBOT_DB_PASSWORD",
+    "NAUTOBOT_REDIS_HOST",
+    "NAUTOBOT_REDIS_PASSWORD",
+    "NAUTOBOT_SECRET_KEY",
 ]:
     if not os.environ.get(key):
         raise ImproperlyConfigured(f"Required environment variable {key} is missing.")
@@ -52,27 +50,24 @@ for key in [
 # access to the server via any other hostnames. The first FQDN in the list will be treated as the preferred name.
 #
 # Example: ALLOWED_HOSTS = ['nautobot.example.com', 'nautobot.internal.local']
-ALLOWED_HOSTS = os.environ["ALLOWED_HOSTS"].split(" ")
+ALLOWED_HOSTS = os.getenv("NAUTOBOT_ALLOWED_HOSTS", "").split(" ")
 
-# PostgreSQL database configuration. See the Django documentation for a complete list of available parameters:
-#   https://docs.djangoproject.com/en/stable/ref/settings/#databases
-DATABASE_PORT = 5432 if not os.environ.get("POSTGRES_PORT", False) else int(os.environ["POSTGRES_PORT"])
 DATABASES = {
     "default": {
-        "NAME": os.getenv("POSTGRES_DB", ""),  # Database name
-        "USER": os.getenv("POSTGRES_USER", ""),  # Database username
-        "PASSWORD": os.getenv("POSTGRES_PASSWORD", ""),  # Datbase password
-        "HOST": os.getenv("POSTGRES_HOST", "localhost"),  # Database server
-        "PORT": DATABASE_PORT,  # Database port (leave blank for default)
+        "NAME": os.getenv("NAUTOBOT_DB_NAME", "nautobot"),  # Database name
+        "USER": os.getenv("NAUTOBOT_DB_USER", ""),  # Database username
+        "PASSWORD": os.getenv("NAUTOBOT_DB_PASSWORD", ""),  # Datbase password
+        "HOST": os.getenv("NAUTOBOT_DB_HOST", "localhost"),  # Database server
+        "PORT": os.getenv("NAUTOBOT_DB_PORT", ""),  # Database port (leave blank for default)
         "CONN_MAX_AGE": int(os.environ.get("NAUTOBOT_DB_TIMEOUT", 300)),  # Database timeout
-        "ENGINE": "django.db.backends.postgresql",  # Database driver (Postres only supported!)
+        "ENGINE": os.getenv("NAUTOBOT_DB_ENGINE", "django.db.backends.postgresql"),  # Database driver
     }
 }
 
 # Redis variables
-REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
-REDIS_PORT = os.getenv("REDIS_PORT", "6379")
-REDIS_PASSWORD = os.getenv("REDIS_PASSWORD", "")
+REDIS_HOST = os.getenv("NAUTOBOT_REDIS_HOST", "localhost")
+REDIS_PORT = os.getenv("NAUTOBOT_REDIS_PORT", "6379")
+REDIS_PASSWORD = os.getenv("NAUTOBOT_REDIS_PASSWORD", "")
 
 # Check for Redis SSL
 REDIS_SCHEME = "redis"
@@ -104,7 +99,7 @@ CACHEOPS_REDIS = f"{REDIS_SCHEME}://:{REDIS_PASSWORD}@{REDIS_HOST}:{REDIS_PORT}/
 # For optimal security, SECRET_KEY should be at least 50 characters in length and contain a mix of letters, numbers, and
 # symbols. Nautobot will not run without this defined. For more information, see
 # https://docs.djangoproject.com/en/stable/ref/settings/#std:setting-SECRET_KEY
-SECRET_KEY = os.environ["SECRET_KEY"]
+SECRET_KEY = os.environ["NAUTOBOT_SECRET_KEY"]
 
 
 #########################
