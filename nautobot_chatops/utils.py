@@ -2,6 +2,7 @@
 
 from datetime import datetime, timezone
 import logging
+import sys
 
 from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
@@ -16,9 +17,23 @@ logger = logging.getLogger(__name__)
 try:
     from nautobot.core.celery import nautobot_task
 
+    CELERY_WORKER = True
+
     @nautobot_task
-    def enqueue_task(function, subcommand, params, dispatcher_class, context):
-        """Enqueue task with Celery worker."""
+    def enqueue_task(command, subcommand, params, dispatcher_module, dispatcher_name, context):
+        """Enqueue task with Celery worker.
+
+        Celery cannot serialize/deserialize objects, instead of passing the
+        function, registry or dispatcher_class, we will have to look them up.
+        """
+        # import done here instead of up top to prevent circular imports.
+        from nautobot_chatops.workers import get_commands_registry
+
+        registry = get_commands_registry()
+        function = registry[command]["function"]
+        # Get dispatcher class from module
+        dispatcher_class = getattr(sys.modules[dispatcher_module], dispatcher_name)
+
         return function(subcommand, params=params, dispatcher_class=dispatcher_class, context=context)
 
 
@@ -26,6 +41,8 @@ except ImportError:
     logger.info("INFO: Celery was not found - using Django RQ Worker")
 
     from django_rq import get_queue
+
+    CELERY_WORKER = False
 
     def enqueue_task(function, subcommand, params, dispatcher_class, context):
         """Enqueue task with Django RQ worker."""
@@ -179,11 +196,21 @@ def check_and_enqueue_command(
         return response
 
     # If we made it here, we're permitted. Enqueue it for the worker
-    enqueue_task(
-        registry[command]["function"],
-        subcommand,
-        params=params,
-        dispatcher_class=dispatcher_class,
-        context=context,
-    )
+    if CELERY_WORKER:
+        enqueue_task.delay(
+            command,
+            subcommand,
+            params=params,
+            dispatcher_module=dispatcher_class.__module__,
+            dispatcher_name=dispatcher_class.__name__,
+            context=context,
+        )
+    else:
+        enqueue_task(
+            registry[command]["function"],
+            subcommand,
+            params=params,
+            dispatcher_class=dispatcher_class,
+            context=context,
+        )
     return response

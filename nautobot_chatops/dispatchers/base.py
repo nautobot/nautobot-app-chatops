@@ -1,5 +1,6 @@
 """Generic base class modeling the API for sending messages to a generic chat platform."""
 
+import copy
 import logging
 
 from django.templatetags.static import static
