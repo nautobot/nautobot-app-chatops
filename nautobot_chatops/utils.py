@@ -5,13 +5,37 @@ import logging
 
 from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
-from django_rq import get_queue
 
 from nautobot_chatops.choices import AccessGrantTypeChoices, CommandStatusChoices
 from nautobot_chatops.models import AccessGrant, CommandLog
 from nautobot_chatops.metrics import request_command_cntr
 
 logger = logging.getLogger(__name__)
+
+
+try:
+    from nautobot.core.celery import nautobot_task
+
+    @nautobot_task
+    def enqueue_task(function, subcommand, params, dispatcher_class, context):
+        """Enqueue task with Celery worker."""
+        return function(subcommand, params=params, dispatcher_class=dispatcher_class, context=context)
+
+
+except ImportError:
+    logger.info("INFO: Celery was not found - using Django RQ Worker")
+
+    from django_rq import get_queue
+
+    def enqueue_task(function, subcommand, params, dispatcher_class, context):
+        """Enqueue task with Django RQ worker."""
+        return get_queue("default").enqueue(
+            function,
+            subcommand,
+            params=params,
+            dispatcher_class=dispatcher_class,
+            context=context,
+        )
 
 
 def create_command_log(dispatcher, registry, command, subcommand, params=()):
@@ -155,7 +179,7 @@ def check_and_enqueue_command(
         return response
 
     # If we made it here, we're permitted. Enqueue it for the worker
-    get_queue("default").enqueue(
+    enqueue_task(
         registry[command]["function"],
         subcommand,
         params=params,
