@@ -28,15 +28,7 @@ class CommandLog(BaseModel):
     command = models.CharField(max_length=64, help_text="Command issued")
     subcommand = models.CharField(max_length=64, help_text="Sub-command issued")
 
-    @staticmethod
-    def params_default():
-        """Provide default for the params field.
-
-        Per Django docs, the default must be a value or a callable.
-        """
-        return []
-
-    params = models.JSONField(default=params_default, help_text="user_input_parameters")
+    params = models.JSONField(default=list, help_text="user_input_parameters")
 
     status = models.CharField(
         max_length=32,

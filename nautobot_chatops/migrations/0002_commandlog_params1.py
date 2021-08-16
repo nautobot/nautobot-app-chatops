@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="commandlog",
             name="params1",
-            field=models.JSONField(default=nautobot_chatops.models.CommandLog.params_default),
+            field=models.JSONField(default=list),
         ),
     ]
