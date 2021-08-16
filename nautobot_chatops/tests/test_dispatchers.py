@@ -137,6 +137,7 @@ class TestSlackDispatcher(TestCase):
 
     @patch("nautobot_chatops.dispatchers.slack.SlackDispatcher.send_blocks")
     def test_multi_input_dialog(self, mock_send_blocks):
+        """Make sure multi_input_dialog() is implemented."""
         dialog_list = [
             {
                 "type": "text",
@@ -144,12 +145,7 @@ class TestSlackDispatcher(TestCase):
                 "default": "abc",
                 "optional": False,
             },
-            {
-                "type": "text",
-                "label": "Optional",
-                "default": "",
-                "optional": True
-            },
+            {"type": "text", "label": "Optional", "default": "", "optional": True},
         ]
 
         response = self.dispatcher.multi_input_dialog(
@@ -166,7 +162,7 @@ class TestSlackDispatcher(TestCase):
         self.assertEqual(mock_send_blocks.call_args[0][0][0]["element"]["placeholder"]["text"], "Required Text")
         self.assertEqual(mock_send_blocks.call_args[0][0][0]["element"]["initial_value"], "abc")
         self.assertFalse(mock_send_blocks.call_args[0][0][0]["optional"])
-        
+
         self.assertEqual(mock_send_blocks.call_args[0][0][1]["type"], "input")
         self.assertEqual(mock_send_blocks.call_args[0][0][1]["block_id"], "param_1")
         self.assertEqual(mock_send_blocks.call_args[0][0][1]["label"]["type"], "plain_text")
@@ -210,7 +206,7 @@ class TestMSTeamsDispatcher(TestSlackDispatcher):
 
     def test_multi_input_dialog(self):
         """Not implemented."""
-        # pylint: disable W0221
+        # pylint: disable=W0221
         pass
 
 
@@ -241,7 +237,7 @@ class TestWebExDispatcher(TestSlackDispatcher):
 
     def test_multi_input_dialog(self):
         """Not implemented."""
-        # pylint: disable W0221
+        # pylint: disable=W0221
         pass
 
     @patch("nautobot_chatops.dispatchers.webex.WebExDispatcher.send_markdown")
@@ -314,5 +310,5 @@ class TestMattermostDispatcher(TestSlackDispatcher):
 
     def test_multi_input_dialog(self):
         """Not implemented."""
-        # pylint: disable W0221
+        # pylint: disable=W0221
         pass
