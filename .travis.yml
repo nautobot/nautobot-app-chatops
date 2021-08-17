@@ -15,6 +15,7 @@ python:
 
 env:
   - "INVOKE_NAUTOBOT_CHATOPS_NAUTOBOT_VER=1.0.2"
+  - "INVOKE_NAUTOBOT_CHATOPS_NAUTOBOT_VER=1.1.2"
 
 services:
   - "docker"

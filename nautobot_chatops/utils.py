@@ -27,6 +27,8 @@ try:
         function, registry or dispatcher_class, we will have to look them up.
         """
         # import done here instead of up top to prevent circular imports.
+        # Disabling cyclic-import as this does not affect the worker.
+        # pylint: disable=import-outside-toplevel,cyclic-import
         from nautobot_chatops.workers import get_commands_registry
 
         registry = get_commands_registry()
@@ -43,16 +45,6 @@ except ImportError:
     from django_rq import get_queue
 
     CELERY_WORKER = False
-
-    def enqueue_task(function, subcommand, params, dispatcher_class, context):
-        """Enqueue task with Django RQ worker."""
-        return get_queue("default").enqueue(
-            function,
-            subcommand,
-            params=params,
-            dispatcher_class=dispatcher_class,
-            context=context,
-        )
 
 
 def create_command_log(dispatcher, registry, command, subcommand, params=()):
@@ -206,7 +198,7 @@ def check_and_enqueue_command(
             context=context,
         )
     else:
-        enqueue_task(
+        get_queue("default").enqueue(
             registry[command]["function"],
             subcommand,
             params=params,
