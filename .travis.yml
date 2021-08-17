@@ -14,6 +14,7 @@ python:
   - 3.8
 
 # Testing 1.0.3 as it is still pre-Celery, but has the choices test fix nautobot#457
+# 1.0.2 would also work, it would just skip the choices test.
 env:
   - "INVOKE_NAUTOBOT_CHATOPS_NAUTOBOT_VER=1.0.3"
   - "INVOKE_NAUTOBOT_CHATOPS_NAUTOBOT_VER=1.1.2"

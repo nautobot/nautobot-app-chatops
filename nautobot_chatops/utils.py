@@ -36,11 +36,10 @@ try:
 
         return function(subcommand, params=params, dispatcher_class=dispatcher_class, context=context)
 
-    def enqueue_task(command, subcommand, params, dispatcher_class, context, function=None):
+    def enqueue_task(*, command, subcommand, params, dispatcher_class, context, **kwargs):
         """Enqueue task with Celery worker."""
         # Since celery can't deserialize class, we will discard function and
         # send the command instead.
-        _ = function
 
         return celery_worker_task.delay(
             command,
@@ -57,10 +56,9 @@ except ImportError:
 
     from django_rq import get_queue
 
-    def enqueue_task(command, subcommand, params, dispatcher_class, context, function=None):
+    def enqueue_task(*, function, subcommand, params, dispatcher_class, context, **kwargs):
         """Enqueue task with Django RQ Worker."""
         # RQ will handle passing the function, so we can discard the command.
-        _ = command
 
         return get_queue("default").enqueue(
             function,
@@ -213,8 +211,8 @@ def check_and_enqueue_command(
 
     # If we made it here, we're permitted. Enqueue it for the worker
     enqueue_task(
-        command,
-        subcommand,
+        command=command,
+        subcommand=subcommand,
         params=params,
         dispatcher_class=dispatcher_class,
         context=context,

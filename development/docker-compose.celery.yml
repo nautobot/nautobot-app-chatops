@@ -7,7 +7,7 @@ services:
       - "dev.env"
       - "creds.env"
     tty: true
-    entrypoint: "nautobot-server celery worker -B -l INFO"
+    entrypoint: "nautobot-server celery worker -l INFO"
     depends_on:
       - "nautobot"
     healthcheck:
