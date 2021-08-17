@@ -17,11 +17,9 @@ logger = logging.getLogger(__name__)
 try:
     from nautobot.core.celery import nautobot_task
 
-    CELERY_WORKER = True
-
     @nautobot_task
-    def enqueue_task(command, subcommand, params, dispatcher_module, dispatcher_name, context):
-        """Enqueue task with Celery worker.
+    def celery_worker_task(command, subcommand, params, dispatcher_module, dispatcher_name, context):
+        """Task executed by Celery worker.
 
         Celery cannot serialize/deserialize objects, instead of passing the
         function, registry or dispatcher_class, we will have to look them up.
@@ -38,13 +36,39 @@ try:
 
         return function(subcommand, params=params, dispatcher_class=dispatcher_class, context=context)
 
+    def enqueue_task(command, subcommand, params, dispatcher_class, context, function=None):
+        """Enqueue task with Celery worker."""
+        # Since celery can't deserialize class, we will discard function and
+        # send the command instead.
+        _ = function
+
+        return celery_worker_task.delay(
+            command,
+            subcommand,
+            params=params,
+            dispatcher_module=dispatcher_class.__module__,
+            dispatcher_name=dispatcher_class.__name__,
+            context=context,
+        )
+
 
 except ImportError:
     logger.info("INFO: Celery was not found - using Django RQ Worker")
 
     from django_rq import get_queue
 
-    CELERY_WORKER = False
+    def enqueue_task(command, subcommand, params, dispatcher_class, context, function=None):
+        """Enqueue task with Django RQ Worker."""
+        # RQ will handle passing the function, so we can discard the command.
+        _ = command
+
+        return get_queue("default").enqueue(
+            function,
+            subcommand,
+            params=params,
+            dispatcher_class=dispatcher_class,
+            context=context,
+        )
 
 
 def create_command_log(dispatcher, registry, command, subcommand, params=()):
@@ -188,21 +212,12 @@ def check_and_enqueue_command(
         return response
 
     # If we made it here, we're permitted. Enqueue it for the worker
-    if CELERY_WORKER:
-        enqueue_task.delay(
-            command,
-            subcommand,
-            params=params,
-            dispatcher_module=dispatcher_class.__module__,
-            dispatcher_name=dispatcher_class.__name__,
-            context=context,
-        )
-    else:
-        get_queue("default").enqueue(
-            registry[command]["function"],
-            subcommand,
-            params=params,
-            dispatcher_class=dispatcher_class,
-            context=context,
-        )
+    enqueue_task(
+        command,
+        subcommand,
+        params=params,
+        dispatcher_class=dispatcher_class,
+        context=context,
+        function=registry[command]["function"],
+    )
     return response
