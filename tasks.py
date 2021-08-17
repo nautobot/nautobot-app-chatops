@@ -35,7 +35,7 @@ def is_truthy(arg):
 # Use pyinvoke configuration for default values, see http://docs.pyinvoke.org/en/stable/concepts/configuration.html
 # Variables may be overwritten in invoke.yml or by the environment variables INVOKE_NAUTOBOT_CHATOPS_xxx
 
-# To test with celery support first run `poetry lock` to update your lock file, then 
+# To test with celery support first run `poetry lock` to update your lock file, then
 # change nautobot_ver to match the lock file and add docker-compose.celery.yml to the compose_files
 namespace = Collection("nautobot_chatops")
 namespace.configure(
