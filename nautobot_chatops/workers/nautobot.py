@@ -388,6 +388,14 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
                 f'Unknown filter type "{filter_type}"',
             )  # command did not run to completion and therefore should not be logged
 
+        # Check on empty choice list, send an error back
+        if not choices:
+            dispatcher.send_markdown(
+                message=f"Unable to apply filter on '{filter_type}', please validate that data is present for a filter",
+                ephemeral=True
+            )
+            return False
+
         if filter_type != "device":
             dispatcher.prompt_from_menu(
                 f"nautobot get-interface-connections {filter_type}",
