@@ -29,17 +29,18 @@ try:
         # pylint: disable=import-outside-toplevel,cyclic-import
         from nautobot_chatops.workers import get_commands_registry
 
+        # Looking up the function from the registry using the command.
         registry = get_commands_registry()
         function = registry[command]["function"]
-        # Get dispatcher class from module
+        # Get dispatcher class from module, since the module is already loaded, we can use
+        # sys.modules to map the dispatcher module string to the module. Then pull the class
+        # using getattr.
         dispatcher_class = getattr(sys.modules[dispatcher_module], dispatcher_name)
 
         return function(subcommand, params=params, dispatcher_class=dispatcher_class, context=context)
 
     def enqueue_task(*, command, subcommand, params, dispatcher_class, context, **kwargs):
         """Enqueue task with Celery worker."""
-        # Since celery can't deserialize class, we will discard function and
-        # send the command instead.
 
         return celery_worker_task.delay(
             command,
@@ -58,7 +59,6 @@ except ImportError:
 
     def enqueue_task(*, function, subcommand, params, dispatcher_class, context, **kwargs):
         """Enqueue task with Django RQ Worker."""
-        # RQ will handle passing the function, so we can discard the command.
 
         return get_queue("default").enqueue(
             function,
