@@ -41,7 +41,6 @@ try:
 
     def enqueue_task(*, command, subcommand, params, dispatcher_class, context, **kwargs):
         """Enqueue task with Celery worker."""
-
         return celery_worker_task.delay(
             command,
             subcommand,
@@ -59,7 +58,6 @@ except ImportError:
 
     def enqueue_task(*, function, subcommand, params, dispatcher_class, context, **kwargs):
         """Enqueue task with Django RQ Worker."""
-
         return get_queue("default").enqueue(
             function,
             subcommand,
