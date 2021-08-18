@@ -266,3 +266,7 @@ TIME_ZONE = os.environ.get("TIME_ZONE", "UTC")
 # Django Debug Toolbar
 TESTING = len(sys.argv) > 1 and sys.argv[1] == "test"
 DEBUG_TOOLBAR_CONFIG = {"SHOW_TOOLBAR_CALLBACK": lambda _request: DEBUG and not TESTING}
+#
+# Celery settings are not defined here because they can be overloaded with
+# environment variables. By default they use `CACHES["default"]["LOCATION"]`.
+#

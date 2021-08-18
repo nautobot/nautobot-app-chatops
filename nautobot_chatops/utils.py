@@ -2,16 +2,69 @@
 
 from datetime import datetime, timezone
 import logging
+import sys
 
 from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
-from django_rq import get_queue
 
 from nautobot_chatops.choices import AccessGrantTypeChoices, CommandStatusChoices
 from nautobot_chatops.models import AccessGrant, CommandLog
 from nautobot_chatops.metrics import request_command_cntr
 
 logger = logging.getLogger(__name__)
+
+
+try:
+    from nautobot.core.celery import nautobot_task
+
+    @nautobot_task
+    def celery_worker_task(command, subcommand, params, dispatcher_module, dispatcher_name, context):
+        """Task executed by Celery worker.
+
+        Celery cannot serialize/deserialize objects, instead of passing the
+        function, registry or dispatcher_class, we will have to look them up.
+        """
+        # import done here instead of up top to prevent circular imports.
+        # Disabling cyclic-import as this does not affect the worker.
+        # pylint: disable=import-outside-toplevel,cyclic-import
+        from nautobot_chatops.workers import get_commands_registry
+
+        # Looking up the function from the registry using the command.
+        registry = get_commands_registry()
+        function = registry[command]["function"]
+        # Get dispatcher class from module, since the module is already loaded, we can use
+        # sys.modules to map the dispatcher module string to the module. Then pull the class
+        # using getattr.
+        dispatcher_class = getattr(sys.modules[dispatcher_module], dispatcher_name)
+
+        return function(subcommand, params=params, dispatcher_class=dispatcher_class, context=context)
+
+    def enqueue_task(*, command, subcommand, params, dispatcher_class, context, **kwargs):
+        """Enqueue task with Celery worker."""
+        return celery_worker_task.delay(
+            command,
+            subcommand,
+            params=params,
+            dispatcher_module=dispatcher_class.__module__,
+            dispatcher_name=dispatcher_class.__name__,
+            context=context,
+        )
+
+
+except ImportError:
+    logger.info("INFO: Celery was not found - using Django RQ Worker")
+
+    from django_rq import get_queue
+
+    def enqueue_task(*, function, subcommand, params, dispatcher_class, context, **kwargs):
+        """Enqueue task with Django RQ Worker."""
+        return get_queue("default").enqueue(
+            function,
+            subcommand,
+            params=params,
+            dispatcher_class=dispatcher_class,
+            context=context,
+        )
 
 
 def create_command_log(dispatcher, registry, command, subcommand, params=()):
@@ -155,11 +208,12 @@ def check_and_enqueue_command(
         return response
 
     # If we made it here, we're permitted. Enqueue it for the worker
-    get_queue("default").enqueue(
-        registry[command]["function"],
-        subcommand,
+    enqueue_task(
+        command=command,
+        subcommand=subcommand,
         params=params,
         dispatcher_class=dispatcher_class,
         context=context,
+        function=registry[command]["function"],
     )
     return response

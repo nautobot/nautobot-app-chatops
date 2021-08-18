@@ -28,6 +28,7 @@ class CommandTokenTest(APIViewTestCases.APIViewTestCase):  # pylint: disable=too
         {"comment": "Test 6", "platform": "mattermost", "token": "token6"},
     ]
     bulk_update_data = {"comment": "Testing"}
+    choices_fields = ["platform"]
 
     @classmethod
     def setUpTestData(cls):
@@ -48,6 +49,7 @@ class AccessGrantTest(APIViewTestCases.APIViewTestCase):  # pylint: disable=too-
         {"command": "*", "subcommand": "*", "grant_type": "user", "name": "test6", "value": "*"},
     ]
     bulk_update_data = {"command": "nautobot"}
+    choices_fields = ["grant_type"]
 
     @classmethod
     def setUpTestData(cls):

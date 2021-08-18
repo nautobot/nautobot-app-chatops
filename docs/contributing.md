@@ -40,6 +40,8 @@ provided `creds.env.example` file to `creds.env` and customizing the contents of
 
 ### Testing
 
+While the plugin itself supports any general release version of Nautobot, the testing requires at minimum 1.0.2.
+
 ```
   tests            Run all tests for this plugin.
   pylint           Run pylint code analysis.

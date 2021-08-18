@@ -1,0 +1,17 @@
+---
+version: "3.4"
+services:
+  celery:
+    image: "nautobot-chatops-plugin/nautobot:${NAUTOBOT_VER}-py${PYTHON_VER}"
+    env_file:
+      - "dev.env"
+      - "creds.env"
+    tty: true
+    entrypoint: "nautobot-server celery worker -l INFO"
+    depends_on:
+      - "nautobot"
+    healthcheck:
+      disable: true
+    volumes:
+      - "./nautobot_config.py:/opt/nautobot/nautobot_config.py"
+      - "../:/source"
