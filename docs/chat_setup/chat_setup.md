@@ -61,6 +61,24 @@ The plugin behavior can be controlled with the following list of general setting
 
 TODO: clarify the above statement, starting from "The plugin behavior can be controlled . . ."
 
+### Run Migrations
+
+Once the setup is done, the Nautobot `post_install` command needs to be run. As the _Nautobot user_ (which following Nautobot install docs is `nautobot`) execute:
+
+```bash
+nautobot-server post_upgrade
+```
+
+This command runs migrations and clears the cache as necessary.
+
+### Restart Nautobot
+
+As a root user, restart the Nautobot services.
+
+```bash
+systemctl restart nautobot nautobot-worker
+```
+
 ## Server Configuration
 
 As the `nautobot` user, you will now edit the `nautobot_config.py` file.  
