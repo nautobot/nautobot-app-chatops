@@ -394,7 +394,10 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
                 message=f"Unable to filter by '{filter_type}', as it appears there is no corresponding data available",
                 ephemeral=True,
             )
-            return CommandStatusChoices.STATUS_FAILED
+            return (
+                CommandStatusChoices.STATUS_FAILED,
+                f'No choices found when filtering by "{filter_type}"',
+            )
 
         if filter_type != "device":
             dispatcher.prompt_from_menu(
