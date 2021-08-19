@@ -391,7 +391,7 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
         # Check on empty choice list, send an error back
         if not choices:
             dispatcher.send_markdown(
-                message=f"Unable to apply filter on '{filter_type}', please validate that data is present for a filter",
+                message=f"Unable to filter by '{filter_type}', as it appears there is no corresponding data available",
                 ephemeral=True
             )
             return False
