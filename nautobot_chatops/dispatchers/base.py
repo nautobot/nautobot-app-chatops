@@ -236,6 +236,11 @@ class Dispatcher:
         return f"**{text}**"
 
     # pylint: disable=no-self-use
+    def hyperlink(self, text, url):
+        """Create Hyperlinks."""
+        return f"[{text}]({url})"
+
+    # pylint: disable=no-self-use
     def monospace(self, text):
         """Mark text as monospace."""
         return f"`{text}`"

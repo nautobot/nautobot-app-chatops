@@ -976,3 +976,15 @@ def get_circuit_providers(dispatcher, *args):
 
     dispatcher.send_large_table(header, rows)
     return CommandStatusChoices.STATUS_SUCCEEDED
+
+
+@subcommand_of("nautobot")
+def about(dispatcher, *args):
+    """Provide link for more information on Nautobot Apps."""
+    url = "https://www.networktocode.com/nautobot/apps/"
+    blocks = [
+        dispatcher.markdown_block(f"More Chat commands can be found at {dispatcher.hyperlink('Nautobot Apps', url)}"),
+    ]
+
+    dispatcher.send_blocks(blocks)
+    return CommandStatusChoices.STATUS_SUCCEEDED

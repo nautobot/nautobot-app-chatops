@@ -410,6 +410,10 @@ class SlackDispatcher(Dispatcher):
         """Mark text as bold."""
         return f"*{text}*"
 
+    def hyperlink(self, text, url):
+        """Create Hyperlinks."""
+        return f"<{url}|{text}>"
+
     def actions_block(self, block_id, actions):
         """Construct a block consisting of a set of action elements."""
         return {"type": "actions", "block_id": block_id, "elements": actions}
