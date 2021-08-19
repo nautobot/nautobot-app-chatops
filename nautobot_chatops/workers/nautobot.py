@@ -394,7 +394,7 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
                 message=f"Unable to apply filter on '{filter_type}', please validate that data is present for a filter",
                 ephemeral=True
             )
-            return False
+            return CommandStatusChoices.STATUS_FAILED
 
         if filter_type != "device":
             dispatcher.prompt_from_menu(
