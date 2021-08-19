@@ -67,6 +67,7 @@ load-plugins="pylint_django"
 disable=""",
     django-not-configured,
     too-few-public-methods,
+    too-many-lines,
     """
 
 [tool.pylint.miscellaneous]
