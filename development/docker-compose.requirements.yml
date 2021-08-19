@@ -8,8 +8,6 @@ services:
       - "creds.env"
     volumes:
       - "postgres_data:/var/lib/postgresql/data"
-    ports:
-      - "5432:5432"
   redis:
     image: "redis:6-alpine"
     command:
@@ -19,7 +17,5 @@ services:
     env_file:
       - "dev.env"
       - "creds.env"
-    ports:
-      - "6379:6379"
 volumes:
   postgres_data: {}
