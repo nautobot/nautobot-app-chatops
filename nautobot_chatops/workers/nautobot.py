@@ -392,7 +392,7 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
         if not choices:
             dispatcher.send_markdown(
                 message=f"Unable to filter by '{filter_type}', as it appears there is no corresponding data available",
-                ephemeral=True
+                ephemeral=True,
             )
             return CommandStatusChoices.STATUS_FAILED
 
