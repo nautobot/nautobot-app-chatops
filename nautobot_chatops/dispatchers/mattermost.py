@@ -498,7 +498,13 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
             "name": "Cancel",
             "integration": {
                 "url": self.context.get("integration_url", ""),
-                "context": {"type": "button", "action_id": "action", "value": "cancel", "action": "cancel"},
+                "context": {
+                    "type": "button",
+                    "action_id": "action",
+                    "value": "cancel",
+                    "action": "cancel",
+                    "token": self.context.get("token", ""),
+                },
             },
         }
 

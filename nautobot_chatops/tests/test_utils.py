@@ -38,7 +38,7 @@ def nada():
     """No-op function for testing purposes."""
 
 
-@patch("nautobot_chatops.utils.get_queue")
+@patch("nautobot_chatops.utils.enqueue_task")
 class TestCheckAndEnqueue(TestCase):
     """Verify that access grants are correctly implemented."""
 
@@ -48,9 +48,9 @@ class TestCheckAndEnqueue(TestCase):
         "z": {"function": nada, "subcommands": {}},
     }
 
-    def test_default_deny(self, mock_get_queue):
+    def test_default_deny(self, mock_enqueue_task):
         """With no AccessGrants in the database, all requests are denied by default."""
-        mock_get_queue.reset_mock()
+        mock_enqueue_task.reset_mock()
         check_and_enqueue_command(
             self.mock_registry,
             "x",
@@ -64,7 +64,7 @@ class TestCheckAndEnqueue(TestCase):
             "Access to this bot and/or command is not permitted in organization 11, "
             "ask your Nautobot administrator to define an appropriate Access Grant",
         )
-        mock_get_queue.assert_not_called()
+        mock_enqueue_task.assert_not_called()
 
         # Add an organization access grant
         AccessGrant.objects.create(
@@ -74,7 +74,7 @@ class TestCheckAndEnqueue(TestCase):
             name="org1",
             value="11",
         )
-        mock_get_queue.reset_mock()
+        mock_enqueue_task.reset_mock()
         check_and_enqueue_command(
             self.mock_registry,
             "x",
@@ -88,7 +88,7 @@ class TestCheckAndEnqueue(TestCase):
             "Access to this bot and/or command is not permitted in channel 111, "
             "ask your Nautobot administrator to define an appropriate Access Grant",
         )
-        mock_get_queue.assert_not_called()
+        mock_enqueue_task.assert_not_called()
 
         # Add a channel access grant
         AccessGrant.objects.create(
@@ -98,7 +98,7 @@ class TestCheckAndEnqueue(TestCase):
             name="channel1",
             value="111",
         )
-        mock_get_queue.reset_mock()
+        mock_enqueue_task.reset_mock()
         check_and_enqueue_command(
             self.mock_registry,
             "x",
@@ -112,7 +112,7 @@ class TestCheckAndEnqueue(TestCase):
             "Access to this bot and/or command is not permitted by user 1111, "
             "ask your Nautobot administrator to define an appropriate Access Grant",
         )
-        mock_get_queue.assert_not_called()
+        mock_enqueue_task.assert_not_called()
 
         # Add a user access grant - now things should be permitted
         AccessGrant.objects.create(
@@ -122,7 +122,7 @@ class TestCheckAndEnqueue(TestCase):
             name="user1",
             value="1111",
         )
-        mock_get_queue.reset_mock()
+        mock_enqueue_task.reset_mock()
         check_and_enqueue_command(
             self.mock_registry,
             "x",
@@ -132,7 +132,7 @@ class TestCheckAndEnqueue(TestCase):
             MockDispatcher.reset(),
         )
         self.assertIsNone(MockDispatcher.error)
-        mock_get_queue.assert_called_once()
+        mock_enqueue_task.assert_called_once()
 
     # pylint: disable=no-self-use
     def setup_db(self):
@@ -226,12 +226,12 @@ class TestCheckAndEnqueue(TestCase):
             value="*",
         )
 
-    def test_permitted_globally(self, mock_get_queue):
+    def test_permitted_globally(self, mock_enqueue_task):
         """A global access grant applies to all commands and subcommands."""
         self.setup_db()
         # user1/channel1/org1 are globally permitted
         for cmd, subcmd in [("x", "a"), ("x", "b"), ("y", "a"), ("z", "a")]:
-            mock_get_queue.reset_mock()
+            mock_enqueue_task.reset_mock()
             check_and_enqueue_command(
                 self.mock_registry,
                 cmd,
@@ -241,15 +241,15 @@ class TestCheckAndEnqueue(TestCase):
                 MockDispatcher.reset(),
             )
             self.assertIsNone(MockDispatcher.error)
-            mock_get_queue.assert_called_once()
+            mock_enqueue_task.assert_called_once()
 
-    def test_permitted_command(self, mock_get_queue):
+    def test_permitted_command(self, mock_enqueue_task):
         """A per-command access grant applies to all subcommands under the command, and no others."""
         self.setup_db()
         # user2/channel2/org2 are explicitly permitted to subcommands of command "x"
         # all users/channels/orgs are permitted to subcommands of command "y"
         for cmd, subcmd in [("x", "a"), ("x", "b"), ("y", "a")]:
-            mock_get_queue.reset_mock()
+            mock_enqueue_task.reset_mock()
             check_and_enqueue_command(
                 self.mock_registry,
                 cmd,
@@ -259,9 +259,9 @@ class TestCheckAndEnqueue(TestCase):
                 MockDispatcher.reset(),
             )
             self.assertIsNone(MockDispatcher.error)
-            mock_get_queue.assert_called_once()
+            mock_enqueue_task.assert_called_once()
         for cmd, subcmd in [("z", "a")]:
-            mock_get_queue.reset_mock()
+            mock_enqueue_task.reset_mock()
             check_and_enqueue_command(
                 self.mock_registry,
                 cmd,
@@ -275,16 +275,16 @@ class TestCheckAndEnqueue(TestCase):
                 "Access to this bot and/or command is not permitted in organization 22, "
                 "ask your Nautobot administrator to define an appropriate Access Grant",
             )
-            mock_get_queue.assert_not_called()
+            mock_enqueue_task.assert_not_called()
 
-    def test_permitted_subcommand(self, mock_get_queue):
+    def test_permitted_subcommand(self, mock_enqueue_task):
         """A per-subcommand access grant applies that subcommands under that command, and no others."""
         self.setup_db()
         # user3/channel3/org3 are only permitted to subcommand "a" of command "x"
         # all users/channels/orgs are permitted to subcommands of command "y"
         # 3rd and 4th use cases are for verifying that the help commands will execute
         for cmd, subcmd in [("x", "a"), ("y", "a"), ("x", ""), ("y", "")]:
-            mock_get_queue.reset_mock()
+            mock_enqueue_task.reset_mock()
             check_and_enqueue_command(
                 self.mock_registry,
                 cmd,
@@ -294,10 +294,10 @@ class TestCheckAndEnqueue(TestCase):
                 MockDispatcher.reset(),
             )
             self.assertIsNone(MockDispatcher.error)
-            mock_get_queue.assert_called_once()
+            mock_enqueue_task.assert_called_once()
 
         for cmd, subcmd in [("x", "b"), ("z", "a"), ("z", "")]:
-            mock_get_queue.reset_mock()
+            mock_enqueue_task.reset_mock()
             check_and_enqueue_command(
                 self.mock_registry,
                 cmd,
@@ -311,13 +311,13 @@ class TestCheckAndEnqueue(TestCase):
                 "Access to this bot and/or command is not permitted in organization 33, "
                 "ask your Nautobot administrator to define an appropriate Access Grant",
             )
-            mock_get_queue.assert_not_called()
+            mock_enqueue_task.assert_not_called()
 
-    def test_not_permitted_user(self, mock_get_queue):
+    def test_not_permitted_user(self, mock_enqueue_task):
         """Per-user access grants are checked."""
         self.setup_db()
         for cmd, subcmd in [("x", "a"), ("x", "b"), ("z", "a")]:
-            mock_get_queue.reset_mock()
+            mock_enqueue_task.reset_mock()
             check_and_enqueue_command(
                 self.mock_registry,
                 cmd,
@@ -331,13 +331,13 @@ class TestCheckAndEnqueue(TestCase):
                 "Access to this bot and/or command is not permitted by user 9999, "
                 "ask your Nautobot administrator to define an appropriate Access Grant",
             )
-            mock_get_queue.assert_not_called()
+            mock_enqueue_task.assert_not_called()
 
-    def test_not_permitted_channel(self, mock_get_queue):
+    def test_not_permitted_channel(self, mock_enqueue_task):
         """Per-channel access grants are checked."""
         self.setup_db()
         for cmd, subcmd in [("x", "a"), ("x", "b"), ("z", "a")]:
-            mock_get_queue.reset_mock()
+            mock_enqueue_task.reset_mock()
             check_and_enqueue_command(
                 self.mock_registry,
                 cmd,
@@ -351,13 +351,13 @@ class TestCheckAndEnqueue(TestCase):
                 "Access to this bot and/or command is not permitted in channel 999, "
                 "ask your Nautobot administrator to define an appropriate Access Grant",
             )
-            mock_get_queue.assert_not_called()
+            mock_enqueue_task.assert_not_called()
 
-    def test_not_permitted_organization(self, mock_get_queue):
+    def test_not_permitted_organization(self, mock_enqueue_task):
         """Per-organization access grants are checked."""
         self.setup_db()
         for cmd, subcmd in [("x", "a"), ("x", "b"), ("z", "a")]:
-            mock_get_queue.reset_mock()
+            mock_enqueue_task.reset_mock()
             check_and_enqueue_command(
                 self.mock_registry,
                 cmd,
@@ -371,4 +371,4 @@ class TestCheckAndEnqueue(TestCase):
                 "Access to this bot and/or command is not permitted in organization 99, "
                 "ask your Nautobot administrator to define an appropriate Access Grant",
             )
-            mock_get_queue.assert_not_called()
+            mock_enqueue_task.assert_not_called()
