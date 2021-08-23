@@ -176,6 +176,15 @@ class TestSlackDispatcher(TestCase):
 
         self.assertIsInstance(response, MagicMock)
 
+    def test_user_session(self):
+        """Test session caching methods."""
+        self.dispatcher.session = {"key1": "value1"}
+        self.assertEqual(self.dispatcher.session, {"key1": "value1"})
+        self.dispatcher.session = {"key2": "value2"}
+        self.assertEqual(self.dispatcher.session, {"key2": "value2"})
+        self.dispatcher.update_session({"key3": "value3"})
+        self.assertEqual(self.dispatcher.session, {"key2": "value2", "key3": "value3"})
+
 
 class TestMSTeamsDispatcher(TestSlackDispatcher):
     """Test the MSTeamsDispatcher class."""

@@ -1,9 +1,8 @@
 """Generic base class modeling the API for sending messages to a generic chat platform."""
-
 import logging
-
+import hashlib
 from django.templatetags.static import static
-
+from django.core.cache import cache
 from django.conf import settings
 
 from texttable import Texttable
@@ -36,6 +35,26 @@ class Dispatcher:
     def __init__(self, context=None):
         """Init this Dispatcher with the provided dict of contextual information (which will vary by app)."""
         self.context = context or {}
+
+    def _get_cache_key(self) -> str:
+        """Key generator for the cache, adding the plugin prefix name."""
+        # Using __file__ as a key customization within the cache
+        key_string = "-".join([__file__, self.context["user_name"]])
+        return hashlib.md5(key_string.encode("utf-8")).hexdigest()  # nosec
+
+    @property
+    def session(self) -> dict:
+        """Return the session data stored for the user, that should be a dict."""
+        return cache.get(self._get_cache_key()) or {}
+
+    @session.setter
+    def session(self, value: dict):
+        """Set the session data for a user."""
+        cache.set(self._get_cache_key(), value, timeout=86400)
+
+    def update_session(self, updated_session: dict):
+        """Update the session for a user."""
+        cache.set(self._get_cache_key(), {**self.session, **updated_session}, timeout=86400)
 
     @classmethod
     def subclasses(cls):
