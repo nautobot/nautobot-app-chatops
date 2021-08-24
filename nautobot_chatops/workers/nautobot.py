@@ -999,3 +999,65 @@ def about(dispatcher, *args):
 
     dispatcher.send_blocks(blocks)
     return CommandStatusChoices.STATUS_SUCCEEDED
+
+@subcommand_of("nautobot")
+def manufacturer_summary(dispatcher):
+    """
+    Provides summary of each manufacturer and how many devices have that manufacturer
+    """
+
+    # Get manufacturers
+    manufacturers = Manufacturer.objects.all()
+
+    # Dict to hold the summary result
+    manufacturer_rollup = {}
+
+    # Get device types for each manufacturer
+    for manufacturer in manufacturers:
+        # Total count for the manufacturer
+        total_count = 0
+
+        # Get the device types for each manufacturer
+        dev_types = manufacturer.device_types.all()
+
+        # Get quantity of each device type
+        for dev_type in dev_types:
+            # Add to the total_count the amount of the device type
+            total_count += len(dev_type.instances.all())
+
+        # This is the total quantity of devices for that manufacturer.
+        # Make a dict entry in the rollup with the manufacturer:quantity (key:value)
+        manufacturer_rollup[manufacturer.slug] = total_count
+
+    dispatcher.send_blocks(
+        dispatcher.command_response_header(
+            "nautobot",
+            "get-manufacturer-summary",
+            nautobot_logo(dispatcher),
+        )
+    )
+
+    header = ["Manufacturer", "Quantity"]
+    rows = [
+        (
+            manufacturer.slug,
+            qty
+        )
+        for manufacturer,qty in manufacturer_rollup.items()
+    ]
+
+    # dispatcher.send_markdown(  # TODO - remove this if not needed
+    #     "```\n---\n"
+    #     f"name: {device.name}\n"
+    #     f"manufacturer: {device.device_type.manufacturer.name}\n"
+    #     f"model: {device.device_type.model}\n"
+    #     f"role: {device.device_role.name if device.device_role else '~'}\n"
+    #     f"platform: {device.platform.name if device.platform else '~'}\n"
+    #     f"primary_ip: {device.primary_ip.address if device.primary_ip else '~'}\n"
+    #     f"created: {device.created}\n"
+    #     f"updated: {device.last_updated}\n"
+    #     "```\n"
+    # )
+
+    dispatcher.send_large_table(header, rows)
+    return CommandStatusChoices.STATUS_SUCCEEDED
