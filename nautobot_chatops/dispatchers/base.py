@@ -41,7 +41,7 @@ class Dispatcher:
     def _get_cache_key(self) -> str:
         """Key generator for the cache, adding the plugin prefix name."""
         # Using __file__ as a key customization within the cache
-        key_string = "-".join([__file__, self.context["user_name"]])
+        key_string = "-".join([__file__, self.context.get("user_name")])
         return hashlib.md5(key_string.encode("utf-8")).hexdigest()  # nosec
 
     @property
