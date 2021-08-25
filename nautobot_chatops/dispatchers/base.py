@@ -9,6 +9,8 @@ from texttable import Texttable
 
 logger = logging.getLogger("rq.worker")
 
+DEFAULT_SESSION_CACHE_TIMEOUT = 86400
+
 
 class Dispatcher:
     """Abstract base class for all chat-app dispatchers."""
@@ -50,11 +52,23 @@ class Dispatcher:
     @session.setter
     def session(self, value: dict):
         """Set the session data for a user."""
-        cache.set(self._get_cache_key(), value, timeout=86400)
+        cache.set(
+            self._get_cache_key(),
+            value,
+            timeout=settings.PLUGINS_CONFIG["nautobot_chatops"].get(
+                "session_cache_timeout", DEFAULT_SESSION_CACHE_TIMEOUT
+            ),
+        )
 
     def update_session(self, updated_session: dict):
         """Update the session for a user."""
-        cache.set(self._get_cache_key(), {**self.session, **updated_session}, timeout=86400)
+        cache.set(
+            self._get_cache_key(),
+            {**self.session, **updated_session},
+            timeout=settings.PLUGINS_CONFIG["nautobot_chatops"].get(
+                "session_cache_timeout", DEFAULT_SESSION_CACHE_TIMEOUT
+            ),
+        )
 
     @classmethod
     def subclasses(cls):
