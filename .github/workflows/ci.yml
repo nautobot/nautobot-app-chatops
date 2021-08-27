@@ -21,4 +21,4 @@ jobs:
       - name: "Install Python Packages for Linting"
         run: "poetry install"
       - name: "Linting: Black"
-        run: "invoke black"
+        run: "poetry run invoke black"
