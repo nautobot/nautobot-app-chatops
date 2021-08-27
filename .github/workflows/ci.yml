@@ -112,7 +112,7 @@ jobs:
       - name: "Copy credentials"
         run: "cp development/creds.example.env development/creds.env"
       - name: "Build Container"
-        run: "invoke build"
+        run: "poetry run invoke build"
     needs:
       - "bandit"
       - "pydocstyle"
@@ -132,12 +132,12 @@ jobs:
       - name: "Copy credentials"
         run: "cp development/creds.example.env development/creds.env"
       - name: "Build Container"
-        run: "invoke build"
+        run: "poetry run invoke build"
       - name: "Linting: Pylint"
-        run: "invoke pylint"
+        run: "poetry run invoke pylint"
     needs:
       - "build"
-  pytest:
+  unittest:
     strategy:
       fail-fast: true
       matrix:
@@ -157,9 +157,9 @@ jobs:
       - name: "Copy credentials"
         run: "cp development/creds.example.env development/creds.env"
       - name: "Build Container"
-        run: "invoke build"
+        run: "poetry run invoke build"
       - name: "Run Tests"
-        run: "invoke pytest"
+        run: "poetry run invoke unittest"
     needs:
       - "pylint"
   publish_gh:
@@ -190,7 +190,7 @@ jobs:
           overwrite: true
           file_glob: true
     needs:
-      - "pytest"
+      - "unittest"
   publish_pypi:
     name: "Push Package to PyPI"
     runs-on: "ubuntu-20.04"
@@ -216,4 +216,4 @@ jobs:
           user: "__token__"
           password: "${{ secrets.PYPI_API_TOKEN }}"
     needs:
-      - "pytest"
+      - "unittest"
