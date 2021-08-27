@@ -8,12 +8,14 @@ jobs:
   test:
     runs-on: "ubuntu-20.04"
     steps:
-      # - name: "Set env"
-      #   run: "echo ::set-env name=RELEASE_VERSION::$(echo ${GITHUB_REF:10})"
-      # - name: "Print"
-      #   run: "echo $RELEASE_VERSION"
+      - name: "Set env"
+        run: "export RELEASE_VERSION=${GITHUB_REF:10}"
+      - name: "Print"
+        run: "echo $RELEASE_VERSION"
       - name: "Print"
         run: "echo $GITHUB_REF"
+      - name: "Fail"
+        run: "exit 1"
   black:
     runs-on: "ubuntu-20.04"
     env:
@@ -31,6 +33,8 @@ jobs:
         run: "poetry install"
       - name: "Linting: black"
         run: "poetry run invoke black"
+    needs:
+      - "test"
   bandit:
     runs-on: "ubuntu-20.04"
     env:
