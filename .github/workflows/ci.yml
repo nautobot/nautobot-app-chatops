@@ -142,9 +142,11 @@ jobs:
       fail-fast: true
       matrix:
         python-version: ["3.6", "3.7", "3.8", "3.9"]
+        nautobot-version: ["1.0.3", "1.1.2"]
     runs-on: "ubuntu-20.04"
     env:
       INVOKE_NAUTOBOT_CHATOPS_PYTHON_VER: "${{ matrix.python-version }}"
+      INVOKE_NAUTOBOT_CHATOPS_NAUTOBOT_VER: "${{ matrix.nautobot-version }}"
     steps:
       - name: "Check out repository code"
         uses: "actions/checkout@v2"
