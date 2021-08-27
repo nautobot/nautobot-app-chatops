@@ -98,3 +98,38 @@ jobs:
         run: "poetry run invoke yamllint"
     needs:
       - "black"
+  build:
+    runs-on: "ubuntu-20.04"
+    steps:
+      - name: "Check out repository code"
+        uses: "actions/checkout@v2"
+      - name: "Set up Python"
+        uses: "actions/setup-python@v2"
+        with:
+          python-version: "3.9"
+      - name: "Install Python Packages for Setup"
+        run: "pip install invoke poetry toml"
+      - name: "Build Container"
+        run: "invoke build"
+    needs:
+      - "bandit"
+      - "pydocstyle"
+      - "flake8"
+      - "yamllint"
+  pylint:
+    runs-on: "ubuntu-20.04"
+    steps:
+      - name: "Check out repository code"
+        uses: "actions/checkout@v2"
+      - name: "Set up Python"
+        uses: "actions/setup-python@v2"
+        with:
+          python-version: "3.9"
+      - name: "Install Python Packages for Linting"
+        run: "pip install invoke poetry toml"
+      - name: "Build Container"
+        run: "invoke build"
+      - name: "Linting: Pylint"
+        run: "invoke pylint"
+    needs:
+      - "build"
