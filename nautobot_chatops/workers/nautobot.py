@@ -1001,7 +1001,7 @@ def about(dispatcher, *args):
     return CommandStatusChoices.STATUS_SUCCEEDED
 
 @subcommand_of("nautobot")
-def manufacturer_summary(dispatcher):
+def get_manufacturer_summary(dispatcher):
     """
     Provides summary of each manufacturer and how many devices have that manufacturer
     """
@@ -1061,3 +1061,9 @@ def manufacturer_summary(dispatcher):
 
     dispatcher.send_large_table(header, rows)
     return CommandStatusChoices.STATUS_SUCCEEDED
+
+
+@subcommand_of("nautobot")
+def cowbell(dispatcher, *args):
+    """More cowbell!"""
+    dispatcher.send_markdown("More cowbell")
