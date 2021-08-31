@@ -5,165 +5,165 @@ on:
   - "pull_request"
 
 jobs:
-  # black:
-  #   runs-on: "ubuntu-20.04"
-  #   env:
-  #     INVOKE_NAUTOBOT_CHATOPS_LOCAL: "True"
-  #   steps:
-  #     - name: "Check out repository code"
-  #       uses: "actions/checkout@v2"
-  #     - name: "Set up Python"
-  #       uses: "actions/setup-python@v2"
-  #       with:
-  #         python-version: "3.9"
-  #     - name: "Install Python Packages for Setup"
-  #       run: "pip install invoke poetry"
-  #     - name: "Install Python Packages for Linting"
-  #       run: "poetry install"
-  #     - name: "Linting: black"
-  #       run: "poetry run invoke black"
-  # bandit:
-  #   runs-on: "ubuntu-20.04"
-  #   env:
-  #     INVOKE_NAUTOBOT_CHATOPS_LOCAL: "True"
-  #   steps:
-  #     - name: "Check out repository code"
-  #       uses: "actions/checkout@v2"
-  #     - name: "Set up Python"
-  #       uses: "actions/setup-python@v2"
-  #       with:
-  #         python-version: "3.9"
-  #     - name: "Install Python Packages for Setup"
-  #       run: "pip install invoke poetry"
-  #     - name: "Install Python Packages for Linting"
-  #       run: "poetry install"
-  #     - name: "Linting: bandit"
-  #       run: "poetry run invoke bandit"
-  #   needs:
-  #     - "black"
-  # pydocstyle:
-  #   runs-on: "ubuntu-20.04"
-  #   env:
-  #     INVOKE_NAUTOBOT_CHATOPS_LOCAL: "True"
-  #   steps:
-  #     - name: "Check out repository code"
-  #       uses: "actions/checkout@v2"
-  #     - name: "Set up Python"
-  #       uses: "actions/setup-python@v2"
-  #       with:
-  #         python-version: "3.9"
-  #     - name: "Install Python Packages for Setup"
-  #       run: "pip install invoke poetry"
-  #     - name: "Install Python Packages for Linting"
-  #       run: "poetry install"
-  #     - name: "Linting: pydocstyle"
-  #       run: "poetry run invoke pydocstyle"
-  #   needs:
-  #     - "black"
-  # flake8:
-  #   runs-on: "ubuntu-20.04"
-  #   env:
-  #     INVOKE_NAUTOBOT_CHATOPS_LOCAL: "True"
-  #   steps:
-  #     - name: "Check out repository code"
-  #       uses: "actions/checkout@v2"
-  #     - name: "Set up Python"
-  #       uses: "actions/setup-python@v2"
-  #       with:
-  #         python-version: "3.9"
-  #     - name: "Install Python Packages for Setup"
-  #       run: "pip install invoke poetry"
-  #     - name: "Install Python Packages for Linting"
-  #       run: "poetry install"
-  #     - name: "Linting: flake8"
-  #       run: "poetry run invoke flake8"
-  #   needs:
-  #     - "black"
-  # yamllint:
-  #   runs-on: "ubuntu-20.04"
-  #   env:
-  #     INVOKE_NAUTOBOT_CHATOPS_LOCAL: "True"
-  #   steps:
-  #     - name: "Check out repository code"
-  #       uses: "actions/checkout@v2"
-  #     - name: "Set up Python"
-  #       uses: "actions/setup-python@v2"
-  #       with:
-  #         python-version: "3.9"
-  #     - name: "Install Python Packages for Setup"
-  #       run: "pip install invoke poetry"
-  #     - name: "Install Python Packages for Linting"
-  #       run: "poetry install"
-  #     - name: "Linting: yamllint"
-  #       run: "poetry run invoke yamllint"
-  #   needs:
-  #     - "black"
-  # build:
-  #   runs-on: "ubuntu-20.04"
-  #   steps:
-  #     - name: "Check out repository code"
-  #       uses: "actions/checkout@v2"
-  #     - name: "Set up Python"
-  #       uses: "actions/setup-python@v2"
-  #       with:
-  #         python-version: "3.9"
-  #     - name: "Install Python Packages for Setup"
-  #       run: "pip install invoke poetry"
-  #     - name: "Copy credentials"
-  #       run: "cp development/creds.example.env development/creds.env"
-  #     - name: "Build Container"
-  #       run: "poetry run invoke build"
-  #   needs:
-  #     - "bandit"
-  #     - "pydocstyle"
-  #     - "flake8"
-  #     - "yamllint"
-  # pylint:
-  #   runs-on: "ubuntu-20.04"
-  #   steps:
-  #     - name: "Check out repository code"
-  #       uses: "actions/checkout@v2"
-  #     - name: "Set up Python"
-  #       uses: "actions/setup-python@v2"
-  #       with:
-  #         python-version: "3.9"
-  #     - name: "Install Python Packages for Linting"
-  #       run: "pip install invoke poetry"
-  #     - name: "Copy credentials"
-  #       run: "cp development/creds.example.env development/creds.env"
-  #     - name: "Build Container"
-  #       run: "poetry run invoke build"
-  #     - name: "Linting: Pylint"
-  #       run: "poetry run invoke pylint"
-  #   needs:
-  #     - "build"
-  # unittest:
-  #   strategy:
-  #     fail-fast: true
-  #     matrix:
-  #       python-version: ["3.6", "3.7", "3.8", "3.9"]
-  #       nautobot-version: ["1.0.3", "1.1.2"]
-  #   runs-on: "ubuntu-20.04"
-  #   env:
-  #     INVOKE_NAUTOBOT_CHATOPS_PYTHON_VER: "${{ matrix.python-version }}"
-  #     INVOKE_NAUTOBOT_CHATOPS_NAUTOBOT_VER: "${{ matrix.nautobot-version }}"
-  #   steps:
-  #     - name: "Check out repository code"
-  #       uses: "actions/checkout@v2"
-  #     - name: "Set up Python"
-  #       uses: "actions/setup-python@v2"
-  #       with:
-  #         python-version: "3.9"
-  #     - name: "Install Python Packages for Linting"
-  #       run: "pip install invoke poetry"
-  #     - name: "Copy credentials"
-  #       run: "cp development/creds.example.env development/creds.env"
-  #     - name: "Build Container"
-  #       run: "poetry run invoke build"
-  #     - name: "Run Tests"
-  #       run: "poetry run invoke unittest"
-  #   needs:
-  #     - "pylint"
+  black:
+    runs-on: "ubuntu-20.04"
+    env:
+      INVOKE_NAUTOBOT_CHATOPS_LOCAL: "True"
+    steps:
+      - name: "Check out repository code"
+        uses: "actions/checkout@v2"
+      - name: "Set up Python"
+        uses: "actions/setup-python@v2"
+        with:
+          python-version: "3.9"
+      - name: "Install Python Packages for Setup"
+        run: "pip install invoke poetry"
+      - name: "Install Python Packages for Linting"
+        run: "poetry install"
+      - name: "Linting: black"
+        run: "poetry run invoke black"
+  bandit:
+    runs-on: "ubuntu-20.04"
+    env:
+      INVOKE_NAUTOBOT_CHATOPS_LOCAL: "True"
+    steps:
+      - name: "Check out repository code"
+        uses: "actions/checkout@v2"
+      - name: "Set up Python"
+        uses: "actions/setup-python@v2"
+        with:
+          python-version: "3.9"
+      - name: "Install Python Packages for Setup"
+        run: "pip install invoke poetry"
+      - name: "Install Python Packages for Linting"
+        run: "poetry install"
+      - name: "Linting: bandit"
+        run: "poetry run invoke bandit"
+    needs:
+      - "black"
+  pydocstyle:
+    runs-on: "ubuntu-20.04"
+    env:
+      INVOKE_NAUTOBOT_CHATOPS_LOCAL: "True"
+    steps:
+      - name: "Check out repository code"
+        uses: "actions/checkout@v2"
+      - name: "Set up Python"
+        uses: "actions/setup-python@v2"
+        with:
+          python-version: "3.9"
+      - name: "Install Python Packages for Setup"
+        run: "pip install invoke poetry"
+      - name: "Install Python Packages for Linting"
+        run: "poetry install"
+      - name: "Linting: pydocstyle"
+        run: "poetry run invoke pydocstyle"
+    needs:
+      - "black"
+  flake8:
+    runs-on: "ubuntu-20.04"
+    env:
+      INVOKE_NAUTOBOT_CHATOPS_LOCAL: "True"
+    steps:
+      - name: "Check out repository code"
+        uses: "actions/checkout@v2"
+      - name: "Set up Python"
+        uses: "actions/setup-python@v2"
+        with:
+          python-version: "3.9"
+      - name: "Install Python Packages for Setup"
+        run: "pip install invoke poetry"
+      - name: "Install Python Packages for Linting"
+        run: "poetry install"
+      - name: "Linting: flake8"
+        run: "poetry run invoke flake8"
+    needs:
+      - "black"
+  yamllint:
+    runs-on: "ubuntu-20.04"
+    env:
+      INVOKE_NAUTOBOT_CHATOPS_LOCAL: "True"
+    steps:
+      - name: "Check out repository code"
+        uses: "actions/checkout@v2"
+      - name: "Set up Python"
+        uses: "actions/setup-python@v2"
+        with:
+          python-version: "3.9"
+      - name: "Install Python Packages for Setup"
+        run: "pip install invoke poetry"
+      - name: "Install Python Packages for Linting"
+        run: "poetry install"
+      - name: "Linting: yamllint"
+        run: "poetry run invoke yamllint"
+    needs:
+      - "black"
+  build:
+    runs-on: "ubuntu-20.04"
+    steps:
+      - name: "Check out repository code"
+        uses: "actions/checkout@v2"
+      - name: "Set up Python"
+        uses: "actions/setup-python@v2"
+        with:
+          python-version: "3.9"
+      - name: "Install Python Packages for Setup"
+        run: "pip install invoke poetry"
+      - name: "Copy credentials"
+        run: "cp development/creds.example.env development/creds.env"
+      - name: "Build Container"
+        run: "poetry run invoke build"
+    needs:
+      - "bandit"
+      - "pydocstyle"
+      - "flake8"
+      - "yamllint"
+  pylint:
+    runs-on: "ubuntu-20.04"
+    steps:
+      - name: "Check out repository code"
+        uses: "actions/checkout@v2"
+      - name: "Set up Python"
+        uses: "actions/setup-python@v2"
+        with:
+          python-version: "3.9"
+      - name: "Install Python Packages for Linting"
+        run: "pip install invoke poetry"
+      - name: "Copy credentials"
+        run: "cp development/creds.example.env development/creds.env"
+      - name: "Build Container"
+        run: "poetry run invoke build"
+      - name: "Linting: Pylint"
+        run: "poetry run invoke pylint"
+    needs:
+      - "build"
+  unittest:
+    strategy:
+      fail-fast: true
+      matrix:
+        python-version: ["3.6", "3.7", "3.8", "3.9"]
+        nautobot-version: ["1.0.3", "1.1.2"]
+    runs-on: "ubuntu-20.04"
+    env:
+      INVOKE_NAUTOBOT_CHATOPS_PYTHON_VER: "${{ matrix.python-version }}"
+      INVOKE_NAUTOBOT_CHATOPS_NAUTOBOT_VER: "${{ matrix.nautobot-version }}"
+    steps:
+      - name: "Check out repository code"
+        uses: "actions/checkout@v2"
+      - name: "Set up Python"
+        uses: "actions/setup-python@v2"
+        with:
+          python-version: "3.9"
+      - name: "Install Python Packages for Linting"
+        run: "pip install invoke poetry"
+      - name: "Copy credentials"
+        run: "cp development/creds.example.env development/creds.env"
+      - name: "Build Container"
+        run: "poetry run invoke build"
+      - name: "Run Tests"
+        run: "poetry run invoke unittest"
+    needs:
+      - "pylint"
   publish_gh:
     name: "Publish to GitHub"
     runs-on: "ubuntu-20.04"
@@ -190,12 +190,11 @@ jobs:
         with:
           repo_token: "${{ secrets.NTC_GITHUB_TOKEN }}"
           file: "dist/*"
-          # tag: "$RELEASE_VERSION"
           tag: "${{ github.ref }}"
           overwrite: true
           file_glob: true
-    # needs:
-    #   - "unittest"
+    needs:
+      - "unittest"
   publish_pypi:
     name: "Push Package to PyPI"
     runs-on: "ubuntu-20.04"
@@ -220,5 +219,5 @@ jobs:
         with:
           user: "__token__"
           password: "${{ secrets.PYPI_API_TOKEN }}"
-    # needs:
-    #   - "unittest"
+    needs:
+      - "unittest"
