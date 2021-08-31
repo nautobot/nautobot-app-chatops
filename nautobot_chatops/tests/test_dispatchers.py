@@ -178,12 +178,19 @@ class TestSlackDispatcher(TestCase):
 
     def test_user_session(self):
         """Test session caching methods."""
-        self.dispatcher.session = {"key1": "value1"}
-        self.assertEqual(self.dispatcher.session, {"key1": "value1"})
-        self.dispatcher.session = {"key2": "value2"}
-        self.assertEqual(self.dispatcher.session, {"key2": "value2"})
-        self.dispatcher.update_session({"key3": "value3"})
-        self.assertEqual(self.dispatcher.session, {"key2": "value2", "key3": "value3"})
+        self.dispatcher.unset_session()
+        self.assertEqual(self.dispatcher.get_session(), {})
+        self.dispatcher.set_session({"key1": "value1"})
+        self.assertEqual(self.dispatcher.get_session(), {"key1": "value1"})
+        self.assertEqual(self.dispatcher.get_session("key1"), "value1")
+        self.dispatcher.set_session("value2", key="key2")
+        self.assertEqual(self.dispatcher.get_session(), {"key1": "value1", "key2": "value2"})
+        self.dispatcher.unset_session("key2")
+        self.assertEqual(self.dispatcher.get_session(), {"key1": "value1"})
+        self.dispatcher.unset_session()
+        self.assertEqual(self.dispatcher.get_session(), {})
+        with self.assertRaises(ValueError):
+            self.dispatcher.set_session("value3")
 
 
 class TestMSTeamsDispatcher(TestSlackDispatcher):
