@@ -1000,11 +1000,10 @@ def about(dispatcher, *args):
     dispatcher.send_blocks(blocks)
     return CommandStatusChoices.STATUS_SUCCEEDED
 
+
 @subcommand_of("nautobot")
 def get_manufacturer_summary(dispatcher):
-    """
-    Provides summary of each manufacturer and how many devices have that manufacturer
-    """
+    """Provides summary of each manufacturer and how many devices have that manufacturer"""
 
     # Get manufacturers
     manufacturers = Manufacturer.objects.all()
@@ -1033,6 +1032,8 @@ def get_manufacturer_summary(dispatcher):
         dispatcher.command_response_header(
             "nautobot",
             "get-manufacturer-summary",
+            [],
+            "manufacturer summary",
             nautobot_logo(dispatcher),
         )
     )
@@ -1040,7 +1041,7 @@ def get_manufacturer_summary(dispatcher):
     header = ["Manufacturer", "Quantity"]
     rows = [
         (
-            manufacturer.slug,
+            manufacturer,
             qty
         )
         for manufacturer,qty in manufacturer_rollup.items()
