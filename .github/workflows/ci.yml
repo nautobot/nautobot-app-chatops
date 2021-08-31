@@ -183,6 +183,8 @@ jobs:
         run: "poetry version $RELEASE_VERSION"
       - name: "Run Poetry Build"
         run: "poetry build"
+      - name: "Testing"
+        run: "ls -al dist/"
       - name: "Upload binaries to release"
         uses: "svenstaro/upload-release-action@v2"
         with:
