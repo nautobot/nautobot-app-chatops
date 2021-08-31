@@ -1,6 +1,5 @@
 """Generic base class modeling the API for sending messages to a generic chat platform."""
 import logging
-import hashlib
 from django.templatetags.static import static
 from django.core.cache import cache
 from django.conf import settings
@@ -41,8 +40,7 @@ class Dispatcher:
     def _get_cache_key(self) -> str:
         """Key generator for the cache, adding the plugin prefix name."""
         # Using __file__ as a key customization within the cache
-        key_string = "-".join([__file__, self.context.get("user_name")])
-        return hashlib.md5(key_string.encode("utf-8")).hexdigest()  # nosec
+        return "-".join([__file__, self.context.get("user_id", "generic")])
 
     @property
     def session(self) -> dict:
