@@ -1053,9 +1053,11 @@ def get_manufacturer_summary(dispatcher):
 def analyze_circuit_endpoints(endpoint):
 
     if type(endpoint) in [Interface, FrontPort, RearPort]:
-        info = [endpoint.name, endpoint.device]
+        # Put into format: object.device_name
+        info = endpoint.name+"."+endpoint.device.name
     elif isinstance(endpoint, CircuitTermination):
-        info = [endpoint.circuit]
+        # Return circuit ID of endpoint circuit
+        info = f"Circuit with circuit ID {endpoint.circuit.cid}"
 
     return info
 
@@ -1102,22 +1104,51 @@ def get_circuit_terminations(dispatcher, circuit_id):
 
     if term_a != 'No A Side Termination in Database':
         endpoint_info_a = analyze_circuit_endpoints(term_a)
+    else:
+        endpoint_info_a = term_a
 
     if term_z != 'No Z Side Termination in Database':
         endpoint_info_z = analyze_circuit_endpoints(term_z)
+    else:
+        endpoint_info_z = term_z
 
+    # blocks = [
+    #     *dispatcher.command_response_header(
+    #         "nautobot",
+    #         "get-circuit-terminations",
+    #         [("Name", circuit.cid)],
+    #         "circuit terminations",
+    #         nautobot_logo(dispatcher),
+    #     ),
+    #     dispatcher.markdown_block(f"The endpoints of {dispatcher.bold(circuit.cid)} "
+    #                               f"are {dispatcher.bold(endpoint_info_a)} "
+    #                               f"and {dispatcher.bold(endpoint_info_z)}"),
+    # ]
+    #
+    # dispatcher.send_blocks(blocks)
+    # return CommandStatusChoices.STATUS_SUCCEEDED
 
-    blocks = [
-        *dispatcher.command_response_header(
+    dispatcher.send_blocks(
+        dispatcher.command_response_header(
             "nautobot",
             "get-circuit-terminations",
-            [("Name", circuit.cid)],
+            [("Circuit ID", circuit.cid)],
             "circuit terminations",
             nautobot_logo(dispatcher),
+        )
+    )
+
+    header = ["Side", "Termination Object"]
+    rows = [
+        (
+            "A",
+            endpoint_info_a
         ),
-        dispatcher.markdown_block(f"The endpoints of {dispatcher.bold(circuit.cid)} are {dispatcher.bold(endpoint_info_a)}"
-                                  f"and {dispatcher.bold(endpoint_info_z)}"),
+        (
+            "Z",
+            endpoint_info_z
+        )
     ]
 
-    dispatcher.send_blocks(blocks)
+    dispatcher.send_large_table(header, rows)
     return CommandStatusChoices.STATUS_SUCCEEDED
