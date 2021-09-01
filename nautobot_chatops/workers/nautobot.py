@@ -149,7 +149,7 @@ def analyze_circuit_endpoints(endpoint):
 
     if type(endpoint) in [Interface, FrontPort, RearPort]:
         # Put into format: object.device_name
-        info = endpoint.name+"."+endpoint.device.name
+        info = f"Device: {endpoint.device.name}  Interface: {endpoint.name}"
     elif isinstance(endpoint, CircuitTermination):
         # Return circuit ID of endpoint circuit
         info = f"Circuit with circuit ID {endpoint.circuit.cid}"
