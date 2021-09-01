@@ -1053,13 +1053,29 @@ def get_manufacturer_summary(dispatcher):
 def analyze_circuit_endpoints(endpoint):
 
     if type(endpoint) in [Interface, FrontPort, RearPort]:
-        info = [endpoint.name, circuit.termination_a.trace()[0][2].device]
+        info = [endpoint.name, endpoint.device]
+    elif isinstance(endpoint, CircuitTermination):
+        info = [endpoint.circuit]
+
+    return info
+
+
+def prompt_for_circuit(action_id, help_text, dispatcher, circuits=None, offset=0):
+    """Prompt the user to select a valid circuit from a drop-down menu."""
+    if circuits is None:
+        circuits = Circuit.objects.all().order_by("provider", "cid")
+    if not circuits:
+        dispatcher.send_error("No circuits were found")
+        return (CommandStatusChoices.STATUS_FAILED, "No circuits were found")
+    choices = [(f"{circuit.provider.name}: {circuit.cid}", circuit.cid) for circuit in circuits]
+    return dispatcher.prompt_from_menu(action_id, help_text, choices, offset=offset)
+
 
 @subcommand_of("nautobot")
 def get_circuit_terminations(dispatcher, circuit_id):
     """For a given circuit, find the circuit's endpoints"""
     if menu_item_check(circuit_id):
-        prompt_for_device(
+        prompt_for_circuit(
             "nautobot get-circuit-terminations",
             "Get Nautobot Circuit Endpoints",
             dispatcher,
@@ -1068,15 +1084,13 @@ def get_circuit_terminations(dispatcher, circuit_id):
         return False  # command did not run to completion and therefore should not be logged
 
     try:
-        circuit =  Circuit.objects.get(cid=circuit_id)
+        circuit = Circuit.objects.get(cid=circuit_id)
     except Circuit.DoesNotExist:
-        dispatcher.send_error(f"I don't know the circuit with ID '{circuit}'")
-        prompt_for_device("nautobot get-circuit-terminations", "Get Nautobot Circuit Endpoints", dispatcher)
+        dispatcher.send_error(f"I don't know the circuit with ID '{circuit_id}'")
+        prompt_for_circuit("nautobot get-circuit-terminations", "Get Nautobot Circuit Endpoints", dispatcher)
         return False  # command did not run to completion and therefore should not be logged
 
     # Ensure the termination endpoints are present, otherwise set to a string value
-    term_a = "undefined"
-    term_z = "undefined"
     try:
         term_a = circuit.termination_a.trace()[0][2]
     except (AttributeError, IndexError):
@@ -1084,12 +1098,12 @@ def get_circuit_terminations(dispatcher, circuit_id):
     try:
         term_z = circuit.termination_z.trace()[0][2]
     except (AttributeError, IndexError):
-        term_z = 'No A Side Termination in Database'
+        term_z = 'No Z Side Termination in Database'
 
-    if term_a == "undefined":
+    if term_a != 'No A Side Termination in Database':
         endpoint_info_a = analyze_circuit_endpoints(term_a)
 
-    if term_z == "undefined":
+    if term_z != 'No Z Side Termination in Database':
         endpoint_info_z = analyze_circuit_endpoints(term_z)
 
 
@@ -1097,11 +1111,11 @@ def get_circuit_terminations(dispatcher, circuit_id):
         *dispatcher.command_response_header(
             "nautobot",
             "get-circuit-terminations",
-            [("Name", circuit)],
+            [("Name", circuit.cid)],
             "circuit terminations",
             nautobot_logo(dispatcher),
         ),
-        dispatcher.markdown_block(f"The endpoints of {dispatcher.bold(circuit)} are {dispatcher.bold(endpoint_info_a)}"
+        dispatcher.markdown_block(f"The endpoints of {dispatcher.bold(circuit.cid)} are {dispatcher.bold(endpoint_info_a)}"
                                   f"and {dispatcher.bold(endpoint_info_z)}"),
     ]
 
