@@ -5,7 +5,7 @@ from django.db.models import Count
 from django.contrib.contenttypes.models import ContentType
 from django_rq import job
 
-from nautobot.dcim.models.device_components import Interface
+from nautobot.dcim.models.device_components import Interface, FrontPort, RearPort
 from nautobot.circuits.models import Circuit, CircuitType, Provider, CircuitTermination
 from nautobot.dcim.choices import DeviceStatusChoices
 from nautobot.dcim.models import Device, Site, DeviceRole, DeviceType, Manufacturer, Rack, Region, Cable
@@ -1047,24 +1047,63 @@ def get_manufacturer_summary(dispatcher):
         for manufacturer,qty in manufacturer_rollup.items()
     ]
 
-    # dispatcher.send_markdown(  # TODO - remove this if not needed
-    #     "```\n---\n"
-    #     f"name: {device.name}\n"
-    #     f"manufacturer: {device.device_type.manufacturer.name}\n"
-    #     f"model: {device.device_type.model}\n"
-    #     f"role: {device.device_role.name if device.device_role else '~'}\n"
-    #     f"platform: {device.platform.name if device.platform else '~'}\n"
-    #     f"primary_ip: {device.primary_ip.address if device.primary_ip else '~'}\n"
-    #     f"created: {device.created}\n"
-    #     f"updated: {device.last_updated}\n"
-    #     "```\n"
-    # )
-
     dispatcher.send_large_table(header, rows)
     return CommandStatusChoices.STATUS_SUCCEEDED
 
+def analyze_circuit_endpoints(endpoint):
+
+    if type(endpoint) in [Interface, FrontPort, RearPort]:
+        info = [endpoint.name, circuit.termination_a.trace()[0][2].device]
 
 @subcommand_of("nautobot")
-def cowbell(dispatcher, *args):
-    """More cowbell!"""
-    dispatcher.send_markdown("More cowbell")
+def get_circuit_terminations(dispatcher, circuit_id):
+    """For a given circuit, find the circuit's endpoints"""
+    if menu_item_check(circuit_id):
+        prompt_for_device(
+            "nautobot get-circuit-terminations",
+            "Get Nautobot Circuit Endpoints",
+            dispatcher,
+            offset=menu_offset_value(circuit_id),
+        )
+        return False  # command did not run to completion and therefore should not be logged
+
+    try:
+        circuit =  Circuit.objects.get(cid=circuit_id)
+    except Circuit.DoesNotExist:
+        dispatcher.send_error(f"I don't know the circuit with ID '{circuit}'")
+        prompt_for_device("nautobot get-circuit-terminations", "Get Nautobot Circuit Endpoints", dispatcher)
+        return False  # command did not run to completion and therefore should not be logged
+
+    # Ensure the termination endpoints are present, otherwise set to a string value
+    term_a = "undefined"
+    term_z = "undefined"
+    try:
+        term_a = circuit.termination_a.trace()[0][2]
+    except (AttributeError, IndexError):
+        term_a = 'No A Side Termination in Database'
+    try:
+        term_z = circuit.termination_z.trace()[0][2]
+    except (AttributeError, IndexError):
+        term_z = 'No A Side Termination in Database'
+
+    if term_a == "undefined":
+        endpoint_info_a = analyze_circuit_endpoints(term_a)
+
+    if term_z == "undefined":
+        endpoint_info_z = analyze_circuit_endpoints(term_z)
+
+
+    blocks = [
+        *dispatcher.command_response_header(
+            "nautobot",
+            "get-circuit-terminations",
+            [("Name", circuit)],
+            "circuit terminations",
+            nautobot_logo(dispatcher),
+        ),
+        dispatcher.markdown_block(f"The endpoints of {dispatcher.bold(circuit)} are {dispatcher.bold(endpoint_info_a)}"
+                                  f"and {dispatcher.bold(endpoint_info_z)}"),
+    ]
+
+    dispatcher.send_blocks(blocks)
+    return CommandStatusChoices.STATUS_SUCCEEDED
