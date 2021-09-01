@@ -62,6 +62,17 @@ def prompt_for_vlan(action_id, help_text, dispatcher, filter_type, filter_value_
     return dispatcher.prompt_from_menu(action_id, help_text, choices, offset=menu_offset_value(filter_value_1))
 
 
+def prompt_for_circuit(action_id, help_text, dispatcher, circuits=None, offset=0):
+    """Prompt the user to select a valid circuit from a drop-down menu."""
+    if circuits is None:
+        circuits = Circuit.objects.all().order_by("provider", "cid")
+    if not circuits:
+        dispatcher.send_error("No circuits were found")
+        return (CommandStatusChoices.STATUS_FAILED, "No circuits were found")
+    choices = [(f"{circuit.provider.name}: {circuit.cid}", circuit.cid) for circuit in circuits]
+    return dispatcher.prompt_from_menu(action_id, help_text, choices, offset=offset)
+
+
 def send_interface_connection_table(dispatcher, connections, filter_type, value):
     """Send request large table to Slack Channel."""
     header = ["Device A", "Interface A", "Device B", "Interface B", "Connection Status"]
@@ -131,6 +142,19 @@ def get_filtered_connections(device, interface_ct):
         .exclude(_termination_b_device=None)
         .exclude(_termination_a_device=None)
     )
+
+
+def analyze_circuit_endpoints(endpoint):
+    """Analyzes a circuit's endpoint and returns info about what object the endpoint connects to"""
+
+    if type(endpoint) in [Interface, FrontPort, RearPort]:
+        # Put into format: object.device_name
+        info = endpoint.name+"."+endpoint.device.name
+    elif isinstance(endpoint, CircuitTermination):
+        # Return circuit ID of endpoint circuit
+        info = f"Circuit with circuit ID {endpoint.circuit.cid}"
+
+    return info
 
 
 # pylint: disable=too-many-statements
@@ -1050,36 +1074,14 @@ def get_manufacturer_summary(dispatcher):
     dispatcher.send_large_table(header, rows)
     return CommandStatusChoices.STATUS_SUCCEEDED
 
-def analyze_circuit_endpoints(endpoint):
-
-    if type(endpoint) in [Interface, FrontPort, RearPort]:
-        # Put into format: object.device_name
-        info = endpoint.name+"."+endpoint.device.name
-    elif isinstance(endpoint, CircuitTermination):
-        # Return circuit ID of endpoint circuit
-        info = f"Circuit with circuit ID {endpoint.circuit.cid}"
-
-    return info
-
-
-def prompt_for_circuit(action_id, help_text, dispatcher, circuits=None, offset=0):
-    """Prompt the user to select a valid circuit from a drop-down menu."""
-    if circuits is None:
-        circuits = Circuit.objects.all().order_by("provider", "cid")
-    if not circuits:
-        dispatcher.send_error("No circuits were found")
-        return (CommandStatusChoices.STATUS_FAILED, "No circuits were found")
-    choices = [(f"{circuit.provider.name}: {circuit.cid}", circuit.cid) for circuit in circuits]
-    return dispatcher.prompt_from_menu(action_id, help_text, choices, offset=offset)
-
 
 @subcommand_of("nautobot")
-def get_circuit_terminations(dispatcher, circuit_id):
-    """For a given circuit, find the circuit's endpoints"""
+def get_circuit_connections(dispatcher, circuit_id):
+    """For a given circuit, find the objects the circuit connects to"""
     if menu_item_check(circuit_id):
         prompt_for_circuit(
-            "nautobot get-circuit-terminations",
-            "Get Nautobot Circuit Endpoints",
+            "nautobot get-circuit-connections",
+            "Get Nautobot Circuit Connections",
             dispatcher,
             offset=menu_offset_value(circuit_id),
         )
@@ -1089,56 +1091,40 @@ def get_circuit_terminations(dispatcher, circuit_id):
         circuit = Circuit.objects.get(cid=circuit_id)
     except Circuit.DoesNotExist:
         dispatcher.send_error(f"I don't know the circuit with ID '{circuit_id}'")
-        prompt_for_circuit("nautobot get-circuit-terminations", "Get Nautobot Circuit Endpoints", dispatcher)
+        prompt_for_circuit("nautobot get-circuit-connections", "Get Nautobot Circuit Connections", dispatcher)
         return False  # command did not run to completion and therefore should not be logged
 
     # Ensure the termination endpoints are present, otherwise set to a string value
     try:
         term_a = circuit.termination_a.trace()[0][2]
     except (AttributeError, IndexError):
-        term_a = 'No A Side Termination in Database'
+        term_a = "No A Side Connection in Database"
     try:
         term_z = circuit.termination_z.trace()[0][2]
     except (AttributeError, IndexError):
-        term_z = 'No Z Side Termination in Database'
+        term_z = "No Z Side Connection in Database"
 
-    if term_a != 'No A Side Termination in Database':
+    if term_a != "No A Side Connection in Database":
         endpoint_info_a = analyze_circuit_endpoints(term_a)
     else:
         endpoint_info_a = term_a
 
-    if term_z != 'No Z Side Termination in Database':
+    if term_z != "No Z Side Connection in Database":
         endpoint_info_z = analyze_circuit_endpoints(term_z)
     else:
         endpoint_info_z = term_z
 
-    # blocks = [
-    #     *dispatcher.command_response_header(
-    #         "nautobot",
-    #         "get-circuit-terminations",
-    #         [("Name", circuit.cid)],
-    #         "circuit terminations",
-    #         nautobot_logo(dispatcher),
-    #     ),
-    #     dispatcher.markdown_block(f"The endpoints of {dispatcher.bold(circuit.cid)} "
-    #                               f"are {dispatcher.bold(endpoint_info_a)} "
-    #                               f"and {dispatcher.bold(endpoint_info_z)}"),
-    # ]
-    #
-    # dispatcher.send_blocks(blocks)
-    # return CommandStatusChoices.STATUS_SUCCEEDED
-
     dispatcher.send_blocks(
         dispatcher.command_response_header(
             "nautobot",
-            "get-circuit-terminations",
+            "get-circuit-connections",
             [("Circuit ID", circuit.cid)],
-            "circuit terminations",
+            "circuit connection info",
             nautobot_logo(dispatcher),
         )
     )
 
-    header = ["Side", "Termination Object"]
+    header = ["Side", "Connecting Object"]
     rows = [
         (
             "A",
