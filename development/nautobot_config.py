@@ -213,8 +213,8 @@ PLUGINS = ["nautobot_chatops", "nautobot_capacity_metrics"]
 PLUGINS_CONFIG = {
     "nautobot_chatops": {
         "enable_slack": True,
-        "enable_ms_teams": False,
-        "enable_webex": False,
+        "enable_ms_teams": True,
+        "enable_webex": True,
         "microsoft_app_id": os.environ.get("MICROSOFT_APP_ID"),
         "microsoft_app_password": os.environ.get("MICROSOFT_APP_PASSWORD"),
         "slack_api_token": os.environ.get("SLACK_API_TOKEN"),
@@ -222,7 +222,7 @@ PLUGINS_CONFIG = {
         "slack_slash_command_prefix": os.environ.get("SLACK_SLASH_COMMAND_PREFIX", "/"),
         "webex_token": os.environ.get("WEBEX_ACCESS_TOKEN"),
         "webex_signing_secret": os.environ.get("WEBEX_SIGNING_SECRET"),
-        "enable_mattermost": False,
+        "enable_mattermost": True,
         "mattermost_api_token": os.environ.get("MATTERMOST_API_TOKEN"),
         "mattermost_url": os.environ.get("MATTERMOST_URL"),
     },
