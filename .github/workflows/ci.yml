@@ -98,11 +98,11 @@ jobs:
         with:
           python-version: "3.9"
       - name: "Install Python Packages for Setup"
-        run: "pip install invoke poetry"
+        run: "pip install invoke"
       - name: "Copy credentials"
         run: "cp development/creds.example.env development/creds.env"
       - name: "Build Container"
-        run: "poetry run invoke build"
+        run: "invoke build"
     needs:
       - "bandit"
       - "pydocstyle"
