@@ -32,11 +32,9 @@ jobs:
         with:
           python-version: "3.9"
       - name: "Install Python Packages for Setup"
-        run: "pip install invoke poetry"
-      - name: "Install Python Packages for Linting"
-        run: "poetry install"
+        run: "pip install invoke bandit"
       - name: "Linting: bandit"
-        run: "poetry run invoke bandit"
+        run: "invoke bandit"
     needs:
       - "black"
   pydocstyle:
@@ -51,11 +49,9 @@ jobs:
         with:
           python-version: "3.9"
       - name: "Install Python Packages for Setup"
-        run: "pip install invoke poetry"
-      - name: "Install Python Packages for Linting"
-        run: "poetry install"
+        run: "pip install invoke pydocstyle"
       - name: "Linting: pydocstyle"
-        run: "poetry run invoke pydocstyle"
+        run: "invoke pydocstyle"
     needs:
       - "black"
   flake8:
@@ -70,11 +66,9 @@ jobs:
         with:
           python-version: "3.9"
       - name: "Install Python Packages for Setup"
-        run: "pip install invoke poetry"
-      - name: "Install Python Packages for Linting"
-        run: "poetry install"
+        run: "pip install invoke flake8"
       - name: "Linting: flake8"
-        run: "poetry run invoke flake8"
+        run: "invoke flake8"
     needs:
       - "black"
   yamllint:
@@ -89,11 +83,9 @@ jobs:
         with:
           python-version: "3.9"
       - name: "Install Python Packages for Setup"
-        run: "pip install invoke poetry"
-      - name: "Install Python Packages for Linting"
-        run: "poetry install"
+        run: "pip install invoke yamllint"
       - name: "Linting: yamllint"
-        run: "poetry run invoke yamllint"
+        run: "invoke yamllint"
     needs:
       - "black"
   build:
