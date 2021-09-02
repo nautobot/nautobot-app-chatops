@@ -25,4 +25,7 @@ runs:
       run: "echo Starting..."
     - name: "Install evnironment"
       shell: "bash"
-      run: "if [[ ${{ steps.cached-poetry.outputs.cache-hit }} != 'true' ]]; then poetry install; fi"
+      run: "echo ${{ steps.cached-poetry.outputs.cache-hit }}"
+    - name: "Install evnironment"
+      shell: "bash"
+      run: "if [ ${{ steps.cached-poetry.outputs.cache-hit }} != 'true' ]; then poetry install; fi"
