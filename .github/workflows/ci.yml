@@ -122,9 +122,9 @@ jobs:
       - name: "Copy credentials"
         run: "cp development/creds.example.env development/creds.env"
       - name: "Build Container"
-        run: "poetry run invoke build"
+        run: "invoke build"
       - name: "Linting: Pylint"
-        run: "poetry run invoke pylint"
+        run: "invoke pylint"
     needs:
       - "build"
   unittest:
@@ -145,13 +145,13 @@ jobs:
         with:
           python-version: "3.9"
       - name: "Install Python Packages for Linting"
-        run: "pip install invoke poetry"
+        run: "pip install invoke"
       - name: "Copy credentials"
         run: "cp development/creds.example.env development/creds.env"
       - name: "Build Container"
-        run: "poetry run invoke build"
+        run: "invoke build"
       - name: "Run Tests"
-        run: "poetry run invoke unittest"
+        run: "invoke unittest"
     needs:
       - "pylint"
   publish_gh:
@@ -166,7 +166,7 @@ jobs:
         with:
           python-version: "3.9"
       - name: "Install Python Packages"
-        run: "pip install invoke poetry"
+        run: "pip install poetry"
       - name: "Set env"
         run: "echo RELEASE_VERSION=${GITHUB_REF:10} >> $GITHUB_ENV"
       - name: "Run Poetry Version"
@@ -195,7 +195,7 @@ jobs:
         with:
           python-version: "3.9"
       - name: "Install Python Packages"
-        run: "pip install invoke poetry"
+        run: "pip install poetry"
       - name: "Set env"
         run: "echo RELEASE_VERSION=${GITHUB_REF:10} >> $GITHUB_ENV"
       - name: "Run Poetry Version"
