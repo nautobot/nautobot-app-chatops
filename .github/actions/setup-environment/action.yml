@@ -22,7 +22,7 @@ runs:
         key: "{{ runner.os }}-poetry-${{ hashFiles('./poetry.lock') }}"
     - name: "Display result"
       shell: "bash"
-      run: "echo ${{ steps.cached-poetry.outputs.cache-hit }}"
+      run: "[[ ${{ steps.cached-poetry.outputs.cache-hit }} = 'true' ]] && echo blabla"
     # - name: "Install environment"
     #   if: "steps.cached-poetry.outputs.cache-hit != 'true'"
     #   run: "poetry install"
