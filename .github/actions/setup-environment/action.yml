@@ -27,7 +27,7 @@ runs:
         path: "~/.cache/pypoetry/virtualenvs/"
         key: "{{ runner.os }}-poetry-${{ hashFiles('./poetry.lock') }}"
     - name: "Log: Loaded from cache"
-      run: "if [ '${{ steps.cached-poetry.outputs.cache-hit }}' != 'true' ]; then echo Cache not found.; else Cache found, environment loaded.; fi"
+      run: "if [ '${{ steps.cached-poetry.outputs.cache-hit }}' != 'true' ]; then echo 'Cache not found.'; else 'Cache found, environment loaded.'; fi"
       shell: "bash"
     - name: "Log: Install environment"
       shell: "bash"
