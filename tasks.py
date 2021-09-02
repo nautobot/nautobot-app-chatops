@@ -153,17 +153,12 @@ def debug(context):
     docker_compose(context, "up")
 
 
-# @task
-# def start(context):
-#     """Start Nautobot and its dependencies in detached mode."""
-#     print("Starting Nautobot in detached mode...")
-#     docker_compose(context, "up --detach")
-
 @task(help={"service": "If specified, only affect this service."})
 def start(context, service=None):
     """Start Nautobot and its dependencies in detached mode."""
     print("Starting Nautobot in detached mode...")
     docker_compose(context, "up --detach", service=service)
+
 
 @task
 def restart(context):
