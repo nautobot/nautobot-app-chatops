@@ -19,10 +19,10 @@ runs:
       id: "cached-poetry"
       with:
         path: "~/.cache/pypoetry/virtualenvs/"
-        key: "{{ runner.os }}-poetry-${{ hashFiles('./poetry.lock') }}"
+        key: "{{ runner.os }}-poetry-${{ hashFiles('./poetry.lock') }}-1"
     - name: "Display result"
       shell: "bash"
-      run: "if [[ ${{ steps.cached-poetry.outputs.cache-hit }} != 'true' ]]; then echo blabla; fi"
+      run: "if [[ ${{ steps.cached-poetry.outputs.cache-hit }} != 'true' ]]; then poetry install; fi"
     # - name: "Install environment"
     #   if: "steps.cached-poetry.outputs.cache-hit != 'true'"
     #   run: "poetry install"
