@@ -19,7 +19,7 @@ runs:
       id: "cached-poetry"
       with:
         path: "~/.cache/pypoetry/virtualenvs/"
-        key: "{{ runner.os }}-poetry-${{ hashFiles('./poetry.lock') }}-1"
+        key: "{{ runner.os }}-poetry-${{ hashFiles('./poetry.lock') }}-2"
     - name: "Install environment"
       shell: "bash"
       run: "echo Starting..."
