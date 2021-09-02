@@ -5,6 +5,13 @@ on:
   - "pull_request"
 
 jobs:
+  custom-action: 
+    runs-on: "ubuntu-20.04"
+    steps:
+      - name: "Check out repository code"
+        uses: "actions/checkout@v2"
+      - name: Custom action
+        uses: "./.github/actions/setup-environment"
   black:
     runs-on: "ubuntu-20.04"
     env:
