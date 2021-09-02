@@ -32,8 +32,6 @@ on:
   #       run: "ls -al ~/.cache/pypoetry/virtualenvs"
   # restore:
 
-
-
 jobs:
   black:
     runs-on: "ubuntu-20.04"
