@@ -70,7 +70,7 @@ jobs:
       - name: "Linting: flake8"
         run: "invoke flake8"
     needs:
-      - "black"
+      - black
   yamllint:
     runs-on: "ubuntu-20.04"
     env:
