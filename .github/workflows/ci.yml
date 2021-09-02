@@ -17,11 +17,9 @@ jobs:
         with:
           python-version: "3.9"
       - name: "Install Python Packages for Setup"
-        run: "pip install invoke poetry"
-      - name: "Install Python Packages for Linting"
-        run: "poetry install"
+        run: "pip install invoke black"
       - name: "Linting: black"
-        run: "poetry run invoke black"
+        run: "invoke black"
   bandit:
     runs-on: "ubuntu-20.04"
     env:
