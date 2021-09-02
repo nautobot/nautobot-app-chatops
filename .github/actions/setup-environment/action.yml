@@ -20,36 +20,9 @@ runs:
       with:
         path: "~/.cache/pypoetry/virtualenvs/"
         key: "{{ runner.os }}-poetry-${{ hashFiles('./poetry.lock') }}-1"
-    - name: "Display result"
+    - name: "Install evnironment"
+      shell: "bash"
+      run: "echo Starting..."
+    - name: "Install evnironment"
       shell: "bash"
       run: "if [[ ${{ steps.cached-poetry.outputs.cache-hit }} != 'true' ]]; then poetry install; fi"
-    # - name: "Install environment"
-    #   if: "steps.cached-poetry.outputs.cache-hit != 'true'"
-    #   run: "poetry install"
-    #   shell: bash
-
-
-    # - run: echo Hello ${{ inputs.who-to-greet }}.
-    #   shell: bash
-    # - id: random-number-generator
-    #   run: echo "::set-output name=random-id::$(echo $RANDOM)"
-    #   shell: bash
-# name: 'Hello World'
-# description: 'Greet someone'
-# inputs:
-#   who-to-greet:  # id of input
-#     description: 'Who to greet'
-#     required: true
-#     default: 'World'
-# outputs:
-#   random-number:
-#     description: "Random number"
-#     value: ${{ steps.random-number-generator.outputs.random-id }}
-# runs:
-#   using: "composite"
-#   steps:
-#     - run: echo Hello ${{ inputs.who-to-greet }}.
-#       shell: bash
-#     - id: random-number-generator
-#       run: echo "::set-output name=random-id::$(echo $RANDOM)"
-#       shell: bash
