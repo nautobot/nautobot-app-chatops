@@ -1062,7 +1062,7 @@ def get_manufacturer_summary(dispatcher):
         )
     )
 
-    header = ["Manufacturer", "Quantity"]
+    header = ["Manufacturer", "Quantity of Devices"]
     rows = [
         (
             manufacturer,
