@@ -1,3 +1,4 @@
+---
 name: "Setup the environment"
 description: "This action setup the Poetry environment and load virtual environment from cache if cache exists."
 outputs:
