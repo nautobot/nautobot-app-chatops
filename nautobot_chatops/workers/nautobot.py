@@ -145,8 +145,7 @@ def get_filtered_connections(device, interface_ct):
 
 
 def analyze_circuit_endpoints(endpoint):
-    """Analyzes a circuit's endpoint and returns info about what object the endpoint connects to"""
-
+    """Analyzes a circuit's endpoint and returns info about what object the endpoint connects to."""
     if type(endpoint) in [Interface, FrontPort, RearPort]:
         # Put into format: object.device_name
         info = f"Device: {endpoint.device.name}  Interface: {endpoint.name}"
@@ -1027,8 +1026,7 @@ def about(dispatcher, *args):
 
 @subcommand_of("nautobot")
 def get_manufacturer_summary(dispatcher):
-    """Provides summary of each manufacturer and how many devices have that manufacturer"""
-
+    """Provides summary of each manufacturer and how many devices have that manufacturer."""
     # Get manufacturers
     manufacturers = Manufacturer.objects.all()
 
@@ -1071,7 +1069,7 @@ def get_manufacturer_summary(dispatcher):
 
 @subcommand_of("nautobot")
 def get_circuit_connections(dispatcher, circuit_id):
-    """For a given circuit, find the objects the circuit connects to"""
+    """For a given circuit, find the objects the circuit connects to."""
     if menu_item_check(circuit_id):
         prompt_for_circuit(
             "nautobot get-circuit-connections",
