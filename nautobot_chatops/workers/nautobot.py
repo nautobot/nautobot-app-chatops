@@ -1063,13 +1063,7 @@ def get_manufacturer_summary(dispatcher):
     )
 
     header = ["Manufacturer", "Quantity of Devices"]
-    rows = [
-        (
-            manufacturer,
-            qty
-        )
-        for manufacturer,qty in manufacturer_rollup.items()
-    ]
+    rows = [(manufacturer, qty) for manufacturer, qty in manufacturer_rollup.items()]
 
     dispatcher.send_large_table(header, rows)
     return CommandStatusChoices.STATUS_SUCCEEDED
@@ -1125,16 +1119,7 @@ def get_circuit_connections(dispatcher, circuit_id):
     )
 
     header = ["Side", "Connecting Object"]
-    rows = [
-        (
-            "A",
-            endpoint_info_a
-        ),
-        (
-            "Z",
-            endpoint_info_z
-        )
-    ]
+    rows = [("A", endpoint_info_a), ("Z", endpoint_info_z)]
 
     dispatcher.send_large_table(header, rows)
     return CommandStatusChoices.STATUS_SUCCEEDED
