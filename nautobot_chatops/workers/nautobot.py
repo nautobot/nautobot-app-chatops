@@ -1061,7 +1061,7 @@ def get_manufacturer_summary(dispatcher):
     )
 
     header = ["Manufacturer", "Quantity of Devices"]
-    rows = [(manufacturer, qty) for manufacturer, qty in manufacturer_rollup.items()]
+    rows = manufacturer_rollup.items()
 
     dispatcher.send_large_table(header, rows)
     return CommandStatusChoices.STATUS_SUCCEEDED
