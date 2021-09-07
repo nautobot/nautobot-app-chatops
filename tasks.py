@@ -301,7 +301,7 @@ def yamllint(context):
     Args:
         context (obj): Used to run specific commands
     """
-    command = "yamllint ."
+    command = "yamllint . --format standard"
     run_command(context, command)
 
 
