@@ -62,14 +62,28 @@ def prompt_for_vlan(action_id, help_text, dispatcher, filter_type, filter_value_
     return dispatcher.prompt_from_menu(action_id, help_text, choices, offset=menu_offset_value(filter_value_1))
 
 
-def prompt_for_circuit(action_id, help_text, dispatcher, circuits=None, offset=0):
+def prompt_for_circuit(action_id, help_text, dispatcher, provider=None, circuits=None, offset=0):
     """Prompt the user to select a valid circuit from a drop-down menu."""
+    if provider is None:  # A circuit provider was not specified; notify user of error
+        dispatcher.send_error("No providers were found")
+        return (CommandStatusChoices.STATUS_FAILED, "No Circuit Providers were found")
     if circuits is None:  # A circuit was not provided; provide list of circuits for user to choose from
-        circuits = Circuit.objects.all().order_by("provider", "cid")
+        circuits = Circuit.objects.filter(provider__name=provider)
     if not circuits:  # There were no Circuit objects found; notify user
         dispatcher.send_error("No circuits were found")
         return (CommandStatusChoices.STATUS_FAILED, "No circuits were found")
     choices = [(f"{circuit.provider.name}: {circuit.cid}", circuit.cid) for circuit in circuits]
+    return dispatcher.prompt_from_menu(action_id, help_text, choices, offset=offset)
+
+
+def prompt_for_circuit_provider(action_id, help_text, dispatcher, providers=None, offset=0):
+    """Prompt the user to select a valid Circuit Provider from a drop-down menu."""
+    if providers is None:  # A provider was not specified; provide list of providers for user to choose from
+        providers = Provider.objects.all().order_by("provider", "provider")
+    if not providers:  # There were no Provider objects found; notify user
+        dispatcher.send_error("No Providers were found")
+        return (CommandStatusChoices.STATUS_FAILED, "No Circuit Providers were found")
+    choices = [(f"{provider.name}", provider.name) for provider in providers]
     return dispatcher.prompt_from_menu(action_id, help_text, choices, offset=offset)
 
 
@@ -1068,8 +1082,50 @@ def get_manufacturer_summary(dispatcher):
 
 
 @subcommand_of("nautobot")
-def get_circuit_connections(dispatcher, circuit_id):
+def get_circuit_connections(dispatcher, provider_name, circuit_id):  # TODO - change provider name to slug
     """For a given circuit, find the objects the circuit connects to."""
+    if menu_item_check(provider_name):
+        provider_options = [
+            (provider.name, provider.name)
+            for provider in
+            Provider.objects.annotate(Count("circuits")).filter(circuits__count__gt=0).order_by("name", "name")
+        ]
+        if not provider_options:  # No providers with associated circuits exist
+            no_provider_error_msg = "No Providers with circuits were found"
+            dispatcher.send_error(no_provider_error_msg)
+            return (CommandStatusChoices.STATUS_SUCCEEDED, no_provider_error_msg)
+
+        # Prompt user to select a circuit provider from a list of provider_options
+        dispatcher.prompt_from_menu(
+            "nautobot get-circuit-connections", "Select a circuit provider", provider_options, offset=menu_offset_value(provider_name)
+        )
+        return False  # command did not run to completion and therefore should not be logged
+
+    try:
+        provider = Provider.objects.get(name=provider_name)
+    except Provider.DoesNotExist:
+        provider_not_found_error_msg = f"Circuit provider with name {provider_name} does not exist"
+        dispatcher.send_error(provider_not_found_error_msg)
+        return (CommandStatusChoices.STATUS_FAILED, provider_not_found_error_msg)
+
+    if menu_item_check(circuit_id):
+        circuit_options = [(circuit.cid, circuit.cid) for circuit in Circuit.objects.filter(provider__name=provider)]
+        if not circuit_options:
+            no_circuits_found_error_msg = f"No circuits with provider name {provider.name} were found"
+            dispatcher.send_error()
+            return (CommandStatusChoices.STATUS_SUCCEEDED, no_circuits_found_error_msg)
+        dispatcher.prompt_from_menu(
+            f"nautobot get-circuit-connections {provider_name}", "Select a circuit", circuit_options, offset=menu_offset_value(circuit_id)
+        )
+        return False  # command did not run to completion and therefore should not be logged
+
+    try:
+        circuit = Circuit.objects.get(cid=circuit_id)
+    except Circuit.DoesNotExist:
+        cid_not_found_msg = f"Circuit with circuit ID {circuit_id} not found"
+        dispatcher.send_error(cid_not_found_msg)
+        return (CommandStatusChoices.STATUS_FAILED, cid_not_found_msg)
+
     if menu_item_check(circuit_id):
         prompt_for_circuit(
             "nautobot get-circuit-connections",
@@ -1077,13 +1133,6 @@ def get_circuit_connections(dispatcher, circuit_id):
             dispatcher,
             offset=menu_offset_value(circuit_id),
         )
-        return False  # command did not run to completion and therefore should not be logged
-
-    try:
-        circuit = Circuit.objects.get(cid=circuit_id)
-    except Circuit.DoesNotExist:
-        dispatcher.send_error(f"I don't know the circuit with ID '{circuit_id}'")
-        prompt_for_circuit("nautobot get-circuit-connections", "Get Nautobot Circuit Connections", dispatcher)
         return False  # command did not run to completion and therefore should not be logged
 
     # Ensure the termination endpoints are present, otherwise set to a string value
@@ -1110,7 +1159,7 @@ def get_circuit_connections(dispatcher, circuit_id):
         dispatcher.command_response_header(
             "nautobot",
             "get-circuit-connections",
-            [("Circuit ID", circuit.cid)],
+            [("Provider Name", provider.name), ("Circuit ID", circuit.cid)],
             "circuit connection info",
             nautobot_logo(dispatcher),
         )
