@@ -1,5 +1,6 @@
 """Generic base class modeling the API for sending messages to a generic chat platform."""
 import logging
+from typing import Dict
 from django.templatetags.static import static
 from django.core.cache import cache
 from django.conf import settings
@@ -42,26 +43,18 @@ class Dispatcher:
         # Using __file__ as a key customization within the cache
         return "-".join([__file__, self.context.get("user_id", "generic")])
 
-    def get_session(self, key: str = None):
-        """Return the session data for a key, if specified, or the whole session data."""
+    def get_session_entry(self, key: str):
+        """Return the session data for a key."""
         session_value = cache.get(self._get_cache_key()) or {}
-        if key:
-            # This can raise a KeyError if the key is not present
+        try:
             return session_value[key]
-        return session_value
+        except KeyError:
+            return None
 
-    def set_session(self, value, key: str = None):
-        """Set the session data for a key, if specified, or the whole session data.
-
-        'value' can be the whole session data (dict) or the value of a specific key.
-        """
+    def set_session_entry(self, key: str, value):
+        """Set the session data for a key."""
         session_value = cache.get(self._get_cache_key()) or {}
-        if key:
-            session_value[key] = value
-        else:
-            if not isinstance(value, dict):
-                raise ValueError("Value must be a dict for the whole session data.")
-            session_value = value
+        session_value[key] = value
 
         cache.set(
             self._get_cache_key(),
@@ -71,17 +64,36 @@ class Dispatcher:
             ),
         )
 
-    def unset_session(self, key: str = None):
-        """Unset a session data for a key or as a whole."""
+    def unset_session_entry(self, key: str):
+        """Unset a session data for a key."""
         session_value = cache.get(self._get_cache_key()) or {}
-        if key:
-            try:
-                del session_value[key]
-                self.set_session(session_value)
-            except KeyError:
-                pass
-        else:
-            cache.delete(self._get_cache_key())
+        try:
+            del session_value[key]
+            self.set_session(session_value)
+        except KeyError:
+            pass
+
+    def get_session(self):
+        """Return the whole session data."""
+        return cache.get(self._get_cache_key()) or {}
+
+    def set_session(self, value: Dict):
+        """Set the whole session data."""
+        if not isinstance(value, dict):
+            raise ValueError("Value must be a dict for the whole session data.")
+        session_value = value
+
+        cache.set(
+            self._get_cache_key(),
+            session_value,
+            timeout=settings.PLUGINS_CONFIG["nautobot_chatops"].get(
+                "session_cache_timeout", DEFAULT_SESSION_CACHE_TIMEOUT
+            ),
+        )
+
+    def unset_session(self):
+        """Unset whole session data."""
+        cache.delete(self._get_cache_key())
 
     @classmethod
     def subclasses(cls):

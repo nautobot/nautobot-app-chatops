@@ -176,21 +176,26 @@ class TestSlackDispatcher(TestCase):
 
         self.assertIsInstance(response, MagicMock)
 
-    def test_user_session(self):
+    def test_user_session_all(self):
         """Test session caching methods."""
         self.dispatcher.unset_session()
         self.assertEqual(self.dispatcher.get_session(), {})
         self.dispatcher.set_session({"key1": "value1"})
         self.assertEqual(self.dispatcher.get_session(), {"key1": "value1"})
-        self.assertEqual(self.dispatcher.get_session("key1"), "value1")
-        self.dispatcher.set_session("value2", key="key2")
-        self.assertEqual(self.dispatcher.get_session(), {"key1": "value1", "key2": "value2"})
-        self.dispatcher.unset_session("key2")
-        self.assertEqual(self.dispatcher.get_session(), {"key1": "value1"})
         self.dispatcher.unset_session()
         self.assertEqual(self.dispatcher.get_session(), {})
         with self.assertRaises(ValueError):
             self.dispatcher.set_session("value3")
+
+    def test_user_session_key(self):
+        """Test session caching methods per key."""
+        self.dispatcher.unset_session()
+        self.dispatcher.set_session_entry("key1", "value1")
+        self.assertEqual(self.dispatcher.get_session_entry("key1"), "value1")
+        self.dispatcher.unset_session_entry("key1")
+        self.assertEqual(self.dispatcher.get_session_entry("key1"), None)
+        # This should not raise an exception
+        self.dispatcher.unset_session_entry("key1")
 
 
 class TestMSTeamsDispatcher(TestSlackDispatcher):
