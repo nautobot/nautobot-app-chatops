@@ -1098,7 +1098,7 @@ def get_circuit_connections(dispatcher, provider_slug, circuit_id):
         return (CommandStatusChoices.STATUS_FAILED, provider_not_found_error_msg)
 
     if menu_item_check(circuit_id):
-        circuit_options = [(circuit.cid, circuit.cid) for circuit in Circuit.objects.filter(provider__name=provider)]
+        circuit_options = [(circuit.cid, circuit.cid) for circuit in Circuit.objects.filter(provider__slug=provider)]
         if not circuit_options:
             no_circuits_found_error_msg = f"No circuits with provider slug {provider.slug} were found"
             dispatcher.send_error()
