@@ -1076,8 +1076,9 @@ def get_circuit_connections(dispatcher, provider_slug, circuit_id):
     if menu_item_check(provider_slug):
         provider_options = [
             (provider.slug, provider.slug)
-            for provider in
-            Provider.objects.annotate(Count("circuits")).filter(circuits__count__gt=0).order_by("slug", "name")
+            for provider in Provider.objects.annotate(Count("circuits"))
+            .filter(circuits__count__gt=0)
+            .order_by("slug", "name")
         ]
         if not provider_options:  # No providers with associated circuits exist
             no_provider_error_msg = "No Providers with circuits were found"
@@ -1086,7 +1087,10 @@ def get_circuit_connections(dispatcher, provider_slug, circuit_id):
 
         # Prompt user to select a circuit provider from a list of provider_options
         dispatcher.prompt_from_menu(
-            "nautobot get-circuit-connections", "Select a circuit provider", provider_options, offset=menu_offset_value(provider_slug)
+            "nautobot get-circuit-connections",
+            "Select a circuit provider",
+            provider_options,
+            offset=menu_offset_value(provider_slug),
         )
         return False  # command did not run to completion and therefore should not be logged
 
@@ -1101,10 +1105,13 @@ def get_circuit_connections(dispatcher, provider_slug, circuit_id):
         circuit_options = [(circuit.cid, circuit.cid) for circuit in Circuit.objects.filter(provider__slug=provider)]
         if not circuit_options:
             no_circuits_found_error_msg = f"No circuits with provider slug {provider.slug} were found"
-            dispatcher.send_error()
+            dispatcher.send_error(no_circuits_found_error_msg)
             return (CommandStatusChoices.STATUS_SUCCEEDED, no_circuits_found_error_msg)
         dispatcher.prompt_from_menu(
-            f"nautobot get-circuit-connections {provider_slug}", "Select a circuit", circuit_options, offset=menu_offset_value(circuit_id)
+            f"nautobot get-circuit-connections {provider_slug}",
+            "Select a circuit",
+            circuit_options,
+            offset=menu_offset_value(circuit_id),
         )
         return False  # command did not run to completion and therefore should not be logged
 
