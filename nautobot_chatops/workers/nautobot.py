@@ -1087,16 +1087,16 @@ def get_circuit_connections(dispatcher, provider_slug, circuit_id):
 
         # Prompt user to select a circuit provider from a list of provider_options
         dispatcher.prompt_from_menu(
-            "nautobot get-circuit-connections",
-            "Select a circuit provider",
-            provider_options,
+            "nautobot get-circuit-connections",  # command sub-command
+            "Select a circuit provider",  # Prompt to user
+            provider_options,  # Options to choose from
             offset=menu_offset_value(provider_slug),
         )
         return False  # command did not run to completion and therefore should not be logged
 
     try:
         provider = Provider.objects.get(slug=provider_slug)
-    except Provider.DoesNotExist:
+    except Provider.DoesNotExist:  # If provider cannot be found, return STATUS_FAILED with msg
         provider_not_found_error_msg = f"Circuit provider with slug {provider_slug} does not exist"
         dispatcher.send_error(provider_not_found_error_msg)
         return (CommandStatusChoices.STATUS_FAILED, provider_not_found_error_msg)
@@ -1132,24 +1132,7 @@ def get_circuit_connections(dispatcher, provider_slug, circuit_id):
         return False  # command did not run to completion and therefore should not be logged
 
     # Ensure the termination endpoints are present, otherwise set to a string value
-    try:
-        term_a = circuit.termination_a.trace()[0][2]
-    except (AttributeError, IndexError):
-        term_a = "No A Side Connection in Database"
-    try:
-        term_z = circuit.termination_z.trace()[0][2]
-    except (AttributeError, IndexError):
-        term_z = "No Z Side Connection in Database"
-
-    if term_a != "No A Side Connection in Database":
-        endpoint_info_a = analyze_circuit_endpoints(term_a)
-    else:
-        endpoint_info_a = term_a
-
-    if term_z != "No Z Side Connection in Database":
-        endpoint_info_z = analyze_circuit_endpoints(term_z)
-    else:
-        endpoint_info_z = term_z
+    endpoint_info_a, endpoint_info_z = examine_termination_endpoints(circuit)
 
     dispatcher.send_blocks(
         dispatcher.command_response_header(
@@ -1166,3 +1149,24 @@ def get_circuit_connections(dispatcher, provider_slug, circuit_id):
 
     dispatcher.send_large_table(header, rows)
     return CommandStatusChoices.STATUS_SUCCEEDED
+
+
+def examine_termination_endpoints(circuit):
+    """Given a Circuit object, determine the endpoints."""
+    try:
+        term_a = circuit.termination_a.trace()[0][2]
+    except (AttributeError, IndexError):
+        term_a = "No A Side Connection in Database"
+    try:
+        term_z = circuit.termination_z.trace()[0][2]
+    except (AttributeError, IndexError):
+        term_z = "No Z Side Connection in Database"
+    if term_a != "No A Side Connection in Database":
+        endpoint_info_a = analyze_circuit_endpoints(term_a)
+    else:
+        endpoint_info_a = term_a
+    if term_z != "No Z Side Connection in Database":
+        endpoint_info_z = analyze_circuit_endpoints(term_z)
+    else:
+        endpoint_info_z = term_z
+    return endpoint_info_a, endpoint_info_z
