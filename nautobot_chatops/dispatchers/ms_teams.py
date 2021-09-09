@@ -1,4 +1,4 @@
-"""Dispatcher impelementation for sending content to Microsoft Teams."""
+"""Dispatcher implementation for sending content to Microsoft Teams."""
 import os
 import logging
 import requests
