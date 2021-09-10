@@ -9,8 +9,6 @@ from texttable import Texttable
 
 logger = logging.getLogger("rq.worker")
 
-DEFAULT_SESSION_CACHE_TIMEOUT = 86400
-
 
 class Dispatcher:
     """Abstract base class for all chat-app dispatchers."""
