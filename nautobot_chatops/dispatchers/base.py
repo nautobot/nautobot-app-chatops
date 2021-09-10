@@ -45,28 +45,22 @@ class Dispatcher:
 
     def get_session_entry(self, key: str):
         """Return the session data for a key."""
-        session_value = cache.get(self._get_cache_key()) or {}
-        try:
-            return session_value[key]
-        except KeyError:
-            return None
+        return cache.get(self._get_cache_key(), {}).get(key, None)
 
     def set_session_entry(self, key: str, value):
         """Set the session data for a key."""
-        session_value = cache.get(self._get_cache_key()) or {}
+        session_value = cache.get(self._get_cache_key(), {})
         session_value[key] = value
 
         cache.set(
             self._get_cache_key(),
             session_value,
-            timeout=settings.PLUGINS_CONFIG["nautobot_chatops"].get(
-                "session_cache_timeout", DEFAULT_SESSION_CACHE_TIMEOUT
-            ),
+            timeout=settings.PLUGINS_CONFIG["nautobot_chatops"]["session_cache_timeout"],
         )
 
     def unset_session_entry(self, key: str):
         """Unset a session data for a key."""
-        session_value = cache.get(self._get_cache_key()) or {}
+        session_value = cache.get(self._get_cache_key(), {})
         try:
             del session_value[key]
             self.set_session(session_value)
@@ -75,7 +69,7 @@ class Dispatcher:
 
     def get_session(self):
         """Return the whole session data."""
-        return cache.get(self._get_cache_key()) or {}
+        return cache.get(self._get_cache_key(), {})
 
     def set_session(self, value: Dict):
         """Set the whole session data."""
@@ -86,9 +80,7 @@ class Dispatcher:
         cache.set(
             self._get_cache_key(),
             session_value,
-            timeout=settings.PLUGINS_CONFIG["nautobot_chatops"].get(
-                "session_cache_timeout", DEFAULT_SESSION_CACHE_TIMEOUT
-            ),
+            timeout=settings.PLUGINS_CONFIG["nautobot_chatops"]["session_cache_timeout"],
         )
 
     def unset_session(self):
