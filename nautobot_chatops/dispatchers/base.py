@@ -1,9 +1,8 @@
 """Generic base class modeling the API for sending messages to a generic chat platform."""
-
 import logging
-
+from typing import Dict
 from django.templatetags.static import static
-
+from django.core.cache import cache
 from django.conf import settings
 
 from texttable import Texttable
@@ -36,6 +35,55 @@ class Dispatcher:
     def __init__(self, context=None):
         """Init this Dispatcher with the provided dict of contextual information (which will vary by app)."""
         self.context = context or {}
+
+    def _get_cache_key(self) -> str:
+        """Key generator for the cache, adding the plugin prefix name."""
+        # Using __file__ as a key customization within the cache
+        return "-".join([__file__, self.context.get("user_id", "generic")])
+
+    def get_session_entry(self, key: str):
+        """Return the session data for a key."""
+        return cache.get(self._get_cache_key(), {}).get(key, None)
+
+    def set_session_entry(self, key: str, value):
+        """Set the session data for a key."""
+        session_value = cache.get(self._get_cache_key(), {})
+        session_value[key] = value
+
+        cache.set(
+            self._get_cache_key(),
+            session_value,
+            timeout=settings.PLUGINS_CONFIG["nautobot_chatops"]["session_cache_timeout"],
+        )
+
+    def unset_session_entry(self, key: str):
+        """Unset a session data for a key."""
+        session_value = cache.get(self._get_cache_key(), {})
+        try:
+            del session_value[key]
+            self.set_session(session_value)
+        except KeyError:
+            pass
+
+    def get_session(self):
+        """Return the whole session data."""
+        return cache.get(self._get_cache_key(), {})
+
+    def set_session(self, value: Dict):
+        """Set the whole session data."""
+        if not isinstance(value, dict):
+            raise ValueError("Value must be a dict for the whole session data.")
+        session_value = value
+
+        cache.set(
+            self._get_cache_key(),
+            session_value,
+            timeout=settings.PLUGINS_CONFIG["nautobot_chatops"]["session_cache_timeout"],
+        )
+
+    def unset_session(self):
+        """Unset whole session data."""
+        cache.delete(self._get_cache_key())
 
     @classmethod
     def subclasses(cls):

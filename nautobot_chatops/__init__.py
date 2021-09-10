@@ -27,6 +27,8 @@ class NautobotChatOpsConfig(PluginConfig):
         "enable_webex": False,
         # Should menus, text input fields, etc. be deleted from the chat history after the user makes a selection?
         "delete_input_on_submission": False,
+        # Session Cache
+        "session_cache_timeout": 86400,
         # Slack-specific settings
         "slack_api_token": None,  # for example, "xoxb-123456"
         "slack_signing_secret": None,
