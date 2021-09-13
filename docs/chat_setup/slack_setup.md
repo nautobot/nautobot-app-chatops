@@ -88,7 +88,7 @@ PLUGINS_CONFIG = {
 
  # Configuring Multiple Chatbots in a Workspace
 
-Chatbots from multilple Nautobot implementations can exist in a single Slack workspace and even channel.
+Chatbots from multiple Nautobot implementations can exist in a single Slack workspace and even channel.
 
 They will be differentiated in the workspace using the `slack_slash_command_prefix` value in `PLUGINS_CONFIG`.
 
