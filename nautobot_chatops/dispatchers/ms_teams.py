@@ -229,3 +229,7 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
         #   channel-and-group-conversations?tabs=python#adding-mentions-to-your-messages
         # For now we just use the user name as plaintext, not an actual mention
         return f"{self.context['user_name']}"
+
+    def bold(self, text):
+        """Mark text as bold."""
+        return f"*{text}*"
