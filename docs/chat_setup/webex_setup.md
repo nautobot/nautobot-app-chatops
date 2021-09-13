@@ -28,7 +28,7 @@
    - Change the `resource` to "attachmentActions" and run the API call again to create a second webhook.
 4. Configure the `webex_signing_secret` in your `.creds.env` to match the secret string that you selected in
    step 3 above.
-5. Proceed to the [Nautobot Server Preparation and Configuration](./chat_setup.md#Plug-In Installation) section.
+5. Proceed to the [Nautobot Server Preparation and Configuration](./chat_setup.md#Plug-In-Installation) section.
 
 ## Deprecation Warning
 

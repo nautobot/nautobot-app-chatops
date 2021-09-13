@@ -76,7 +76,7 @@ PLUGINS_CONFIG = {
 6. Returning to the "Basic Information" page for your app, under "Display Information", you can specify the name,
    description, icon, and accent/background color for the app. You can use the `nautobot_logo.png` from this
    directory if desired.
-7. Proceed to the [Nautobot Server Preparation and Configuration](./chat_setup.md#Plug-In Installation) section.
+7. Proceed to the [Nautobot Server Preparation and Configuration](./chat_setup.md#Plug-In-Installation) section.
 
 > **Note**: In the Slack app, you will need to invite the chatbot to each channel that it will belong to with `@<app name>`.
 > For example, when an app named `Nautobot Chatops` is installed to the workspace:
