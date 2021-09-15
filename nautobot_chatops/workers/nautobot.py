@@ -1073,7 +1073,10 @@ def get_manufacturer_summary(dispatcher):
 @subcommand_of("nautobot")
 def get_circuit_connections(dispatcher, provider_slug, circuit_id):
     """For a given circuit, find the objects the circuit connects to."""
+    # Check for the Slack menu item limit; if a provider_slug is not initially provided,
+    # then menu_item_check will return True and provider_options will be defined
     if menu_item_check(provider_slug):
+        # Only list circuit providers that have a nonzero amount of circuits.
         provider_options = [
             (provider.slug, provider.slug)
             for provider in Provider.objects.annotate(Count("circuits"))
@@ -1085,7 +1088,7 @@ def get_circuit_connections(dispatcher, provider_slug, circuit_id):
             dispatcher.send_error(no_provider_error_msg)
             return (CommandStatusChoices.STATUS_SUCCEEDED, no_provider_error_msg)
 
-        # Prompt user to select a circuit provider from a list of provider_options
+        # Prompt user to select a circuit provider_slug from a list of provider_options
         dispatcher.prompt_from_menu(
             "nautobot get-circuit-connections",  # command sub-command
             "Select a circuit provider",  # Prompt to user
@@ -1094,6 +1097,8 @@ def get_circuit_connections(dispatcher, provider_slug, circuit_id):
         )
         return False  # command did not run to completion and therefore should not be logged
 
+    # Now that provider_slug is defined, get the provider object from the provider_slug;
+    # return an error msg if provider does not exist for that provider_slug
     try:
         provider = Provider.objects.get(slug=provider_slug)
     except Provider.DoesNotExist:  # If provider cannot be found, return STATUS_FAILED with msg
@@ -1101,6 +1106,8 @@ def get_circuit_connections(dispatcher, provider_slug, circuit_id):
         dispatcher.send_error(provider_not_found_error_msg)
         return (CommandStatusChoices.STATUS_FAILED, provider_not_found_error_msg)
 
+    # Check for the Slack menu item limit; if a circuit_id is not initially provided,
+    # then menu_item_check will return True and circuit_options will be defined
     if menu_item_check(circuit_id):
         circuit_options = [
             (circuit.cid, circuit.cid) for circuit in Circuit.objects.filter(provider__slug=provider.slug)
@@ -1117,6 +1124,8 @@ def get_circuit_connections(dispatcher, provider_slug, circuit_id):
         )
         return False  # command did not run to completion and therefore should not be logged
 
+    # Now that circuit_id is defined, get the circuit object for that circuit_id; if the
+    # circuit_id does not match to a Circuit, return an error msg
     try:
         circuit = Circuit.objects.get(cid=circuit_id)
     except Circuit.DoesNotExist:
@@ -1124,25 +1133,16 @@ def get_circuit_connections(dispatcher, provider_slug, circuit_id):
         dispatcher.send_error(cid_not_found_msg)
         return (CommandStatusChoices.STATUS_FAILED, cid_not_found_msg)
 
-    if menu_item_check(circuit_id):
-        prompt_for_circuit(
-            "nautobot get-circuit-connections",
-            "Get Nautobot Circuit Connections",
-            dispatcher,
-            offset=menu_offset_value(circuit_id),
-        )
-        return False  # command did not run to completion and therefore should not be logged
-
     # Ensure the termination endpoints are present, otherwise set to a string value
     endpoint_info_a, endpoint_info_z = examine_termination_endpoints(circuit)
 
     dispatcher.send_blocks(
         dispatcher.command_response_header(
-            "nautobot",
-            "get-circuit-connections",
-            [("Provider Name", provider.slug), ("Circuit ID", circuit.cid)],
-            "circuit connection info",
-            nautobot_logo(dispatcher),
+            "nautobot",  # command
+            "get-circuit-connections",  # sub_command
+            [("Provider Name", provider.slug), ("Circuit ID", circuit.cid)],  # args
+            "circuit connection info",  # description
+            nautobot_logo(dispatcher),  # image_element
         )
     )
 
@@ -1150,6 +1150,7 @@ def get_circuit_connections(dispatcher, provider_slug, circuit_id):
     rows = [("A", endpoint_info_a), ("Z", endpoint_info_z)]
 
     dispatcher.send_large_table(header, rows)
+
     return CommandStatusChoices.STATUS_SUCCEEDED
 
 
