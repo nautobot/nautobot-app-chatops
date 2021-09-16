@@ -16,7 +16,7 @@ runs:
 
     - name: "display py version"
       shell: "bash"
-      run: "echo {{ steps.python-setup.outputs.python-version }}"
+      run: "echo ${{ steps.python-setup.outputs.python-version }}"
     - name: "Log: Install Poetry"
       run: "echo Installing Poetry"
       shell: "bash"
@@ -37,5 +37,5 @@ runs:
       shell: "bash"
     - name: "Install environment"
       shell: "bash"
-      # run: "if [ '${{ steps.cached-poetry.outputs.cache-hit }}' != 'true' ]; then poetry install; fi"
-      run: "poetry install"
+      run: "if [ '${{ steps.cached-poetry.outputs.cache-hit }}' != 'true' ]; then poetry install; fi"
+      # run: "poetry install"
