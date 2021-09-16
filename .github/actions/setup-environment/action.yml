@@ -13,10 +13,6 @@ runs:
       id: "python-setup"
       with:
         python-version: "3.9"
-
-    - name: "display py version"
-      shell: "bash"
-      run: "echo ${{ steps.python-setup.outputs.python-version }}"
     - name: "Log: Install Poetry"
       run: "echo Installing Poetry"
       shell: "bash"
@@ -32,10 +28,6 @@ runs:
       with:
         path: "~/.cache/pypoetry/virtualenvs/"
         key: "{{ runner.os }}-poetry-${{ steps.python-setup.outputs.python-version }}-${{ hashFiles('./poetry.lock') }}"
-    - name: "Log: Loaded from cache"
-      run: "if [ '${{ steps.cached-poetry.outputs.cache-hit }}' != 'true' ]; then echo 'Cache not found, installing environment using Poetry'; else echo 'Cache found, environment loaded.'; fi"
-      shell: "bash"
     - name: "Install environment"
-      shell: "bash"
-      # run: "if [ '${{ steps.cached-poetry.outputs.cache-hit }}' != 'true' ]; then poetry install; fi"
       run: "poetry install"
+      shell: "bash"
