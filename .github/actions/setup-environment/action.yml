@@ -10,8 +10,13 @@ runs:
   steps:
     - name: "Set up Python"
       uses: "actions/setup-python@v2"
+      id: "python-setup"
       with:
         python-version: "3.9"
+
+    - name: "display py version"
+      shell: "bash"
+      run: "echo {{ steps.python-setup.outputs.python-version }}"
     - name: "Log: Install Poetry"
       run: "echo Installing Poetry"
       shell: "bash"
