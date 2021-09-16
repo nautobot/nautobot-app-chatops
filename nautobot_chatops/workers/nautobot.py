@@ -159,6 +159,27 @@ def analyze_circuit_endpoints(endpoint):
     return info
 
 
+def examine_termination_endpoints(circuit):
+    """Given a Circuit object, determine the endpoints."""
+    try:
+        term_a = circuit.termination_a.trace()[0][2]
+    except (AttributeError, IndexError):
+        term_a = "No A Side Connection in Database"
+    try:
+        term_z = circuit.termination_z.trace()[0][2]
+    except (AttributeError, IndexError):
+        term_z = "No Z Side Connection in Database"
+    if term_a != "No A Side Connection in Database":
+        endpoint_info_a = analyze_circuit_endpoints(term_a)
+    else:
+        endpoint_info_a = term_a
+    if term_z != "No Z Side Connection in Database":
+        endpoint_info_z = analyze_circuit_endpoints(term_z)
+    else:
+        endpoint_info_z = term_z
+    return endpoint_info_a, endpoint_info_z
+
+
 # pylint: disable=too-many-statements
 @subcommand_of("nautobot")
 def get_vlans(dispatcher, filter_type, filter_value_1):
@@ -1152,24 +1173,3 @@ def get_circuit_connections(dispatcher, provider_slug, circuit_id):
     dispatcher.send_large_table(header, rows)
 
     return CommandStatusChoices.STATUS_SUCCEEDED
-
-
-def examine_termination_endpoints(circuit):
-    """Given a Circuit object, determine the endpoints."""
-    try:
-        term_a = circuit.termination_a.trace()[0][2]
-    except (AttributeError, IndexError):
-        term_a = "No A Side Connection in Database"
-    try:
-        term_z = circuit.termination_z.trace()[0][2]
-    except (AttributeError, IndexError):
-        term_z = "No Z Side Connection in Database"
-    if term_a != "No A Side Connection in Database":
-        endpoint_info_a = analyze_circuit_endpoints(term_a)
-    else:
-        endpoint_info_a = term_a
-    if term_z != "No Z Side Connection in Database":
-        endpoint_info_z = analyze_circuit_endpoints(term_z)
-    else:
-        endpoint_info_z = term_z
-    return endpoint_info_a, endpoint_info_z
