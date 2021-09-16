@@ -32,4 +32,5 @@ runs:
       shell: "bash"
     - name: "Install environment"
       shell: "bash"
-      run: "if [ '${{ steps.cached-poetry.outputs.cache-hit }}' != 'true' ]; then poetry install; fi"
+      # run: "if [ '${{ steps.cached-poetry.outputs.cache-hit }}' != 'true' ]; then poetry install; fi"
+      run: "poetry install"
