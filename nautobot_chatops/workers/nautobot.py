@@ -336,6 +336,8 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
             "nautobot get-interface-connections", "Select an interface connection filter", dispatcher
         )
         return False  # command did not run to completion and therefore should not be logged
+
+    filter_type = filter_type.lower()
     if menu_item_check(filter_value_1):
         if filter_type in ["device", "site"]:
             # Since the device filter prompts the user to pick a site first in order to further
@@ -357,7 +359,7 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
             ]
         elif filter_type == "model":
             choices = [
-                (device_type.display_name, device_type.slug)
+                (device_type.model, device_type.slug)
                 for device_type in DeviceType.objects.all().order_by("manufacturer__name", "model")
             ]
         elif filter_type == "all":
@@ -716,7 +718,7 @@ def get_devices(dispatcher, filter_type, filter_value):
         elif filter_type == "role":
             choices = [(role.name, role.slug) for role in DeviceRole.objects.all()]
         elif filter_type == "model":
-            choices = [(device_type.display_name, device_type.slug) for device_type in DeviceType.objects.all()]
+            choices = [(device_type.model, device_type.slug) for device_type in DeviceType.objects.all()]
         elif filter_type == "manufacturer":
             choices = [(manufacturer.name, manufacturer.slug) for manufacturer in Manufacturer.objects.all()]
         else:
