@@ -62,20 +62,6 @@ def prompt_for_vlan(action_id, help_text, dispatcher, filter_type, filter_value_
     return dispatcher.prompt_from_menu(action_id, help_text, choices, offset=menu_offset_value(filter_value_1))
 
 
-def prompt_for_circuit(action_id, help_text, dispatcher, provider=None, circuits=None, offset=0):
-    """Prompt the user to select a valid circuit from a drop-down menu."""
-    if provider is None:  # A circuit provider was not specified; notify user of error
-        dispatcher.send_error("No providers were found")
-        return (CommandStatusChoices.STATUS_FAILED, "No Circuit Providers were found")
-    if circuits is None:  # A circuit was not provided; provide list of circuits for user to choose from
-        circuits = Circuit.objects.filter(provider__name=provider)
-    if not circuits:  # There were no Circuit objects found; notify user
-        dispatcher.send_error("No circuits were found")
-        return (CommandStatusChoices.STATUS_FAILED, "No circuits were found")
-    choices = [(f"{circuit.provider.slug}: {circuit.cid}", circuit.cid) for circuit in circuits]
-    return dispatcher.prompt_from_menu(action_id, help_text, choices, offset=offset)
-
-
 def send_interface_connection_table(dispatcher, connections, filter_type, value):
     """Send request large table to Slack Channel."""
     header = ["Device A", "Interface A", "Device B", "Interface B", "Connection Status"]
@@ -149,9 +135,9 @@ def get_filtered_connections(device, interface_ct):
 
 def analyze_circuit_endpoints(endpoint):
     """Analyzes a circuit's endpoint and returns info about what object the endpoint connects to."""
-    if type(endpoint) in [Interface, FrontPort, RearPort]:
+    if isinstance(endpoint, (Interface, FrontPort, RearPort)):
         # Put into format: object.device_name
-        info = f"Device: {endpoint.device.name}  Interface: {endpoint.name}"
+        info = f"Device: {endpoint.device.name}  {endpoint.__class__.__name__}: {endpoint.name}"
     elif isinstance(endpoint, CircuitTermination):
         # Return circuit ID of endpoint circuit
         info = f"Circuit with circuit ID {endpoint.circuit.cid}"
@@ -160,23 +146,18 @@ def analyze_circuit_endpoints(endpoint):
 
 
 def examine_termination_endpoints(circuit):
-    """Given a Circuit object, determine the endpoints."""
+    """Given a Circuit object, determine the A, Z side endpoints."""
     try:
         term_a = circuit.termination_a.trace()[0][2]
+        endpoint_info_a = analyze_circuit_endpoints(term_a)
     except (AttributeError, IndexError):
-        term_a = "No A Side Connection in Database"
+        endpoint_info_a = "No A Side Connection in Database"
     try:
         term_z = circuit.termination_z.trace()[0][2]
-    except (AttributeError, IndexError):
-        term_z = "No Z Side Connection in Database"
-    if term_a != "No A Side Connection in Database":
-        endpoint_info_a = analyze_circuit_endpoints(term_a)
-    else:
-        endpoint_info_a = term_a
-    if term_z != "No Z Side Connection in Database":
         endpoint_info_z = analyze_circuit_endpoints(term_z)
-    else:
-        endpoint_info_z = term_z
+    except (AttributeError, IndexError):
+        endpoint_info_z = "No Z Side Connection in Database"
+
     return endpoint_info_a, endpoint_info_z
 
 
