@@ -117,6 +117,16 @@ PLUGINS_CONFIG = {
 
 As a sudo-enabled user, restart the `nautobot` and `nautobot-worker` process after updating `nautobot_config.py`.
 
+```
+sudo systemctl restart nautobot.service nautobot-worker.service
+```
+
+Finally, validate that the `nautobot` and `nautobot-worker` processes have restarted successfully:
+
+```
+sudo systemctl status nautobot.service nautobot-worker.service
+```
+
 ## Grant Access to the Chatbot
 
 Nautobot provides an HTTP endpoint(s) for each supported chat platform.
