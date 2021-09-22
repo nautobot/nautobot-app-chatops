@@ -92,7 +92,7 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
         )
         return response
 
-    def send_large_table(self, header, rows):
+    def send_large_table(self, header, rows, title=None):
         """Send a large table of data to the user/channel.
 
         MS Teams really doesn't have a good way to present large tables, unfortunately,
@@ -107,7 +107,7 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
                 }
             )
 
-        self.send_blocks(blocks)
+        self.send_blocks(blocks, title=title)
 
     def needs_permission_to_send_image(self):
         """Return True if this bot needs to ask the user for permission to post an image.
