@@ -134,7 +134,7 @@ class WebExDispatcher(AdaptiveCardsDispatcher):
         # So for now we just use the user name throughout.
         return f"{self.context.get('user_name')}"
 
-    def send_large_table(self, header, rows):
+    def send_large_table(self, header, rows, title=None):
         """Send a large table of data to the user/channel.
 
         Webex has a character limit per message of 7439 characters.
@@ -160,4 +160,4 @@ class WebExDispatcher(AdaptiveCardsDispatcher):
                 char_count = 0
             table_snippet += line + "\n"
             char_count = len(table_snippet)
-        self.send_snippet(table_snippet)
+        self.send_snippet(table_snippet, title=title)

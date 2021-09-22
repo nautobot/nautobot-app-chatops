@@ -152,7 +152,7 @@ class Dispatcher:
         """
         raise NotImplementedError
 
-    def send_large_table(self, header, rows):
+    def send_large_table(self, header, rows, title=None):
         """Send a large table of data to the user/channel.
 
         The below default implementation works for both Slack and WebEx.
@@ -163,7 +163,7 @@ class Dispatcher:
         # Force all columns to be shown as text. Otherwise long numbers (such as account #) get abbreviated as 123.4e10
         table.set_cols_dtype(["t" for item in header])
         table.add_rows(rows, header=False)
-        self.send_snippet(table.draw())
+        self.send_snippet(table.draw(), title=title)
 
     def multi_input_dialog(self, command, sub_command, dialog_title, dialog_list):
         """Provide several input fields on a single dialog.
