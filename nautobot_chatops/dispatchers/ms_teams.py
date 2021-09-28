@@ -1,6 +1,7 @@
 """Dispatcher implementation for sending content to Microsoft Teams."""
 import os
 import logging
+import json
 import requests
 
 from django.conf import settings
@@ -85,10 +86,21 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
                 "replyToId": self.context["message_id"],
             }
         )
+        json_content = json.dumps(content)
+        max_msg_size = settings.PLUGINS_CONFIG["nautobot_chatops"]["microsoft_max_msg_size"]
+        if 0 < max_msg_size < len(json_content):
+            msg = "Prepared content, size %s, exceeded maximum allowed MS Teams msg size." % len(json_content)
+            logger.warning(msg)
+            json_content = json.dumps(
+                self.send_error(
+                    "Message size exceeds maximum allowed by MS Teams.\nConsider changing the filtering method."
+                )
+            )
+
         response = requests.post(
             f"{self.context['service_url']}/v3/conversations/{self.context['conversation_id']}/activities",
-            headers={"Authorization": f"Bearer {self.get_token()}"},
-            json=content,
+            headers={"Authorization": f"Bearer {self.get_token()}", "Content-Type": "application/json"},
+            data=json_content,
         )
         return response
 
