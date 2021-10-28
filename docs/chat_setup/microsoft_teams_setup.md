@@ -11,29 +11,33 @@
 ## Azure
 
 1. Login to [https://portal.azure.com](https://portal.azure.com) and select "Create a Resource".
-2. Use the search box to locate "Bot Channels Registration", then select "Bot Channels Registration" under section Marketplace.
-3. Configure the bot handle, subscription, resource group, and location. Create new resource group. It can be named the same as the bot handle for simplicity.
+2. Use the search box to locate "Azure Bot", and select "Create".
+3. Configure the bot handle, subscription, resource group, location, and pricing tier.
 4. Be sure to select the "F0" (free) pricing tier, rather than the default "S1" paid tier.
-5. For the "Messaging endpoint", enter your service URL (`https://<server>/api/plugins/chatops/ms_teams/messages/`)
-6. Select "Create" and wait for the "Deployment succeeded" pop-up to appear in your browser.
-7. Once completed, in the top search bar, enter "Bot Services", then select "Bot Services" under section "Services". Select the name of the bot you just created (not the resource group).
-8. In the sidebar to the left, select "Channels" and select the "Microsoft Teams" icon, labeled "Configure Microsoft Teams channel". All of the default settings here are fine, so just click "Save".
-9. In the sidebar to the left, under Settings, select "Configuration". Copy the "Microsoft App ID" that is displayed (it's greyed out, but can be selected for copying), then click the "Manage" link above the App ID field.
-10. On the new "Certificates & secrets" page, click "New client secret". (You may have to delete one of the existing secrets first, as there is a maximum limit). Copy the newly generated secret, as there's no way to recover it once you leave the page - you will have to return to this page and generate a new secret if you lose it.
+5. Select “Review + create”, then select "Create" and wait for the "Deployment succeeded" pop-up to appear in your browser.
+6. Click "Go to resource".
+7. In the sidebar to the left, select "Channels" and select the "Microsoft Teams" icon. All of the default settings here are fine, so just click "Save".
+8. In the sidebar to the left under “Settings”, select "Configuration".
+9. For the "Messaging endpoint", enter your service URL (`https://<server>/api/plugins/chatops/ms_teams/messages/`)
+10. On the same page, take note of the "Microsoft App ID" that is displayed, then click the "Manage" link above the App ID field.
+11. On the new "Certificates & secrets" page, click "New client secret". (You may have to delete one of the existing secrets first, as there is a maximum limit). **NOTE: Take note of the newly generated secret, as there's no way to recover it later - you will have to return to this page and generate a new secret if you lose it.**
+
+## MS Teams Developer Portal
+
+1. To deploy the bot to your team, log in to the [Microsoft Developer Portal](https://dev.teams.microsoft.com/) and select “Apps” from the left-hand menu.
+2. Select "Import app" and upload the Nautobot ChatOps_ms_teams.zip file. It can be found from this directory or downloaded from GitHub [here](https://github.com/nautobot/nautobot-plugin-chatops/blob/develop/Nautobot_ms_teams.zip). **NOTE:** If you get an error stating “App package has errors”, you can ignore this and click on “Import” to complete the import.
+3. Under section “Configure”, select “Basic Information”. Scroll to the bottom. Under “Application (client) ID, type in the value that you took note of above in Azure.
+4. Under section “Configure”, select “App features”. Select the triple dots (...) next to the “Bot” tile and select “Edit”.
+5. On the Bot Edit page, under section “Identify your bot,” select “Enter a bot ID” and type in the same App ID value used above in step 4. Click Save.
+6. Under section “Publish”, select “Publish to org.” Click the “Publish your app” button. This will need to be approved by your organization’s MS Teams administrator.
 
 ## MS Teams Client
 
-1. Now to deploy the bot to your team. In the Microsoft Teams client, select "Apps" from the sidebar to the left.
-2. Use the search bar to find "App Studio" and select and open it. If it isn't currently installed, install it first.
-3. Select the "Manifest editor" tab at the top of the window.
-4. Select "Import an existing app", and upload the `Nautobot_ms_teams.zip` file from this directory.
-5. Under section 1 Details, page "App details", update the "App ID" to the value that you took note of in step 8 above.
-6. Under section 2 Capabilities, page "Bots", select the Edit button next to the Bot at the top. In the field "Connect to a different bot id", update the "App ID" to the value that you took note of in step 8 above.
-7. Under section 3 Finish, page "Test and distribute", Select "Download" to save the app package to your disk.
-8. Again select "Apps" in the left sidebar, then "Upload a custom app" at the bottom.
-9. Select your updated app package zip file.
-10. After a few moments, the Nautobot app will appear in the window. Select it and click "Add".
-11. Configure the `microsoft_app_id` and `microsoft_app_password` for the plugin with the App ID and client secret values from step 8 in your `.creds.env` file (on the Nautobot server, not in the MS Teams client).
-12. Proceed to the [Nautobot Server Preparation and Configuration](./chat_setup.md#Nautobot Server Preparation and Configuration) section.
+1. In the Microsoft Teams client, select “Apps” from the sidebar to the left.
+2. Select “Built for your org.”
+3. Select the tile for the new Nautobot app. Click the blue “Add” button.
+4. Proceed to the Nautobot Server Preparation and Configuration section in the [Chat Setup](./chat_setup.md) document.
 
-[Chat Setup](./chat_setup.md)
+## Additional Resources
+
+Reference the [Setting Up Nautobot Chatops With MSTeams Fall 2021](http://blog.networktocode.com/post/setting-up-nautobot-chatops-with-msteams-fall-2021/) blog post for more details and additional screenshots.
