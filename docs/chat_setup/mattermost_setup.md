@@ -15,7 +15,7 @@
    - Click Add Slash Command, filling out the Title, Description, Command Trigger Word
    - Set the Request URL to `https://<server>/api/plugins/chatops/mattermost/slash_command/`
    - Click Save.
-4. Configure the displayed Token following the guide for [Add Command Token to database](mattermost_setup.md#Add Command Token to database) below.
+4. Configure the displayed Token following the guide for [Add Command Token to database](#add-command-token-to-database) below.
    - The Command will be `Command Trigger Word` from step 3.
    - Use the token displayed from step 3; you can access this token from Mattermost at any time.
 5. Configure `mattermost_url` with the URL for your Mattermost instance.
@@ -25,7 +25,7 @@
    - Copy the displayed url matching the Server you want to add the chatbot to.
      - Make sure to include the `http://` or `https://`.
      - If shown, make sure to include the port. Ex. `https://example.com:8065`
-6. Proceed to the [Nautobot Server Preparation and Configuration](./chat_setup.md#Nautobot Server Preparation and Configuration) section.
+6. Proceed to the [Nautobot Server Preparation and Configuration](./chat_setup.md#Plug-In-Installation) section.
 
 **Note:** For every Slash Command created for Mattermost, a separate token will be generated.
 
@@ -34,7 +34,7 @@
 Nautobot provides an HTTP endpoint(s) for each supported chat platform.
 These endpoints implement authentication to prevent arbitrary HTTP requests from being accepted.
 Some platforms this `signing_secret` is valid for all commands, other platforms, such as Mattermost,
-create a seperate `token` for every slash command.  Keeping the records for Mattermost tokens in the
+create a separate `token` for every slash command.  Keeping the records for Mattermost tokens in the
 `.creds.env` file would not be sustainable.  
 
 To solve this issue, the plugin has the option to store Command Tokens to the Nautobot Database.

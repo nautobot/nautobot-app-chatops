@@ -61,6 +61,30 @@ The plugin behavior can be controlled with the following list of general setting
 
 TODO: clarify the above statement, starting from "The plugin behavior can be controlled . . ."
 
+### Run Migrations
+
+Once the setup is done, the Nautobot `post_upgrade` command needs to be run. As the _Nautobot user_ (which following Nautobot install docs is `nautobot`) execute:
+
+```bash
+nautobot-server post_upgrade
+```
+
+This command runs migrations and clears the cache as necessary.
+
+### Restart Nautobot
+
+As a root user, restart the Nautobot services.
+
+```bash
+systemctl restart nautobot nautobot-worker
+```
+
+If there is an additional service file for a separate RQ/Celery worker setup, also run:
+
+```bash
+systemctl restart nautobot-rq-worker
+```
+
 ## Server Configuration
 
 As the `nautobot` user, you will now edit the `nautobot_config.py` file.  
@@ -75,6 +99,7 @@ Note a few details about this example:
 * You must add `"nautobot_chatops"` to the list defined by `PLUGINS`
 * The `slack_api_token` and `slack_signing_secret` values were taken from the values presented in the Slack platform-specific setup.
 * Alternately, the `slack_api_token` and `slack_signing_secret` values could also be stored in an `.env` file, then referred to by those defined environment variables in `PLUGINS_CONFIG`.
+* Some commands can use a user's session cache to keep state for some data between commands (e.g. use the same target device between commands). By default, it keeps data for 86400 seconds, but with `session_cache_timeout` this value can be adjusted.
 
 ```python
 # Enable installed plugins. Add the name of each plugin to the list.
@@ -85,11 +110,22 @@ PLUGINS_CONFIG = {
         'enable_slack': True,
         'slack_api_token': 'xoxb-2078939598626-2078997105202-3QupQHVC3lEhyGtKPpK62fGB',
         'slack_signing_secret': '1be5e964569d52a2e74f13fcefb1213f',
+        'session_cache_timeout': 3600,
     }
 }
 ```
 
 As a sudo-enabled user, restart the `nautobot` and `nautobot-worker` process after updating `nautobot_config.py`.
+
+```
+sudo systemctl restart nautobot.service nautobot-worker.service
+```
+
+Finally, validate that the `nautobot` and `nautobot-worker` processes have restarted successfully:
+
+```
+sudo systemctl status nautobot.service nautobot-worker.service
+```
 
 ## Grant Access to the Chatbot
 

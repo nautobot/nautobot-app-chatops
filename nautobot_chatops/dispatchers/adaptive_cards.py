@@ -32,14 +32,18 @@ class AdaptiveCardsDispatcher(Dispatcher):
                             ),
                         ],
                     },
-                    {
-                        "type": "Column",
-                        "width": "80px",  # magic number, trying to make it look similar to Slack's "accessory" icon
-                        "items": [image_element],
-                    },
                 ],
             },
         ]
+
+        if image_element:
+            header[0]["columns"].append(
+                {
+                    "type": "Column",
+                    "width": "80px",  # magic number, trying to make it look similar to Slack's "accessory" icon
+                    "items": [image_element],
+                },
+            )
 
         if args:
             header[0]["columns"][0]["items"].append(

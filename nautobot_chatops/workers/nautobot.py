@@ -5,7 +5,7 @@ from django.db.models import Count
 from django.contrib.contenttypes.models import ContentType
 from django_rq import job
 
-from nautobot.dcim.models.device_components import Interface
+from nautobot.dcim.models.device_components import Interface, FrontPort, RearPort
 from nautobot.circuits.models import Circuit, CircuitType, Provider, CircuitTermination
 from nautobot.dcim.choices import DeviceStatusChoices
 from nautobot.dcim.models import Device, Site, DeviceRole, DeviceType, Manufacturer, Rack, Region, Cable
@@ -131,6 +131,34 @@ def get_filtered_connections(device, interface_ct):
         .exclude(_termination_b_device=None)
         .exclude(_termination_a_device=None)
     )
+
+
+def analyze_circuit_endpoints(endpoint):
+    """Analyzes a circuit's endpoint and returns info about what object the endpoint connects to."""
+    if isinstance(endpoint, (Interface, FrontPort, RearPort)):
+        # Put into format: object.device_name
+        info = f"Device: {endpoint.device.name}  {endpoint.__class__.__name__}: {endpoint.name}"
+    elif isinstance(endpoint, CircuitTermination):
+        # Return circuit ID of endpoint circuit
+        info = f"Circuit with circuit ID {endpoint.circuit.cid}"
+
+    return info
+
+
+def examine_termination_endpoints(circuit):
+    """Given a Circuit object, determine the A, Z side endpoints."""
+    try:
+        term_a = circuit.termination_a.trace()[0][2]
+        endpoint_info_a = analyze_circuit_endpoints(term_a)
+    except (AttributeError, IndexError):
+        endpoint_info_a = "No A Side Connection in Database"
+    try:
+        term_z = circuit.termination_z.trace()[0][2]
+        endpoint_info_z = analyze_circuit_endpoints(term_z)
+    except (AttributeError, IndexError):
+        endpoint_info_z = "No Z Side Connection in Database"
+
+    return endpoint_info_a, endpoint_info_z
 
 
 # pylint: disable=too-many-statements
@@ -336,6 +364,8 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
             "nautobot get-interface-connections", "Select an interface connection filter", dispatcher
         )
         return False  # command did not run to completion and therefore should not be logged
+
+    filter_type = filter_type.lower()
     if menu_item_check(filter_value_1):
         if filter_type in ["device", "site"]:
             # Since the device filter prompts the user to pick a site first in order to further
@@ -357,7 +387,7 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
             ]
         elif filter_type == "model":
             choices = [
-                (device_type.display_name, device_type.slug)
+                (device_type.model, device_type.slug)
                 for device_type in DeviceType.objects.all().order_by("manufacturer__name", "model")
             ]
         elif filter_type == "all":
@@ -716,7 +746,7 @@ def get_devices(dispatcher, filter_type, filter_value):
         elif filter_type == "role":
             choices = [(role.name, role.slug) for role in DeviceRole.objects.all()]
         elif filter_type == "model":
-            choices = [(device_type.display_name, device_type.slug) for device_type in DeviceType.objects.all()]
+            choices = [(device_type.model, device_type.slug) for device_type in DeviceType.objects.all()]
         elif filter_type == "manufacturer":
             choices = [(manufacturer.name, manufacturer.slug) for manufacturer in Manufacturer.objects.all()]
         else:
@@ -998,4 +1028,131 @@ def about(dispatcher, *args):
     ]
 
     dispatcher.send_blocks(blocks)
+    return CommandStatusChoices.STATUS_SUCCEEDED
+
+
+@subcommand_of("nautobot")
+def get_manufacturer_summary(dispatcher):
+    """Provides summary of each manufacturer and how many devices have that manufacturer."""
+    # Get manufacturers
+    manufacturers = Manufacturer.objects.all()
+
+    # Dict to hold the summary result
+    manufacturer_rollup = {}
+
+    # Get device types for each manufacturer
+    for manufacturer in manufacturers:
+        # Total count for the manufacturer
+        total_count = 0
+
+        # Get the device types for each manufacturer
+        dev_types = manufacturer.device_types.all()
+
+        # Get quantity of each device type
+        for dev_type in dev_types:
+            # Add to the total_count the amount of the device type
+            total_count += len(dev_type.instances.all())
+
+        # This is the total quantity of devices for that manufacturer.
+        # Make a dict entry in the rollup with the manufacturer:quantity (key:value)
+        manufacturer_rollup[manufacturer.slug] = total_count
+
+    dispatcher.send_blocks(
+        dispatcher.command_response_header(
+            "nautobot",
+            "get-manufacturer-summary",
+            [],
+            "manufacturer summary",
+            nautobot_logo(dispatcher),
+        )
+    )
+
+    header = ["Manufacturer", "Quantity of Devices"]
+    rows = manufacturer_rollup.items()
+
+    dispatcher.send_large_table(header, rows)
+    return CommandStatusChoices.STATUS_SUCCEEDED
+
+
+@subcommand_of("nautobot")
+def get_circuit_connections(dispatcher, provider_slug, circuit_id):
+    """For a given circuit, find the objects the circuit connects to."""
+    # Check for the Slack menu item limit; if a provider_slug is not initially provided,
+    # then menu_item_check will return True and provider_options will be defined
+    if menu_item_check(provider_slug):
+        # Only list circuit providers that have a nonzero amount of circuits.
+        provider_options = [
+            (provider.slug, provider.slug)
+            for provider in Provider.objects.annotate(Count("circuits"))
+            .filter(circuits__count__gt=0)
+            .order_by("slug", "name")
+        ]
+        if not provider_options:  # No providers with associated circuits exist
+            no_provider_error_msg = "No Providers with circuits were found"
+            dispatcher.send_error(no_provider_error_msg)
+            return (CommandStatusChoices.STATUS_SUCCEEDED, no_provider_error_msg)
+
+        # Prompt user to select a circuit provider_slug from a list of provider_options
+        dispatcher.prompt_from_menu(
+            "nautobot get-circuit-connections",  # command sub-command
+            "Select a circuit provider",  # Prompt to user
+            provider_options,  # Options to choose from
+            offset=menu_offset_value(provider_slug),
+        )
+        return False  # command did not run to completion and therefore should not be logged
+
+    # Now that provider_slug is defined, get the provider object from the provider_slug;
+    # return an error msg if provider does not exist for that provider_slug
+    try:
+        provider = Provider.objects.get(slug=provider_slug)
+    except Provider.DoesNotExist:  # If provider cannot be found, return STATUS_FAILED with msg
+        provider_not_found_error_msg = f"Circuit provider with slug {provider_slug} does not exist"
+        dispatcher.send_error(provider_not_found_error_msg)
+        return (CommandStatusChoices.STATUS_FAILED, provider_not_found_error_msg)
+
+    # Check for the Slack menu item limit; if a circuit_id is not initially provided,
+    # then menu_item_check will return True and circuit_options will be defined
+    if menu_item_check(circuit_id):
+        circuit_options = [
+            (circuit.cid, circuit.cid) for circuit in Circuit.objects.filter(provider__slug=provider.slug)
+        ]
+        if not circuit_options:
+            no_circuits_found_error_msg = f"No circuits with provider slug {provider.slug} were found"
+            dispatcher.send_error(no_circuits_found_error_msg)
+            return (CommandStatusChoices.STATUS_SUCCEEDED, no_circuits_found_error_msg)
+        dispatcher.prompt_from_menu(
+            f"nautobot get-circuit-connections {provider_slug}",
+            "Select a circuit",
+            circuit_options,
+            offset=menu_offset_value(circuit_id),
+        )
+        return False  # command did not run to completion and therefore should not be logged
+
+    # Now that circuit_id is defined, get the circuit object for that circuit_id; if the
+    # circuit_id does not match to a Circuit, return an error msg
+    try:
+        circuit = Circuit.objects.get(cid=circuit_id)
+    except Circuit.DoesNotExist:
+        cid_not_found_msg = f"Circuit with circuit ID {circuit_id} not found"
+        dispatcher.send_error(cid_not_found_msg)
+        return (CommandStatusChoices.STATUS_FAILED, cid_not_found_msg)
+
+    # Ensure the termination endpoints are present, otherwise set to a string value
+    endpoint_info_a, endpoint_info_z = examine_termination_endpoints(circuit)
+
+    dispatcher.send_blocks(
+        dispatcher.command_response_header(
+            "nautobot",  # command
+            "get-circuit-connections",  # sub_command
+            [("Provider Name", provider.slug), ("Circuit ID", circuit.cid)],  # args
+            "circuit connection info",  # description
+            nautobot_logo(dispatcher),  # image_element
+        )
+    )
+
+    header = ["Side", "Connecting Object"]
+    rows = [("A", endpoint_info_a), ("Z", endpoint_info_z)]
+
+    dispatcher.send_large_table(header, rows)
+
     return CommandStatusChoices.STATUS_SUCCEEDED

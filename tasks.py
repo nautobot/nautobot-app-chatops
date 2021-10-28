@@ -88,6 +88,12 @@ def docker_compose(context, command, **kwargs):
         compose_file_path = os.path.join(context.nautobot_chatops.compose_dir, compose_file)
         compose_command += f' -f "{compose_file_path}"'
     compose_command += f" {command}"
+
+    # If `service` was passed as a kwarg, add it to the end.
+    service = kwargs.pop("service", None)
+    if service is not None:
+        compose_command += f" {service}"
+
     print(f'Running docker-compose command "{command}"')
     return context.run(compose_command, env=build_env, **kwargs)
 
@@ -147,11 +153,11 @@ def debug(context):
     docker_compose(context, "up")
 
 
-@task
-def start(context):
+@task(help={"service": "If specified, only affect this service."})
+def start(context, service=None):
     """Start Nautobot and its dependencies in detached mode."""
     print("Starting Nautobot in detached mode...")
-    docker_compose(context, "up --detach")
+    docker_compose(context, "up --detach", service=service)
 
 
 @task
