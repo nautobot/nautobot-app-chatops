@@ -1,8 +1,14 @@
 ---
 name: "CI"
-on:  # yamllint disable
-  - "push"
-  - "pull_request"
+on: # yamllint disable
+  push:
+    branches:
+      - "develop"
+      - "main"
+  pull_request:
+  release:
+    types:
+      - "published"
 
 jobs:
   black:
