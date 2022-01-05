@@ -1,5 +1,7 @@
 ---
 extends: "default"
+ignore: |
+  setup_files/
 rules:
   comments: "enable"
   empty-values: "enable"
