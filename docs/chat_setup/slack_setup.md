@@ -160,4 +160,4 @@ PLUGINS_CONFIG = {
 
 ## General Chat Setup Instructions
 
-Set [Chat Setup](./chat_setup.md) instructions here for general plugin setup instructions.
+See [Chat Setup](./chat_setup.md) instructions here for general plugin setup instructions.
