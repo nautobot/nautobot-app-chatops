@@ -43,7 +43,7 @@ PLUGINS_CONFIG = {
    - Once installed, note the `Bot User OAuth Token` here. This will be needed later for setting `SLACK_API_TOKEN`.
 7. Continue with below section "Post App-Creation Steps"
 
-> **Optional:** You can configure the App Icon on the General --> Basic Information page. Under `App Icon`, select "Choose File." You can use the supplied icon [nautobot_chatops_icon.png](https://github.com/nautobot/nautobot-plugin-chatops/blob/develop/nautobot_chatops_icon.png).
+> **Optional:** You can configure the App Icon on the General --> Basic Information page. Under `App Icon`, select "Choose File." You can use the supplied icon [nautobot_chatops_icon.png](https://github.com/nautobot/nautobot-plugin-chatops/blob/develop/setup_files/nautobot_chatops_icon.png).
 
 ## Create Slack App without a Manifest (original method)
 
