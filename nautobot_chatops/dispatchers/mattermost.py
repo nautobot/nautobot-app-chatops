@@ -191,9 +191,8 @@ class Driver:
         file_ids = []
         if files:
             for filename in files:
-                file_ids.append(
-                    self.upload_file(channel_id, open(filename, "rb"))["id"]
-                )  # pylint: disable=consider-using-with
+                # pylint: disable=consider-using-with
+                file_ids.append(self.upload_file(channel_id, open(filename, "rb"))["id"])
         if snippet:
             file_ids.append(self.upload_file(channel_id, snippet.encode("utf-8"))["id"])
         data["file_ids"] = file_ids
