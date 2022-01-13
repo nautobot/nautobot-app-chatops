@@ -18,9 +18,7 @@ try:
     from nautobot.core.celery import nautobot_task
 
     @nautobot_task
-    def celery_worker_task(
-        command, subcommand, params, dispatcher_module, dispatcher_name, context
-    ):
+    def celery_worker_task(command, subcommand, params, dispatcher_module, dispatcher_name, context):
         """Task executed by Celery worker.
 
         Celery cannot serialize/deserialize objects, instead of passing the
@@ -46,9 +44,7 @@ try:
             context=context,
         )
 
-    def enqueue_task(
-        *, command, subcommand, params, dispatcher_class, context, **kwargs
-    ):
+    def enqueue_task(*, command, subcommand, params, dispatcher_class, context, **kwargs):
         """Enqueue task with Celery worker."""
         return celery_worker_task.delay(
             command,
@@ -64,9 +60,7 @@ except ImportError:
 
     from django_rq import get_queue
 
-    def enqueue_task(
-        *, function, subcommand, params, dispatcher_class, context, **kwargs
-    ):
+    def enqueue_task(*, function, subcommand, params, dispatcher_class, context, **kwargs):
         """Enqueue task with Django RQ Worker."""
         return get_queue("default").enqueue(
             function,
@@ -144,17 +138,9 @@ def check_and_enqueue_command(
         data = {}
         response = JsonResponse(data)
 
-    if (
-        command not in registry
-        or "function" not in registry[command]
-        or not callable(registry[command]["function"])
-    ):
-        logger.error(
-            "Invalid/unknown command '%s'. Check registry:\n%s", command, registry
-        )
-        dispatcher.send_error(
-            f"Something has gone wrong; I don't know how to handle command '{command}'."
-        )
+    if command not in registry or "function" not in registry[command] or not callable(registry[command]["function"]):
+        logger.error("Invalid/unknown command '%s'. Check registry:\n%s", command, registry)
+        dispatcher.send_error(f"Something has gone wrong; I don't know how to handle command '{command}'.")
         return response
 
     command_log = create_command_log(dispatcher, registry, command, subcommand, params)
@@ -165,17 +151,11 @@ def check_and_enqueue_command(
     else:
         # Actual subcommand  - permit only if this particular subcommand (or all commands/subcommands) are permitted
         access_grants = AccessGrant.objects.filter(
-            Q(command="*")
-            | Q(command=command, subcommand="*")
-            | Q(command=command, subcommand=subcommand),
+            Q(command="*") | Q(command=command, subcommand="*") | Q(command=command, subcommand=subcommand),
         )
 
-    org_grants = access_grants.filter(
-        grant_type=AccessGrantTypeChoices.TYPE_ORGANIZATION
-    )
-    if "org_id" not in context or not org_grants.filter(
-        Q(value="*") | Q(value=context["org_id"])
-    ):
+    org_grants = access_grants.filter(grant_type=AccessGrantTypeChoices.TYPE_ORGANIZATION)
+    if "org_id" not in context or not org_grants.filter(Q(value="*") | Q(value=context["org_id"])):
         label = context.get("org_id", "unspecified")
         if "org_name" in context:
             label += f" ({context['org_name']})"
@@ -202,9 +182,7 @@ def check_and_enqueue_command(
         return response
 
     chan_grants = access_grants.filter(grant_type=AccessGrantTypeChoices.TYPE_CHANNEL)
-    if "channel_id" not in context or not chan_grants.filter(
-        Q(value="*") | Q(value=context["channel_id"])
-    ):
+    if "channel_id" not in context or not chan_grants.filter(Q(value="*") | Q(value=context["channel_id"])):
         label = context.get("channel_id", "unspecified")
         if "channel_name" in context:
             label += f" ({context['channel_name']})"
@@ -231,15 +209,11 @@ def check_and_enqueue_command(
         return response
 
     user_grants = access_grants.filter(grant_type=AccessGrantTypeChoices.TYPE_USER)
-    if "user_id" not in context or not user_grants.filter(
-        Q(value="*") | Q(value=context["user_id"])
-    ):
+    if "user_id" not in context or not user_grants.filter(Q(value="*") | Q(value=context["user_id"])):
         label = context.get("user_id", "unspecified")
         if "user_name" in context:
             label += f" ({context['user_name']})"
-        logger.warning(
-            "Blocked %s %s: user %s is not granted access", command, subcommand, label
-        )
+        logger.warning("Blocked %s %s: user %s is not granted access", command, subcommand, label)
         dispatcher.send_error(
             f"Access to this bot and/or command is not permitted by user {label}, "
             "ask your Nautobot administrator to define an appropriate Access Grant"
