@@ -185,7 +185,7 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
         file_size = os.path.getsize(image_path)
         response = requests.put(
             self.context["uploadInfo"]["uploadUrl"],
-            open(image_path, "rb"),
+            open(image_path, "rb"),  # pylint: disable=consider-using-with
             headers={
                 "Content-Length": str(file_size),
                 "Content-Range": f"bytes 0-{file_size-1}/{file_size}",

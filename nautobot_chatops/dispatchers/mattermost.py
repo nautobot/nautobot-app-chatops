@@ -75,48 +75,34 @@ def error_report(function):
             return function(*args, **kwargs)
         except HTTPError as err:
             if err.response.status_code == 400:
-                raise BadRequestException("Malformatted requests: {}".format(err.response.text))
+                raise BadRequestException(f"Malformatted requests: {err.response.text}")
             if err.response.status_code == 401:
-                raise UnauthorizedException(
-                    "Invalid credentials provided or account is locked: {}".format(err.response.text)
-                )
+                raise UnauthorizedException(f"Invalid credentials provided or account is locked: {err.response.text}")
             if err.response.status_code == 403:
                 raise ForbiddenException(
-                    "Insufficient permissions to execute request (ie, any POST method as a regular user): {}".format(
-                        err.response.text
-                    )
+                    f"Insufficient permissions to execute request (ie, any POST method as a regular user): {err.response.text}"
                 )
             if err.response.status_code == 404:
-                raise NotFoundException(
-                    "Attempting to access an endpoint that does not exist: {}".format(err.response.text)
-                )
+                raise NotFoundException(f"Attempting to access an endpoint that does not exist: {err.response.text}")
             if err.response.status_code == 405:
                 raise MethodNotAllowedException(
-                    "Wrong request type for target endpoint (ie, POSTing data to a GET endpoint): {}".format(
-                        err.response.text
-                    )
+                    f"Wrong request type for target endpoint (ie, POSTing data to a GET endpoint): {err.response.text}"
                 )
             if err.response.status_code == 406:
                 raise NotAcceptableException(
-                    "Content Type of the data returned does not match the Accept header of the request: {}".format(
-                        err.response.text
-                    )
+                    f"Content Type of the data returned does not match the Accept header of the request: {err.response.text}"
                 )
             if err.response.status_code == 415:
-                raise UnsupportedMediaTypeException(
-                    "Attempting to POST data in incorrect format: {}".format(err.response.text)
-                )
+                raise UnsupportedMediaTypeException(f"Attempting to POST data in incorrect format: {err.response.text}")
             if err.response.status_code == 429:
                 raise MMRateLimit(
-                    "You have exceeded the max number of requests per 1-minute period: {}".format(err.response.text)
+                    f"You have exceeded the max number of requests per 1-minute period: {err.response.text}"
                 )
             if err.response.status_code == 500:
-                raise InternalServerErrorException(
-                    "Contact support if you see this error type: {}".format(err.response.text)
-                )
+                raise InternalServerErrorException(f"Contact support if you see this error type: {err.response.text}")
             if err.response.status_code == 503:
                 raise ServiceUnavailableException(
-                    "The Mattermost API is currently in maintenance mode: {}".format(err.response.text)
+                    f"The Mattermost API is currently in maintenance mode: {err.response.text}"
                 )
 
     return inner
@@ -205,7 +191,9 @@ class Driver:
         file_ids = []
         if files:
             for filename in files:
-                file_ids.append(self.upload_file(channel_id, open(filename, "rb"))["id"])
+                file_ids.append(
+                    self.upload_file(channel_id, open(filename, "rb"))["id"]
+                )  # pylint: disable=consider-using-with
         if snippet:
             file_ids.append(self.upload_file(channel_id, snippet.encode("utf-8"))["id"])
         data["file_ids"] = file_ids
@@ -373,14 +361,14 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
 
     # pylint: disable=arguments-differ
     @BACKEND_ACTION_BLOCKS.time()
-    def send_blocks(self, blocks, callback_id=None, ephemeral=False, modal=False, title="Your attention please!"):
+    def send_blocks(self, blocks, callback_id=None, modal=False, ephemeral=False, title="Your attention please!"):
         """Send a series of formatting blocks to the user/channel specified by the context.
 
         Args:
-          blocks (list): List of block contents as constructed by other dispatcher functions
+          blocks (list): List of block contents as constructed by other dispatcher functions.
           callback_id (str): Callback ID string such as "command subcommand arg1 arg2". Required if `modal` is True.
-          ephemeral (bool): Whether to send this as an ephemeral message (only visible to the targeted user)
           modal (bool): Whether to send this as a modal dialog rather than an inline block.
+          ephemeral (bool): Whether to send this as an ephemeral message (only visible to the targeted user).
           title (str): Title to include on a modal dialog.
         """
         logger.info("Sending blocks: %s", json.dumps(blocks, indent=2))
@@ -583,11 +571,11 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
         """Mark text as bold."""
         return f"**{text}**"
 
-    def actions_block(self, action_id, actions):
+    def actions_block(self, block_id, actions):
         """Construct a block consisting of a set of action elements."""
         # Mattermost doesn't use the "block_id", but it ignores the input.
         # Leaving in place to pass the testing.
-        return {"block_id": action_id, "actions": actions}
+        return {"block_id": block_id, "actions": actions}
 
     # pylint: disable=no-self-use
     def _input_block(self, block_id, label, element):

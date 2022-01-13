@@ -92,13 +92,13 @@ class TestSlackDispatcher(TestCase):
         response = self.dispatcher.get_prompt_from_menu_choices(choices)
         self.assertEqual(response, choices)
 
-        choices = list()
+        choices = []
         for i in range(1, 101):
             choices.append((f"switch{i}", f"switch{i}"))
         response = self.dispatcher.get_prompt_from_menu_choices(choices)
         self.assertEqual(response, choices)
 
-        choices = list()
+        choices = []
         for i in range(1, 511):
             choices.append((f"switch{i}", f"switch{i}"))
 

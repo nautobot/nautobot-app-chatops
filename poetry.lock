@@ -1122,12 +1122,12 @@ social-auth-app-django = ">=4.0.0,<5.0.0"
 svgwrite = ">=1.4.1,<1.5.0"
 
 [package.extras]
-all = ["django-auth-ldap (>=3.0.0,<3.1.0)", "django-storages (>=1.12.3,<1.13.0)", "mysqlclient (>=2.0.3,<2.1.0)", "napalm (>=3.3.1,<4.0.0)", "social-auth-core[openidconnect,saml] (>=4.1.0,<4.2.0)"]
+all = ["django-auth-ldap (>=3.0.0,<3.1.0)", "django-storages (>=1.12.3,<1.13.0)", "mysqlclient (>=2.0.3,<2.1.0)", "napalm (>=3.3.1,<4.0.0)", "social-auth-core[saml,openidconnect] (>=4.1.0,<4.2.0)"]
 ldap = ["django-auth-ldap (>=3.0.0,<3.1.0)"]
 remote_storage = ["django-storages (>=1.12.3,<1.13.0)"]
 mysql = ["mysqlclient (>=2.0.3,<2.1.0)"]
 napalm = ["napalm (>=3.3.1,<4.0.0)"]
-sso = ["social-auth-core[openidconnect,saml] (>=4.1.0,<4.2.0)"]
+sso = ["social-auth-core[saml,openidconnect] (>=4.1.0,<4.2.0)"]
 
 [[package]]
 name = "nautobot-capacity-metrics"
