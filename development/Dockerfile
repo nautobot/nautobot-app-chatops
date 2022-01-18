@@ -17,4 +17,6 @@ RUN poetry install --no-interaction --no-ansi --no-root
 COPY . /source
 RUN poetry install --no-interaction --no-ansi
 
+RUN pip install -U setuptools==59.6.0
+
 COPY development/nautobot_config.py /opt/nautobot/nautobot_config.py

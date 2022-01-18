@@ -17,13 +17,14 @@ include = [
 "nautobot" = "nautobot_chatops.workers.nautobot:nautobot"
 
 [tool.poetry.dependencies]
-python = "^3.6"
-nautobot = "*"
+python = "^3.7"
+nautobot = "1.2.4"
 nautobot-capacity-metrics = "*"
 texttable = "^1.6.2"
 PyJWT = "^2.1.0"
 webexteamssdk = "^1.3"
 slack-sdk = "^3.4.2"
+celery = "5.2.2"
 
 [tool.poetry.dev-dependencies]
 black = {version="^21.10b0", python="^3.6.2"}
