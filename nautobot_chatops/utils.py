@@ -143,11 +143,16 @@ def check_and_enqueue_command(
 
     if subcommand == "":
         # Command help - permit if any form of access to this command or any of its subcommands is permitted
-        access_grants = AccessGrant.objects.filter(Q(command="*") | Q(command=command))
+        access_grants = AccessGrant.objects.filter(
+            Q(command="*") | Q(command=command) | Q(command__in=AccessGrant.regexMatch.match_re(command))
+        )
     else:
         # Actual subcommand  - permit only if this particular subcommand (or all commands/subcommands) are permitted
         access_grants = AccessGrant.objects.filter(
-            Q(command="*") | Q(command=command, subcommand="*") | Q(command=command, subcommand=subcommand),
+            Q(command="*")
+            | Q(command=command, subcommand="*")
+            | Q(command=command, subcommand=subcommand)
+            | Q(command=command, subcommand__in=AccessGrant.regexMatch.match_re(subcommand))
         )
 
     org_grants = access_grants.filter(grant_type=AccessGrantTypeChoices.TYPE_ORGANIZATION)

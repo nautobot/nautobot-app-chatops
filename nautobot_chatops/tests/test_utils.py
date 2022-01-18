@@ -46,6 +46,7 @@ class TestCheckAndEnqueue(TestCase):
         "x": {"function": nada, "subcommands": {}},
         "y": {"function": nada, "subcommands": {}},
         "z": {"function": nada, "subcommands": {}},
+        "xyz": {"function": nada, "subcommands": {}},
     }
 
     def test_default_deny(self, mock_enqueue_task):
@@ -203,6 +204,58 @@ class TestCheckAndEnqueue(TestCase):
             name="user3",
             value="3333",
         )
+
+        AccessGrant.objects.create(
+            command="x",
+            subcommand="get-.*",
+            grant_type=AccessGrantTypeChoices.TYPE_ORGANIZATION,
+            name="org3",
+            value="33",
+        )
+        AccessGrant.objects.create(
+            command="x",
+            subcommand="get-.*",
+            grant_type=AccessGrantTypeChoices.TYPE_CHANNEL,
+            name="channel3",
+            value="333",
+        )
+        AccessGrant.objects.create(
+            command="x",
+            subcommand="get-.*",
+            grant_type=AccessGrantTypeChoices.TYPE_USER,
+            name="user3",
+            value="3333",
+        )
+
+        AccessGrant.objects.create(
+            command="x[a-z]+",
+            subcommand="set-[a-z0-9]+",
+            grant_type=AccessGrantTypeChoices.TYPE_ORGANIZATION,
+            name="org3",
+            value="33",
+        )
+        AccessGrant.objects.create(
+            command="x[a-z]+",
+            subcommand="set-[a-z0-9]+",
+            grant_type=AccessGrantTypeChoices.TYPE_CHANNEL,
+            name="channel3",
+            value="333",
+        )
+        AccessGrant.objects.create(
+            command="xyz",
+            subcommand="set-[a-z0-9]+",
+            grant_type=AccessGrantTypeChoices.TYPE_USER,
+            name="user3",
+            value="3333",
+        )
+        AccessGrant.objects.create(
+            command="xyW",
+            subcommand="set-nonvalid",
+            grant_type=AccessGrantTypeChoices.TYPE_USER,
+            name="user3",
+            value="3333",
+        )
+
         # And some wildcard access grants:
         AccessGrant.objects.create(
             command="y",
@@ -297,6 +350,42 @@ class TestCheckAndEnqueue(TestCase):
             mock_enqueue_task.assert_called_once()
 
         for cmd, subcmd in [("x", "b"), ("z", "a"), ("z", "")]:
+            mock_enqueue_task.reset_mock()
+            check_and_enqueue_command(
+                self.mock_registry,
+                cmd,
+                subcmd,
+                [],
+                {"org_id": "33", "channel_id": "333", "user_id": "3333"},
+                MockDispatcher.reset(),
+            )
+            self.assertEqual(
+                MockDispatcher.error,
+                "Access to this bot and/or command is not permitted in organization 33, "
+                "ask your Nautobot administrator to define an appropriate Access Grant",
+            )
+            mock_enqueue_task.assert_not_called()
+
+    def test_permitted_subcommand_re(self, mock_enqueue_task):
+        """A per-subcommand access grant applies that subcommands under that command, and no others."""
+        self.setup_db()
+        for cmd, subcmd in [("x", "get-device"), ("x", "get-prefix-status"), ("x", "")]:
+            mock_enqueue_task.reset_mock()
+            check_and_enqueue_command(
+                self.mock_registry,
+                cmd,
+                subcmd,
+                [],
+                {"org_id": "33", "channel_id": "333", "user_id": "3333"},
+                MockDispatcher.reset(),
+            )
+            self.assertIsNone(MockDispatcher.error)
+            mock_enqueue_task.assert_called_once()
+
+    def test_not_permitted_re(self, mock_enqueue_task):
+        """Per-user access grants are checked."""
+        self.setup_db()
+        for cmd, subcmd in [("xyz", ""), ("xyz", "set-W")]:
             mock_enqueue_task.reset_mock()
             check_and_enqueue_command(
                 self.mock_registry,

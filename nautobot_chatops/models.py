@@ -9,6 +9,26 @@ from nautobot.core.models import BaseModel
 
 from .choices import AccessGrantTypeChoices, CommandStatusChoices, CommandTokenPlatformChoices
 
+import re
+
+
+class QuerySetRegexMatch(models.QuerySet):
+    """Customized QuerySet to match string agains regexes stored in database.
+
+    Return a list of matched records.
+    """
+
+    def match_re(self, value):
+        objects = self.all()
+
+        obj = []
+        for row in objects:
+            if row.subcommand == "*":
+                continue
+            if re.match(row.subcommand, value):
+                obj.append(row.subcommand)
+        return obj
+
 
 class CommandLog(BaseModel):
     """Record of a single fully-executed Nautobot command.
@@ -68,6 +88,7 @@ class AccessGrant(BaseModel, ChangeLoggedModel):
         max_length=64,
         help_text="Enter <tt>*</tt> to grant access to all subcommands of the given command",
     )
+    regexMatch = QuerySetRegexMatch.as_manager()
 
     grant_type = models.CharField(max_length=32, choices=AccessGrantTypeChoices)
 
