@@ -46,7 +46,6 @@ class TestCheckAndEnqueue(TestCase):
         "x": {"function": nada, "subcommands": {}},
         "y": {"function": nada, "subcommands": {}},
         "z": {"function": nada, "subcommands": {}},
-        "xyz": {"function": nada, "subcommands": {}},
     }
 
     def test_default_deny(self, mock_enqueue_task):
@@ -227,35 +226,6 @@ class TestCheckAndEnqueue(TestCase):
             value="3333",
         )
 
-        AccessGrant.objects.create(
-            command="x[a-z]+",
-            subcommand="set-[a-z0-9]+",
-            grant_type=AccessGrantTypeChoices.TYPE_ORGANIZATION,
-            name="org3",
-            value="33",
-        )
-        AccessGrant.objects.create(
-            command="x[a-z]+",
-            subcommand="set-[a-z0-9]+",
-            grant_type=AccessGrantTypeChoices.TYPE_CHANNEL,
-            name="channel3",
-            value="333",
-        )
-        AccessGrant.objects.create(
-            command="xyz",
-            subcommand="set-[a-z0-9]+",
-            grant_type=AccessGrantTypeChoices.TYPE_USER,
-            name="user3",
-            value="3333",
-        )
-        AccessGrant.objects.create(
-            command="xyW",
-            subcommand="set-nonvalid",
-            grant_type=AccessGrantTypeChoices.TYPE_USER,
-            name="user3",
-            value="3333",
-        )
-
         # And some wildcard access grants:
         AccessGrant.objects.create(
             command="y",
@@ -385,7 +355,7 @@ class TestCheckAndEnqueue(TestCase):
     def test_not_permitted_re(self, mock_enqueue_task):
         """Per-user access grants are checked."""
         self.setup_db()
-        for cmd, subcmd in [("xyz", ""), ("xyz", "set-W")]:
+        for cmd, subcmd in [("x", "set-device")]:
             mock_enqueue_task.reset_mock()
             check_and_enqueue_command(
                 self.mock_registry,

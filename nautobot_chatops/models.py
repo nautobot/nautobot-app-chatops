@@ -19,15 +19,15 @@ class QuerySetRegexMatch(models.QuerySet):
     """
 
     def match_re(self, value):
-        objects = self.all()
+        records = self.all()
 
-        obj = []
-        for row in objects:
-            if row.subcommand == "*":
+        results = []
+        for row in records:
+            if row.subcommand == "*":  # skip as it is not a valid regex expression and would raise exception
                 continue
             if re.match(row.subcommand, value):
-                obj.append(row.subcommand)
-        return obj
+                results.append(row.subcommand)
+        return results
 
 
 class CommandLog(BaseModel):
