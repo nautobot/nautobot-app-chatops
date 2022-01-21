@@ -1,0 +1,32 @@
+_metadata:
+  major_version: 1
+  minor_version: 1
+display_information:
+  name: Nautobot
+features:
+  bot_user:
+    display_name: Nautobot
+    always_online: true
+  slash_commands:
+    - command: /nautobot
+      url: https://<your-URL>/api/plugins/chatops/slack/slash_command/
+      description: Nautobot
+      should_escape: false
+oauth_config:
+  scopes:
+    bot:
+      - commands
+      - chat:write
+      - channels:read
+      - files:write
+      - incoming-webhook
+      - users:read
+      - app_mentions:read
+      - groups:read
+      - im:read
+      - mpim:read
+settings:
+  interactivity:
+    is_enabled: true
+    request_url: https://<your-URL>/api/plugins/chatops/slack/interaction/
+  socket_mode_enabled: false

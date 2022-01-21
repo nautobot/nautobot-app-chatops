@@ -51,10 +51,10 @@ class NautobotHomeView(PermissionRequiredMixin, View):
 
         # Summarize the number of times each command/subcommand has been called
         for command_name, command_data in registry.items():
-            registry[command_name]["count"] = logs.filter(command=command_name).count()
+            command_data["count"] = logs.filter(command=command_name).count()
 
             for subcommand_name in command_data["subcommands"]:
-                registry[command_name]["subcommands"][subcommand_name]["count"] = logs.filter(
+                command_data["subcommands"][subcommand_name]["count"] = logs.filter(
                     command=command_name, subcommand=subcommand_name
                 ).count()
 

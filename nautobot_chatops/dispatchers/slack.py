@@ -156,7 +156,7 @@ class SlackDispatcher(Dispatcher):
 
     # pylint: disable=arguments-differ
     @BACKEND_ACTION_BLOCKS.time()
-    def send_blocks(self, blocks, callback_id=None, ephemeral=False, modal=False, title="Your attention please!"):
+    def send_blocks(self, blocks, callback_id=None, modal=False, ephemeral=False, title="Your attention please!"):
         """Send a series of formatting blocks to the user/channel specified by the context.
 
         Slack distinguishes between simple inline interactive elements and modal dialogs. Modals can contain multiple
@@ -164,10 +164,10 @@ class SlackDispatcher(Dispatcher):
         be used in modals and will be rejected if we try to use them inline.
 
         Args:
-          blocks (list): List of block contents as constructed by other dispatcher functions
+          blocks (list): List of block contents as constructed by other dispatcher functions.
           callback_id (str): Callback ID string such as "command subcommand arg1 arg2". Required if `modal` is True.
-          ephemeral (bool): Whether to send this as an ephemeral message (only visible to the targeted user)
           modal (bool): Whether to send this as a modal dialog rather than an inline block.
+          ephemeral (bool): Whether to send this as an ephemeral message (only visible to the targeted user).
           title (str): Title to include on a modal dialog.
         """
         logger.info("Sending blocks: %s", json.dumps(blocks, indent=2))
