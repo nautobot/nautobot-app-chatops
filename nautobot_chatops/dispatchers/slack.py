@@ -136,7 +136,9 @@ class SlackDispatcher(Dispatcher):
     # Send various content to the user or channel
 
     @BACKEND_ACTION_MARKDOWN.time()
-    def send_markdown(self, message, ephemeral=False):
+    def send_markdown(
+        self, message, ephemeral=settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_emphemeral"]
+    ):
         """Send a Markdown-formatted text message to the user/channel specified by the context."""
         try:
             if ephemeral:
@@ -156,7 +158,14 @@ class SlackDispatcher(Dispatcher):
 
     # pylint: disable=arguments-differ
     @BACKEND_ACTION_BLOCKS.time()
-    def send_blocks(self, blocks, callback_id=None, modal=False, ephemeral=False, title="Your attention please!"):
+    def send_blocks(
+        self,
+        blocks,
+        callback_id=None,
+        modal=False,
+        ephemeral=settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_emphemeral"],
+        title="Your attention please!",
+    ):
         """Send a series of formatting blocks to the user/channel specified by the context.
 
         Slack distinguishes between simple inline interactive elements and modal dialogs. Modals can contain multiple
@@ -400,7 +409,13 @@ class SlackDispatcher(Dispatcher):
 
                 blocks.append(self._input_block(action_id, dialog["label"], textentry, dialog.get("optional", False)))
 
-        return self.send_blocks(blocks, callback_id=callback_id, modal=True, ephemeral=False, title=dialog_title)
+        return self.send_blocks(
+            blocks,
+            callback_id=callback_id,
+            modal=True,
+            ephemeral=settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_emphemeral"],
+            title=dialog_title,
+        )
 
     def user_mention(self):
         """Markup for a mention of the username/userid specified in our context."""

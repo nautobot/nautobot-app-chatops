@@ -1,4 +1,5 @@
 """Dispatcher subclass for chat platforms that use Adaptive Cards (https://adaptivecards.io/)."""
+from django.conf import settings
 
 from .base import Dispatcher
 
@@ -121,7 +122,13 @@ class AdaptiveCardsDispatcher(Dispatcher):
             ],
         }
         blocks.append(buttons)
-        return self.send_blocks(blocks, callback_id=callback_id, modal=True, ephemeral=False, title=dialog_title)
+        return self.send_blocks(
+            blocks,
+            callback_id=callback_id,
+            modal=True,
+            ephemeral=settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_emphemeral"],
+            title=dialog_title,
+        )
 
     def send_warning(self, message):
         """Send a warning message to the user/channel specified by the context."""
