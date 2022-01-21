@@ -37,7 +37,12 @@ try:
         # using getattr.
         dispatcher_class = getattr(sys.modules[dispatcher_module], dispatcher_name)
 
-        return function(subcommand, params=params, dispatcher_class=dispatcher_class, context=context)
+        return function(
+            subcommand,
+            params=params,
+            dispatcher_class=dispatcher_class,
+            context=context,
+        )
 
     def enqueue_task(*, command, subcommand, params, dispatcher_class, context, **kwargs):
         """Enqueue task with Celery worker."""
@@ -49,7 +54,6 @@ try:
             dispatcher_name=dispatcher_class.__name__,
             context=context,
         )
-
 
 except ImportError:
     logger.info("INFO: Celery was not found - using Django RQ Worker")
@@ -155,13 +159,21 @@ def check_and_enqueue_command(
         label = context.get("org_id", "unspecified")
         if "org_name" in context:
             label += f" ({context['org_name']})"
-        logger.warning("Blocked %s %s: organization %s is not granted access", command, subcommand, label)
+        logger.warning(
+            "Blocked %s %s: organization %s is not granted access",
+            command,
+            subcommand,
+            label,
+        )
         dispatcher.send_error(
             f"Access to this bot and/or command is not permitted in organization {label}, "
             "ask your Nautobot administrator to define an appropriate Access Grant"
         )
         request_command_cntr.labels(
-            dispatcher.platform_slug, command, subcommand, CommandStatusChoices.STATUS_BLOCKED
+            dispatcher.platform_slug,
+            command,
+            subcommand,
+            CommandStatusChoices.STATUS_BLOCKED,
         ).inc()
         command_log.status = CommandStatusChoices.STATUS_BLOCKED
         command_log.details = f"Not permitted in organization {label}"
@@ -174,13 +186,21 @@ def check_and_enqueue_command(
         label = context.get("channel_id", "unspecified")
         if "channel_name" in context:
             label += f" ({context['channel_name']})"
-        logger.warning("Blocked %s %s: channel %s is not granted access", command, subcommand, label)
+        logger.warning(
+            "Blocked %s %s: channel %s is not granted access",
+            command,
+            subcommand,
+            label,
+        )
         dispatcher.send_error(
             f"Access to this bot and/or command is not permitted in channel {label}, "
             "ask your Nautobot administrator to define an appropriate Access Grant"
         )
         request_command_cntr.labels(
-            dispatcher.platform_slug, command, subcommand, CommandStatusChoices.STATUS_BLOCKED
+            dispatcher.platform_slug,
+            command,
+            subcommand,
+            CommandStatusChoices.STATUS_BLOCKED,
         ).inc()
         command_log.status = CommandStatusChoices.STATUS_BLOCKED
         command_log.details = f"Not permitted in channel {label}"
@@ -199,7 +219,10 @@ def check_and_enqueue_command(
             "ask your Nautobot administrator to define an appropriate Access Grant"
         )
         request_command_cntr.labels(
-            dispatcher.platform_slug, command, subcommand, CommandStatusChoices.STATUS_BLOCKED
+            dispatcher.platform_slug,
+            command,
+            subcommand,
+            CommandStatusChoices.STATUS_BLOCKED,
         ).inc()
         command_log.status = CommandStatusChoices.STATUS_BLOCKED
         command_log.details = f"Not permitted by user {label}"

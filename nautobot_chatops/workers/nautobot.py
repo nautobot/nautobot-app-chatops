@@ -827,7 +827,7 @@ def get_devices(dispatcher, filter_type, filter_value):
             str(device.rack) if device.rack else "",
             str(device.device_role),
             str(device.device_type),
-            str(device.primary_ip.address).split("/")[0] if device.primary_ip else "",
+            str(device.primary_ip.address).split("/", maxsplit=1)[0] if device.primary_ip else "",
         )
         for device in devices
     ]
