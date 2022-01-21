@@ -118,6 +118,8 @@ jobs:
         run: "cp development/creds.example.env development/creds.env"
       - name: "Set Nautobot install to the testing version"
         run: "poetry add nautobot==${{ matrix.nautobot-version }}"
+      - name: "Update Poetry Lock"
+        run: "poetry lock"
       - name: "Build Container"
         run: "poetry run invoke build"
       - name: "Run Tests"
