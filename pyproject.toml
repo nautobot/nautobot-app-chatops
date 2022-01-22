@@ -17,7 +17,7 @@ include = [
 "nautobot" = "nautobot_chatops.workers.nautobot:nautobot"
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = "^3.6.2"
 nautobot = "*"
 nautobot-capacity-metrics = "*"
 texttable = "^1.6.2"
