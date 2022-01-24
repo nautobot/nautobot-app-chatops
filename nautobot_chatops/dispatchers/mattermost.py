@@ -346,12 +346,10 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
     # Send various content to the user or channel
 
     @BACKEND_ACTION_MARKDOWN.time()
-    def send_markdown(
-        self,
-        message,
-        ephemeral=settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_private"],
-    ):
+    def send_markdown(self, message, ephemeral=None):
         """Send a Markdown-formatted text message to the user/channel specified by the context."""
+        if ephemeral is None:
+            ephemeral = settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_private"]
         try:
             if ephemeral:
                 self.mm_client.chat_post_ephemeral(
@@ -364,14 +362,7 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
 
     # pylint: disable=arguments-differ
     @BACKEND_ACTION_BLOCKS.time()
-    def send_blocks(
-        self,
-        blocks,
-        callback_id=None,
-        modal=False,
-        ephemeral=settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_private"],
-        title="Your attention please!",
-    ):
+    def send_blocks(self, blocks, callback_id=None, modal=False, ephemeral=None, title="Your attention please!"):
         """Send a series of formatting blocks to the user/channel specified by the context.
 
         Args:
@@ -381,6 +372,8 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
           ephemeral (bool): Whether to send this as an ephemeral message (only visible to the targeted user).
           title (str): Title to include on a modal dialog.
         """
+        if ephemeral is None:
+            ephemeral = settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_private"]
         logger.info("Sending blocks: %s", json.dumps(blocks, indent=2))
         try:
             if modal:
@@ -472,13 +465,7 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
         }
         blocks = [textentry]
         # In Mattermost, a textentry element can ONLY be sent in a modal Interactive dialog
-        return self.send_blocks(
-            blocks,
-            callback_id=action_id,
-            ephemeral=settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_private"],
-            modal=True,
-            title=title,
-        )
+        return self.send_blocks(blocks, callback_id=action_id, ephemeral=False, modal=True, title=title)
 
     def prompt_from_menu(
         self, action_id, help_text, choices, default=(None, None), confirm=False, offset=0

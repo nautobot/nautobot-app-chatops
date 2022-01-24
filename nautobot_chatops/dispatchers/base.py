@@ -216,12 +216,10 @@ class Dispatcher:
 
     # Send various content to the user or channel
 
-    def send_markdown(
-        self,
-        message,
-        ephemeral=settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_private"],
-    ):
+    def send_markdown(self, message, ephemeral=None):
         """Send a Markdown-formatted text message to the user/channel specified by the context."""
+        if ephemeral is None:
+            ephemeral = settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_private"]
         raise NotImplementedError
 
     def send_blocks(
@@ -229,10 +227,12 @@ class Dispatcher:
         blocks,
         callback_id=None,
         modal=False,
-        ephemeral=settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_private"],
+        ephemeral=None,
         title=None,
     ):
         """Send a series of formatting blocks to the user/channel specified by the context."""
+        if ephemeral is None:
+            ephemeral = settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_private"]
         raise NotImplementedError
 
     def send_snippet(self, text, title=None):
