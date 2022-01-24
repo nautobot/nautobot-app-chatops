@@ -349,7 +349,7 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
     def send_markdown(
         self,
         message,
-        ephemeral=settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_emphemeral"],
+        ephemeral=settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_private"],
     ):
         """Send a Markdown-formatted text message to the user/channel specified by the context."""
         try:
@@ -369,7 +369,7 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
         blocks,
         callback_id=None,
         modal=False,
-        ephemeral=settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_emphemeral"],
+        ephemeral=settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_private"],
         title="Your attention please!",
     ):
         """Send a series of formatting blocks to the user/channel specified by the context.
@@ -475,7 +475,7 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
         return self.send_blocks(
             blocks,
             callback_id=action_id,
-            ephemeral=settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_emphemeral"],
+            ephemeral=settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_private"],
             modal=True,
             title=title,
         )

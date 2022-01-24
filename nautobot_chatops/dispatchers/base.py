@@ -219,7 +219,7 @@ class Dispatcher:
     def send_markdown(
         self,
         message,
-        ephemeral=settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_emphemeral"],
+        ephemeral=settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_private"],
     ):
         """Send a Markdown-formatted text message to the user/channel specified by the context."""
         raise NotImplementedError
@@ -229,7 +229,7 @@ class Dispatcher:
         blocks,
         callback_id=None,
         modal=False,
-        ephemeral=settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_emphemeral"],
+        ephemeral=settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_private"],
         title=None,
     ):
         """Send a series of formatting blocks to the user/channel specified by the context."""

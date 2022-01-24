@@ -150,7 +150,7 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
 
     @BACKEND_ACTION_MARKDOWN.time()
     def send_markdown(
-        self, message, ephemeral=settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_emphemeral"]
+        self, message, ephemeral=settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_private"]
     ):
         """Send a markdown-formatted text message to the user/channel specified by the context."""
         self._send({"text": message, "textFormat": "markdown"})
@@ -161,7 +161,7 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
         blocks,
         callback_id=None,
         modal=False,
-        ephemeral=settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_emphemeral"],
+        ephemeral=settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_private"],
         title=None,
     ):
         """Send a series of formatting blocks to the user/channel specified by the context."""
