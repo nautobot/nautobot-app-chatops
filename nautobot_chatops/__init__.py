@@ -46,9 +46,9 @@ class NautobotChatOpsConfig(PluginConfig):
         "mattermost_api_token": None,
         "mattermost_url": None,
         # As requested on https://github.com/nautobot/nautobot-plugin-chatops/issues/114 this setting is used for
-        # sending all messages as an emphemeral message, meaning only the person interacting with the bot will see the
+        # sending all messages as an ephemeral message, meaning only the person interacting with the bot will see the
         # responses.
-        "send_all_messages_emphemeral": False,
+        "send_all_messages_private": False,
     }
 
     max_version = "1.999"

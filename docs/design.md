@@ -162,4 +162,6 @@ Some known limitations of currently supported platforms:
 - No table functionality in cards (blocks). The `ColumnSet` card layout feature allows for wrapping content across
   multiple columns, but does not provide for any alignment across columns, so it's not suitable for tables.
 
+## Settings
 
+The setting of `send_all_messages_private` within the configuration applied within the Nautobot config is used to send all messages as private messages. The messages will be sent in private when this is set to `True`. The default setting is `False`, which is the behavior for several message settings.
