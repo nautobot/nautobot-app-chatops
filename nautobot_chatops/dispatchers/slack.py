@@ -213,8 +213,11 @@ class SlackDispatcher(Dispatcher):
             self.send_exception(slack_error)
 
     @BACKEND_ACTION_SNIPPET.time()
-    def send_snippet(self, text, title=None):
+    def send_snippet(self, text, title=None, ephemeral=None):
         """Send a longer chunk of text as a file snippet."""
+        if ephemeral is None:
+            ephemeral = settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_private"]
+
         if self.context.get("channel_name") == "directmessage":
             channels = [self.context.get("user_id")]
         else:
@@ -222,7 +225,24 @@ class SlackDispatcher(Dispatcher):
         channels = ",".join(channels)
         logger.info("Sending snippet to %s: %s", channels, text)
         try:
-            self.slack_client.files_upload(channels=channels, content=text, title=title)
+            # Check for the length of the file if the setup is meant to be a private message
+            if ephemeral and len(text) < 40000:
+                self.slack_client.chat_postEphemeral(
+                    channel=self.context.get("channel_id"),
+                    user=self.context.get("user_id"),
+                    text="test",
+                    blocks=[
+                        {
+                            "type": "section",
+                            "text": {
+                                "type": "mrkdwn",
+                                "text": text
+                            }
+                        }
+                    ]
+                )
+            else:
+                self.slack_client.files_upload(channels=channels, content=text, title=title)
         except SlackClientError as slack_error:
             self.send_exception(slack_error)
 

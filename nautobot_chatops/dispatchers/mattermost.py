@@ -407,11 +407,14 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
             self.send_exception(mm_error)
 
     @BACKEND_ACTION_SNIPPET.time()
-    def send_snippet(self, text, title=None):
+    def send_snippet(self, text, title=None, ephemeral=None):
         """Send a longer chunk of text as a file snippet."""
         channel = [self.context.get("channel_id")]
         logger.info("Sending snippet to %s: %s", channel, text)
-        self.mm_client.chat_post_message(channel_id=self.context.get("channel_id"), snippet=text)
+        if ephemeral:
+            self.mm_client.chat_post_ephemeral(channel_id=self.context.get("channel_id"), message=text)
+        else:
+            self.mm_client.chat_post_message(channel_id=self.context.get("channel_id"), snippet=text)
 
     def send_image(self, image_path):
         """Send an image as a file upload."""
