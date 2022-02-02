@@ -37,6 +37,19 @@ class CommandLog(BaseModel):
     )
     details = models.CharField(max_length=255, default="")
 
+    csv_headers = ["Start Time", "Username", "Command", "Subcommand", "Params", "Status"]
+
+    def to_csv(self):
+        """Indicates model fields to return as csv."""
+        return (
+            self.start_time,
+            self.user_name,
+            self.command,
+            self.subcommand,
+            self.params if self.params else "",
+            self.status,
+        )
+
     @property
     def status_label_class(self):
         """Bootstrap CSS label class for each status value."""
