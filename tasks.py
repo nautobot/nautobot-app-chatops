@@ -46,7 +46,12 @@ namespace.configure(
             "python_ver": "3.6",
             "local": False,
             "compose_dir": os.path.join(os.path.dirname(__file__), "development"),
-            "compose_files": ["docker-compose.requirements.yml", "docker-compose.celery.yml", "docker-compose.base.yml", "docker-compose.dev.yml"],
+            "compose_files": [
+                "docker-compose.requirements.yml",
+                # "docker-compose.celery.yml",
+                "docker-compose.base.yml",
+                "docker-compose.dev.yml",
+            ],
         }
     }
 )
