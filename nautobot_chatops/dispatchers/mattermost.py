@@ -412,7 +412,8 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
         channel = [self.context.get("channel_id")]
         logger.info("Sending snippet to %s: %s", channel, text)
         if ephemeral:
-            self.mm_client.chat_post_ephemeral(channel_id=self.context.get("channel_id"), message=text)
+            for msg in self.split_messages(text, 16383):
+                self.mm_client.chat_post_ephemeral(channel_id=self.context.get("channel_id"), message=msg)
         else:
             self.mm_client.chat_post_message(channel_id=self.context.get("channel_id"), snippet=text)
 

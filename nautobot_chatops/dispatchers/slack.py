@@ -226,21 +226,15 @@ class SlackDispatcher(Dispatcher):
         logger.info("Sending snippet to %s: %s", channels, text)
         try:
             # Check for the length of the file if the setup is meant to be a private message
-            if ephemeral and len(text) < 40000:
-                self.slack_client.chat_postEphemeral(
-                    channel=self.context.get("channel_id"),
-                    user=self.context.get("user_id"),
-                    text="test",
-                    blocks=[
-                        {
-                            "type": "section",
-                            "text": {
-                                "type": "mrkdwn",
-                                "text": text
-                            }
-                        }
-                    ]
-                )
+            if ephemeral:
+                message_list = self.split_messages(text, 40000)
+                for msg in message_list:
+                    self.slack_client.chat_postEphemeral(
+                        channel=self.context.get("channel_id"),
+                        user=self.context.get("user_id"),
+                        text="test",
+                        blocks=[{"type": "section", "text": {"type": "mrkdwn", "text": msg}}],
+                    )
             else:
                 self.slack_client.files_upload(channels=channels, content=text, title=title)
         except SlackClientError as slack_error:
