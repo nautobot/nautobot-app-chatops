@@ -126,7 +126,7 @@ class AdaptiveCardsDispatcher(Dispatcher):
             blocks,
             callback_id=callback_id,
             modal=True,
-            ephemeral=settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_private"],
+            ephemeral=False,
             title=dialog_title,
         )
 
