@@ -1,6 +1,4 @@
 """Dispatcher subclass for chat platforms that use Adaptive Cards (https://adaptivecards.io/)."""
-from django.conf import settings
-
 from .base import Dispatcher
 
 # pylint: disable=abstract-method

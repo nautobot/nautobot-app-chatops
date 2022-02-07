@@ -341,7 +341,7 @@ class Dispatcher:
 
     @staticmethod
     def split_messages(text_string: str, max_message_size: int) -> list:
-        """Method to split a message into smaller messages
+        """Method to split a message into smaller messages.
 
         Args:
             text_string (str): Text string that should be split
