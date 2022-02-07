@@ -4,7 +4,7 @@ from django.conf import settings
 from django.test import TestCase, override_settings
 from django.test.client import RequestFactory
 
-
+from nautobot.utilities.testing import ViewTestCases
 from nautobot_chatops.api.views.slack import (
     verify_signature as slack_verify_signature,
     generate_signature as slack_generate_signature,
@@ -16,8 +16,6 @@ from nautobot_chatops.api.views.webex import (
 from nautobot_chatops.api.views.mattermost import verify_signature as mattermost_verify_signature
 from nautobot_chatops.choices import CommandTokenPlatformChoices
 from nautobot_chatops.models import CommandToken
-from nautobot.utilities.testing import ViewTestCases
-from nautobot.utilities.fields import ColorField
 from nautobot_chatops.choices import CommandStatusChoices
 from nautobot_chatops.models import CommandLog
 
@@ -179,8 +177,8 @@ class TestNautobotHomeView(ViewTestCases):
     """Test the NautobotHomePage View."""
 
     @classmethod
-    def setUpTestData(cls):
-
+    def setUp(cls):  # pylint: disable=invalid-name
+        """Setup function for test class."""
         commandlog_a = CommandLog(
             start_time="2020-01-26T15:37:36",
             user_name="User 1",
@@ -199,6 +197,6 @@ class TestNautobotHomeView(ViewTestCases):
     @override_settings(EXEMPT_VIEW_PERMISSIONS=["*"])
     def test_queryset_to_csv(self):
         """This view has a custom queryset_to_csv() implementation."""
-        response = self.client.get(f"{self._get_url}?export")
-        self.assertHttpStatus(response, 200)
-        self.assertEqual(response.get("Content-Type"), "text/csv")
+        response = self.client.get(f"{self._get_url}?export")  # pylint: disable=no-member
+        self.assertHttpStatus(response, 200)  # pylint: disable=no-member
+        self.assertEqual(response.get("Content-Type"), "text/csv")  # pylint: disable=no-member

@@ -1,14 +1,14 @@
 """Tests for ChatOps models."""
 import datetime
-from unittest.mock import patch
 from django.test import TestCase
-from nautobot.utilities.fields import ColorField
 from nautobot_chatops.choices import CommandStatusChoices
 
 from nautobot_chatops.models import CommandLog
 
 
 class CommandLogTestCase(TestCase):
+    """Test case for CommandLog model."""
+
     def test_to_csv(self):
         """Check that `to_csv` returns the correct data from the CommandLog model."""
         expected_data = (
