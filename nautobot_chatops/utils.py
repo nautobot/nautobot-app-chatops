@@ -55,7 +55,6 @@ try:
             context=context,
         )
 
-
 except ImportError:
     logger.info("INFO: Celery was not found - using Django RQ Worker")
 
