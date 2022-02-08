@@ -181,15 +181,15 @@ class TestNautobotHomeView(ViewTestCases):
         """Setup function for test class."""
         commandlog_a = CommandLog(
             start_time="2020-01-26T15:37:36",
-            user_name="User 1",
-            command="nautobot",
-            subcommand="get-devices",
-            params=["mydevice_1"],
+            user_name="User 2",
+            command="meraki",
+            subcommand="get-organizations",
+            params=["myorg_1"],
             status=CommandStatusChoices.STATUS_SUCCEEDED,
-            runtime="00:00:02",
-            user_id="112233",
-            platform="Slack",
-            platform_color="ff0000",
+            runtime="00:00:05",
+            user_id="998877",
+            platform="Teams",
+            platform_color="ffffff",
             details="This is for testing.",
         )
         commandlog_a.validated_save()
