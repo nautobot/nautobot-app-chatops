@@ -218,6 +218,7 @@ class Dispatcher:
 
     def send_markdown(self, message, ephemeral=None):
         """Send a Markdown-formatted text message to the user/channel specified by the context."""
+        # pylint: disable=unused-argument
         if ephemeral is None:
             ephemeral = settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_private"]
         raise NotImplementedError
@@ -231,11 +232,12 @@ class Dispatcher:
         title=None,
     ):
         """Send a series of formatting blocks to the user/channel specified by the context."""
+        # pylint: disable=unused-argument
         if ephemeral is None:
             ephemeral = settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_private"]
         raise NotImplementedError
 
-    def send_snippet(self, text, title=None):
+    def send_snippet(self, text, title=None, ephemeral=None):
         """Send a longer chunk of text as a snippet or file attachment."""
         raise NotImplementedError
 

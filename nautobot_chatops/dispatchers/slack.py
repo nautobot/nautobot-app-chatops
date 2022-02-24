@@ -229,12 +229,7 @@ class SlackDispatcher(Dispatcher):
             if ephemeral:
                 message_list = self.split_messages(text, 40000)
                 for msg in message_list:
-                    self.slack_client.chat_postEphemeral(
-                        channel=self.context.get("channel_id"),
-                        user=self.context.get("user_id"),
-                        text="test",
-                        blocks=[{"type": "section", "text": {"type": "mrkdwn", "text": msg}}],
-                    )
+                    self.send_blocks(self.markdown_block(msg), ephemeral=ephemeral)
             else:
                 self.slack_client.files_upload(channels=channels, content=text, title=title)
         except SlackClientError as slack_error:
