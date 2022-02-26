@@ -108,10 +108,8 @@ In general, we recommend structuring commands as a two-tiered command-subcommand
 every command as a top-level worker function. (`/nautobot get-device-info <device>`, `/nautobot get-vlan-info <vlan>`, etc.
 rather than `/nautobot-get-device-info <device>`, `/nautobot-get-vlan-info <vlan>`, etc.) This is because:
 
-a. On platforms such as Slack, each separate slash-command must be enabled and configured separately on the server,
-so an excessive number of distinct top-level commands will make the chatbot inconvenient to deploy.
-b. Platforms such as Microsoft Teams may limit the number of top-level commands that are displayed to the user in
-a chat client, so large numbers of commands may be difficult to discover.
+- On platforms such as Slack, each separate slash-command must be enabled and configured separately on the server, so an excessive number of distinct top-level commands will make the chatbot inconvenient to deploy.
+- Platforms such as Microsoft Teams may limit the number of top-level commands that are displayed to the user in a chat client, so large numbers of commands may be difficult to discover.
 
 That said, the implementation of Nautobot allows it to transparently support both syntaxes (`/command-sub-command` as
 well as `/command sub-command`; if the deployer takes the time to set up the bot accordingly.
@@ -171,8 +169,9 @@ The setting of `send_all_messages_private` within the configuration applied with
 
 > This table represents the platform support of particular settings
 
-| Platform | send_all_messages_private |
-| Slack | ✅ |
-| MS Teams | ❌ |
-| WebEx | ❌ |
-| Mattermost | ✅ |
+| Platform   | send_all_messages_private |
+| ---------- | ------------------------- |
+| Slack      | ✅                        |
+| MS Teams   | ❌                        |
+| WebEx      | ❌                        |
+| Mattermost | ✅                        |

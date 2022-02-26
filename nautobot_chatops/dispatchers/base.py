@@ -342,7 +342,7 @@ class Dispatcher:
         raise NotImplementedError
 
     @staticmethod
-    def split_messages(text_string: str, max_message_size: int) -> list:
+    def split_message(text_string: str, max_message_size: int) -> list:
         """Method to split a message into smaller messages.
 
         Args:

@@ -21,6 +21,8 @@ BACKEND_ACTION_MARKDOWN = backend_action_sum.labels("mattermost", "send_markdown
 BACKEND_ACTION_BLOCKS = backend_action_sum.labels("mattermost", "send_blocks")
 BACKEND_ACTION_SNIPPET = backend_action_sum.labels("mattermost", "send_snippet")
 
+MM_MAX_MESSAGE_LENGTH = 16383
+
 
 class MMException(Exception):
     """Generic Mattermost Exception."""
@@ -412,7 +414,7 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
         channel = [self.context.get("channel_id")]
         logger.info("Sending snippet to %s: %s", channel, text)
         if ephemeral:
-            for msg in self.split_messages(text, 16383):
+            for msg in self.split_message(text, MM_MAX_MESSAGE_LENGTH):
                 self.mm_client.chat_post_ephemeral(
                     channel_id=self.context.get("channel_id"), user_id=self.context.get("user_id"), message=msg
                 )

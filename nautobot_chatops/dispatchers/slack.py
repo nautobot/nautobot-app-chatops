@@ -23,6 +23,8 @@ BACKEND_ACTION_MARKDOWN = backend_action_sum.labels("slack", "send_markdown")
 BACKEND_ACTION_BLOCKS = backend_action_sum.labels("slack", "send_blocks")
 BACKEND_ACTION_SNIPPET = backend_action_sum.labels("slack", "send_snippet")
 
+SLACK_MAX_MESSAGE_LENGTH = 40000
+
 
 class SlackDispatcher(Dispatcher):
     """Dispatch messages and cards to Slack."""
@@ -227,9 +229,9 @@ class SlackDispatcher(Dispatcher):
         try:
             # Check for the length of the file if the setup is meant to be a private message
             if ephemeral:
-                message_list = self.split_messages(text, 40000)
+                message_list = self.split_message(text, SLACK_MAX_MESSAGE_LENGTH)
                 for msg in message_list:
-                    self.send_blocks(self.markdown_block(msg), ephemeral=ephemeral)
+                    self.send_blocks(self.markdown_block(f"```\n{msg}\n```"), ephemeral=ephemeral)
             else:
                 self.slack_client.files_upload(channels=channels, content=text, title=title)
         except SlackClientError as slack_error:
