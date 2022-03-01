@@ -22,7 +22,7 @@
 10. On the same page, take note of the "Microsoft App ID" that is displayed. This will be needed at a later step.
 11. Go to the Resource Group for the bot. A quick way to do this is to select Overview at the top of the sidebar menu, then select the Resource Group the Azure Bot is attached to.
 12. Select the Key Vault assigned to the new Bot. If unsure which Key Vault to use, open the Resource Visualizer in the sidebar to see.
-13. In order to create a key, you must first set up an access policy. Select Access Policies from the sidebar menu.
+13. In order to create a secret in the Key Vault, you must first set up an access policy. Select Access Policies from the sidebar menu.
 14. Under Configure From Template, select "Secret Management." For Select Principal, search for your account in Azure, and select it. Then click Add to add the Access policy.
 15. Once the permissions are added, click Save at the top. These will allow you to create and manage Secrets for the bot.
 16. Select Secrets from the sidebar menu. Then select Generate/Import to create a new secret. You can configure any name and value you like. Save the value as it will be needed in a future step. Then click Create.
