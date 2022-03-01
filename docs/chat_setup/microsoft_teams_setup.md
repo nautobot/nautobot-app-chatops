@@ -12,15 +12,20 @@
 
 1. Login to [https://portal.azure.com](https://portal.azure.com) and select "Create a Resource".
 2. Use the search box to locate "Azure Bot", and select "Create".
-3. Configure the bot handle, subscription, resource group, location, and pricing tier.
-4. Be sure to select the "F0" (free) pricing tier, rather than the default "S1" paid tier.
+3. Configure the bot handle, subscription, resource group, location, pricing tier, and Type of App. For "Type of App", select "Multi Tenant".
+4. Be sure to select the "F0" (free) pricing tier if desired. Otherwise the default is set to the "S1" paid tier.
 5. Select “Review + create”, then select "Create" and wait for the "Deployment succeeded" pop-up to appear in your browser.
 6. Click "Go to resource".
 7. In the sidebar to the left, select "Channels" and select the "Microsoft Teams" icon. All of the default settings here are fine, so just click "Save".
 8. In the sidebar to the left under “Settings”, select "Configuration".
 9. For the "Messaging endpoint", enter your service URL (`https://<server>/api/plugins/chatops/ms_teams/messages/`)
-10. On the same page, take note of the "Microsoft App ID" that is displayed, then click the "Manage" link above the App ID field.
-11. On the new "Certificates & secrets" page, click "New client secret". (You may have to delete one of the existing secrets first, as there is a maximum limit). **NOTE: Take note of the newly generated secret, as there's no way to recover it later - you will have to return to this page and generate a new secret if you lose it.**
+10. On the same page, take note of the "Microsoft App ID" that is displayed. This will be needed at a later step.
+11. Go to the Resource Group for the bot. A quick way to do this is to select Overview at the top of the sidebar menu, then select the Resource Group the Azure Bot is attached to.
+12. Select the Key Vault assigned to the new Bot. If unsure which Key Vault to use, open the Resource Visualizer in the sidebar to see.
+13. In order to create a key, you must first set up an access policy. Select Access Policies from the sidebar menu.
+14. Under Configure From Template, select "Secret Management." For Select Principal, search for your account in Azure, and select it. Then click Add to add the Access policy.
+15. Once the permissions are added, click Save at the top. These will allow you to create and manage Secrets for the bot.
+16. Select Secrets from the sidebar menu. Then select Generate/Import to create a new secret. You can configure any name and value you like. Save the value as it will be needed in a future step. Then click Create.
 
 ## MS Teams Developer Portal
 
@@ -40,4 +45,4 @@
 
 ## Additional Resources
 
-Reference the [Setting Up Nautobot Chatops With MSTeams Fall 2021](http://blog.networktocode.com/post/setting-up-nautobot-chatops-with-msteams-fall-2021/) blog post for more details and additional screenshots.
+Reference the [Setting Up Nautobot Chatops With MSTeams Spring 2022](https://blog.networktocode.com/post/setting-up-nautobot-chatops-with-msteams-spring-2022/) blog post for more details and additional screenshots.
