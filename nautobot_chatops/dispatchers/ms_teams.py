@@ -149,12 +149,12 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
         )
 
     @BACKEND_ACTION_MARKDOWN.time()
-    def send_markdown(self, message, ephemeral=False):
+    def send_markdown(self, message, ephemeral=None):
         """Send a markdown-formatted text message to the user/channel specified by the context."""
         self._send({"text": message, "textFormat": "markdown"})
 
     @BACKEND_ACTION_BLOCKS.time()
-    def send_blocks(self, blocks, callback_id=None, modal=False, ephemeral=False, title=None):
+    def send_blocks(self, blocks, callback_id=None, modal=False, ephemeral=None, title=None):
         """Send a series of formatting blocks to the user/channel specified by the context."""
         if title and title not in str(blocks[0]):
             blocks.insert(0, self.markdown_element(self.bold(title)))
@@ -170,7 +170,7 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
         )
 
     @BACKEND_ACTION_SNIPPET.time()
-    def send_snippet(self, text, title=None):
+    def send_snippet(self, text, title=None, ephemeral=None):
         """Send a longer chunk of text as a snippet or file attachment."""
         self.send_markdown(f"```\n{text}\n```")
 

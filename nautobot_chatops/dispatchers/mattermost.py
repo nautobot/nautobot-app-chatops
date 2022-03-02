@@ -21,6 +21,8 @@ BACKEND_ACTION_MARKDOWN = backend_action_sum.labels("mattermost", "send_markdown
 BACKEND_ACTION_BLOCKS = backend_action_sum.labels("mattermost", "send_blocks")
 BACKEND_ACTION_SNIPPET = backend_action_sum.labels("mattermost", "send_snippet")
 
+MM_MAX_MESSAGE_LENGTH = 16383
+
 
 class MMException(Exception):
     """Generic Mattermost Exception."""
@@ -346,8 +348,10 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
     # Send various content to the user or channel
 
     @BACKEND_ACTION_MARKDOWN.time()
-    def send_markdown(self, message, ephemeral=False):
+    def send_markdown(self, message, ephemeral=None):
         """Send a Markdown-formatted text message to the user/channel specified by the context."""
+        if ephemeral is None:
+            ephemeral = settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_private"]
         try:
             if ephemeral:
                 self.mm_client.chat_post_ephemeral(
@@ -360,7 +364,7 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
 
     # pylint: disable=arguments-differ
     @BACKEND_ACTION_BLOCKS.time()
-    def send_blocks(self, blocks, callback_id=None, modal=False, ephemeral=False, title="Your attention please!"):
+    def send_blocks(self, blocks, callback_id=None, modal=False, ephemeral=None, title="Your attention please!"):
         """Send a series of formatting blocks to the user/channel specified by the context.
 
         Args:
@@ -370,6 +374,8 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
           ephemeral (bool): Whether to send this as an ephemeral message (only visible to the targeted user).
           title (str): Title to include on a modal dialog.
         """
+        if ephemeral is None:
+            ephemeral = settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_private"]
         logger.info("Sending blocks: %s", json.dumps(blocks, indent=2))
         try:
             if modal:
@@ -403,11 +409,17 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
             self.send_exception(mm_error)
 
     @BACKEND_ACTION_SNIPPET.time()
-    def send_snippet(self, text, title=None):
+    def send_snippet(self, text, title=None, ephemeral=None):
         """Send a longer chunk of text as a file snippet."""
         channel = [self.context.get("channel_id")]
         logger.info("Sending snippet to %s: %s", channel, text)
-        self.mm_client.chat_post_message(channel_id=self.context.get("channel_id"), snippet=text)
+        if ephemeral:
+            for msg in self.split_message(text, MM_MAX_MESSAGE_LENGTH):
+                self.mm_client.chat_post_ephemeral(
+                    channel_id=self.context.get("channel_id"), user_id=self.context.get("user_id"), message=msg
+                )
+        else:
+            self.mm_client.chat_post_message(channel_id=self.context.get("channel_id"), snippet=text)
 
     def send_image(self, image_path):
         """Send an image as a file upload."""
