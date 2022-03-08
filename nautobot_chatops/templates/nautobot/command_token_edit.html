@@ -2,7 +2,7 @@
 {% load static %}
 {% load form_helpers %}
 
-<h1>{% block title %}{% if obj.token %}Editing{% else %}Add a new{% endif %} Nautobot Command Token{% endblock %}</h1>
+<h1>{% block title %}{% if obj.present_in_database %}Editing{% else %}Add a new{% endif %} Nautobot Command Token{% endblock %}</h1>
 
 {% block form %}
 <div class="panel panel-default">
