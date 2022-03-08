@@ -9,7 +9,20 @@ from nautobot.core.models import BaseModel
 
 from .choices import AccessGrantTypeChoices, CommandStatusChoices, CommandTokenPlatformChoices
 
-from .constants import *
+from .constants import (
+    COMMAND_LOG_USER_NAME_HELP_TEXT,
+    COMMAND_LOG_USER_ID_HELP_TEXT,
+    COMMAND_LOG_PLATFORM_HELP_TEXT,
+    COMMAND_LOG_COMMAND_TEXT,
+    COMMAND_LOG_SUBCOMMAND_HELP_TEXT,
+    COMMAND_LOG_PARAMS_HELP_TEXT,
+    ACCESS_GRANT_COMMAND_HELP_TEXT,
+    ACCESS_GRANT_SUBCOMMAND_HELP_TEXT,
+    ACCESS_GRANT_NAME_HELP_TEXT,
+    ACCESS_GRANT_VALUE_HELP_TEXT,
+    COMMAND_TOKEN_COMMENT_HELP_TEXT,
+    COMMAND_TOKEN_TOKEN_HELP_TEXT,
+)
 
 
 class CommandLog(BaseModel):

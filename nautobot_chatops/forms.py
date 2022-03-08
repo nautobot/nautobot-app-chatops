@@ -6,7 +6,7 @@ from nautobot.utilities.forms import BootstrapMixin
 
 from .models import AccessGrant, CommandToken
 from .choices import AccessGrantTypeChoices, CommandTokenPlatformChoices
-from .constants import *
+from .constants import ACCESS_GRANT_COMMAND_HELP_TEXT, COMMAND_TOKEN_TOKEN_HELP_TEXT
 
 BLANK_CHOICE = (("", "--------"),)
 
