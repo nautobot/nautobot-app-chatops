@@ -32,7 +32,7 @@ The design goal of this plugin is to be able to write chatbot commands once and 
 
 2. worker (`nautobot_chatops.workers`)
 
-   - This layer is *completely ignorant* of chat platforms. All code in this layer does not know or care about the
+   - This layer is _completely ignorant_ of chat platforms. All code in this layer does not know or care about the
      difference between Slack, WebEx, Microsoft Teams, or any other platform we may support in the future.
 
    - Each `job` worker function acts on the provided parameters, then invokes generic methods on its provided
@@ -108,25 +108,24 @@ In general, we recommend structuring commands as a two-tiered command-subcommand
 every command as a top-level worker function. (`/nautobot get-device-info <device>`, `/nautobot get-vlan-info <vlan>`, etc.
 rather than `/nautobot-get-device-info <device>`, `/nautobot-get-vlan-info <vlan>`, etc.) This is because:
 
-a. On platforms such as Slack, each separate slash-command must be enabled and configured separately on the server,
-   so an excessive number of distinct top-level commands will make the chatbot inconvenient to deploy.
-b. Platforms such as Microsoft Teams may limit the number of top-level commands that are displayed to the user in
-   a chat client, so large numbers of commands may be difficult to discover.
+- On platforms such as Slack, each separate slash-command must be enabled and configured separately on the server, so an excessive number of distinct top-level commands will make the chatbot inconvenient to deploy.
+- Platforms such as Microsoft Teams may limit the number of top-level commands that are displayed to the user in a chat client, so large numbers of commands may be difficult to discover.
 
 That said, the implementation of Nautobot allows it to transparently support both syntaxes (`/command-sub-command` as
 well as `/command sub-command`; if the deployer takes the time to set up the bot accordingly.
 
 ### Multi-word Parameters
 
-Nautobot dispatchers now allow multi-word arguments to be passed into commands.  An example of this is passing city
-names to a subcommand parameters.  As an example, say we have a command that perfoms a lookup for all sites in Nautobot
-that match a city.  The command and parameters might look like `/nautobot get-sites location Dallas` where Dallas is the
-city we want to search for.  For the command to support cities such as `Las Vegas` we would want to quote the city
-argument.  The new command should look as `/nautobot get-sites location 'Las Vegas'`.  
+Nautobot dispatchers now allow multi-word arguments to be passed into commands. An example of this is passing city
+names to a subcommand parameters. As an example, say we have a command that perfoms a lookup for all sites in Nautobot
+that match a city. The command and parameters might look like `/nautobot get-sites location Dallas` where Dallas is the
+city we want to search for. For the command to support cities such as `Las Vegas` we would want to quote the city
+argument. The new command should look as `/nautobot get-sites location 'Las Vegas'`.
 
-The worker would need to preserve the quoting when prompting for additional parameters.  Below is an example:
+The worker would need to preserve the quoting when prompting for additional parameters. Below is an example:
 
 Here we use the previous example, but add limit to the site lookup.
+
 ```Python
 action = f"get-sites location '{city}'" # Adding single quotes around city to preserve quotes.
 dispatcher.prompt_for_text(action_id=action, help_text="Please enter the maximum number of sites to return.", label="Number")
@@ -157,9 +156,22 @@ Some known limitations of currently supported platforms:
 
 - No support for preformatted text in cards (blocks) - while text can be rendered as `monospace`, it still does not
   preserve whitespace, so it's not suitable for aligning output into text tables and the like.
-- While text-only messages *do* support Markdown preformatted text, the text is wrapped to a max width of 69
+- While text-only messages _do_ support Markdown preformatted text, the text is wrapped to a max width of 69
   characters regardless of how large the client's window is.
 - No table functionality in cards (blocks). The `ColumnSet` card layout feature allows for wrapping content across
   multiple columns, but does not provide for any alignment across columns, so it's not suitable for tables.
 
+## Settings
 
+The setting of `send_all_messages_private` within the configuration applied within the Nautobot config is used to send all messages as private messages. The messages will be sent in private when this is set to `True`. The default setting is `False`, which is the default behavior for several message settings.
+
+### Settings - Platform Support of Settings
+
+> This table represents the platform support of particular settings
+
+| Platform   | send_all_messages_private |
+| ---------- | ------------------------- |
+| Slack      | ✅                        |
+| MS Teams   | ❌                        |
+| WebEx      | ❌                        |
+| Mattermost | ✅                        |

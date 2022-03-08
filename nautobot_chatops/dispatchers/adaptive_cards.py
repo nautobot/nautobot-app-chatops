@@ -1,5 +1,4 @@
 """Dispatcher subclass for chat platforms that use Adaptive Cards (https://adaptivecards.io/)."""
-
 from .base import Dispatcher
 
 # pylint: disable=abstract-method

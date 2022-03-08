@@ -216,15 +216,28 @@ class Dispatcher:
 
     # Send various content to the user or channel
 
-    def send_markdown(self, message, ephemeral=False):
+    def send_markdown(self, message, ephemeral=None):
         """Send a Markdown-formatted text message to the user/channel specified by the context."""
+        # pylint: disable=unused-argument
+        if ephemeral is None:
+            ephemeral = settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_private"]
         raise NotImplementedError
 
-    def send_blocks(self, blocks, callback_id=None, modal=False, ephemeral=False, title=None):
+    def send_blocks(
+        self,
+        blocks,
+        callback_id=None,
+        modal=False,
+        ephemeral=None,
+        title=None,
+    ):
         """Send a series of formatting blocks to the user/channel specified by the context."""
+        # pylint: disable=unused-argument
+        if ephemeral is None:
+            ephemeral = settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_private"]
         raise NotImplementedError
 
-    def send_snippet(self, text, title=None):
+    def send_snippet(self, text, title=None, ephemeral=None):
         """Send a longer chunk of text as a snippet or file attachment."""
         raise NotImplementedError
 
@@ -327,3 +340,24 @@ class Dispatcher:
     def text_element(self, text):
         """Construct a simple plaintext element."""
         raise NotImplementedError
+
+    @staticmethod
+    def split_message(text_string: str, max_message_size: int) -> list:
+        """Method to split a message into smaller messages.
+
+        Args:
+            text_string (str): Text string that should be split
+            max_message_size (int): Maximum size for a message
+        """
+        return_list = [""]
+
+        for line in text_string.splitlines():
+            # len(line) + 2 to account for a new line character in the character line
+            # Check to see if the line length of the last item in the list is longer than the max message size
+            # Once it would be larger than the max size, then start the next line.
+            if (len(line) + 2) + len(return_list[-1]) < max_message_size:
+                return_list[-1] += f"{line}\n"
+            else:
+                return_list.append(f"{line}\n")
+
+        return return_list

@@ -94,12 +94,12 @@ class WebExDispatcher(AdaptiveCardsDispatcher):
         return None
 
     @BACKEND_ACTION_MARKDOWN.time()
-    def send_markdown(self, message, ephemeral=False):
+    def send_markdown(self, message, ephemeral=None):
         """Send a markdown-formatted text message to the user/channel specified by the context."""
         self.client.messages.create(roomId=self.context["channel_id"], markdown=message)
 
     @BACKEND_ACTION_BLOCKS.time()
-    def send_blocks(self, blocks, callback_id=None, modal=False, ephemeral=False, title=None):
+    def send_blocks(self, blocks, callback_id=None, modal=False, ephemeral=None, title=None):
         """Send a series of formatting blocks to the user/channel specified by the context."""
         if title and title not in str(blocks[0]):
             blocks.insert(0, self.markdown_element(self.bold(title)))
@@ -119,7 +119,7 @@ class WebExDispatcher(AdaptiveCardsDispatcher):
         self.client.messages.create(roomId=self.context["channel_id"], files=[image_path])
 
     @BACKEND_ACTION_SNIPPET.time()
-    def send_snippet(self, text, title=None):
+    def send_snippet(self, text, title=None, ephemeral=None):
         """Send a longer chunk of text as a file snippet."""
         return self.send_markdown(f"```\n{text}\n```")
 
