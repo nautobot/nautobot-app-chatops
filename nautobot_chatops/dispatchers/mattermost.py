@@ -11,7 +11,7 @@ from django.conf import settings
 from nautobot_chatops.metrics import backend_action_sum
 from .base import Dispatcher
 
-logger = logging.getLogger("rq.worker")
+logger = logging.getLogger(__name__)
 
 # pylint: disable=abstract-method,line-too-long,raise-missing-from
 
