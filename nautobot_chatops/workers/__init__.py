@@ -18,7 +18,7 @@ from nautobot_chatops.models import CommandLog
 from nautobot_chatops.utils import create_command_log
 from nautobot_chatops.metrics import request_command_cntr, command_histogram
 
-logger = logging.getLogger("rq.worker")
+logger = logging.getLogger(__name__)
 
 
 _registry_initialized = False  # pylint: disable=invalid-name

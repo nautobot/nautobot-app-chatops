@@ -8,7 +8,7 @@ from django.conf import settings
 from nautobot_chatops.metrics import backend_action_sum
 from .adaptive_cards import AdaptiveCardsDispatcher
 
-logger = logging.getLogger("rq.worker")
+logger = logging.getLogger(__name__)
 
 # Create a metric to track time spent and requests made.
 BACKEND_ACTION_LOOKUP = backend_action_sum.labels("msteams", "platform_lookup")
