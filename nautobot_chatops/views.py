@@ -11,12 +11,13 @@ from django.shortcuts import render, redirect
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.template.defaulttags import register
-
+from django.http import HttpResponse
 from django_tables2 import RequestConfig
 
 from nautobot.core.views.generic import ObjectListView, ObjectEditView, BulkDeleteView
 from nautobot.utilities.paginator import EnhancedPaginator, get_paginate_count
 from nautobot.utilities.forms import TableConfigForm
+from nautobot.utilities.utils import csv_format
 
 from nautobot_chatops.workers import get_commands_registry
 from nautobot_chatops.models import CommandLog, AccessGrant, CommandToken
@@ -44,10 +45,29 @@ class NautobotHomeView(PermissionRequiredMixin, View):
 
     table = CommandLogTable
 
+    @staticmethod
+    def queryset_to_csv():
+        """Format queryset to csv."""
+        csv_data = []
+        headers = CommandLog.csv_headers.copy()
+        csv_data.append(",".join(headers))
+
+        for commandlog_obj in CommandLog.objects.all():
+            data = commandlog_obj.to_csv()
+            csv_data.append(csv_format(data))
+
+        return "\n".join(csv_data)
+
     def get(self, request, *args, **kwargs):
         """Render the home page for Nautobot."""
         registry = dict(get_commands_registry())
         logs = CommandLog.objects.all().order_by("-start_time")
+
+        if "export" in request.GET:
+            response = HttpResponse(self.queryset_to_csv(), content_type="text/csv")
+            filename = f"nautobot_{logs.model._meta.verbose_name_plural}.csv"
+            response["Content-Disposition"] = f"attachment; filename={filename}"
+            return response
 
         # Summarize the number of times each command/subcommand has been called
         for command_name, command_data in registry.items():
