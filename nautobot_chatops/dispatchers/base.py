@@ -7,7 +7,7 @@ from django.conf import settings
 
 from texttable import Texttable
 
-logger = logging.getLogger("rq.worker")
+logger = logging.getLogger(__name__)
 
 
 class Dispatcher:

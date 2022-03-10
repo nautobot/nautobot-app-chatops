@@ -13,7 +13,7 @@ from slack_sdk.errors import SlackApiError, SlackClientError
 from nautobot_chatops.metrics import backend_action_sum
 from .base import Dispatcher
 
-logger = logging.getLogger("rq.worker")
+logger = logging.getLogger(__name__)
 
 # pylint: disable=abstract-method
 
@@ -231,7 +231,8 @@ class SlackDispatcher(Dispatcher):
             if ephemeral:
                 message_list = self.split_message(text, SLACK_MAX_MESSAGE_LENGTH)
                 for msg in message_list:
-                    self.send_blocks(self.markdown_block(f"```\n{msg}\n```"), ephemeral=ephemeral)
+                    # Send the blocks as a list, this needs to be the case for Slack to send appropriately.
+                    self.send_blocks([self.markdown_block(f"```\n{msg}\n```")], ephemeral=ephemeral)
             else:
                 self.slack_client.files_upload(channels=channels, content=text, title=title)
         except SlackClientError as slack_error:
