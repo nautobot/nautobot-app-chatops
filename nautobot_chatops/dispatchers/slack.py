@@ -232,7 +232,7 @@ class SlackDispatcher(Dispatcher):
                 message_list = self.split_message(text, SLACK_MAX_MESSAGE_LENGTH)
                 for msg in message_list:
                     # Send the blocks as a list, this needs to be the case for Slack to send appropriately.
-                    self.send_blocks([self.markdown_block(msg)], ephemeral=ephemeral)
+                    self.send_blocks([self.markdown_block(f"```\n{msg}\n```")], ephemeral=ephemeral)
             else:
                 self.slack_client.files_upload(channels=channels, content=text, title=title)
         except SlackClientError as slack_error:
