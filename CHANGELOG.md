@@ -1,5 +1,17 @@
 # Changelog - Nautobot Plugin Chatops
 
+## v1.7.0
+
+### Additions
+
+(#123) Adds export button of command usage
+(#128) Adds QOL change for focusing of fields
+
+### Fixes
+
+(#129) Fixes errors on private messages
+(#128) Access grants updates
+
 ## v1.6.0
 
 ### Additions
