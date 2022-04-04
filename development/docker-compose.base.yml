@@ -18,6 +18,8 @@ services:
   nautobot:
     ports:
       - "8080:8080"
+    healthcheck:
+      disable: true
     depends_on:
       - "postgres"
       - "redis"
