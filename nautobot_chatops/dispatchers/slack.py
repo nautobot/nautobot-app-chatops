@@ -23,7 +23,7 @@ BACKEND_ACTION_MARKDOWN = backend_action_sum.labels("slack", "send_markdown")
 BACKEND_ACTION_BLOCKS = backend_action_sum.labels("slack", "send_blocks")
 BACKEND_ACTION_SNIPPET = backend_action_sum.labels("slack", "send_snippet")
 
-SLACK_MAX_MESSAGE_LENGTH = 40000
+SLACK_PRIVATE_MESSAGE_LIMIT = settings.PLUGINS_CONFIG["nautobot_chatops"].get("slack_ephemeral_message_size_limit")
 
 
 class SlackDispatcher(Dispatcher):
@@ -229,7 +229,7 @@ class SlackDispatcher(Dispatcher):
         try:
             # Check for the length of the file if the setup is meant to be a private message
             if ephemeral:
-                message_list = self.split_message(text, SLACK_MAX_MESSAGE_LENGTH)
+                message_list = self.split_message(text, SLACK_PRIVATE_MESSAGE_LIMIT)
                 for msg in message_list:
                     # Send the blocks as a list, this needs to be the case for Slack to send appropriately.
                     self.send_blocks([self.markdown_block(f"```\n{msg}\n```")], ephemeral=ephemeral)

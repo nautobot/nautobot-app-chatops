@@ -32,6 +32,7 @@ class NautobotChatOpsConfig(PluginConfig):
         # Slack-specific settings
         "slack_api_token": None,  # for example, "xoxb-123456"
         "slack_signing_secret": None,
+        "slack_ephemeral_message_size_limit": 3000,
         # Any prefix that's prepended to all slash-commands for this bot and should be stripped away
         # in order to identify the actual command name to be invoked, eg "/nautobot-"
         "slack_slash_command_prefix": "/",
@@ -48,7 +49,7 @@ class NautobotChatOpsConfig(PluginConfig):
         # As requested on https://github.com/nautobot/nautobot-plugin-chatops/issues/114 this setting is used for
         # sending all messages as an ephemeral message, meaning only the person interacting with the bot will see the
         # responses.
-        "send_all_messages_private": False,
+        "send_all_messages_private": False,"
     }
 
     max_version = "1.999"
