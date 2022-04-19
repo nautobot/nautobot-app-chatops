@@ -108,8 +108,10 @@ jobs:
       - name: "Copy credentials"
         run: "cp development/creds.example.env development/creds.env"
       - name: "Remove Black"
-        if: "matrix.nautobot-version == '1.1.6'"
-        run: "poetry remove black"
+        # We have dependency issues specifically with Nautobot 1.1 but we really don't care about black
+        # on Anything less than the latest
+        if: "matrix.nautobot-version != '1.3.0'"
+        run: "poetry remove black --dev"
       - name: "Set Nautobot install to the testing version"
         run: "poetry add nautobot==${{ matrix.nautobot-version }}"
       - name: "Build Container"
