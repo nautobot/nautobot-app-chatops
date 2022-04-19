@@ -126,8 +126,9 @@ jobs:
         run: "poetry remove black --dev"
       - name: "Handle Markupsafe bug"
         # Markupsafe 2.0.1 conflicts with the new jinja, but 2.1.x conflicts with Nautobot 1.1-2
+        # Markdown has issues with importlib in newer versions
         if: "matrix.nautobot-version != '1.3.0'"
-        run: "poetry add markupsafe==2.0.1"
+        run: "poetry add markupsafe==2.0.1 Markdown==3.3.4"
       - name: "Set Nautobot install to the testing version"
         run: "poetry add nautobot==${{ matrix.nautobot-version }}"
       - name: "Build Container"
