@@ -134,7 +134,7 @@ jobs:
         run: "poetry add markupsafe==2.0.1"
       - name: "Set Nautobot install to the testing version"
         run: "poetry add nautobot==${{ matrix.nautobot-version }}"
-      - name: "Remove Poetry Lock for Older Nautobot Tests"
+      - name: "Regenerate Poetry Lock for Older Nautobot Tests"
         run: "poetry update --lock"
         if: "matrix.nautobot-version != '1.3.0'"
       - name: "Build Container"
