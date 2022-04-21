@@ -1,5 +1,16 @@
 # Changelog - Nautobot Plugin Chatops
 
+## 1.8.0
+
+### Additions
+
+Adds support For Nautobot 1.3
+
+### Removes
+
+Nautobot 1.0.x support
+Python 3.6 support
+
 ## v1.7.0
 
 ### Additions

@@ -13,7 +13,9 @@ jobs:
       - name: "Check out repository code"
         uses: "actions/checkout@v2"
       - name: "Setup environment"
-        uses: "networktocode/gh-action-setup-poetry-environment@v1"
+        uses: "networktocode/gh-action-setup-poetry-environment@v2"
+        with:
+          python-version: "3.10"
       - name: "Linting: black"
         run: "poetry run invoke black"
   bandit:
@@ -24,7 +26,9 @@ jobs:
       - name: "Check out repository code"
         uses: "actions/checkout@v2"
       - name: "Setup environment"
-        uses: "networktocode/gh-action-setup-poetry-environment@v1"
+        uses: "networktocode/gh-action-setup-poetry-environment@v2"
+        with:
+          python-version: "3.10"
       - name: "Linting: bandit"
         run: "poetry run invoke bandit"
     needs:
@@ -37,7 +41,9 @@ jobs:
       - name: "Check out repository code"
         uses: "actions/checkout@v2"
       - name: "Setup environment"
-        uses: "networktocode/gh-action-setup-poetry-environment@v1"
+        uses: "networktocode/gh-action-setup-poetry-environment@v2"
+        with:
+          python-version: "3.10"
       - name: "Linting: pydocstyle"
         run: "poetry run invoke pydocstyle"
     needs:
@@ -50,7 +56,9 @@ jobs:
       - name: "Check out repository code"
         uses: "actions/checkout@v2"
       - name: "Setup environment"
-        uses: "networktocode/gh-action-setup-poetry-environment@v1"
+        uses: "networktocode/gh-action-setup-poetry-environment@v2"
+        with:
+          python-version: "3.10"
       - name: "Linting: flake8"
         run: "poetry run invoke flake8"
     needs:
@@ -63,48 +71,41 @@ jobs:
       - name: "Check out repository code"
         uses: "actions/checkout@v2"
       - name: "Setup environment"
-        uses: "networktocode/gh-action-setup-poetry-environment@v1"
+        uses: "networktocode/gh-action-setup-poetry-environment@v2"
+        with:
+          python-version: "3.10"
       - name: "Linting: yamllint"
         run: "poetry run invoke yamllint"
     needs:
       - "black"
-  build:
-    runs-on: "ubuntu-20.04"
-    steps:
-      - name: "Check out repository code"
-        uses: "actions/checkout@v2"
-      - name: "Setup environment"
-        uses: "networktocode/gh-action-setup-poetry-environment@v1"
-      - name: "Copy credentials"
-        run: "cp development/creds.example.env development/creds.env"
-      - name: "Build Container"
-        run: "poetry run invoke build"
-    needs:
-      - "bandit"
-      - "pydocstyle"
-      - "flake8"
-      - "yamllint"
   pylint:
     runs-on: "ubuntu-20.04"
     steps:
       - name: "Check out repository code"
         uses: "actions/checkout@v2"
       - name: "Setup environment"
-        uses: "networktocode/gh-action-setup-poetry-environment@v1"
+        uses: "networktocode/gh-action-setup-poetry-environment@v2"
+        with:
+          python-version: "3.10"
       - name: "Copy credentials"
         run: "cp development/creds.example.env development/creds.env"
-      - name: "Build Container"
-        run: "poetry run invoke build"
       - name: "Linting: Pylint"
         run: "poetry run invoke pylint"
     needs:
-      - "build"
+      - "bandit"
+      - "pydocstyle"
+      - "flake8"
+      - "yamllint"
   unittest:
     strategy:
       fail-fast: true
       matrix:
         python-version: ["3.7", "3.8", "3.9"]
-        nautobot-version: ["1.0.3", "1.1.2"]
+        nautobot-version: ["1.1.6", "1.2.11", "1.3.0"]
+        # Also test Python 3.10 with Nautobot 1.3.x
+        include:
+          - python-version: "3.10"
+            nautobot-version: "1.3.0"
     runs-on: "ubuntu-20.04"
     env:
       INVOKE_NAUTOBOT_CHATOPS_PYTHON_VER: "${{ matrix.python-version }}"
@@ -113,9 +114,29 @@ jobs:
       - name: "Check out repository code"
         uses: "actions/checkout@v2"
       - name: "Setup environment"
-        uses: "networktocode/gh-action-setup-poetry-environment@v1"
+        uses: "networktocode/gh-action-setup-poetry-environment@v2"
+        with:
+          python-version: "${{ matrix.python-version }}"
       - name: "Copy credentials"
         run: "cp development/creds.example.env development/creds.env"
+      - name: "Remove Poetry Lock for Older Nautobot Tests"
+        run: "rm -f poetry.lock"
+        if: "matrix.nautobot-version != '1.3.0'"
+      - name: "Remove Black"
+        # We have dependency issues specifically with Nautobot 1.1 but we really don't care about black
+        # on Anything less than the latest
+        if: "matrix.nautobot-version != '1.3.0'"
+        run: "poetry remove black --dev"
+      - name: "Handle Markupsafe bug"
+        # Markupsafe 2.0.1 conflicts with the new jinja, but 2.1.x conflicts with Nautobot 1.1-2
+        # Markdown has issues with importlib in newer versions
+        if: "matrix.nautobot-version != '1.3.0'"
+        run: "poetry add markupsafe==2.0.1"
+      - name: "Set Nautobot install to the testing version"
+        run: "poetry add nautobot==${{ matrix.nautobot-version }}"
+      - name: "Regenerate Poetry Lock for Older Nautobot Tests"
+        run: "poetry update --lock"
+        if: "matrix.nautobot-version != '1.3.0'"
       - name: "Build Container"
         run: "poetry run invoke build"
       - name: "Run Tests"
