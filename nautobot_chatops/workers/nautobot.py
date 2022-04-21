@@ -113,20 +113,23 @@ def send_vlan_table(dispatcher, vlans, filter_type):
 
 def get_filtered_connections(device, interface_ct):
     """Query cables by Django filter and return the query."""
-    return Cable.objects.filter(
-        _termination_a_device=device,
-        status__slug="connected",
-        termination_a_type=interface_ct.pk,
-        termination_b_type=interface_ct.pk,
-    ).exclude(_termination_b_device=None).exclude(_termination_a_device=None) | Cable.objects.filter(
-        _termination_b_device=device,
-        status__slug="connected",
-        termination_a_type=interface_ct.pk,
-        termination_b_type=interface_ct.pk,
-    ).exclude(
-        _termination_b_device=None
-    ).exclude(
-        _termination_a_device=None
+    return (
+        Cable.objects.filter(
+            _termination_a_device=device,
+            status__slug="connected",
+            termination_a_type=interface_ct.pk,
+            termination_b_type=interface_ct.pk,
+        )
+        .exclude(_termination_b_device=None)
+        .exclude(_termination_a_device=None)
+        | Cable.objects.filter(
+            _termination_b_device=device,
+            status__slug="connected",
+            termination_a_type=interface_ct.pk,
+            termination_b_type=interface_ct.pk,
+        )
+        .exclude(_termination_b_device=None)
+        .exclude(_termination_a_device=None)
     )
 
 
