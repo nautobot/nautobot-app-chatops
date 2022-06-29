@@ -43,6 +43,11 @@
 3. Select the tile for the new Nautobot app. Click the blue “Add” button.
 4. Proceed to the Nautobot Server Preparation and Configuration section in the [Chat Setup](./chat_setup.md) document.
 
+## Handling Chatops Behind a Firewall
+
+A common security concern with ChatOps is how to protect your network/application from malicious activity. In order to do so proper firewall policy should be implemented. Through trials, researching, and testing in multiple environments, allowing inbound connections from `52.12.0.0/14` has proven to be successful. Although Microsoft doesn't publish all their ranges this range was found in a [Microsoft Blog Post](https://blog.botframework.com/2020/11/23/bots-secured-behind-a-firewall-teams/) and has yielded success in locked down environments.
+
+
 ## Additional Resources
 
 Reference the [Setting Up Nautobot Chatops With MSTeams Spring 2022](https://blog.networktocode.com/post/setting-up-nautobot-chatops-with-msteams-spring-2022/) blog post for more details and additional screenshots.
