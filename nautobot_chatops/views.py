@@ -115,6 +115,8 @@ class NautobotHomeView(PermissionRequiredMixin, View):
 class AccessGrantListView(PermissionRequiredMixin, ObjectListView):
     """View for listing all extant AccessGrants."""
 
+    # Set the action buttons to correspond to what there are views. If import/export are added, this should be updated
+    action_buttons = ("add",)
     permission_required = "nautobot_chatops.view_accessgrant"
     queryset = AccessGrant.objects.all().order_by("command")
     filterset = AccessGrantFilter
@@ -153,6 +155,8 @@ class AccessGrantBulkDeleteView(PermissionRequiredMixin, BulkDeleteView):
 class CommandTokenListView(PermissionRequiredMixin, ObjectListView):
     """View for listing all extant CommandTokens."""
 
+    # Set the action buttons to correspond to what there are views. If import/export are added, this should be updated
+    action_buttons = ("add",)
     permission_required = "nautobot_chatops.view_commandtoken"
     queryset = CommandToken.objects.all().order_by("platform")
     filterset = CommandTokenFilter
