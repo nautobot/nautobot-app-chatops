@@ -157,7 +157,7 @@ class MattermostInteractionView(View):
             "response_url": data.get("response_url"),
             "trigger_id": data.get("trigger_id"),
             "post_id": data.get("post_id"),
-            "request_scheme": request.get_host(),
+            "request_scheme": request.scheme,
             "request_host": request.get_host(),
             "integration_url": request.build_absolute_uri("/api/plugins/chatops/mattermost/interaction/"),
         }
