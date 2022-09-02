@@ -217,6 +217,7 @@ PLUGINS_CONFIG = {
         "enable_webex": True,
         "microsoft_app_id": os.environ.get("MICROSOFT_APP_ID"),
         "microsoft_app_password": os.environ.get("MICROSOFT_APP_PASSWORD"),
+        "slack_app_token": os.environ.get("SLACK_APP_TOKEN"),
         "slack_api_token": os.environ.get("SLACK_API_TOKEN"),
         "slack_signing_secret": os.environ.get("SLACK_SIGNING_SECRET"),
         "slack_slash_command_prefix": os.environ.get("SLACK_SLASH_COMMAND_PREFIX", "/"),

@@ -43,7 +43,7 @@ namespace.configure(
         "nautobot_chatops": {
             "nautobot_ver": "1.0.1",
             "project_name": "nautobot-chatops",
-            "python_ver": "3.6",
+            "python_ver": "3.7",
             "local": False,
             "compose_dir": os.path.join(os.path.dirname(__file__), "development"),
             "compose_files": ["docker-compose.requirements.yml", "docker-compose.base.yml", "docker-compose.dev.yml"],

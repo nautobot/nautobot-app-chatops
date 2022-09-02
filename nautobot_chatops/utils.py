@@ -4,6 +4,7 @@ from datetime import datetime, timezone
 import logging
 import sys
 
+from asgiref.sync import sync_to_async
 from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
 
@@ -102,6 +103,7 @@ def create_command_log(dispatcher, registry, command, subcommand, params=()):
     )
 
 
+@sync_to_async
 def check_and_enqueue_command(
     registry, command, subcommand, params, context, dispatcher_class
 ):  # pylint:disable=too-many-statements

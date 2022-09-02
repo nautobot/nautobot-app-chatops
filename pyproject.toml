@@ -17,13 +17,18 @@ include = [
 "nautobot" = "nautobot_chatops.workers.nautobot:nautobot"
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = "^3.6.1"
 nautobot = "*"
 nautobot-capacity-metrics = "*"
 texttable = "^1.6.2"
 PyJWT = "^2.1.0"
 webexteamssdk = "^1.3"
 slack-sdk = "^3.4.2"
+# For Socket Mode, websockets 9.1 doesn't support python 3.10, and websockets 10.0 doesn't support <3.7.
+# websockets = "^9.1"
+aiodns = "^1.0"
+aiohttp = "^3.7.3"
+asgiref = "^3.4.1"
 
 [tool.poetry.dev-dependencies]
 black = "*"
