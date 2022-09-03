@@ -40,4 +40,6 @@ As of Nautobot ChatOps Plugin v1.4.0, the PLUGIN_CONFIG settings for Webex has c
 
 Both settings will currently work, however support for `enable_webex_teams`, `webex_teams_token` and `webex_teams_signing_secret` will be removed in v2.0.0.
 
-[Chat Setup](./chat_setup.md)
+## General Chat Setup Instructions
+
+See [admin_install](admin_install) instructions here for general plugin setup instructions.

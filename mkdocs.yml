@@ -1,13 +1,11 @@
 ---
 dev_addr: "127.0.0.1:8001"
-#edit_uri: "edit/main/nautobot/docs" Not sture what this should be.
+edit_uri: "edit/develop/docs"
 site_dir: "nautobot_chatops/static/nautobot_chatops/docs"
-site_name: "Nautobot Chatops Documentation"
-site_url: "https://nautobot-plugin-chatops.readthedocs.io/en/stable/"
-# TODO: replace when switching domain
-# site_url: "https://docs.nautobot.com/projects/nautobot-plugin-chatops/en/stable/"
+site_name: "Nautobot ChatOps Documentation"
+site_url: "https://docs.nautobot.com/projects/chatops/en/stable/"
 repo_url: "https://github.com/nautobot/nautobot-plugin-chatops"
-copyright: "Copyright &copy; The Authors"
+copyright: "Copyright &copy; 2020 Network to Code"
 theme:
   name: "material"
   navigation_depth: 4
@@ -92,5 +90,42 @@ plugins:
             show_root_heading: true
             show_category_heading: true
 
+watch:
+  - "README.md"
+
 nav:
   - Overview: "index.md"
+  - User Guide:
+      - App Overview: "user/app_overview.md"
+      - Getting Started: "user/app_getting_started.md"
+      - Frequently Asked Questions: "user/app_faq.md"
+  - Administrator Guide:
+      - Install and Configure: "admin/admin_install.md"
+      - Upgrade: "admin/admin_upgrade.md"
+      - Uninstall: "admin/admin_uninstall.md"
+      - Release Notes:
+          - "admin/release_notes/index.md"
+          - v1.1: "admin/release_notes/version_1.1.md"
+          - v1.2: "admin/release_notes/version_1.2.md"
+          - v1.3: "admin/release_notes/version_1.3.md"
+          - v1.4: "admin/release_notes/version_1.4.md"
+          - v1.5: "admin/release_notes/version_1.5.md"
+          - v1.6: "admin/release_notes/version_1.6.md"
+          - v1.7: "admin/release_notes/version_1.7.md"
+          - v1.8: "admin/release_notes/version_1.8.md"
+  - Developer Guide:
+      - Extending the App: "dev/dev_extending.md"
+      - Contributing to the App: "dev/dev_contributing.md"
+      - Design Documentation: "dev/design.md"
+      - Development Environment: "dev/dev_environment.md"
+      - Code Reference:
+          - "dev/code_reference/index.md"
+          - Models: "dev/code_reference/models.md"
+          - API: "dev/code_reference/api.md"
+          - Dispatchers: 
+              - "dev/code_reference/base.md"
+              - "dev/code_reference/slack.md"
+              - "dev/code_reference/webex.md"
+              - "dev/code_reference/ms_teams.md"
+              - "dev/code_reference/mattermost.md"
+  - Nautobot Docs Home ↗︎: "https://docs.nautobot.com"

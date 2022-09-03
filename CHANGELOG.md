@@ -1,4 +1,5 @@
-# Changelog - Nautobot Plugin Chatops
+<!-- markdownlint-disable MD024 -->
+# Changelog - Nautobot Plugin ChatOps
 
 ## 1.8.0
 
@@ -53,7 +54,7 @@ Minor update to better handle the versioning. This fixes an issue where the vers
 
 ## v1.4.0
 
-Updates Nautobot Chatops name for Webex Teams to Webex. As part of Cisco's renaming of Webex Teams to just Webex, the underlying configuration was updated.
+Updates Nautobot ChatOps name for Webex Teams to Webex. As part of Cisco's renaming of Webex Teams to just Webex, the underlying configuration was updated.
 
 ### Fixes
 

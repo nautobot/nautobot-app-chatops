@@ -52,4 +52,7 @@ Here is an example that supports Mattermost.
 
 **Note:** The Comment field is optional and used to help the user when there are multiple tokens.
 
-[Chat Setup](./chat_setup.md)
+## General Chat Setup Instructions
+
+See [admin_install](admin_install) instructions here for general plugin setup instructions.
+

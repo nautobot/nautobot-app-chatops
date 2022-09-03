@@ -1,131 +1,77 @@
-# Installing Nautobot Chatops
+# Installing the App in Nautobot
 
-There are four main phases to enable Nautobot chatops:
+There are four main phases to enable Nautobot ChatOps:
+
 1. Configure the specific chat platform
 2. Install the plugin
-3. Configure `nautobot_config.py` to support chatops
+3. Configure `nautobot_config.py` to support nautobot-chatops
 4. Grant access to the chatbot in the Nautobot Web UI
 
-## Requirements
+## Prerequisites
 
-* Functioning Nautobot installation
-* Publicly accessible URL for Nautobot or ability/permission to use ngrok to get a publicly accessible URL for Nautobot
-* `sudo` access on the Nautobot server
-* Administrative access within the Nautobot Web UI
+- The plugin is compatible with Nautobot 1.2.0 and higher.
+- Databases supported: PostgreSQL, MySQL
+- Publicly accessible URL for Nautobot or ability/permission to use ngrok to get a publicly accessible URL for Nautobot
+- `sudo` access on the Nautobot server
+- Administrative access within the Nautobot Web UI
 
-> Note: Some chat platforms, such as Slack, require a signed certificate from a trusted provider on the Nautobot server in order 
-> to allow the application platform to communicate with the Nautobot server
+!!! note
+    Some chat platforms, such as Slack, require a signed certificate from a trusted provider on the Nautobot server in order
+    to allow the application platform to communicate with the Nautobot server
 
-## Platform-specific setup
+## Access Requirements
 
-### [Setup for Slack](./slack_setup.md)
+### [Setup for Slack](slack_setup.md)
 
-### [Setup for Microsoft Teams](./microsoft_teams_setup.md)
+### [Setup for Microsoft Teams](microsoft_teams_setup.md)
 
-### [Setup for WebEx](./webex_setup.md)
+### [Setup for WebEx](webex_setup.md)
 
-### [Setup for Mattermost](./mattermost_setup.md)
+### [Setup for Mattermost](mattermost_setup.md)
 
-## Plug-In Installation
+## Install Guide
 
-The plugin is available as a Python package in PyPI and can be installed with `pip3` after logging in with the `nautobot` user account.
+!!! note
+    Plugins can be installed manually or using Python's `pip`. See the [nautobot documentation](https://nautobot.readthedocs.io/en/latest/plugins/#install-the-package) for more details. The pip package name for this plugin is [`nautobot_chatops`](https://pypi.org/project/nautobot_chatops/).
+
+!!! warning
+    You should follow the [Nautobot Plugin Installation Instructions](https://nautobot.readthedocs.io/en/stable/plugins/#installing-plugins) for the full and up-to-date list of instructions.
+
+The plugin is available as a Python package via PyPI and can be installed with `pip`:
 
 ```shell
-sudo -iu nautobot
-pip3 install nautobot-chatops
+pip install nautobot-chatops
 ```
 
-> The plugin is compatible with Nautobot 1.0.0beta1 and higher
+To ensure Nautobot Plugin ChatOps is automatically re-installed during future upgrades, create a file named `local_requirements.txt` (if not already existing) in the Nautobot root directory (alongside `requirements.txt`) and list the `nautobot-chatops` package:
 
-Once installed, the plugin needs to be enabled in your `nautobot_config.py`
+```no-highlight
+# echo nautobot-chatops >> local_requirements.txt
+```
+
+Once installed, the plugin needs to be enabled in your Nautobot configuration. The following block of code below shows the additional configuration required to be added to your `nautobot_config.py` file:
+
+- Append `"nautobot_chatops"` to the `PLUGINS` list.
+- Append the `"nautobot_chatops"` dictionary to the `PLUGINS_CONFIG` dictionary and override any defaults.
 
 ```python
 # In your nautobot_config.py
 PLUGINS = ["nautobot_chatops"]
 
-PLUGINS_CONFIG = {
-    "nautobot_chatops": {
-         #     ADD YOUR SETTINGS HERE
-    }
-}
+# PLUGINS_CONFIG = {
+#   "nautobot_chatops": {
+#     ADD YOUR SETTINGS HERE
+#   }
+# }
 ```
 
-Nautobot supports `Slack`, `MS Teams`, `Mattermost`, and `Webex` as backends but by default all of them are disabled. 
-You need to explicitly enable the chat platform(s) that you want to use in the `PLUGINS_CONFIG` with one or more of `enable_slack`, `enable_ms_teams`, `enable_mattermost`, or `enable_webex`.
+## App Configuration
 
-The plugin behavior can be controlled with the following list of general settings:
+The plugin behavior can be controlled with the following list of settings:
 
 | Configuration Setting        | Description | Mandatory? | Default |
 | ---------------------------- | ----------- | ---------- | ------- |
 | `delete_input_on_submission` | After prompting the user for additional inputs, delete the input prompt from the chat history | No | `False` |
-
-TODO: clarify the above statement, starting from "The plugin behavior can be controlled . . ."
-
-### Run Migrations
-
-Once the setup is done, the Nautobot `post_upgrade` command needs to be run. As the _Nautobot user_ (which following Nautobot install docs is `nautobot`) execute:
-
-```bash
-nautobot-server post_upgrade
-```
-
-This command runs migrations and clears the cache as necessary.
-
-### Restart Nautobot
-
-As a root user, restart the Nautobot services.
-
-```bash
-systemctl restart nautobot nautobot-worker
-```
-
-If there is an additional service file for a separate RQ/Celery worker setup, also run:
-
-```bash
-systemctl restart nautobot-rq-worker
-```
-
-## Server Configuration
-
-As the `nautobot` user, you will now edit the `nautobot_config.py` file.  
-
-There are also some platform-specific requirements to configure.  
-Some values from your chat platform-specific configuration in the prior section are configured in `nautobot_config.py`.
-
-Below is a sample configuration snippet in `nautobot_config.py` that enables Slack. This is meant to serve as a general example of
-how to configure and enable the chatops plugin.
-
-Note a few details about this example:
-* You must add `"nautobot_chatops"` to the list defined by `PLUGINS`
-* The `slack_api_token` and `slack_signing_secret` values were taken from the values presented in the Slack platform-specific setup.
-* Alternately, the `slack_api_token` and `slack_signing_secret` values could also be stored in an `.env` file, then referred to by those defined environment variables in `PLUGINS_CONFIG`.
-* Some commands can use a user's session cache to keep state for some data between commands (e.g. use the same target device between commands). By default, it keeps data for 86400 seconds, but with `session_cache_timeout` this value can be adjusted.
-
-```python
-# Enable installed plugins. Add the name of each plugin to the list.
-PLUGINS = ["nautobot_chatops"]
-
-PLUGINS_CONFIG = {
-    'nautobot_chatops': {
-        'enable_slack': True,
-        'slack_api_token': 'xoxb-2078939598626-2078997105202-3QupQHVC3lEhyGtKPpK62fGB',
-        'slack_signing_secret': '1be5e964569d52a2e74f13fcefb1213f',
-        'session_cache_timeout': 3600,
-    }
-}
-```
-
-As a sudo-enabled user, restart the `nautobot` and `nautobot-worker` process after updating `nautobot_config.py`.
-
-```
-sudo systemctl restart nautobot.service nautobot-worker.service
-```
-
-Finally, validate that the `nautobot` and `nautobot-worker` processes have restarted successfully:
-
-```
-sudo systemctl status nautobot.service nautobot-worker.service
-```
 
 ## Grant Access to the Chatbot
 
