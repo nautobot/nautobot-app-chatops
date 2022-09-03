@@ -31,7 +31,7 @@ Markdown = "!=3.3.5"
 
 [tool.poetry.dev-dependencies]
 black = "*"
-yamllint = "*"
+yamllint = "1.27.1"
 bandit = "*"
 pylint = "*"
 pylint-django = "*"

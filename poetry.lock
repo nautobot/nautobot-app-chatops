@@ -1911,11 +1911,11 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 
 [[package]]
 name = "yamllint"
-version = "1.26.3"
+version = "1.27.1"
 description = "A linter for YAML files."
 category = "dev"
 optional = false
-python-versions = ">=3.5"
+python-versions = ">=3.6"
 
 [package.dependencies]
 pathspec = ">=0.5.3"
@@ -1936,7 +1936,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "73ce85c8aac6ead2cb870537c14f2a773258b680e85de68fe47f2b5f593450c8"
+content-hash = "4a7d64cee585efd455f2bbd37e3f7418fdc7db235c63c8ce2170bc6f1d76be3d"
 
 [metadata.files]
 amqp = [
@@ -2847,9 +2847,7 @@ webexteamssdk = [
     {file = "webexteamssdk-1.6.tar.gz", hash = "sha256:980f268d89187d1a157dfbadcb626fce849080a31550e549cfe838f0203b3a3d"},
 ]
 wrapt = []
-yamllint = [
-    {file = "yamllint-1.26.3.tar.gz", hash = "sha256:3934dcde484374596d6b52d8db412929a169f6d9e52e20f9ade5bf3523d9b96e"},
-]
+yamllint = []
 zipp = [
     {file = "zipp-3.8.0-py3-none-any.whl", hash = "sha256:c4f6e5bbf48e74f7a38e7cc5b0480ff42b0ae5178957d564d18932525d5cf099"},
     {file = "zipp-3.8.0.tar.gz", hash = "sha256:56bf8aadb83c24db6c4b577e13de374ccfb67da2078beba1d037c17980bf43ad"},
