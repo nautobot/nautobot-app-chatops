@@ -5,6 +5,7 @@ import logging
 import os
 import time
 
+from typing import Optional
 from django.conf import settings
 from slack_sdk import WebClient
 from slack_sdk.webhook.client import WebhookClient
@@ -47,7 +48,7 @@ class SlackDispatcher(Dispatcher):
     # pylint: disable=too-many-branches
     @classmethod
     @BACKEND_ACTION_LOOKUP.time()
-    def platform_lookup(cls, item_type, item_name):
+    def platform_lookup(cls, item_type, item_name) -> Optional[str]:
         """Call out to the chat platform to look up, e.g., a specific user ID by name.
 
         Args:

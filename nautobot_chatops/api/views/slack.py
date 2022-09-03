@@ -45,7 +45,7 @@ def verify_signature(request):
     https://api.slack.com/authentication/verifying-requests-from-slack
 
     Returns:
-      tuple: (valid, reason)
+      valid (tuple): (valid, reason)
     """
     expected_signature = request.headers.get("X-Slack-Signature")
     if not expected_signature:
@@ -174,7 +174,7 @@ class SlackInteractionView(View):
             if action_id == "action" and selected_value == "cancel":
                 # Nothing more to do
                 return HttpResponse()
-        elif "view" in payload and payload["view"]:
+        elif "view" in payload and payload["view"]:  # pylint: disable=too-many-nested-blocks
             # View submission triggered from a modal dialog
             logger.info("Submission triggered from a modal dialog")
             logger.info(json.dumps(payload, indent=2))

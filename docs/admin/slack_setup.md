@@ -103,7 +103,7 @@ PLUGINS_CONFIG = {
 
 ## Post App-Creation Steps
 
-Proceed to the [Nautobot Server Preparation and Configuration](./chat_setup.md#Plug-In-Installation) section.
+Proceed to the [Install Guide](admin_install.md#Install-Guide) section.
 
 > **Note**: In the Slack app, you will need to invite the chatbot to each channel that it will belong to with `@<app name>`.
 > For example, when an app named `Nautobot ChatOps` is installed to the workspace:
@@ -160,4 +160,4 @@ PLUGINS_CONFIG = {
 
 ## General Chat Setup Instructions
 
-See [admin_install](admin_install) instructions here for general plugin setup instructions.
+See [admin_install](admin_install.md) instructions here for general plugin setup instructions.

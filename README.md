@@ -22,7 +22,7 @@ Full web-based HTML documentation for this app can be found over on the [Nautobo
 
 ## Try it Out
 
-Interested to see Nautobot ChatOps in action?  It's currently setup on the [Demo Instance](https://demo.nautobot.com/) and integrated into [NTC Slack](slack.networktocode.com).  You can sign up for that Slack workspace and join the `#nautobot-chat` channel to understand what this bot can do and try it for yourself.  You can try these exact chat commands and many more:
+Interested to see Nautobot ChatOps in action?  It's currently setup on the [Demo Instance](https://demo.nautobot.com/) and integrated into [NTC Slack](https://slack.networktocode.com).  You can sign up for that Slack workspace and join the `#nautobot-chat` channel to understand what this bot can do and try it for yourself.  You can try these exact chat commands and many more:
 
 ### Command: `/nautobot`
 
@@ -38,5 +38,5 @@ Interested to see Nautobot ChatOps in action?  It's currently setup on the [Demo
 
 ## Questions
 
-For any questions or comments, please check the [FAQ](docs/FAQ.md) first and feel free to swing by the [Network to Code slack channel](https://networktocode.slack.com/) (channel #nautobot).
-Sign up [here](http://slack.networktocode.com/)
+For any questions or comments, please check the [FAQ](https://docs.nautobot.com/projects/chatops/en/latest/user/app_faq/) first and feel free to swing by the [Network to Code slack channel](https://networktocode.slack.com/) (channel #nautobot).
+Sign up [here](https://slack.networktocode.com/)

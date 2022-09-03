@@ -4,7 +4,7 @@
 
 ### Additions
 
-[#128](https://github.com/nautobot/nautobot-plugin-chatops/pull/128)
+[#128](https://github.com/nautobot/nautobot-plugin-chatops/pull/128) Adds QOL change for focusing of fields
 
 ### Fixes
 

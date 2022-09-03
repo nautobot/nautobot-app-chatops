@@ -1,6 +1,6 @@
 """Generic base class modeling the API for sending messages to a generic chat platform."""
 import logging
-from typing import Dict
+from typing import Dict, Optional
 from django.templatetags.static import static
 from django.core.cache import cache
 from django.conf import settings
@@ -119,7 +119,7 @@ class Dispatcher:
         return subclasses
 
     @classmethod
-    def platform_lookup(cls, item_type, item_name):
+    def platform_lookup(cls, item_type, item_name) -> Optional[str]:
         """Call out to the chat platform to look up, e.g., a specific user ID by name.
 
         Args:
