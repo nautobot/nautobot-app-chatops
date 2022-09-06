@@ -1,9 +1,17 @@
 """Test cases for Nautobot Chatops API."""
+try:
+    from importlib import metadata
+except ImportError:
+    # Python version < 3.8
+    import importlib_metadata as metadata
 
 from django.urls import reverse
 
 from nautobot.utilities.testing import APITestCase, APIViewTestCases
 from nautobot_chatops.models import AccessGrant, CommandToken
+
+
+nautobot_version = metadata.version("nautobot")
 
 
 class AppTest(APITestCase):  # pylint: disable=too-many-ancestors
@@ -21,7 +29,10 @@ class CommandTokenTest(APIViewTestCases.APIViewTestCase):  # pylint: disable=too
     """Tests for the CommandToken Endpoint."""
 
     model = CommandToken
-    brief_fields = ["comment", "created", "display", "id", "last_updated", "platform", "token", "url"]
+    brief_fields = ["comment", "display", "id", "platform", "token", "url"]
+    # Nautobot 1.4.0 added created/last_updated to builtin serializers.
+    if nautobot_version >= "1.4.0":
+        brief_fields = ["comment", "created", "display", "id", "last_updated", "platform", "token", "url"]
     create_data = [
         {"comment": "Test 4", "platform": "mattermost", "token": "token4"},
         {"comment": "Test 5", "platform": "mattermost", "token": "token5"},
@@ -42,18 +53,21 @@ class AccessGrantTest(APIViewTestCases.APIViewTestCase):  # pylint: disable=too-
     """Tests for the AccessGrant Endpoint."""
 
     model = AccessGrant
-    brief_fields = [
-        "command",
-        "created",
-        "display",
-        "grant_type",
-        "id",
-        "last_updated",
-        "name",
-        "subcommand",
-        "url",
-        "value",
-    ]
+    brief_fields = ["command", "display", "grant_type", "id", "name", "subcommand", "url", "value"]
+    # Nautobot 1.4.0 added created/last_updated to builtin serializers.
+    if nautobot_version >= "1.4.0":
+        brief_fields = [
+            "command",
+            "created",
+            "display",
+            "grant_type",
+            "id",
+            "last_updated",
+            "name",
+            "subcommand",
+            "url",
+            "value",
+        ]
     create_data = [
         {"command": "*", "subcommand": "*", "grant_type": "organization", "name": "test4", "value": "*"},
         {"command": "*", "subcommand": "*", "grant_type": "channel", "name": "test5", "value": "*"},
