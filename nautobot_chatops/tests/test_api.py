@@ -21,7 +21,7 @@ class CommandTokenTest(APIViewTestCases.APIViewTestCase):  # pylint: disable=too
     """Tests for the CommandToken Endpoint."""
 
     model = CommandToken
-    brief_fields = ["comment", "display", "id", "platform", "token"]
+    brief_fields = ["comment", "created", "display", "id", "last_updated", "platform", "token", "url"]
     create_data = [
         {"comment": "Test 4", "platform": "mattermost", "token": "token4"},
         {"comment": "Test 5", "platform": "mattermost", "token": "token5"},
@@ -42,7 +42,18 @@ class AccessGrantTest(APIViewTestCases.APIViewTestCase):  # pylint: disable=too-
     """Tests for the AccessGrant Endpoint."""
 
     model = AccessGrant
-    brief_fields = ["command", "display", "grant_type", "id", "name", "subcommand", "value"]
+    brief_fields = [
+        "command",
+        "created",
+        "display",
+        "grant_type",
+        "id",
+        "last_updated",
+        "name",
+        "subcommand",
+        "url",
+        "value",
+    ]
     create_data = [
         {"command": "*", "subcommand": "*", "grant_type": "organization", "name": "test4", "value": "*"},
         {"command": "*", "subcommand": "*", "grant_type": "channel", "name": "test5", "value": "*"},

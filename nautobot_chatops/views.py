@@ -21,7 +21,7 @@ from nautobot.utilities.utils import csv_format
 
 from nautobot_chatops.workers import get_commands_registry
 from nautobot_chatops.models import CommandLog, AccessGrant, CommandToken
-from nautobot_chatops.filters import CommandLogFilter, AccessGrantFilter, CommandTokenFilter
+from nautobot_chatops.filters import CommandLogFilterSet, AccessGrantFilterSet, CommandTokenFilterSet
 from nautobot_chatops.forms import AccessGrantFilterForm, AccessGrantForm, CommandTokenFilterForm, CommandTokenForm
 from nautobot_chatops.tables import CommandLogTable, AccessGrantTable, CommandTokenTable
 
@@ -79,7 +79,7 @@ class NautobotHomeView(PermissionRequiredMixin, View):
                 ).count()
 
         # Support sorting, filtering, customization, and pagination of the table
-        queryset = CommandLogFilter(request.GET, logs).qs
+        queryset = CommandLogFilterSet(request.GET, logs).qs
         table = self.table(queryset, user=request.user)
         RequestConfig(
             request, paginate={"paginator_class": EnhancedPaginator, "per_page": get_paginate_count(request)}
@@ -98,7 +98,7 @@ class NautobotHomeView(PermissionRequiredMixin, View):
         Copied from Nautobot utilities.views.ObjectListView.
         """
         logs = CommandLog.objects.all().order_by("-start_time")
-        table = self.table(CommandLogFilter(request.GET, logs).qs)
+        table = self.table(CommandLogFilterSet(request.GET, logs).qs)
         form = TableConfigForm(table=table, data=request.POST)
         preference_name = f"tables.{self.table.__name__}.columns"
 
@@ -119,7 +119,7 @@ class AccessGrantListView(PermissionRequiredMixin, ObjectListView):
     action_buttons = ("add",)
     permission_required = "nautobot_chatops.view_accessgrant"
     queryset = AccessGrant.objects.all().order_by("command")
-    filterset = AccessGrantFilter
+    filterset = AccessGrantFilterSet
     filterset_form = AccessGrantFilterForm
     table = AccessGrantTable
     template_name = "nautobot/access_grant_list.html"
@@ -159,7 +159,7 @@ class CommandTokenListView(PermissionRequiredMixin, ObjectListView):
     action_buttons = ("add",)
     permission_required = "nautobot_chatops.view_commandtoken"
     queryset = CommandToken.objects.all().order_by("platform")
-    filterset = CommandTokenFilter
+    filterset = CommandTokenFilterSet
     filterset_form = CommandTokenFilterForm
     table = CommandTokenTable
     template_name = "nautobot/command_token_list.html"
