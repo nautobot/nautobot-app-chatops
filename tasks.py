@@ -339,6 +339,13 @@ def check_migrations(context):
     run_command(context, command)
 
 
+@task()
+def build_and_check_docs(context):
+    """Build docs for use within Nautobot."""
+    command = "mkdocs build --no-directory-urls --strict"
+    run_command(context, command)
+
+
 @task(
     help={
         "keepdb": "save and re-use test database between test runs for faster re-testing.",
@@ -392,6 +399,8 @@ def tests(context, failfast=False):
     pylint(context)
     print("Running yamllint...")
     yamllint(context)
+    print("Building and checking docs...")
+    build_and_check_docs(context)
     print("Running unit tests...")
     unittest(context, failfast=failfast)
     print("All tests have passed!")

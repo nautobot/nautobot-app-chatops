@@ -101,11 +101,11 @@ jobs:
       fail-fast: true
       matrix:
         python-version: ["3.7", "3.8", "3.9"]
-        nautobot-version: ["1.1.6", "1.2.11", "1.3.0"]
+        nautobot-version: ["1.3.0", "1.4.2"]
         # Also test Python 3.10 with Nautobot 1.3.x
         include:
           - python-version: "3.10"
-            nautobot-version: "1.3.0"
+            nautobot-version: "1.4.2"
     runs-on: "ubuntu-20.04"
     env:
       INVOKE_NAUTOBOT_CHATOPS_PYTHON_VER: "${{ matrix.python-version }}"
@@ -121,22 +121,9 @@ jobs:
         run: "cp development/creds.example.env development/creds.env"
       - name: "Remove Poetry Lock for Older Nautobot Tests"
         run: "rm -f poetry.lock"
-        if: "matrix.nautobot-version != '1.3.0'"
-      - name: "Remove Black"
-        # We have dependency issues specifically with Nautobot 1.1 but we really don't care about black
-        # on Anything less than the latest
-        if: "matrix.nautobot-version != '1.3.0'"
-        run: "poetry remove black --dev"
-      - name: "Handle Markupsafe bug"
-        # Markupsafe 2.0.1 conflicts with the new jinja, but 2.1.x conflicts with Nautobot 1.1-2
-        # Markdown has issues with importlib in newer versions
-        if: "matrix.nautobot-version != '1.3.0'"
-        run: "poetry add markupsafe==2.0.1"
+        if: "matrix.nautobot-version != '1.4.2'"
       - name: "Set Nautobot install to the testing version"
         run: "poetry add nautobot==${{ matrix.nautobot-version }}"
-      - name: "Regenerate Poetry Lock for Older Nautobot Tests"
-        run: "poetry update --lock"
-        if: "matrix.nautobot-version != '1.3.0'"
       - name: "Build Container"
         run: "poetry run invoke build"
       - name: "Run Tests"
@@ -160,6 +147,10 @@ jobs:
         run: "echo RELEASE_VERSION=${GITHUB_REF:10} >> $GITHUB_ENV"
       - name: "Run Poetry Version"
         run: "poetry version $RELEASE_VERSION"
+      - name: "Install Dependencies (needed for mkdocs)"
+        run: "poetry install --no-root"
+      - name: "Build Documentation"
+        run: "poetry run mkdocs build --no-directory-urls --strict"
       - name: "Run Poetry Build"
         run: "poetry build"
       - name: "Upload binaries to release"
@@ -189,6 +180,10 @@ jobs:
         run: "echo RELEASE_VERSION=${GITHUB_REF:10} >> $GITHUB_ENV"
       - name: "Run Poetry Version"
         run: "poetry version $RELEASE_VERSION"
+      - name: "Install Dependencies (needed for mkdocs)"
+        run: "poetry install --no-root"
+      - name: "Build Documentation"
+        run: "poetry run mkdocs build --no-directory-urls --strict"
       - name: "Run Poetry Build"
         run: "poetry build"
       - name: "Push to PyPI"

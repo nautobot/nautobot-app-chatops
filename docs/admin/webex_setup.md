@@ -28,7 +28,7 @@
    - Change the `resource` to "attachmentActions" and run the API call again to create a second webhook.
 4. Configure the `webex_signing_secret` in your `.creds.env` to match the secret string that you selected in
    step 3 above.
-5. Proceed to the [Nautobot Server Preparation and Configuration](./chat_setup.md#Plug-In-Installation) section.
+5. Proceed to the [Install Guide](admin_install.md#Install-Guide) section.
 
 ## Deprecation Warning
 
@@ -40,4 +40,6 @@ As of Nautobot ChatOps Plugin v1.4.0, the PLUGIN_CONFIG settings for Webex has c
 
 Both settings will currently work, however support for `enable_webex_teams`, `webex_teams_token` and `webex_teams_signing_secret` will be removed in v2.0.0.
 
-[Chat Setup](./chat_setup.md)
+## General Chat Setup Instructions
+
+See [admin_install](admin_install.md) instructions here for general plugin setup instructions.

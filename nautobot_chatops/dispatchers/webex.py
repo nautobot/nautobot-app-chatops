@@ -2,6 +2,7 @@
 import logging
 import os
 
+from typing import Optional
 from webexteamssdk import WebexTeamsAPI
 from webexteamssdk.exceptions import ApiError
 from django.conf import settings
@@ -52,7 +53,7 @@ class WebExDispatcher(AdaptiveCardsDispatcher):
 
     @classmethod
     @BACKEND_ACTION_LOOKUP.time()
-    def platform_lookup(cls, item_type, item_name):
+    def platform_lookup(cls, item_type, item_name) -> Optional[str]:
         """Call out to the chat platform to look up, e.g., a specific user ID by name.
 
         Args:

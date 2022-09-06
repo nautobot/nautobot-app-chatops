@@ -28,7 +28,7 @@ def verify_signature(request):
     https://developers.mattermost.com/integrate/slash-commands/
 
     Returns:
-      tuple: (valid, reason)
+      valid (tuple): (valid, reason)
     """
     if request.headers.get("Authorization"):
         expected_signature = request.headers.get("Authorization")
@@ -125,10 +125,7 @@ class MattermostInteractionView(View):
     @staticmethod
     def get_selected_value(cmd):
         """Returns formatted selected value if one exists."""
-        if cmd:
-            return f" '{cmd}'"
-        else:
-            return " ''"
+        return f" '{cmd}'" if cmd else " ''"
 
     # pylint: disable=too-many-locals,too-many-return-statements,too-many-branches,too-many-statements
     def post(self, request, *args, **kwargs):

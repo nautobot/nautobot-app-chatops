@@ -1,6 +1,7 @@
 """Dispatcher implementation for sending content to Microsoft Teams."""
 import os
 import logging
+from typing import Optional
 import requests
 
 from django.conf import settings
@@ -31,7 +32,7 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
 
     @classmethod
     @BACKEND_ACTION_LOOKUP.time()
-    def platform_lookup(cls, item_type, item_name):
+    def platform_lookup(cls, item_type, item_name) -> Optional[str]:
         """Call out to the chat platform to look up, e.g., a specific user ID by name.
 
         Args:

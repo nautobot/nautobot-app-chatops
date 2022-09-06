@@ -25,7 +25,7 @@
    - Copy the displayed url matching the Server you want to add the chatbot to.
      - Make sure to include the `http://` or `https://`.
      - If shown, make sure to include the port. Ex. `https://example.com:8065`
-6. Proceed to the [Nautobot Server Preparation and Configuration](./chat_setup.md#Plug-In-Installation) section.
+6. Proceed to the [Install Guide](admin_install.md#Install-Guide) section.
 
 **Note:** For every Slash Command created for Mattermost, a separate token will be generated.
 
@@ -52,4 +52,7 @@ Here is an example that supports Mattermost.
 
 **Note:** The Comment field is optional and used to help the user when there are multiple tokens.
 
-[Chat Setup](./chat_setup.md)
+## General Chat Setup Instructions
+
+See [admin_install](admin_install.md) instructions here for general plugin setup instructions.
+

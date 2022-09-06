@@ -41,13 +41,16 @@
 1. In the Microsoft Teams client, select “Apps” from the sidebar to the left.
 2. Select “Built for your org.”
 3. Select the tile for the new Nautobot app. Click the blue “Add” button.
-4. Proceed to the Nautobot Server Preparation and Configuration section in the [Chat Setup](./chat_setup.md) document.
+4. Proceed to the [Install Guide](admin_install.md#Install-Guide) section.
 
-## Handling Chatops Behind a Firewall
+## Handling ChatOps Behind a Firewall
 
 A common security concern with ChatOps is how to protect your network/application from malicious activity. In order to do so proper firewall policy should be implemented. Through trials, researching, and testing in multiple environments, allowing inbound connections from `52.12.0.0/14` has proven to be successful. Although Microsoft doesn't publish all their ranges this range was found in a [Microsoft Blog Post](https://blog.botframework.com/2020/11/23/bots-secured-behind-a-firewall-teams/) and has yielded success in locked down environments.
 
-
 ## Additional Resources
 
-Reference the [Setting Up Nautobot Chatops With MSTeams Spring 2022](https://blog.networktocode.com/post/setting-up-nautobot-chatops-with-msteams-spring-2022/) blog post for more details and additional screenshots.
+Reference the [Setting Up Nautobot ChatOps With MSTeams Spring 2022](https://blog.networktocode.com/post/setting-up-nautobot-chatops-with-msteams-spring-2022/) blog post for more details and additional screenshots.
+
+## General Chat Setup Instructions
+
+See [admin_install](admin_install.md) instructions here for general plugin setup instructions.

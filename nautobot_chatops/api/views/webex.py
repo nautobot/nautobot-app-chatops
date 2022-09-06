@@ -63,10 +63,10 @@ def generate_signature(request):
     else:
         try:
             signing_secret = settings.PLUGINS_CONFIG["nautobot_chatops"]["webex_signing_secret"].encode("utf-8")
-        except KeyError as err:
+        except KeyError as error:
             error_msg = "The 'webex_token' setting must be configured"
             logger.error(error_msg)
-            raise KeyError(error_msg) from err
+            raise KeyError(error_msg) from error
 
     return hmac.new(signing_secret, request.body, digestmod=hashlib.sha1).hexdigest()
 
@@ -77,7 +77,7 @@ def verify_signature(request):
     https://developer.webex.com/docs/api/guides/webhooks#handling-requests-from-webex-teams
 
     Returns:
-      tuple: (valid, reason)
+      valid (tuple): (valid, reason)
     """
     expected_signature = request.headers.get("X-Spark-Signature")
     if not expected_signature:
