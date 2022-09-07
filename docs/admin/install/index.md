@@ -87,7 +87,7 @@ single subcommand of a single command) of access can be granted through Nautobot
 
 The access grants are maintained in Nautobot's database for persistence, and are change-logged like other Nautobot records.
 
-![access grants](../images/nb_plugins_grants.png)
+![access grants](../../images/nb_plugins_grants.png)
 
 Note that access grants are based on the chat platform's internal ID values for users, channels, and organizations;
 although you can and should attach a user-friendly name to each access grant for reference, it is the ID value that
