@@ -100,7 +100,7 @@ nav:
       - Getting Started: "user/app_getting_started.md"
       - Frequently Asked Questions: "user/app_faq.md"
   - Administrator Guide:
-      - Install and Configure: 
+      - Install and Configure:
           - "admin/install/index.md"
           - "admin/install/slack_setup.md"
           - "admin/install/mattermost_setup.md"
