@@ -1,8 +1,15 @@
-# nautobot-chatops
+# Nautobot ChatOps
 
-![ChatOps Logo](https://raw.githubusercontent.com/nautobot/nautobot-plugin-chatops/develop/docs/assets/icon-ChatOps.png)
-
-A multi-platform ChatOps bot plugin for [Nautobot](https://github.com/nautobot/nautobot).
+<p align="center">
+  <img src="https://raw.githubusercontent.com/nautobot/nautobot-plugin-chatops/develop/docs/assets/icon-ChatOps.png" alt="ChatOps Logo" class="logo" height="200px">
+  <br>
+  <a href="https://github.com/nautobot/nautobot-plugin-chatops/actions"><img src="https://github.com/nautobot/nautobot-plugin-chatops/actions/workflows/ci.yml/badge.svg?branch=main"></a>
+  <a href="https://docs.nautobot.com/projects/chatops/en/latest"><img src="https://readthedocs.org/projects/nautobot-plugin-chatops/badge/"></a>
+  <a href="https://pypi.org/project/nautobot-chatops/"><img src="https://img.shields.io/pypi/v/nautobot-chatops"></a>
+  <a href="https://pypi.org/project/nautobot-chatops/"><img src="https://img.shields.io/pypi/dm/nautobot-chatops"></a>
+  <br>
+  A multi-platform ChatOps bot App for <a href="https://github.com/nautobot/nautobot">Nautobot</a>.
+</p>
 
 - Support for multiple chat platforms (currently Slack, Microsoft Teams, Mattermost, and WebEx)
 - Write a command once and run it on every supported platform, including rich content formatting
@@ -15,7 +22,7 @@ A multi-platform ChatOps bot plugin for [Nautobot](https://github.com/nautobot/n
 Full web-based HTML documentation for this app can be found over on the [Nautobot Docs](https://docs.nautobot.com/projects/chatops/en/latest/) website:
 
 - [User Guide](https://docs.nautobot.com/projects/chatops/en/latest/user/app_overview/) - Overview, Using the App, Getting Started
-- [Administrator Guide](https://docs.nautobot.com/projects/chatops/en/latest/admin/admin_install/) - How to Install, Configure, Upgrade, or Uninstall the App.
+- [Administrator Guide](https://docs.nautobot.com/projects/chatops/en/latest/admin/install/ - How to Install, Configure, Upgrade, or Uninstall the App.
 - [Developer Guide](https://docs.nautobot.com/projects/chatops/en/latest/dev/dev_contributing/) - Extending the App, Code Reference, Contribution Guide.
 - [Release Notes / Changelog](https://docs.nautobot.com/projects/chatops/en/latest/admin/release_notes/)
 - [Frequently Asked Questions](https://docs.nautobot.com/projects/chatops/en/latest/user/app_faq/)

@@ -41,7 +41,7 @@
 1. In the Microsoft Teams client, select “Apps” from the sidebar to the left.
 2. Select “Built for your org.”
 3. Select the tile for the new Nautobot app. Click the blue “Add” button.
-4. Proceed to the [Install Guide](admin_install.md#Install-Guide) section.
+4. Proceed to the [Install Guide](index.md#Install-Guide) section.
 
 ## Handling ChatOps Behind a Firewall
 
@@ -53,4 +53,4 @@ Reference the [Setting Up Nautobot ChatOps With MSTeams Spring 2022](https://blo
 
 ## General Chat Setup Instructions
 
-See [admin_install](admin_install.md) instructions here for general plugin setup instructions.
+See [admin_install](index.md) instructions here for general plugin setup instructions.
