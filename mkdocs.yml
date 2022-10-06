@@ -107,6 +107,7 @@ nav:
           - "admin/install/microsoft_teams_setup.md"
       - Upgrade: "admin/admin_upgrade.md"
       - Uninstall: "admin/admin_uninstall.md"
+      - Compatibility Matrix: "admin/compatibility_matrix.md"
       - Release Notes:
           - "admin/release_notes/index.md"
           - v1.9: "admin/release_notes/version_1.9.md"
