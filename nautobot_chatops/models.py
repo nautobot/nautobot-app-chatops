@@ -9,6 +9,21 @@ from nautobot.core.models import BaseModel
 
 from .choices import AccessGrantTypeChoices, CommandStatusChoices, CommandTokenPlatformChoices
 
+from .constants import (
+    COMMAND_LOG_USER_NAME_HELP_TEXT,
+    COMMAND_LOG_USER_ID_HELP_TEXT,
+    COMMAND_LOG_PLATFORM_HELP_TEXT,
+    COMMAND_LOG_COMMAND_TEXT,
+    COMMAND_LOG_SUBCOMMAND_HELP_TEXT,
+    COMMAND_LOG_PARAMS_HELP_TEXT,
+    ACCESS_GRANT_COMMAND_HELP_TEXT,
+    ACCESS_GRANT_SUBCOMMAND_HELP_TEXT,
+    ACCESS_GRANT_NAME_HELP_TEXT,
+    ACCESS_GRANT_VALUE_HELP_TEXT,
+    COMMAND_TOKEN_COMMENT_HELP_TEXT,
+    COMMAND_TOKEN_TOKEN_HELP_TEXT,
+)
+
 
 class CommandLog(BaseModel):
     """Record of a single fully-executed Nautobot command.
@@ -20,15 +35,15 @@ class CommandLog(BaseModel):
     start_time = models.DateTimeField(null=True)
     runtime = models.DurationField(null=True)
 
-    user_name = models.CharField(max_length=255, help_text="Invoking username")
-    user_id = models.CharField(max_length=255, help_text="Invoking user ID")
-    platform = models.CharField(max_length=64, help_text="Chat platform")
+    user_name = models.CharField(max_length=255, help_text=COMMAND_LOG_USER_NAME_HELP_TEXT)
+    user_id = models.CharField(max_length=255, help_text=COMMAND_LOG_USER_ID_HELP_TEXT)
+    platform = models.CharField(max_length=64, help_text=COMMAND_LOG_PLATFORM_HELP_TEXT)
     platform_color = ColorField()
 
-    command = models.CharField(max_length=64, help_text="Command issued")
-    subcommand = models.CharField(max_length=64, help_text="Sub-command issued")
+    command = models.CharField(max_length=64, help_text=COMMAND_LOG_COMMAND_TEXT)
+    subcommand = models.CharField(max_length=64, help_text=COMMAND_LOG_SUBCOMMAND_HELP_TEXT)
 
-    params = models.JSONField(default=list, help_text="user_input_parameters")
+    params = models.JSONField(default=list, help_text=COMMAND_LOG_PARAMS_HELP_TEXT)
 
     status = models.CharField(
         max_length=32,
@@ -36,6 +51,19 @@ class CommandLog(BaseModel):
         default=CommandStatusChoices.STATUS_SUCCEEDED,
     )
     details = models.CharField(max_length=255, default="")
+
+    csv_headers = ["Start Time", "Username", "Command", "Subcommand", "Params", "Status"]
+
+    def to_csv(self):
+        """Indicates model fields to return as csv."""
+        return (
+            self.start_time,
+            self.user_name,
+            self.command,
+            self.subcommand,
+            self.params if self.params else "",
+            self.status,
+        )
 
     @property
     def status_label_class(self):
@@ -63,21 +91,18 @@ class CommandLog(BaseModel):
 class AccessGrant(BaseModel, ChangeLoggedModel):
     """Record of a single form of access granted to the chatbot."""
 
-    command = models.CharField(max_length=64, help_text="Enter <tt>*</tt> to grant access to all commands")
+    command = models.CharField(max_length=64, help_text=ACCESS_GRANT_COMMAND_HELP_TEXT)
     subcommand = models.CharField(
         max_length=64,
-        help_text="Enter <tt>*</tt> to grant access to all subcommands of the given command",
+        help_text=ACCESS_GRANT_SUBCOMMAND_HELP_TEXT,
     )
 
     grant_type = models.CharField(max_length=32, choices=AccessGrantTypeChoices)
 
-    name = models.CharField(max_length=255, help_text="Organization name, channel name, or user name")
+    name = models.CharField(max_length=255, help_text=ACCESS_GRANT_NAME_HELP_TEXT)
     value = models.CharField(
         max_length=255,
-        help_text=(
-            "Corresponding ID value to grant access to.<br>"
-            "Enter <tt>*</tt> to grant access to all organizations, channels, or users"
-        ),
+        help_text=ACCESS_GRANT_VALUE_HELP_TEXT,
     )
 
     def clean(self):
@@ -99,9 +124,9 @@ class AccessGrant(BaseModel, ChangeLoggedModel):
 class CommandToken(BaseModel, ChangeLoggedModel):
     """Record of a Token granted for the chat platform and chat command."""
 
-    comment = models.CharField(max_length=255, help_text="Optional: Enter description of token", blank=True, default="")
+    comment = models.CharField(max_length=255, help_text=COMMAND_TOKEN_COMMENT_HELP_TEXT, blank=True, default="")
     platform = models.CharField(max_length=32, choices=CommandTokenPlatformChoices)
-    token = models.CharField(max_length=255, help_text="Token given by chat platform for signing or command validation")
+    token = models.CharField(max_length=255, help_text=COMMAND_TOKEN_TOKEN_HELP_TEXT)
 
     def __str__(self):
         """String representation of a CommandToken."""

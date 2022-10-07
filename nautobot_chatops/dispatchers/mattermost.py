@@ -3,6 +3,7 @@
 import json
 import logging
 import time
+from typing import Dict, Optional
 import requests
 from requests.exceptions import HTTPError
 
@@ -11,7 +12,7 @@ from django.conf import settings
 from nautobot_chatops.metrics import backend_action_sum
 from .base import Dispatcher
 
-logger = logging.getLogger("rq.worker")
+logger = logging.getLogger(__name__)
 
 # pylint: disable=abstract-method,line-too-long,raise-missing-from
 
@@ -20,6 +21,8 @@ BACKEND_ACTION_LOOKUP = backend_action_sum.labels("mattermost", "platform_lookup
 BACKEND_ACTION_MARKDOWN = backend_action_sum.labels("mattermost", "send_markdown")
 BACKEND_ACTION_BLOCKS = backend_action_sum.labels("mattermost", "send_blocks")
 BACKEND_ACTION_SNIPPET = backend_action_sum.labels("mattermost", "send_snippet")
+
+MM_MAX_MESSAGE_LENGTH = 16383
 
 
 class MMException(Exception):
@@ -75,48 +78,34 @@ def error_report(function):
             return function(*args, **kwargs)
         except HTTPError as err:
             if err.response.status_code == 400:
-                raise BadRequestException("Malformatted requests: {}".format(err.response.text))
+                raise BadRequestException(f"Malformatted requests: {err.response.text}")
             if err.response.status_code == 401:
-                raise UnauthorizedException(
-                    "Invalid credentials provided or account is locked: {}".format(err.response.text)
-                )
+                raise UnauthorizedException(f"Invalid credentials provided or account is locked: {err.response.text}")
             if err.response.status_code == 403:
                 raise ForbiddenException(
-                    "Insufficient permissions to execute request (ie, any POST method as a regular user): {}".format(
-                        err.response.text
-                    )
+                    f"Insufficient permissions to execute request (ie, any POST method as a regular user): {err.response.text}"
                 )
             if err.response.status_code == 404:
-                raise NotFoundException(
-                    "Attempting to access an endpoint that does not exist: {}".format(err.response.text)
-                )
+                raise NotFoundException(f"Attempting to access an endpoint that does not exist: {err.response.text}")
             if err.response.status_code == 405:
                 raise MethodNotAllowedException(
-                    "Wrong request type for target endpoint (ie, POSTing data to a GET endpoint): {}".format(
-                        err.response.text
-                    )
+                    f"Wrong request type for target endpoint (ie, POSTing data to a GET endpoint): {err.response.text}"
                 )
             if err.response.status_code == 406:
                 raise NotAcceptableException(
-                    "Content Type of the data returned does not match the Accept header of the request: {}".format(
-                        err.response.text
-                    )
+                    f"Content Type of the data returned does not match the Accept header of the request: {err.response.text}"
                 )
             if err.response.status_code == 415:
-                raise UnsupportedMediaTypeException(
-                    "Attempting to POST data in incorrect format: {}".format(err.response.text)
-                )
+                raise UnsupportedMediaTypeException(f"Attempting to POST data in incorrect format: {err.response.text}")
             if err.response.status_code == 429:
                 raise MMRateLimit(
-                    "You have exceeded the max number of requests per 1-minute period: {}".format(err.response.text)
+                    f"You have exceeded the max number of requests per 1-minute period: {err.response.text}"
                 )
             if err.response.status_code == 500:
-                raise InternalServerErrorException(
-                    "Contact support if you see this error type: {}".format(err.response.text)
-                )
+                raise InternalServerErrorException(f"Contact support if you see this error type: {err.response.text}")
             if err.response.status_code == 503:
                 raise ServiceUnavailableException(
-                    "The Mattermost API is currently in maintenance mode: {}".format(err.response.text)
+                    f"The Mattermost API is currently in maintenance mode: {err.response.text}"
                 )
 
     return inner
@@ -133,7 +122,7 @@ class Driver:
         self._headers = {"Authorization": "Bearer " + self._token}
 
     @error_report
-    def post(self, endpoint, params=None, data=None, multipart_formdata=None):
+    def post(self, endpoint, params=None, data=None, multipart_formdata=None) -> Dict:
         """Post object to endpoint.
 
         Args:
@@ -156,7 +145,7 @@ class Driver:
         return mm_response.json()
 
     @error_report
-    def get(self, endpoint, params=None, raw=False):
+    def get(self, endpoint, params=None, raw=False) -> Dict:
         """Get object from endpoint.
 
         Args:
@@ -205,6 +194,7 @@ class Driver:
         file_ids = []
         if files:
             for filename in files:
+                # pylint: disable=consider-using-with
                 file_ids.append(self.upload_file(channel_id, open(filename, "rb"))["id"])
         if snippet:
             file_ids.append(self.upload_file(channel_id, snippet.encode("utf-8"))["id"])
@@ -243,7 +233,7 @@ class Driver:
         data = {"trigger_id": trigger_id, "url": dialog_url, "dialog": view}
         self.post("/actions/dialogs/open", data=data)
 
-    def upload_file(self, channel_id, file):
+    def upload_file(self, channel_id, file) -> Dict:
         """Uploads a file that can later be attached to a post.
 
         Instead of passing the filepath, we instead expect a
@@ -283,7 +273,7 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
 
     @classmethod
     @BACKEND_ACTION_LOOKUP.time()
-    def platform_lookup(cls, item_type, item_name):
+    def platform_lookup(cls, item_type, item_name) -> Optional[str]:
         """Call out to the chat platform to look up, e.g., a specific user ID by name.
 
         Args:
@@ -359,8 +349,10 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
     # Send various content to the user or channel
 
     @BACKEND_ACTION_MARKDOWN.time()
-    def send_markdown(self, message, ephemeral=False):
+    def send_markdown(self, message, ephemeral=None):
         """Send a Markdown-formatted text message to the user/channel specified by the context."""
+        if ephemeral is None:
+            ephemeral = settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_private"]
         try:
             if ephemeral:
                 self.mm_client.chat_post_ephemeral(
@@ -373,16 +365,18 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
 
     # pylint: disable=arguments-differ
     @BACKEND_ACTION_BLOCKS.time()
-    def send_blocks(self, blocks, callback_id=None, ephemeral=False, modal=False, title="Your attention please!"):
+    def send_blocks(self, blocks, callback_id=None, modal=False, ephemeral=None, title="Your attention please!"):
         """Send a series of formatting blocks to the user/channel specified by the context.
 
         Args:
-          blocks (list): List of block contents as constructed by other dispatcher functions
+          blocks (list): List of block contents as constructed by other dispatcher functions.
           callback_id (str): Callback ID string such as "command subcommand arg1 arg2". Required if `modal` is True.
-          ephemeral (bool): Whether to send this as an ephemeral message (only visible to the targeted user)
           modal (bool): Whether to send this as a modal dialog rather than an inline block.
+          ephemeral (bool): Whether to send this as an ephemeral message (only visible to the targeted user).
           title (str): Title to include on a modal dialog.
         """
+        if ephemeral is None:
+            ephemeral = settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_private"]
         logger.info("Sending blocks: %s", json.dumps(blocks, indent=2))
         try:
             if modal:
@@ -416,11 +410,17 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
             self.send_exception(mm_error)
 
     @BACKEND_ACTION_SNIPPET.time()
-    def send_snippet(self, text, title=None):
+    def send_snippet(self, text, title=None, ephemeral=None):
         """Send a longer chunk of text as a file snippet."""
         channel = [self.context.get("channel_id")]
         logger.info("Sending snippet to %s: %s", channel, text)
-        self.mm_client.chat_post_message(channel_id=self.context.get("channel_id"), snippet=text)
+        if ephemeral:
+            for msg in self.split_message(text, MM_MAX_MESSAGE_LENGTH):
+                self.mm_client.chat_post_ephemeral(
+                    channel_id=self.context.get("channel_id"), user_id=self.context.get("user_id"), message=msg
+                )
+        else:
+            self.mm_client.chat_post_message(channel_id=self.context.get("channel_id"), snippet=text)
 
     def send_image(self, image_path):
         """Send an image as a file upload."""
@@ -583,11 +583,11 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
         """Mark text as bold."""
         return f"**{text}**"
 
-    def actions_block(self, action_id, actions):
+    def actions_block(self, block_id, actions):
         """Construct a block consisting of a set of action elements."""
         # Mattermost doesn't use the "block_id", but it ignores the input.
         # Leaving in place to pass the testing.
-        return {"block_id": action_id, "actions": actions}
+        return {"block_id": block_id, "actions": actions}
 
     # pylint: disable=no-self-use
     def _input_block(self, block_id, label, element):
@@ -611,7 +611,7 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
         """Construct a basic Markdown-formatted text element."""
         return text
 
-    def select_element(self, action_id, choices):
+    def select_element(self, action_id, choices) -> Dict:
         """Construct a basic selection menu with the given choices.
 
         Args:
@@ -645,7 +645,10 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
           choices (list): List of (display, value) tuples
           default (tuple: Default (display, value) to preselect
           confirm (bool): If true (and the platform supports it), prompt the user to confirm their selection
-          optional: (optional) If set to True, the field will return NoneType is not specified.
+          optional (bool): If set to True, the field will return NoneType is not specified.
+
+        Returns:
+            data (dict): select element
         """
         default_text, default_value = default
         logger.info("Ignoring: select_element_interactive has no confirm: %s", confirm)

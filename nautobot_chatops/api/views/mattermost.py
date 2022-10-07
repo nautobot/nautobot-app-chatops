@@ -28,7 +28,7 @@ def verify_signature(request):
     https://developers.mattermost.com/integrate/slash-commands/
 
     Returns:
-      tuple: (valid, reason)
+      valid (tuple): (valid, reason)
     """
     if request.headers.get("Authorization"):
         expected_signature = request.headers.get("Authorization")
@@ -125,10 +125,7 @@ class MattermostInteractionView(View):
     @staticmethod
     def get_selected_value(cmd):
         """Returns formatted selected value if one exists."""
-        if cmd:
-            return f" '{cmd}'"
-        else:
-            return " ''"
+        return f" '{cmd}'" if cmd else " ''"
 
     # pylint: disable=too-many-locals,too-many-return-statements,too-many-branches,too-many-statements
     def post(self, request, *args, **kwargs):
@@ -157,7 +154,7 @@ class MattermostInteractionView(View):
             "response_url": data.get("response_url"),
             "trigger_id": data.get("trigger_id"),
             "post_id": data.get("post_id"),
-            "request_scheme": request.get_host(),
+            "request_scheme": request.scheme,
             "request_host": request.get_host(),
             "integration_url": request.build_absolute_uri("/api/plugins/chatops/mattermost/interaction/"),
         }

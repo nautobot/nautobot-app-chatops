@@ -4,7 +4,7 @@ from nautobot.core.api.views import ModelViewSet
 
 from nautobot_chatops.api.serializers import AccessGrantSerializer, CommandTokenSerializer
 from nautobot_chatops.models import AccessGrant, CommandToken
-from nautobot_chatops.filters import AccessGrantFilter, CommandTokenFilter
+from nautobot_chatops.filters import AccessGrantFilterSet, CommandTokenFilterSet
 
 
 class NautobotChatopsRootView(APIRootView):
@@ -20,7 +20,7 @@ class CommandTokenViewSet(ModelViewSet):  # pylint: disable=too-many-ancestors
 
     queryset = CommandToken.objects.all()
     serializer_class = CommandTokenSerializer
-    filterset_class = CommandTokenFilter
+    filterset_class = CommandTokenFilterSet
 
 
 class AccessGrantViewSet(ModelViewSet):  # pylint: disable=too-many-ancestors
@@ -28,4 +28,4 @@ class AccessGrantViewSet(ModelViewSet):  # pylint: disable=too-many-ancestors
 
     queryset = AccessGrant.objects.all()
     serializer_class = AccessGrantSerializer
-    filterset_class = AccessGrantFilter
+    filterset_class = AccessGrantFilterSet

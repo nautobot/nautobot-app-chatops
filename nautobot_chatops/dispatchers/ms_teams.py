@@ -1,6 +1,7 @@
-"""Dispatcher impelementation for sending content to Microsoft Teams."""
+"""Dispatcher implementation for sending content to Microsoft Teams."""
 import os
 import logging
+from typing import Optional
 import requests
 
 from django.conf import settings
@@ -8,7 +9,7 @@ from django.conf import settings
 from nautobot_chatops.metrics import backend_action_sum
 from .adaptive_cards import AdaptiveCardsDispatcher
 
-logger = logging.getLogger("rq.worker")
+logger = logging.getLogger(__name__)
 
 # Create a metric to track time spent and requests made.
 BACKEND_ACTION_LOOKUP = backend_action_sum.labels("msteams", "platform_lookup")
@@ -31,7 +32,7 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
 
     @classmethod
     @BACKEND_ACTION_LOOKUP.time()
-    def platform_lookup(cls, item_type, item_name):
+    def platform_lookup(cls, item_type, item_name) -> Optional[str]:
         """Call out to the chat platform to look up, e.g., a specific user ID by name.
 
         Args:
@@ -92,7 +93,7 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
         )
         return response
 
-    def send_large_table(self, header, rows):
+    def send_large_table(self, header, rows, title=None):
         """Send a large table of data to the user/channel.
 
         MS Teams really doesn't have a good way to present large tables, unfortunately,
@@ -107,7 +108,7 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
                 }
             )
 
-        self.send_blocks(blocks)
+        self.send_blocks(blocks, title=title)
 
     def needs_permission_to_send_image(self):
         """Return True if this bot needs to ask the user for permission to post an image.
@@ -149,12 +150,12 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
         )
 
     @BACKEND_ACTION_MARKDOWN.time()
-    def send_markdown(self, message, ephemeral=False):
+    def send_markdown(self, message, ephemeral=None):
         """Send a markdown-formatted text message to the user/channel specified by the context."""
         self._send({"text": message, "textFormat": "markdown"})
 
     @BACKEND_ACTION_BLOCKS.time()
-    def send_blocks(self, blocks, callback_id=None, modal=False, ephemeral=False, title=None):
+    def send_blocks(self, blocks, callback_id=None, modal=False, ephemeral=None, title=None):
         """Send a series of formatting blocks to the user/channel specified by the context."""
         if title and title not in str(blocks[0]):
             blocks.insert(0, self.markdown_element(self.bold(title)))
@@ -170,7 +171,7 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
         )
 
     @BACKEND_ACTION_SNIPPET.time()
-    def send_snippet(self, text, title=None):
+    def send_snippet(self, text, title=None, ephemeral=None):
         """Send a longer chunk of text as a snippet or file attachment."""
         self.send_markdown(f"```\n{text}\n```")
 
@@ -185,7 +186,7 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
         file_size = os.path.getsize(image_path)
         response = requests.put(
             self.context["uploadInfo"]["uploadUrl"],
-            open(image_path, "rb"),
+            open(image_path, "rb"),  # pylint: disable=consider-using-with
             headers={
                 "Content-Length": str(file_size),
                 "Content-Range": f"bytes 0-{file_size-1}/{file_size}",
@@ -229,3 +230,7 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
         #   channel-and-group-conversations?tabs=python#adding-mentions-to-your-messages
         # For now we just use the user name as plaintext, not an actual mention
         return f"{self.context['user_name']}"
+
+    def bold(self, text):
+        """Mark text as bold."""
+        return f"*{text}*"

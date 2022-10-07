@@ -92,13 +92,13 @@ class TestSlackDispatcher(TestCase):
         response = self.dispatcher.get_prompt_from_menu_choices(choices)
         self.assertEqual(response, choices)
 
-        choices = list()
+        choices = []
         for i in range(1, 101):
             choices.append((f"switch{i}", f"switch{i}"))
         response = self.dispatcher.get_prompt_from_menu_choices(choices)
         self.assertEqual(response, choices)
 
-        choices = list()
+        choices = []
         for i in range(1, 511):
             choices.append((f"switch{i}", f"switch{i}"))
 
@@ -175,6 +175,27 @@ class TestSlackDispatcher(TestCase):
         self.assertTrue(mock_send_blocks.call_args[0][0][1]["optional"])
 
         self.assertIsInstance(response, MagicMock)
+
+    def test_user_session_all(self):
+        """Test session caching methods."""
+        self.dispatcher.unset_session()
+        self.assertEqual(self.dispatcher.get_session(), {})
+        self.dispatcher.set_session({"key1": "value1"})
+        self.assertEqual(self.dispatcher.get_session(), {"key1": "value1"})
+        self.dispatcher.unset_session()
+        self.assertEqual(self.dispatcher.get_session(), {})
+        with self.assertRaises(ValueError):
+            self.dispatcher.set_session("value3")
+
+    def test_user_session_key(self):
+        """Test session caching methods per key."""
+        self.dispatcher.unset_session()
+        self.dispatcher.set_session_entry("key1", "value1")
+        self.assertEqual(self.dispatcher.get_session_entry("key1"), "value1")
+        self.dispatcher.unset_session_entry("key1")
+        self.assertEqual(self.dispatcher.get_session_entry("key1"), None)
+        # This should not raise an exception
+        self.dispatcher.unset_session_entry("key1")
 
 
 class TestMSTeamsDispatcher(TestSlackDispatcher):

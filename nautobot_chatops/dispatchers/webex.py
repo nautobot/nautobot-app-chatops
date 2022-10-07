@@ -2,6 +2,7 @@
 import logging
 import os
 
+from typing import Optional
 from webexteamssdk import WebexTeamsAPI
 from webexteamssdk.exceptions import ApiError
 from django.conf import settings
@@ -10,7 +11,7 @@ from texttable import Texttable
 from nautobot_chatops.metrics import backend_action_sum
 from .adaptive_cards import AdaptiveCardsDispatcher
 
-logger = logging.getLogger("rq.worker")
+logger = logging.getLogger(__name__)
 
 # Create a metric to track time spent and requests made.
 BACKEND_ACTION_LOOKUP = backend_action_sum.labels("webex", "platform_lookup")
@@ -52,7 +53,7 @@ class WebExDispatcher(AdaptiveCardsDispatcher):
 
     @classmethod
     @BACKEND_ACTION_LOOKUP.time()
-    def platform_lookup(cls, item_type, item_name):
+    def platform_lookup(cls, item_type, item_name) -> Optional[str]:
         """Call out to the chat platform to look up, e.g., a specific user ID by name.
 
         Args:
@@ -94,12 +95,12 @@ class WebExDispatcher(AdaptiveCardsDispatcher):
         return None
 
     @BACKEND_ACTION_MARKDOWN.time()
-    def send_markdown(self, message, ephemeral=False):
+    def send_markdown(self, message, ephemeral=None):
         """Send a markdown-formatted text message to the user/channel specified by the context."""
         self.client.messages.create(roomId=self.context["channel_id"], markdown=message)
 
     @BACKEND_ACTION_BLOCKS.time()
-    def send_blocks(self, blocks, callback_id=None, modal=False, ephemeral=False, title=None):
+    def send_blocks(self, blocks, callback_id=None, modal=False, ephemeral=None, title=None):
         """Send a series of formatting blocks to the user/channel specified by the context."""
         if title and title not in str(blocks[0]):
             blocks.insert(0, self.markdown_element(self.bold(title)))
@@ -119,7 +120,7 @@ class WebExDispatcher(AdaptiveCardsDispatcher):
         self.client.messages.create(roomId=self.context["channel_id"], files=[image_path])
 
     @BACKEND_ACTION_SNIPPET.time()
-    def send_snippet(self, text, title=None):
+    def send_snippet(self, text, title=None, ephemeral=None):
         """Send a longer chunk of text as a file snippet."""
         return self.send_markdown(f"```\n{text}\n```")
 
@@ -134,7 +135,7 @@ class WebExDispatcher(AdaptiveCardsDispatcher):
         # So for now we just use the user name throughout.
         return f"{self.context.get('user_name')}"
 
-    def send_large_table(self, header, rows):
+    def send_large_table(self, header, rows, title=None):
         """Send a large table of data to the user/channel.
 
         Webex has a character limit per message of 7439 characters.
@@ -160,4 +161,4 @@ class WebExDispatcher(AdaptiveCardsDispatcher):
                 char_count = 0
             table_snippet += line + "\n"
             char_count = len(table_snippet)
-        self.send_snippet(table_snippet)
+        self.send_snippet(table_snippet, title=title)

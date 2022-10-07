@@ -9,6 +9,10 @@ WORKDIR /source
 
 # Copy in only pyproject.toml/poetry.lock to help with caching this layer if no updates to dependencies
 COPY poetry.lock pyproject.toml /source/
+# Pin poetry version to 1.2.0 in older Nautobot Images.
+RUN curl -sSL https://install.python-poetry.org -o /tmp/install-poetry.py && \
+    python /tmp/install-poetry.py --version 1.2.0 && \
+    rm -f /tmp/install-poetry.py
 # --no-root declares not to install the project package since we're wanting to take advantage of caching dependency installation
 # and the project is copied in and installed after this step
 RUN poetry install --no-interaction --no-ansi --no-root

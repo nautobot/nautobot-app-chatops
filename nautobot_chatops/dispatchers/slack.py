@@ -5,6 +5,7 @@ import logging
 import os
 import time
 
+from typing import Optional
 from django.conf import settings
 from slack_sdk import WebClient
 from slack_sdk.webhook.client import WebhookClient
@@ -13,7 +14,7 @@ from slack_sdk.errors import SlackApiError, SlackClientError
 from nautobot_chatops.metrics import backend_action_sum
 from .base import Dispatcher
 
-logger = logging.getLogger("rq.worker")
+logger = logging.getLogger(__name__)
 
 # pylint: disable=abstract-method
 
@@ -22,6 +23,8 @@ BACKEND_ACTION_LOOKUP = backend_action_sum.labels("slack", "platform_lookup")
 BACKEND_ACTION_MARKDOWN = backend_action_sum.labels("slack", "send_markdown")
 BACKEND_ACTION_BLOCKS = backend_action_sum.labels("slack", "send_blocks")
 BACKEND_ACTION_SNIPPET = backend_action_sum.labels("slack", "send_snippet")
+
+SLACK_PRIVATE_MESSAGE_LIMIT = settings.PLUGINS_CONFIG["nautobot_chatops"].get("slack_ephemeral_message_size_limit")
 
 
 class SlackDispatcher(Dispatcher):
@@ -45,7 +48,7 @@ class SlackDispatcher(Dispatcher):
     # pylint: disable=too-many-branches
     @classmethod
     @BACKEND_ACTION_LOOKUP.time()
-    def platform_lookup(cls, item_type, item_name):
+    def platform_lookup(cls, item_type, item_name) -> Optional[str]:
         """Call out to the chat platform to look up, e.g., a specific user ID by name.
 
         Args:
@@ -136,9 +139,12 @@ class SlackDispatcher(Dispatcher):
     # Send various content to the user or channel
 
     @BACKEND_ACTION_MARKDOWN.time()
-    def send_markdown(self, message, ephemeral=False):
+    def send_markdown(self, message, ephemeral=None):
         """Send a Markdown-formatted text message to the user/channel specified by the context."""
         try:
+            if ephemeral is None:
+                ephemeral = settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_private"]
+
             if ephemeral:
                 self.slack_client.chat_postEphemeral(
                     channel=self.context.get("channel_id"),
@@ -156,7 +162,7 @@ class SlackDispatcher(Dispatcher):
 
     # pylint: disable=arguments-differ
     @BACKEND_ACTION_BLOCKS.time()
-    def send_blocks(self, blocks, callback_id=None, ephemeral=False, modal=False, title="Your attention please!"):
+    def send_blocks(self, blocks, callback_id=None, modal=False, ephemeral=None, title="Your attention please!"):
         """Send a series of formatting blocks to the user/channel specified by the context.
 
         Slack distinguishes between simple inline interactive elements and modal dialogs. Modals can contain multiple
@@ -164,13 +170,15 @@ class SlackDispatcher(Dispatcher):
         be used in modals and will be rejected if we try to use them inline.
 
         Args:
-          blocks (list): List of block contents as constructed by other dispatcher functions
+          blocks (list): List of block contents as constructed by other dispatcher functions.
           callback_id (str): Callback ID string such as "command subcommand arg1 arg2". Required if `modal` is True.
-          ephemeral (bool): Whether to send this as an ephemeral message (only visible to the targeted user)
           modal (bool): Whether to send this as a modal dialog rather than an inline block.
+          ephemeral (bool): Whether to send this as an ephemeral message (only visible to the targeted user).
           title (str): Title to include on a modal dialog.
         """
         logger.info("Sending blocks: %s", json.dumps(blocks, indent=2))
+        if ephemeral is None:
+            ephemeral = settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_private"]
         try:
             if modal:
                 if not callback_id:
@@ -208,8 +216,11 @@ class SlackDispatcher(Dispatcher):
             self.send_exception(slack_error)
 
     @BACKEND_ACTION_SNIPPET.time()
-    def send_snippet(self, text, title=None):
+    def send_snippet(self, text, title=None, ephemeral=None):
         """Send a longer chunk of text as a file snippet."""
+        if ephemeral is None:
+            ephemeral = settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_private"]
+
         if self.context.get("channel_name") == "directmessage":
             channels = [self.context.get("user_id")]
         else:
@@ -217,7 +228,14 @@ class SlackDispatcher(Dispatcher):
         channels = ",".join(channels)
         logger.info("Sending snippet to %s: %s", channels, text)
         try:
-            self.slack_client.files_upload(channels=channels, content=text, title=title)
+            # Check for the length of the file if the setup is meant to be a private message
+            if ephemeral:
+                message_list = self.split_message(text, SLACK_PRIVATE_MESSAGE_LIMIT)
+                for msg in message_list:
+                    # Send the blocks as a list, this needs to be the case for Slack to send appropriately.
+                    self.send_blocks([self.markdown_block(f"```\n{msg}\n```")], ephemeral=ephemeral)
+            else:
+                self.slack_client.files_upload(channels=channels, content=text, title=title)
         except SlackClientError as slack_error:
             self.send_exception(slack_error)
 

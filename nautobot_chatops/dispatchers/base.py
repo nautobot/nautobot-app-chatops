@@ -1,14 +1,13 @@
 """Generic base class modeling the API for sending messages to a generic chat platform."""
-
 import logging
-
+from typing import Dict, Optional
 from django.templatetags.static import static
-
+from django.core.cache import cache
 from django.conf import settings
 
 from texttable import Texttable
 
-logger = logging.getLogger("rq.worker")
+logger = logging.getLogger(__name__)
 
 
 class Dispatcher:
@@ -36,6 +35,55 @@ class Dispatcher:
     def __init__(self, context=None):
         """Init this Dispatcher with the provided dict of contextual information (which will vary by app)."""
         self.context = context or {}
+
+    def _get_cache_key(self) -> str:
+        """Key generator for the cache, adding the plugin prefix name."""
+        # Using __file__ as a key customization within the cache
+        return "-".join([__file__, self.context.get("user_id", "generic")])
+
+    def get_session_entry(self, key: str):
+        """Return the session data for a key."""
+        return cache.get(self._get_cache_key(), {}).get(key, None)
+
+    def set_session_entry(self, key: str, value):
+        """Set the session data for a key."""
+        session_value = cache.get(self._get_cache_key(), {})
+        session_value[key] = value
+
+        cache.set(
+            self._get_cache_key(),
+            session_value,
+            timeout=settings.PLUGINS_CONFIG["nautobot_chatops"]["session_cache_timeout"],
+        )
+
+    def unset_session_entry(self, key: str):
+        """Unset a session data for a key."""
+        session_value = cache.get(self._get_cache_key(), {})
+        try:
+            del session_value[key]
+            self.set_session(session_value)
+        except KeyError:
+            pass
+
+    def get_session(self):
+        """Return the whole session data."""
+        return cache.get(self._get_cache_key(), {})
+
+    def set_session(self, value: Dict):
+        """Set the whole session data."""
+        if not isinstance(value, dict):
+            raise ValueError("Value must be a dict for the whole session data.")
+        session_value = value
+
+        cache.set(
+            self._get_cache_key(),
+            session_value,
+            timeout=settings.PLUGINS_CONFIG["nautobot_chatops"]["session_cache_timeout"],
+        )
+
+    def unset_session(self):
+        """Unset whole session data."""
+        cache.delete(self._get_cache_key())
 
     @classmethod
     def subclasses(cls):
@@ -71,7 +119,7 @@ class Dispatcher:
         return subclasses
 
     @classmethod
-    def platform_lookup(cls, item_type, item_name):
+    def platform_lookup(cls, item_type, item_name) -> Optional[str]:
         """Call out to the chat platform to look up, e.g., a specific user ID by name.
 
         Args:
@@ -104,7 +152,7 @@ class Dispatcher:
         """
         raise NotImplementedError
 
-    def send_large_table(self, header, rows):
+    def send_large_table(self, header, rows, title=None):
         """Send a large table of data to the user/channel.
 
         The below default implementation works for both Slack and WebEx.
@@ -115,7 +163,7 @@ class Dispatcher:
         # Force all columns to be shown as text. Otherwise long numbers (such as account #) get abbreviated as 123.4e10
         table.set_cols_dtype(["t" for item in header])
         table.add_rows(rows, header=False)
-        self.send_snippet(table.draw())
+        self.send_snippet(table.draw(), title=title)
 
     def multi_input_dialog(self, command, sub_command, dialog_title, dialog_list):
         """Provide several input fields on a single dialog.
@@ -168,15 +216,28 @@ class Dispatcher:
 
     # Send various content to the user or channel
 
-    def send_markdown(self, message, ephemeral=False):
+    def send_markdown(self, message, ephemeral=None):
         """Send a Markdown-formatted text message to the user/channel specified by the context."""
+        # pylint: disable=unused-argument
+        if ephemeral is None:
+            ephemeral = settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_private"]
         raise NotImplementedError
 
-    def send_blocks(self, blocks, callback_id=None, modal=False, ephemeral=False, title=None):
+    def send_blocks(
+        self,
+        blocks,
+        callback_id=None,
+        modal=False,
+        ephemeral=None,
+        title=None,
+    ):
         """Send a series of formatting blocks to the user/channel specified by the context."""
+        # pylint: disable=unused-argument
+        if ephemeral is None:
+            ephemeral = settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_private"]
         raise NotImplementedError
 
-    def send_snippet(self, text, title=None):
+    def send_snippet(self, text, title=None, ephemeral=None):
         """Send a longer chunk of text as a snippet or file attachment."""
         raise NotImplementedError
 
@@ -279,3 +340,24 @@ class Dispatcher:
     def text_element(self, text):
         """Construct a simple plaintext element."""
         raise NotImplementedError
+
+    @staticmethod
+    def split_message(text_string: str, max_message_size: int) -> list:
+        """Method to split a message into smaller messages.
+
+        Args:
+            text_string (str): Text string that should be split
+            max_message_size (int): Maximum size for a message
+        """
+        return_list = [""]
+
+        for line in text_string.splitlines():
+            # len(line) + 2 to account for a new line character in the character line
+            # Check to see if the line length of the last item in the list is longer than the max message size
+            # Once it would be larger than the max size, then start the next line.
+            if (len(line) + 2) + len(return_list[-1]) < max_message_size:
+                return_list[-1] += f"{line}\n"
+            else:
+                return_list.append(f"{line}\n")
+
+        return return_list

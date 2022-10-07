@@ -41,12 +41,17 @@ namespace = Collection("nautobot_chatops")
 namespace.configure(
     {
         "nautobot_chatops": {
-            "nautobot_ver": "1.0.1",
+            "nautobot_ver": "1.1.6",
             "project_name": "nautobot-chatops",
             "python_ver": "3.7",
             "local": False,
             "compose_dir": os.path.join(os.path.dirname(__file__), "development"),
-            "compose_files": ["docker-compose.requirements.yml", "docker-compose.base.yml", "docker-compose.dev.yml"],
+            "compose_files": [
+                "docker-compose.requirements.yml",
+                "docker-compose.celery.yml",
+                "docker-compose.base.yml",
+                "docker-compose.dev.yml",
+            ],
         }
     }
 )
@@ -88,6 +93,12 @@ def docker_compose(context, command, **kwargs):
         compose_file_path = os.path.join(context.nautobot_chatops.compose_dir, compose_file)
         compose_command += f' -f "{compose_file_path}"'
     compose_command += f" {command}"
+
+    # If `service` was passed as a kwarg, add it to the end.
+    service = kwargs.pop("service", None)
+    if service is not None:
+        compose_command += f" {service}"
+
     print(f'Running docker-compose command "{command}"')
     return context.run(compose_command, env=build_env, **kwargs)
 
@@ -147,11 +158,11 @@ def debug(context):
     docker_compose(context, "up")
 
 
-@task
-def start(context):
+@task(help={"service": "If specified, only affect this service."})
+def start(context, service=None):
     """Start Nautobot and its dependencies in detached mode."""
     print("Starting Nautobot in detached mode...")
-    docker_compose(context, "up --detach")
+    docker_compose(context, "up --detach", service=service)
 
 
 @task
@@ -301,7 +312,7 @@ def yamllint(context):
     Args:
         context (obj): Used to run specific commands
     """
-    command = "yamllint ."
+    command = "yamllint . --format standard"
     run_command(context, command)
 
 
@@ -325,6 +336,13 @@ def check_migrations(context):
     """Check for missing migrations."""
     command = "nautobot-server --config=nautobot/core/tests/nautobot_config.py makemigrations --dry-run --check"
 
+    run_command(context, command)
+
+
+@task()
+def build_and_check_docs(context):
+    """Build docs for use within Nautobot."""
+    command = "mkdocs build --no-directory-urls --strict"
     run_command(context, command)
 
 
@@ -381,6 +399,8 @@ def tests(context, failfast=False):
     pylint(context)
     print("Running yamllint...")
     yamllint(context)
+    print("Building and checking docs...")
+    build_and_check_docs(context)
     print("Running unit tests...")
     unittest(context, failfast=failfast)
     print("All tests have passed!")

@@ -49,7 +49,7 @@ def verify_jwt_token(request_headers, request_json):
       - https://github.com/microsoft/BotFramework-Emulator/pull/324
 
     Returns:
-      tuple: (valid, reason)
+      valid (tuple): (valid, reason)
     """
     # 1. The token was sent in the HTTP Authorization header with Bearer scheme
     if "authorization" not in request_headers:
