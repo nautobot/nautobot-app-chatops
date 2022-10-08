@@ -1,35 +1,45 @@
 """Django FilterSet classes for Nautobot."""
 
-from django_filters import FilterSet
+from nautobot.utilities.filters import BaseFilterSet
 
 from nautobot_chatops.models import CommandLog, AccessGrant, CommandToken
 
 
-class CommandLogFilter(FilterSet):
+class CommandLogFilterSet(BaseFilterSet):
     """FilterSet for filtering a set of CommandLog objects."""
 
     class Meta:
-        """Metaclass attributes of CommandLogFilter."""
+        """Metaclass attributes of CommandLogFilterSet."""
 
         model = CommandLog
-        exclude = ["id", "platform_color", "params"]
+        fields = [
+            "start_time",
+            "runtime",
+            "user_name",
+            "user_id",
+            "platform",
+            "command",
+            "subcommand",
+            "status",
+            "details",
+        ]
 
 
-class AccessGrantFilter(FilterSet):
+class AccessGrantFilterSet(BaseFilterSet):
     """FilterSet for filtering a set of AccessGrant objects."""
 
     class Meta:
-        """Metaclass attributes of AccessGrantFilter."""
+        """Metaclass attributes of AccessGrantFilterSet."""
 
         model = AccessGrant
-        exclude = ["id", "name"]
+        fields = ["command", "subcommand", "grant_type", "value"]
 
 
-class CommandTokenFilter(FilterSet):
+class CommandTokenFilterSet(BaseFilterSet):
     """FilterSet for filtering a set of CommandToken objects."""
 
     class Meta:
-        """Metaclass attributes of CommandTokenFilter."""
+        """Metaclass attributes of CommandTokenFilterSet."""
 
         model = CommandToken
-        exclude = ["id", "token"]
+        fields = ["comment", "platform"]

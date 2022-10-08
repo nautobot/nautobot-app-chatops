@@ -1,55 +1,13 @@
-# Contributing to Nautobot Chatops
+# Contributing to Nautobot ChatOps
 
-Pull requests are welcomed and automatically built and tested against multiple version of Python and multiple version of Nautobot through TravisCI.
+Pull requests are welcomed and automatically built and tested against multiple version of Python and multiple version of Nautobot through Github Actions.
 
-The project is packaged with a light development environment based on `docker-compose` to help with the local development of the project and to run the tests within TravisCI.
+The project is packaged with a light development environment based on `docker-compose` to help with the local development of the project and to run the tests within Github Actions.
 
 The project is following Network to Code software development guidelines and is leveraging:
+
 - Black, Pylint, Bandit and pydocstyle for Python linting and formatting.
 - Django unit test to ensure the plugin is working properly.
-
-## Development Environment
-
-The project comes with a CLI helper based on [invoke](http://www.pyinvoke.org/) to help setup the development environment. The commands are listed below in 3 categories `dev environment`, `utility` and `testing`.
-
-Each command can be executed with `invoke <command>`. All commands support the arguments `--nautobot-ver` and `--python-ver` if you want to manually define the version of Python and Nautobot to use. Each command also has its own help `invoke <command> --help`
-
-### Local dev environment
-
-Note that for a functional development environment (being able to actually use the created Nautobot/Nautobot instance
-as a chat bot) you must specify platform-specific configuration parameters as described in
-[`chat_setup.md`](chat_setup/chat_setup.md). For the development environment, these parameters are specified by copying the
-provided `creds.env.example` file to `creds.env` and customizing the contents of the copied file appropriately.
-
-```
-  build            Build all docker images.
-  debug            Start Nautobot and its dependencies in debug mode.
-  destroy          Destroy all containers and volumes.
-  start            Start Nautobot and its dependencies in detached mode.
-  stop             Stop Nautobot and its dependencies.
-```
-
-### Utility
-
-```
-  cli              Launch a bash shell inside the running Nautobot container.
-  create-user      Create a new user in django (default: admin), will prompt for password.
-  makemigrations   Run Make Migration in Django.
-  nbshell          Launch a nbshell session.
-```
-
-### Testing
-
-While the plugin itself supports any general release version of Nautobot, the testing requires at minimum 1.0.2.
-
-```
-  tests            Run all tests for this plugin.
-  pylint           Run pylint code analysis.
-  pydocstyle       Run pydocstyle to validate docstring formatting adheres to NTC defined standards.
-  bandit           Run bandit to validate basic static code security analysis.
-  black            Run black to check that Python files adhere to its style standards.
-  unittest         Run Django unit tests for the plugin.
-```
 
 ## Adding a new top-level command
 
@@ -59,7 +17,7 @@ Be sure that this is really what you want to do, versus adding a subcommand inst
 We recommend that each command exist as its own submodule under `nautobot_chatops/workers/` (or, as a separate package
 entirely, such as `nautobot_chatops_mycommand/worker.py`, using the entrypoint/plugin capability described in `design.md`)
 so as to keep code files to a reasonable size and complexity. This submodule or package should implement a
-`django-rq` worker function(s). In general this worker function shouldn't need to do much more than call
+`celery` worker function(s). In general this worker function shouldn't need to do much more than call
 the `handle_subcommands` helper function provided:
 
 ```python
