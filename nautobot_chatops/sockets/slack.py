@@ -10,7 +10,7 @@ from slack_sdk.socket_mode.aiohttp import SocketModeClient
 from slack_sdk.web.async_client import AsyncWebClient
 
 from nautobot_chatops.workers import get_commands_registry, commands_help, parse_command_string
-from nautobot_chatops.dispatchers.slack_socket import SlackSocketDispatcher
+from nautobot_chatops.dispatchers.slack import SlackSocketDispatcher
 from nautobot_chatops.utils import check_and_enqueue_command
 
 
@@ -211,7 +211,7 @@ async def main():
 
         # What we'd like to do here is send a "Nautobot is typing..." to the channel,
         # but unfortunately the API we're using doesn't support that (only the legacy/deprecated RTM API does).
-        # SlackDispatcher(context).send_busy_indicator()
+        # SlackSocketDispatcher(context).send_busy_indicator()
 
         return await check_and_enqueue_command(registry, command, subcommand, params, context, SlackSocketDispatcher)
 
