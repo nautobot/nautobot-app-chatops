@@ -7,6 +7,7 @@ import time
 
 from typing import Optional
 from django.conf import settings
+from django.templatetags.static import static
 from slack_sdk import WebClient
 from slack_sdk.webhook.client import WebhookClient
 from slack_sdk.errors import SlackApiError, SlackClientError
@@ -25,7 +26,7 @@ BACKEND_ACTION_BLOCKS = backend_action_sum.labels("slack", "send_blocks")
 BACKEND_ACTION_SNIPPET = backend_action_sum.labels("slack", "send_snippet")
 
 SLACK_PRIVATE_MESSAGE_LIMIT = settings.PLUGINS_CONFIG["nautobot_chatops"].get("slack_ephemeral_message_size_limit")
-
+SLACK_SOCKET_STATIC_HOST = settings.PLUGINS_CONFIG["nautobot_chatops"].get("slack_socket_static_host")
 
 class SlackDispatcher(Dispatcher):
     """Dispatch messages and cards to Slack."""
@@ -489,3 +490,18 @@ class SlackDispatcher(Dispatcher):
     def text_element(self, text):
         """Construct a basic plaintext element."""
         return {"type": "plain_text", "text": text}
+
+
+class SlackSocketDispatcher(SlackDispatcher):
+
+    def static_url(self, path):
+        static_path = str(static(path))
+        if static_path.startswith("http"):
+            return static_path
+        elif SLACK_SOCKET_STATIC_HOST:
+            return f"{SLACK_SOCKET_STATIC_HOST}{static_path}"
+        return None
+
+    def image_element(self, url, alt_text=""):
+        return {"type": "image", "image_url": url, "alt_text": alt_text} if url else {}
+
