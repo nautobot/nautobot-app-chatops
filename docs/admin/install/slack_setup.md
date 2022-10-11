@@ -28,24 +28,159 @@ PLUGINS_CONFIG = {
 }
 ```
 
+## Connecting to Slack
+
+The Nautobot ChatOps plugin supports two methods of communicating with Slack.
+
+1. Incoming Webhooks
+2. Socket Mode
+
+The original supported method of connection was only incoming webhooks. As of version 1.10, socket mode support was added for Slack.
+
+### Webhooks vs. Socket Mode
+
+With incoming webhooks, whenever a user sends a message to the bot via the client application (phone or desktop app), (1) the connection is initiated from the client, and the message gets sent to Slacks cloud. The Slack servers then initiate a connection to the ChatOps plugin running on the Nautobot server (2). Since this is a new, incoming connection, it must be port forwarded and allowed through any firewalls in your network between the internet and your Nautobot server (3). Nautobot then replies to the existing connection to Slack, which in turn forwards the response to the client.
+
+![Chatops Slack Webhooks Mode](../../images/chatops-slack-client-mode.png)
+
+With socket mode, the Nautobot server will instead maintain a connection to the Slack cloud, initiating the connection *from* the Nautobot server itself (1). In this manner, externally facing firewalls do not need to allow inbound traffic from Slack to the Nautobot server. They only need to allow traffic outbound from the Nautobot server to Slack. Once a client sends a message to the bot (2), Slack forwards the message to Nautobot over the existing websocket connection (3). Nautobot then replies over the existing websocket connection to Slack, and Slack forwards the response to the client.
+
+![Chatops Slack Socket Mode](../../images/chatops-slack-socket-mode.png)
+
+While there are sufficient ways of securing inbound API requests from the public internet (e.g. using a secure web API gateway), using socket mode is generally easier to set up from a network and netsec perspective, especially for companies that do not currently have a web API gateway installed, or are unfamiliar with them.
+
 ## Create Slack App using a Manifest
+
+**Important** - In step 3, you *must* configure the manifest differently depending on if you are using Socket mode or not.
 
 1. Log in to [https://api.slack.com/apps](https://api.slack.com/apps) and select "Create New App". Select "From an app manifest."
 2. Select your preferred Slack workspace for your app.
-3. In the window titled "Enter app manifest below," copy/paste the contents of file [nautobot_slack_manifest.yml](https://github.com/nautobot/nautobot-plugin-chatops/blob/develop/setup_files/nautobot_slack_manifest.yml) in the root of this repo. Update the below settings, then click Next.
+3. In the window titled "Enter app manifest below," select the "YAML" formatting tab and copy/paste the contents of file [nautobot_slack_manifest.yml](https://github.com/nautobot/nautobot-plugin-chatops/blob/develop/setup_files/nautobot_slack_manifest.yml) in the root of this repo. Update the below settings, then click Next.
    - On line 5, you can change the name of the Chatbot here. By default it is set to `Nautobot`
-   - On line 12, under setting `features/slash_commands/url`, update `<your-URL>` with a publicly accessible URL to your Nautobot server. Note: The trailing `/api/plugins/...` are required.
-   - Repeat this for line 31, under setting `settings/interactivity/request_url`
+   - If using Socket mode:
+      - On line 34, update `socket_mode_enabled` to `true`
+   - If not using Socket mode:
+      - On line 12, under setting `features/slash_commands/url`, update `<your-URL>` with a publicly accessible URL to your Nautobot server. Note: The trailing `/api/plugins/...` are required.
+      - Repeat this for line 31, under setting `settings/interactivity/request_url`
+      - On line 34, verify `socket_mode_enabled` is set to `false`
 4. Review the summarized settings on the next window and click Create.
 5. On the General --> Basic Information page, note the `Signing Secret` near the bottom, under App Credentials. This will be needed later for setting `SLACK_SIGNING_SECRET`.
-6. Under Distribution --> Install App, select `Install to Workspace`.
+6. On this same Basic Infomration page, select `Install to Workspace`. Select a channel to allow the app to post to (e.g. #general), and click `Allow`.
    - If you are not a Slack admin, this step will require approval first from an Slack admin in your company.
-   - Once installed, note the `Bot User OAuth Token` here. This will be needed later for setting `SLACK_API_TOKEN`.
-7. Continue with below section "Post App-Creation Steps"
+7. If using Socket mode:
+   - Under Settings --> Basic Informmation, scroll down to section "App-Level Tokens" and click `Generate Token and Scopes` to generate an API token.
+      - **Token Name**: This can be anything you want.
+      - **Scopes**: Click `Add Scope` and select the option `connections:write`.
+   - Click `Generate`. Copy this API token. This will be needed later for setting `SLACK_APP_TOKEN`.
+8. Under Settings --> Install App, copy the `Bot User OAuth Token` here. This will be needed later for setting `SLACK_API_TOKEN`.
+9. Continue with below section "Post App-Creation Steps"
 
 > **Optional:** You can configure the App Icon on the General --> Basic Information page. Under `App Icon`, select "Choose File." You can use the supplied icon [nautobot_chatops_icon.png](https://github.com/nautobot/nautobot-plugin-chatops/blob/develop/setup_files/nautobot_chatops_icon.png).
 
-## Create Slack App without a Manifest (original method)
+## Post App-Creation Steps
+
+### Configuration Examples
+
+Before continuing to the general install guide (linked below), you will need the token(s) and secret you previously generated.
+
+In your `nautobot_config.py` file, the following `PLUGINS` and `PLUGINS_CONFIG` variables will need to look simlar to this:
+
+```python
+PLUGINS = ["nautobot_chatops"]
+
+PLUGINS_CONFIG = {
+    "nautobot_chatops": {
+        "enable_slack": True,
+        "slack_api_token": "<slack-api-token>",
+        "slack_app_token": "<slack-app-token>",
+        "slack_signing_secret": "<slack-signing-secret>",
+        "slack_slash_command_prefix": "/",
+    }
+}
+```
+
+The `slack_app_token` is *only* used if you are using Socket mode when setting up your chatbot. Otherwise it can be safely ignored.
+
+You can also set these values as environment variables, and use the example listed below. Note the environment variables are all uppercase.
+
+```python
+PLUGINS = ["nautobot_chatops"]
+
+PLUGINS_CONFIG = {
+    "nautobot_chatops": {
+        "enable_slack": True,
+        "slack_api_token": os.environ.get("SLACK_API_TOKEN"),
+        "slack_app_token": os.environ.get("SLACK_APP_TOKEN"),
+        "slack_signing_secret": os.environ.get("SLACK_SIGNING_SECRET"),
+        "slack_slash_command_prefix": os.environ.get("SLACK_SLASH_COMMAND_PREFIX", "/"),
+    }
+}
+```
+
+### Invite Chatbot to Channels
+
+> **Note**: In the Slack app, you will need to invite the chatbot to each channel that it will belong to with `@<app name>`.
+> For example, when an app named `Nautobot ChatOps` is installed to the workspace:
+>
+> 1. A message is displayed in the channel, saying that the integration`Nautobot ChatOps` has been added
+> 2. You `@Nautobot ChatOps` in the channel
+> 3. You are prompted to add `@Nautobot ChatOps` to the channel
+
+![slack integration invite](../../images/add_nautobot.png)
+
+Once these steps are completed, you can proceed to the [Install Guide](index.md#Install-Guide) section.
+
+## Configuring Multiple Chatbots in a Workspace
+
+Chatbots from multiple Nautobot implementations can exist in a single Slack workspace and even channel.
+
+They will be differentiated in the workspace using the `slack_slash_command_prefix` value in `PLUGINS_CONFIG`.
+
+Here is an example `nautobot_config.py` for the first Nautobot chatbot implementation in the workspace. This chatbot will be called in the workspace using `/nautobot`.
+
+```python
+# Enable installed plugins. Add the name of each plugin to the list.
+PLUGINS = ["nautobot_chatops"]
+
+PLUGINS_CONFIG = {
+    "nautobot_chatops": {
+        "enable_slack": True,
+        "slack_api_token": "<slack-api-token>",
+        "slack_signing_secret": "<slack-signing-secret>",
+    }
+}
+```
+
+Here is an example `nautobot_config.py` for a second Nautobot chatbot implementation in the workspace.
+This configuration explicitly configures the `slack_slash_command_prefix` key/value.
+This chatbot will be called in the workspace using `/network2-nautobot`.
+
+```python
+# Enable installed plugins. Add the name of each plugin to the list.
+PLUGINS = ["nautobot_chatops"]
+
+PLUGINS_CONFIG = {
+    "nautobot_chatops": {
+        "enable_slack": True,
+        "slack_api_token": "<slack-api-token>",
+        "slack_signing_secret": "<slack-signing-secret>",
+        "slack_slash_command_prefix": "/network2-"
+    }
+}
+```
+
+> NOTE: by default, your slash command must end with `nautobot`. If no `slack_slash_command_prefix` is specified,
+> the slash command will be `/nautobot`. If a `slack_slash_command_prefix` is specified, the slash command will be `<slack_slash_command_prefix>nautobot`.
+
+> NOTE: Custom chatbot development allows for chatbot slash commands such as `/grafana` and `/meraki`.
+
+## General Chat Setup Instructions
+
+See [admin_install](index.md) instructions here for general plugin setup instructions.
+
+## Deprected - Create Slack App without a Manifest (original method)
+
+While this method is still possible, we recommend using the App Manifest method (described above) to install your Slack App.
 
 1. Log in to [https://api.slack.com/apps](https://api.slack.com/apps) and select "Create New App".
    - Select "From scratch"
@@ -100,64 +235,3 @@ PLUGINS_CONFIG = {
    description, icon, and accent/background color for the app. You can use the `nautobot_logo.png` from this
    directory if desired.
 7. Continue with below section "Post App-Creation Steps"
-
-## Post App-Creation Steps
-
-Proceed to the [Install Guide](index.md#Install-Guide) section.
-
-> **Note**: In the Slack app, you will need to invite the chatbot to each channel that it will belong to with `@<app name>`.
-> For example, when an app named `Nautobot ChatOps` is installed to the workspace:
->
-> 1. A message is displayed in the channel, saying that the integration`Nautobot ChatOps` has been added
-> 2. You `@Nautobot ChatOps` in the channel
-> 3. You are prompted to add `@Nautobot ChatOps` to the channel
-
-![slack integration invite](../../images/add_nautobot.png)
-
-## Configuring Multiple Chatbots in a Workspace
-
-Chatbots from multiple Nautobot implementations can exist in a single Slack workspace and even channel.
-
-They will be differentiated in the workspace using the `slack_slash_command_prefix` value in `PLUGINS_CONFIG`.
-
-Here is an example `nautobot_config.py` for the first Nautobot chatbot implementation in the workspace. This chatbot will be called in the workspace using `/nautobot`.
-
-```python
-# Enable installed plugins. Add the name of each plugin to the list.
-PLUGINS = ["nautobot_chatops"]
-
-PLUGINS_CONFIG = {
-    'nautobot_chatops': {
-        'enable_slack': True,
-        'slack_api_token': '<slack-api-token>',
-        'slack_signing_secret': '<slack-signing-secret>',
-    }
-}
-```
-
-Here is an example `nautobot_config.py` for a second Nautobot chatbot implementation in the workspace.
-This configuration explicitly configures the `slack_slash_command_prefix` key/value.
-This chatbot will be called in the workspace using `/network2-nautobot`.
-
-```python
-# Enable installed plugins. Add the name of each plugin to the list.
-PLUGINS = ["nautobot_chatops"]
-
-PLUGINS_CONFIG = {
-    'nautobot_chatops': {
-        'enable_slack': True,
-        'slack_api_token': '<slack-api-token>',
-        'slack_signing_secret': '<slack-signing-secret>',
-        'slack_slash_command_prefix': '/network2-'
-    }
-}
-```
-
-> NOTE: by default, your slash command must end with `nautobot`. If no `slack_slash_command_prefix` is specified,
-> the slash command will be `/nautobot`. If a `slack_slash_command_prefix` is specified, the slash command will be `<slack_slash_command_prefix>nautobot`.
-
-> NOTE: Custom chatbot development allows for chatbot slash commands such as `/grafana` and `/meraki`.
-
-## General Chat Setup Instructions
-
-See [admin_install](index.md) instructions here for general plugin setup instructions.
