@@ -97,7 +97,7 @@ max-public-methods=22
 
 [tool.pylint.similarities]
 ignore-imports= true
-min-similarity-lines=12
+min-similarity-lines=0
 
 [tool.pylint.format]
 max-line-length=120

@@ -28,6 +28,7 @@ BACKEND_ACTION_SNIPPET = backend_action_sum.labels("slack", "send_snippet")
 SLACK_PRIVATE_MESSAGE_LIMIT = settings.PLUGINS_CONFIG["nautobot_chatops"].get("slack_ephemeral_message_size_limit")
 SLACK_SOCKET_STATIC_HOST = settings.PLUGINS_CONFIG["nautobot_chatops"].get("slack_socket_static_host")
 
+
 class SlackDispatcher(Dispatcher):
     """Dispatch messages and cards to Slack."""
 
@@ -493,15 +494,19 @@ class SlackDispatcher(Dispatcher):
 
 
 class SlackSocketDispatcher(SlackDispatcher):
+    """Overrides to support Slack Socket Mode."""
 
     def static_url(self, path):
+        """Return a url to access the static file."""
         static_path = str(static(path))
         if static_path.startswith("http"):
+            # Static is being provided by Django Storages
             return static_path
-        elif SLACK_SOCKET_STATIC_HOST:
+        if SLACK_SOCKET_STATIC_HOST:
+            # Use the settings provided Static Host.
             return f"{SLACK_SOCKET_STATIC_HOST}{static_path}"
         return None
 
     def image_element(self, url, alt_text=""):
+        """Construct an image element that can be embedded in a block if URL is provided."""
         return {"type": "image", "image_url": url, "alt_text": alt_text} if url else {}
-

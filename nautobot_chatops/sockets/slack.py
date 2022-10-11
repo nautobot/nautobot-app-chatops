@@ -2,11 +2,12 @@
 
 import asyncio
 import json
-import logging
 import shlex
 
 from django.conf import settings
 from slack_sdk.socket_mode.aiohttp import SocketModeClient
+from slack_sdk.socket_mode.response import SocketModeResponse
+from slack_sdk.socket_mode.request import SocketModeRequest
 from slack_sdk.web.async_client import AsyncWebClient
 
 from nautobot_chatops.workers import get_commands_registry, commands_help, parse_command_string
@@ -16,12 +17,9 @@ from nautobot_chatops.utils import check_and_enqueue_command
 
 SLASH_PREFIX = settings.PLUGINS_CONFIG["nautobot_chatops"].get("slack_slash_command_prefix")
 
-#logger = logging.getLogger(__name__)
 
-async def main():
-    from slack_sdk.socket_mode.response import SocketModeResponse
-    from slack_sdk.socket_mode.request import SocketModeRequest
-
+async def main():  # pylint: disable=too-many-statements
+    """Slack Socket Main Loop."""
     client = SocketModeClient(
         app_token=settings.PLUGINS_CONFIG["nautobot_chatops"].get("slack_app_token"),
         web_client=AsyncWebClient(token=settings.PLUGINS_CONFIG["nautobot_chatops"]["slack_api_token"]),
@@ -58,15 +56,14 @@ async def main():
             "user_id": req.payload.get("user_id"),
             "user_name": req.payload.get("user_name"),
             "response_url": req.payload.get("response_url"),
-            "trigger_id": req.payload.get("trigger_id")
+            "trigger_id": req.payload.get("trigger_id"),
         }
 
         try:
             command, subcommand, params = parse_command_string(f"{command} {params}")
         except ValueError as err:
             client.logger.error("%s", err)
-            # Tried sending 400 error, but the friendly message never made it to slack.
-            
+
         registry = get_commands_registry()
 
         if command not in registry:
@@ -74,6 +71,7 @@ async def main():
 
         return await check_and_enqueue_command(registry, command, subcommand, params, context, SlackSocketDispatcher)
 
+    # pylint: disable=too-many-locals,too-many-return-statements,too-many-branches,too-many-statements,too-many-nested-blocks
     async def process_interactive(client, req):
         client.logger.debug("Processing interactive.")
         payload = req.payload
@@ -110,7 +108,6 @@ async def main():
                 selected_value = f"'{value}'"
             else:
                 client.logger.error(f"Unhandled action type {action['type']}")
-                #return HttpResponse(status=500)
 
             if settings.PLUGINS_CONFIG["nautobot_chatops"].get("delete_input_on_submission"):
                 # Delete the interactive element since it's served its purpose
@@ -118,7 +115,7 @@ async def main():
             if action_id == "action" and selected_value == "cancel":
                 # Nothing more to do
                 return
-                #return HttpResponse()
+
         elif "view" in payload and payload["view"]:
             # View submission triggered from a modal dialog
             client.logger.info("Submission triggered from a modal dialog")
@@ -137,7 +134,6 @@ async def main():
                     cmds = shlex.split(callback_id)
                 except ValueError as err:
                     client.logger.error("%s", err)
-                    #return HttpResponse(f"Error: {err} encountered when processing {callback_id}")
                 for i, cmd in enumerate(cmds):
                     if i == 2:
                         selected_value += f"'{cmd}'"
@@ -158,7 +154,6 @@ async def main():
                             value = act_id["value"]
                         else:
                             client.logger.error(f"Unhandled dialog type {act_id['type']}")
-                            #return HttpResponse(status=500)
 
                         # If an optional parameter is passed, it is returned as a NoneType.
                         # We instead want to return an empty string, otherwise 'None' is returned as a string.
@@ -177,7 +172,6 @@ async def main():
                     selected_value = f"'{value}'"
                 else:
                     client.logger.error(f"Unhandled action type {action['type']}")
-                    #return HttpResponse(status=500)
 
             # Modal view submissions don't generally contain a channel ID, but we hide one for our convenience:
             if "private_metadata" in payload["view"]:
@@ -186,15 +180,12 @@ async def main():
                     context["channel_id"] = private_metadata["channel_id"]
         else:
             client.logger.error("I didn't understand that notification.")
-            #return HttpResponse("I didn't understand that notification.")
 
         client.logger.info(f"action_id: {action_id}, selected_value: {selected_value}")
         try:
             command, subcommand, params = parse_command_string(f"{action_id} {selected_value}")
         except ValueError as err:
             client.logger.error("%s", err)
-            # Tried sending 400 error, but the friendly message never made it to slack.
-            #return HttpResponse(f"'Error: {err}' encountered on command '{action_id} {selected_value}'.")
 
         # Convert empty parameter strings to NoneType
         for idx, param in enumerate(params):
@@ -207,7 +198,6 @@ async def main():
 
         if command not in registry:
             SlackSocketDispatcher(context).send_markdown(commands_help(prefix=SLASH_PREFIX))
-            #return HttpResponse()
 
         # What we'd like to do here is send a "Nautobot is typing..." to the channel,
         # but unfortunately the API we're using doesn't support that (only the legacy/deprecated RTM API does).
@@ -215,10 +205,8 @@ async def main():
 
         return await check_and_enqueue_command(registry, command, subcommand, params, context, SlackSocketDispatcher)
 
-
     client.socket_mode_request_listeners.append(process)
 
     await client.connect()
 
     await asyncio.sleep(float("inf"))
-
