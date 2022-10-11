@@ -69,6 +69,10 @@ While there are sufficient ways of securing inbound API requests from the public
    - If you are not a Slack admin, this step will require approval first from an Slack admin in your company.
 7. Gather the necessary API token:
    - If using Socket mode:
+     - Under Settings --> Basic Informmation, scroll down to section "App-Level Tokens" and click `Generate Token and Scopes` to generate an API token.
+     - **Token Name**: This can be anything you want.
+     - **Scopes**: Click `Add Scope` and select the option `connections:write`.
+     - Click `Generate`. Copy this API token. This will be needed later for setting `SLACK_API_TOKEN`.
    - If not using Socket mode:
      - Once installed, under Settings --> Install App, copy the `Bot User OAuth Token` here. This will be needed later for setting `SLACK_API_TOKEN`.
 8. Continue with below section "Post App-Creation Steps"
