@@ -69,7 +69,9 @@ async def main():  # pylint: disable=too-many-statements
         if command not in registry:
             SlackSocketDispatcher(context).send_markdown(commands_help(prefix=SLASH_PREFIX))
 
-        return await socket_check_and_enqueue_command(registry, command, subcommand, params, context, SlackSocketDispatcher)
+        return await socket_check_and_enqueue_command(
+            registry, command, subcommand, params, context, SlackSocketDispatcher
+        )
 
     # pylint: disable=too-many-locals,too-many-return-statements,too-many-branches,too-many-statements,too-many-nested-blocks
     async def process_interactive(client, req):
@@ -203,7 +205,9 @@ async def main():  # pylint: disable=too-many-statements
         # but unfortunately the API we're using doesn't support that (only the legacy/deprecated RTM API does).
         # SlackSocketDispatcher(context).send_busy_indicator()
 
-        return await socket_check_and_enqueue_command(registry, command, subcommand, params, context, SlackSocketDispatcher)
+        return await socket_check_and_enqueue_command(
+            registry, command, subcommand, params, context, SlackSocketDispatcher
+        )
 
     client.socket_mode_request_listeners.append(process)
 
