@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nautobot-chatops"
-version = "1.10.1"
+version = "1.10.0"
 description = "A plugin providing chatbot capabilities for Nautobot"
 authors = ["Network to Code, LLC <opensource@networktocode.com>"]
 readme = "README.md"

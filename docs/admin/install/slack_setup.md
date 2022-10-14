@@ -178,6 +178,47 @@ PLUGINS_CONFIG = {
 
 See [admin_install](index.md) instructions here for general plugin setup instructions.
 
+## Startup Slack Sockets (Socket Mode)
+
+Socket Mode requires it's own Worker in order poll Slack for new slash commands and interactions. Slack Socket Mode supports up to 10 active connections. To start a new connection there is a new Management Command provided.
+
+### start_slack_socket Management Command
+
+`nautobot-server start_slack_socket`
+
+Start a worker to connect to Slack.
+
+### Slack Socket Systemd Service
+
+To establish the `systemd` unit file for the Slack Socket worker, copy and paste the following into `/etc/systemd/system/chatops-slack-socket.service`:
+
+```ini
+[Unit]
+Description=Nautobot Chatops Slack Socket Worker
+Documentation=https://docs.nautobot.com/projects/chatops/en/latest/
+After=nautobot.service
+Wants=network-online.target
+
+[Service]
+Type=exec
+Environment="NAUTOBOT_ROOT=/opt/nautobot"
+
+User=nautobot
+Group=nautobot
+WorkingDirectory=/opt/nautobot
+
+ExecStart=/opt/nautobot/bin/nautobot-server start_slack_socket
+
+Restart=always
+RestartSec=30
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
+```
+
+This can be done multiple times to create more workers. Up to 10 workers can be created.
+
 ## Deprected - Create Slack App without a Manifest (original method)
 
 While this method is still possible, we recommend using the App Manifest method (described above) to install your Slack App.
