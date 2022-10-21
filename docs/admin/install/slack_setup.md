@@ -6,8 +6,10 @@ These are the four distinct configuration values you will need to configure in `
 | ---------------------------- | ---------- | ------- |
 | `enable_slack`               | **Yes**    | False   |
 | `slack_api_token`            | **Yes**    | --      |
+| `slack_app_token`************| Socket Mode| --      |
 | `slack_signing_secret`       | **Yes**    | --      |
 | `slack_slash_command_prefix` | No         | `"/"`   |
+| `slack_socket_static_host`   | No         | --      |
 
 These values will be used in the `nautobot_config.py` file, once we get to the section where we cover server configuration.
 For now, take a mental note that in this section where we are configuring the Slack application, we will need to explicitly note the
@@ -27,6 +29,13 @@ PLUGINS_CONFIG = {
     }
 }
 ```
+
+!!! info
+    When running Slack in Socket Mode, Nautobot ChatOps Plugin can specify where the static files are hosted.
+    This is helpful for giving Slack access to only the server hosting Nautobot Static Files. If Django Storage
+    is configured, Nautobot ChatOps Plugin will use the static host from Django Storage. This is optional as
+    ChatOps only uses static files for sending logos with messages. To configure the static files host, use
+    `slack_socket_static_host` ex. `slack_socket_static_host: 'https://example.com/static/'`.
 
 ## Connecting to Slack
 
