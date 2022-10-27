@@ -199,7 +199,7 @@ Start a worker to connect to Slack.
 
 ### Slack Socket Systemd Service
 
-To establish the `systemd` unit file for the Slack Socket worker, copy and paste the following into `/etc/systemd/system/chatops-slack-socket.service`:
+To establish the `systemd` unit file for the Slack Socket worker, copy and paste the following into `/etc/systemd/system/nautobot-chatops-slack-socket.service`:
 
 ```ini
 [Unit]
@@ -227,6 +227,20 @@ WantedBy=multi-user.target
 ```
 
 This can be done multiple times to create more workers. Up to 10 workers can be created.
+
+### Configure systemd
+
+Because we just added new service files, you'll need to reload the systemd daemon:
+
+```no-highlight
+sudo systemctl daemon-reload
+```
+
+Then, start the `nautobot-chatops-slack-socket` services and enable it to initiate at boot time:
+
+```no-highlight
+sudo systemctl enable --now nautobot-chatops-slack-socket
+```
 
 ## Deprected - Create Slack App without a Manifest (original method)
 
