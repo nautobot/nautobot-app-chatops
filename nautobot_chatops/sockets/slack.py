@@ -15,8 +15,6 @@ from nautobot_chatops.dispatchers.slack import SlackDispatcher
 from nautobot_chatops.utils import socket_check_and_enqueue_command
 
 
-
-
 async def main():  # pylint: disable=too-many-statements
     """Slack Socket Main Loop."""
     SLASH_PREFIX = settings.PLUGINS_CONFIG["nautobot_chatops"].get("slack_slash_command_prefix")
