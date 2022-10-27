@@ -108,11 +108,9 @@ def create_command_log(dispatcher, registry, command, subcommand, params=()):
 
 
 @sync_to_async
-def socket_check_and_enqueue_command(
-    registry, command, subcommand, params, context, dispatcher_class
-):  # pylint:disable=too-many-statements
+def socket_check_and_enqueue_command(*args, **kwargs):
     """Calls check_and_enqueue_command() when in Socket mode."""
-    return check_and_enqueue_command(registry, command, subcommand, params, context, dispatcher_class)
+    return check_and_enqueue_command(*args, **kwargs)
 
 
 def check_and_enqueue_command(

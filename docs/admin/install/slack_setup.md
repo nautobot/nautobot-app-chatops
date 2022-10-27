@@ -64,7 +64,7 @@ While there are sufficient ways of securing inbound API requests from the public
 
 1. Log in to [https://api.slack.com/apps](https://api.slack.com/apps) and select "Create New App". Select "From an app manifest."
 2. Select your preferred Slack workspace for your app.
-3. In the window titled "Enter app manifest below," select the "YAML" formatting tab and copy/paste the contents of file [nautobot_slack_manifest.yml](https://github.com/nautobot/nautobot-plugin-chatops/blob/develop/setup_files/nautobot_slack_manifest.yml) in the root of this repo. Update the below settings, then click Next.
+3. In the window titled "Enter app manifest below," select the "YAML" formatting tab and copy/paste the contents of file [nautobot_slack_manifest.yml](https://github.com/nautobot/nautobot-plugin-chatops/blob/develop/setup_files/nautobot_slack_manifest.yml) from this repo. Update the below settings, then click Next.
    - On line 5, you can change the name of the Chatbot here. By default it is set to `Nautobot`
    - If using Socket mode:
       - On line 34, update `socket_mode_enabled` to `true`
@@ -74,10 +74,10 @@ While there are sufficient ways of securing inbound API requests from the public
       - On line 34, verify `socket_mode_enabled` is set to `false`
 4. Review the summarized settings on the next window and click Create.
 5. On the General --> Basic Information page, note the `Signing Secret` near the bottom, under App Credentials. This will be needed later for setting `SLACK_SIGNING_SECRET`.
-6. On this same Basic Infomration page, select `Install to Workspace`. Select a channel to allow the app to post to (e.g. #general), and click `Allow`.
+6. On this same Basic Information page, select `Install to Workspace`. Select a channel to allow the app to post to (e.g. #general), and click `Allow`.
    - If you are not a Slack admin, this step will require approval first from an Slack admin in your company.
 7. If using Socket mode:
-   - Under Settings --> Basic Informmation, scroll down to section "App-Level Tokens" and click `Generate Token and Scopes` to generate an API token.
+   - Under Settings --> Basic Information, scroll down to section "App-Level Tokens" and click `Generate Token and Scopes` to generate an API token.
       - **Token Name**: This can be anything you want.
       - **Scopes**: Click `Add Scope` and select the option `connections:write`.
    - Click `Generate`. Copy this API token. This will be needed later for setting `SLACK_APP_TOKEN`.
@@ -131,7 +131,7 @@ PLUGINS_CONFIG = {
 > **Note**: In the Slack app, you will need to invite the chatbot to each channel that it will belong to with `@<app name>`.
 > For example, when an app named `Nautobot ChatOps` is installed to the workspace:
 >
-> 1. A message is displayed in the channel, saying that the integration`Nautobot ChatOps` has been added
+> 1. A message is displayed in the channel, saying that the integration `Nautobot ChatOps` has been added
 > 2. You `@Nautobot ChatOps` in the channel
 > 3. You are prompted to add `@Nautobot ChatOps` to the channel
 
