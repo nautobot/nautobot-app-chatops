@@ -49,6 +49,8 @@ mkdocs-material = "8.4.2"
 # Automatic documentation from sources, for MkDocs
 mkdocstrings = "0.19"
 mkdocstrings-python = "0.7.1"
+# Render custom markdown for version added/changed/remove notes
+mkdocs-version-annotations = "~1.0.0"
 
 
 [tool.black]

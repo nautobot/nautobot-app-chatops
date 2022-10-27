@@ -11,22 +11,22 @@ from slack_sdk.socket_mode.request import SocketModeRequest
 from slack_sdk.web.async_client import AsyncWebClient
 
 from nautobot_chatops.workers import get_commands_registry, commands_help, parse_command_string
-from nautobot_chatops.dispatchers.slack import SlackSocketDispatcher
+from nautobot_chatops.dispatchers.slack import SlackDispatcher
 from nautobot_chatops.utils import socket_check_and_enqueue_command
 
 
-SLASH_PREFIX = settings.PLUGINS_CONFIG["nautobot_chatops"].get("slack_slash_command_prefix")
 
 
 async def main():  # pylint: disable=too-many-statements
     """Slack Socket Main Loop."""
+    SLASH_PREFIX = settings.PLUGINS_CONFIG["nautobot_chatops"].get("slack_slash_command_prefix")
     client = SocketModeClient(
         app_token=settings.PLUGINS_CONFIG["nautobot_chatops"].get("slack_app_token"),
         web_client=AsyncWebClient(token=settings.PLUGINS_CONFIG["nautobot_chatops"]["slack_api_token"]),
     )
 
     async def process(client: SocketModeClient, req: SocketModeRequest):
-        client.logger.debug("SK Received a socket request.")
+        client.logger.debug("Worker received a socket request.")
         if req.type == "slash_commands":
             client.logger.debug("Received slash command.")
             # Acknowledge the request anyway
@@ -63,15 +63,14 @@ async def main():  # pylint: disable=too-many-statements
             command, subcommand, params = parse_command_string(f"{command} {params}")
         except ValueError as err:
             client.logger.error("%s", err)
+            return
 
         registry = get_commands_registry()
 
         if command not in registry:
-            SlackSocketDispatcher(context).send_markdown(commands_help(prefix=SLASH_PREFIX))
+            SlackDispatcher(context).send_markdown(commands_help(prefix=SLASH_PREFIX))
 
-        return await socket_check_and_enqueue_command(
-            registry, command, subcommand, params, context, SlackSocketDispatcher
-        )
+        return await socket_check_and_enqueue_command(registry, command, subcommand, params, context, SlackDispatcher)
 
     # pylint: disable=too-many-locals,too-many-return-statements,too-many-branches,too-many-statements,too-many-nested-blocks
     async def process_interactive(client, req):
@@ -113,7 +112,7 @@ async def main():  # pylint: disable=too-many-statements
 
             if settings.PLUGINS_CONFIG["nautobot_chatops"].get("delete_input_on_submission"):
                 # Delete the interactive element since it's served its purpose
-                SlackSocketDispatcher(context).delete_message(context["response_url"])
+                SlackDispatcher(context).delete_message(context["response_url"])
             if action_id == "action" and selected_value == "cancel":
                 # Nothing more to do
                 return
@@ -136,12 +135,13 @@ async def main():  # pylint: disable=too-many-statements
                     cmds = shlex.split(callback_id)
                 except ValueError as err:
                     client.logger.error("%s", err)
+                    return
                 for i, cmd in enumerate(cmds):
                     if i == 2:
-                        selected_value += f"'{cmd}'"
+                        selected_value += shlex.quote(f"'{cmd}'")
                     elif i > 2:
-                        selected_value += f" '{cmd}'"
-                action_id = f"{cmds[0]} {cmds[1]}"
+                        selected_value += shlex.quote(f" '{cmd}'")
+                action_id = shlex.quote(f"{cmds[0]} {cmds[1]}")
 
                 sorted_params = sorted(values.keys())
                 for blk_id in sorted_params:
@@ -160,9 +160,9 @@ async def main():  # pylint: disable=too-many-statements
                         # If an optional parameter is passed, it is returned as a NoneType.
                         # We instead want to return an empty string, otherwise 'None' is returned as a string.
                         if value:
-                            selected_value += f" '{value}'"
+                            selected_value += shlex.quote(f" '{value}'")
                         else:
-                            selected_value += " ''"
+                            selected_value += shlex.quote(" ''")
 
             # Original un-modified single-field handling below
             else:
@@ -174,6 +174,7 @@ async def main():  # pylint: disable=too-many-statements
                     selected_value = f"'{value}'"
                 else:
                     client.logger.error(f"Unhandled action type {action['type']}")
+                    return
 
             # Modal view submissions don't generally contain a channel ID, but we hide one for our convenience:
             if "private_metadata" in payload["view"]:
@@ -182,12 +183,14 @@ async def main():  # pylint: disable=too-many-statements
                     context["channel_id"] = private_metadata["channel_id"]
         else:
             client.logger.error("I didn't understand that notification.")
+            return
 
         client.logger.info(f"action_id: {action_id}, selected_value: {selected_value}")
         try:
             command, subcommand, params = parse_command_string(f"{action_id} {selected_value}")
         except ValueError as err:
             client.logger.error("%s", err)
+            return
 
         # Convert empty parameter strings to NoneType
         for idx, param in enumerate(params):
@@ -199,15 +202,14 @@ async def main():  # pylint: disable=too-many-statements
         registry = get_commands_registry()
 
         if command not in registry:
-            SlackSocketDispatcher(context).send_markdown(commands_help(prefix=SLASH_PREFIX))
+            SlackDispatcher(context).send_markdown(commands_help(prefix=SLASH_PREFIX))
+            return
 
         # What we'd like to do here is send a "Nautobot is typing..." to the channel,
         # but unfortunately the API we're using doesn't support that (only the legacy/deprecated RTM API does).
-        # SlackSocketDispatcher(context).send_busy_indicator()
+        # SlackDispatcher(context).send_busy_indicator()
 
-        return await socket_check_and_enqueue_command(
-            registry, command, subcommand, params, context, SlackSocketDispatcher
-        )
+        return await socket_check_and_enqueue_command(registry, command, subcommand, params, context, SlackDispatcher)
 
     client.socket_mode_request_listeners.append(process)
 

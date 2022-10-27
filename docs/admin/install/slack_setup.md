@@ -1,12 +1,12 @@
 # Slack Setup
 
-These are the four distinct configuration values you will need to configure in `nautobot_config.py`.
+These are the distinct configuration values you will need to configure in `nautobot_config.py`.
 
 | Configuration Setting        | Mandatory? | Default |
 | ---------------------------- | ---------- | ------- |
 | `enable_slack`               | **Yes**    | False   |
 | `slack_api_token`            | **Yes**    | --      |
-| `slack_app_token`************| Socket Mode| --      |
+| `slack_app_token`            | Socket Mode| --      |
 | `slack_signing_secret`       | **Yes**    | --      |
 | `slack_slash_command_prefix` | No         | `"/"`   |
 | `slack_socket_static_host`   | No         | --      |
@@ -31,11 +31,10 @@ PLUGINS_CONFIG = {
 ```
 
 !!! info
-    When running Slack in Socket Mode, Nautobot ChatOps Plugin can specify where the static files are hosted.
-    This is helpful for giving Slack access to only the server hosting Nautobot Static Files. If Django Storage
-    is configured, Nautobot ChatOps Plugin will use the static host from Django Storage. This is optional as
-    ChatOps only uses static files for sending logos with messages. To configure the static files host, use
-    `slack_socket_static_host` ex. `slack_socket_static_host: 'https://example.com/static/'`.
+    Optional: Logos rely on Slack being able to access the Static URL provided by Nautobot. If you are running
+    Slack in Socket Mode, Nautobot ChatOps Plugin will need you to specify where the static files are hosted.
+    This is helpful for giving Slack access to only the server hosting Nautobot Static Files. To configure the
+    static files host, use `slack_socket_static_host` ex. `slack_socket_static_host: 'https://example.com/static/'`.
 
 ## Connecting to Slack
 
@@ -44,7 +43,8 @@ The Nautobot ChatOps plugin supports two methods of communicating with Slack.
 1. Incoming Webhooks
 2. Socket Mode
 
-The original supported method of connection was only incoming webhooks. As of version 1.10, socket mode support was added for Slack.
++++ 1.10
+    Added socket mode support.
 
 ### Webhooks vs. Socket Mode
 
@@ -226,7 +226,7 @@ PrivateTmp=true
 WantedBy=multi-user.target
 ```
 
-This can be done multiple times to create more workers. Up to 10 workers can be created.
+This can be done multiple times to create more workers. Up to 10 total workers can be created across all instances. Additional workers are useful to increase the amount of messages that can be processed from Slack. Additional workers are also useful for allowing ChatOps functionality during Server maintenance.
 
 ### Configure systemd
 
