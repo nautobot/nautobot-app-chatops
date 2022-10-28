@@ -17,9 +17,9 @@ from nautobot_chatops.utils import socket_check_and_enqueue_command
 
 async def main():  # pylint: disable=too-many-statements
     """Slack Socket Main Loop."""
-    SLASH_PREFIX = settings.PLUGINS_CONFIG["nautobot_chatops"].get(
+    SLASH_PREFIX = settings.PLUGINS_CONFIG["nautobot_chatops"].get(  # pylint:disable=invalid-name
         "slack_slash_command_prefix"
-    )  # pylint:disable=invalid-name
+    )
     client = SocketModeClient(
         app_token=settings.PLUGINS_CONFIG["nautobot_chatops"].get("slack_app_token"),
         web_client=AsyncWebClient(token=settings.PLUGINS_CONFIG["nautobot_chatops"]["slack_api_token"]),
