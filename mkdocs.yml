@@ -81,6 +81,7 @@ markdown_extensions:
 
 plugins:
   - "search"
+  - "mkdocs-version-annotations"
   - mkdocstrings:
       default_handler: "python"
       handlers:
@@ -88,7 +89,6 @@ plugins:
           paths: ["."]
           options:
             show_root_heading: true
-            show_category_heading: true
 
 watch:
   - "README.md"
@@ -108,8 +108,10 @@ nav:
           - "admin/install/microsoft_teams_setup.md"
       - Upgrade: "admin/admin_upgrade.md"
       - Uninstall: "admin/admin_uninstall.md"
+      - Compatibility Matrix: "admin/compatibility_matrix.md"
       - Release Notes:
           - "admin/release_notes/index.md"
+          - v1.10: "admin/release_notes/version_1.10.md"
           - v1.9: "admin/release_notes/version_1.9.md"
           - v1.8: "admin/release_notes/version_1.8.md"
           - v1.7: "admin/release_notes/version_1.7.md"

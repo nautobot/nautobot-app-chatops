@@ -36,6 +36,11 @@ class NautobotChatOpsConfig(PluginConfig):
         # Any prefix that's prepended to all slash-commands for this bot and should be stripped away
         # in order to identify the actual command name to be invoked, eg "/nautobot-"
         "slack_slash_command_prefix": "/",
+        # Since Slack Socket is meant keep Nautobot server out of public access, slack needs to know
+        # where to find Static images. If Django Storages is configured with an External server like S3,
+        # this can be ignored.
+        # If neither option is provided, then no static images (like Nautobot Logo) will be shown.
+        "slack_socket_static_host": None,
         # Microsoft-Teams-specific settings
         "microsoft_app_id": None,
         "microsoft_app_password": None,
@@ -53,7 +58,7 @@ class NautobotChatOpsConfig(PluginConfig):
     }
 
     max_version = "1.999"
-    min_version = "1.2.0"
+    min_version = "1.3.0"
     caching_config = {}
 
     def ready(self):

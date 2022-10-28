@@ -5,6 +5,7 @@ Pull requests are welcomed and automatically built and tested against multiple v
 The project is packaged with a light development environment based on `docker-compose` to help with the local development of the project and to run the tests within Github Actions.
 
 The project is following Network to Code software development guidelines and is leveraging:
+
 - Black, Pylint, Bandit and pydocstyle for Python linting and formatting.
 - Django unit test to ensure the plugin is working properly.
 

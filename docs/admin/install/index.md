@@ -43,10 +43,10 @@ The plugin is available as a Python package via PyPI and can be installed with `
 pip install nautobot-chatops
 ```
 
-To ensure Nautobot Plugin ChatOps is automatically re-installed during future upgrades, create a file named `local_requirements.txt` (if not already existing) in the Nautobot root directory (alongside `requirements.txt`) and list the `nautobot-chatops` package:
+To ensure Nautobot Plugin ChatOps is automatically re-installed during future upgrades, create a file named `local_requirements.txt` (if not already existing) in the Nautobot root directory (alongside `requirements.txt`) and list the `nautobot-chatops` package as the Nautobot user:
 
 ```no-highlight
-# echo nautobot-chatops >> local_requirements.txt
+echo nautobot-chatops >> local_requirements.txt
 ```
 
 Once installed, the plugin needs to be enabled in your Nautobot configuration. The following block of code below shows the additional configuration required to be added to your `nautobot_config.py` file:

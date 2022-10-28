@@ -22,7 +22,7 @@
 Full web-based HTML documentation for this app can be found over on the [Nautobot Docs](https://docs.nautobot.com/projects/chatops/en/latest/) website:
 
 - [User Guide](https://docs.nautobot.com/projects/chatops/en/latest/user/app_overview/) - Overview, Using the App, Getting Started
-- [Administrator Guide](https://docs.nautobot.com/projects/chatops/en/latest/admin/install/ - How to Install, Configure, Upgrade, or Uninstall the App.
+- [Administrator Guide](https://docs.nautobot.com/projects/chatops/en/latest/admin/install/) - How to Install, Configure, Upgrade, or Uninstall the App.
 - [Developer Guide](https://docs.nautobot.com/projects/chatops/en/latest/dev/dev_contributing/) - Extending the App, Code Reference, Contribution Guide.
 - [Release Notes / Changelog](https://docs.nautobot.com/projects/chatops/en/latest/admin/release_notes/)
 - [Frequently Asked Questions](https://docs.nautobot.com/projects/chatops/en/latest/user/app_faq/)

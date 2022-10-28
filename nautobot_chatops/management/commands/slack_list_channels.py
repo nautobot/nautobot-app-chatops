@@ -13,7 +13,7 @@ class Command(BaseCommand):
         """This method provides a simple manage.py command to list slack channels."""
         dispatcher = SlackDispatcher()
         # conversation_list documentation https://api.slack.com/methods/conversations.list
-        conversations = dispatcher.slack_client.conversations_list(types="public_channel, private_channel")
+        conversations = dispatcher.slack_client.conversations_list(types="public_channel, private_channel, im")
 
         table = Texttable(max_width=0)
         table.set_deco(Texttable.HEADER | Texttable.HLINES | Texttable.VLINES)
