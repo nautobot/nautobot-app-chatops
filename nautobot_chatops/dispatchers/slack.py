@@ -7,6 +7,7 @@ import time
 
 from typing import Optional
 from django.conf import settings
+from django.templatetags.static import static
 from slack_sdk import WebClient
 from slack_sdk.webhook.client import WebhookClient
 from slack_sdk.errors import SlackApiError, SlackClientError
@@ -25,6 +26,7 @@ BACKEND_ACTION_BLOCKS = backend_action_sum.labels("slack", "send_blocks")
 BACKEND_ACTION_SNIPPET = backend_action_sum.labels("slack", "send_snippet")
 
 SLACK_PRIVATE_MESSAGE_LIMIT = settings.PLUGINS_CONFIG["nautobot_chatops"].get("slack_ephemeral_message_size_limit")
+SLACK_SOCKET_STATIC_HOST = settings.PLUGINS_CONFIG["nautobot_chatops"].get("slack_socket_static_host")
 
 
 class SlackDispatcher(Dispatcher):
@@ -239,6 +241,20 @@ class SlackDispatcher(Dispatcher):
         except SlackClientError as slack_error:
             self.send_exception(slack_error)
 
+    def static_url(self, path):
+        """Return a url to access the static file."""
+        static_path = str(static(path))
+        if static_path.startswith("http"):
+            # Static is being provided by Django Storages
+            return static_path
+        try:
+            return f"{self.context['request_scheme']}://{self.context['request_host']}{static_path}"
+        except KeyError:
+            if SLACK_SOCKET_STATIC_HOST:
+                # Use the settings provided Static Host.
+                return f"{SLACK_SOCKET_STATIC_HOST}{static_path}"
+            return None
+
     def send_image(self, image_path):
         """Send an image as a file upload."""
         if self.context.get("channel_name") == "directmessage":
@@ -446,8 +462,8 @@ class SlackDispatcher(Dispatcher):
         return {"type": "section", "text": self.markdown_element(text)}
 
     def image_element(self, url, alt_text=""):
-        """Construct an image element that can be embedded in a block."""
-        return {"type": "image", "image_url": url, "alt_text": alt_text}
+        """Construct an image element that can be embedded in a block if URL is provided."""
+        return {"type": "image", "image_url": url, "alt_text": alt_text} if url else {}
 
     def markdown_element(self, text):
         """Construct a basic Markdown-formatted text element."""
