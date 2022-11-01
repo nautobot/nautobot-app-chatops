@@ -41,7 +41,7 @@
 ## Nautobot Config
 
 - `microsoft_app_id` - This is the "Microsoft App ID" from Azure step 10.
-- `microsoft_app_password` - This is the "Microsoft App ID" from Azure step 13.
+- `microsoft_app_password` - This is the "Client Secret" from Azure step 13.
 
 ## Handling ChatOps Behind a Firewall
 
