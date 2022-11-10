@@ -21,31 +21,34 @@ from nautobot_chatops.utils import check_and_enqueue_command
 
 logger = logging.getLogger(__name__)
 
-# v1.4.0 Deprecation warning
-if settings.PLUGINS_CONFIG["nautobot_chatops"].get("webex_teams_token") and not settings.PLUGINS_CONFIG[
-    "nautobot_chatops"
-].get("webex_token"):
-    TOKEN = settings.PLUGINS_CONFIG["nautobot_chatops"]["webex_teams_token"]
-    logger.warning("The 'webex_teams_token' setting is deprecated, please use 'webex_token' instead")
-else:
+if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_webex") or settings.PLUGINS_CONFIG["nautobot_chatops"].get(
+    "enable_webex_teams"
+):
+    # v1.4.0 Deprecation warning
+    if settings.PLUGINS_CONFIG["nautobot_chatops"].get("webex_teams_token") and not settings.PLUGINS_CONFIG[
+        "nautobot_chatops"
+    ].get("webex_token"):
+        TOKEN = settings.PLUGINS_CONFIG["nautobot_chatops"]["webex_teams_token"]
+        logger.warning("The 'webex_teams_token' setting is deprecated, please use 'webex_token' instead")
+    else:
+        try:
+            TOKEN = settings.PLUGINS_CONFIG["nautobot_chatops"]["webex_token"]
+        except KeyError as err:
+            ERROR_MSG = "The 'webex_token' setting must be configured"
+            logger.error(ERROR_MSG)
+            raise KeyError(ERROR_MSG) from err
+
+
     try:
-        TOKEN = settings.PLUGINS_CONFIG["nautobot_chatops"]["webex_token"]
-    except KeyError as err:
-        ERROR_MSG = "The 'webex_token' setting must be configured"
-        logger.error(ERROR_MSG)
-        raise KeyError(ERROR_MSG) from err
-
-
-try:
-    API = WebexTeamsAPI(access_token=TOKEN)
-    BOT_ID = API.people.me().id
-except (AccessTokenError, ApiError):
-    logger.warning(
-        "Missing or invalid WEBEX_TOKEN setting. "
-        "This may be ignored if you are not running Nautobot as a WebEx chatbot."
-    )
-    API = None
-    BOT_ID = None
+        API = WebexTeamsAPI(access_token=TOKEN)
+        BOT_ID = API.people.me().id
+    except (AccessTokenError, ApiError):
+        logger.warning(
+            "Missing or invalid WEBEX_TOKEN setting. "
+            "This may be ignored if you are not running Nautobot as a WebEx chatbot."
+        )
+        API = None
+        BOT_ID = None
 
 # TODO: the plugin should verify that the webhooks are correctly set up, or else make API calls to create them
 
@@ -53,9 +56,9 @@ except (AccessTokenError, ApiError):
 def generate_signature(request):
     """Calculate the expected signature of a given request."""
     # v1.4.0 Deprecation warning
-    if settings.PLUGINS_CONFIG["nautobot_chatops"].get("webex_teams_token") and not settings.PLUGINS_CONFIG[
+    if settings.PLUGINS_CONFIG["nautobot_chatops"].get("webex_teams_signing_secret") and not settings.PLUGINS_CONFIG[
         "nautobot_chatops"
-    ].get("webex_token"):
+    ].get("webex_signing_secret"):
         signing_secret = settings.PLUGINS_CONFIG["nautobot_chatops"].get("webex_teams_signing_secret").encode("utf-8")
         logger.warning(
             "The 'webex_teams_signing_secret' setting is deprecated, please use 'webex_signing_secret' instead"
@@ -64,7 +67,7 @@ def generate_signature(request):
         try:
             signing_secret = settings.PLUGINS_CONFIG["nautobot_chatops"]["webex_signing_secret"].encode("utf-8")
         except KeyError as error:
-            error_msg = "The 'webex_token' setting must be configured"
+            error_msg = "The 'webex_signing_secret' setting must be configured"
             logger.error(error_msg)
             raise KeyError(error_msg) from error
 
