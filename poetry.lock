@@ -1169,6 +1169,18 @@ Markdown = ">=3.3"
 mkdocs = ">=1.1"
 
 [[package]]
+name = "mkdocs-include-markdown-plugin"
+version = "3.6.1"
+description = "Mkdocs Markdown includer plugin."
+category = "dev"
+optional = false
+python-versions = ">=3.6"
+
+[package.extras]
+dev = ["bump2version (==1.0.1)", "flake8 (==3.9.2)", "flake8-implicit-str-concat (==0.2.0)", "flake8-print (==4.0.0)", "isort (==5.9.1)", "mdpo (==0.3.61)", "mkdocs (==1.2.3)", "pre-commit (==2.13.0)", "pytest (==6.2.5)", "pytest-cov (==3.0.0)", "pyupgrade (==2.19.4)", "yamllint (==1.26.1)"]
+test = ["pytest (==6.2.5)", "pytest-cov (==3.0.0)"]
+
+[[package]]
 name = "mkdocs-material"
 version = "8.4.2"
 description = "Documentation that simply works"
@@ -2087,7 +2099,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "1b0a4d4fd092081988e49b74b9ebb118723540e18216e21243b891ac3d4c1bfe"
+content-hash = "67b53ce688d02ac757cea046c2e9c40919612a02bf67f50195ec685b56b5fe34"
 
 [metadata.files]
 aiodns = [
@@ -2427,6 +2439,7 @@ mergedeep = [
 ]
 mkdocs = []
 mkdocs-autorefs = []
+mkdocs-include-markdown-plugin = []
 mkdocs-material = []
 mkdocs-material-extensions = []
 mkdocs-version-annotations = []

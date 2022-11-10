@@ -51,6 +51,8 @@ mkdocstrings = "0.19"
 mkdocstrings-python = "0.7.1"
 # Render custom markdown for version added/changed/remove notes
 mkdocs-version-annotations = "~1.0.0"
+# Allow Markdown files to include other files
+mkdocs-include-markdown-plugin = "~3.6.1"
 
 
 [tool.black]

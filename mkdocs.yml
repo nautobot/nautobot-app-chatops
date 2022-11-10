@@ -81,6 +81,7 @@ markdown_extensions:
 
 plugins:
   - "search"
+  - "include-markdown"
   - "mkdocs-version-annotations"
   - mkdocstrings:
       default_handler: "python"
@@ -136,4 +137,6 @@ nav:
               - "dev/code_reference/webex.md"
               - "dev/code_reference/ms_teams.md"
               - "dev/code_reference/mattermost.md"
+          - "models/accessgrant.md"
+          - "models/commandtoken.md"
   - Nautobot Docs Home ↗︎: "https://docs.nautobot.com"
