@@ -7,7 +7,7 @@ class AccessGrantTypeChoices(ChoiceSet):
     """Choices for the AccessGrant grant_type field."""
 
     TYPE_ORGANIZATION = "organization"
-    TYPE_CHANNEL = "channel (room)"
+    TYPE_CHANNEL = "channel"
     TYPE_USER = "user"
 
     CHOICES = (
