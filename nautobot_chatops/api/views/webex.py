@@ -38,7 +38,6 @@ if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_webex") or settings.P
             logger.error(ERROR_MSG)
             raise KeyError(ERROR_MSG) from err
 
-
     try:
         API = WebexTeamsAPI(access_token=TOKEN)
         BOT_ID = API.people.me().id
