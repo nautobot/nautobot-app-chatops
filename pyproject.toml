@@ -20,6 +20,7 @@ include = [
 "nautobot" = "nautobot_chatops.workers.nautobot:nautobot"
 
 [tool.poetry.dependencies]
+# TODO Move to ~ requirements instead of ^
 python = "^3.7"
 nautobot = "^1.2.0"
 nautobot-capacity-metrics = "*"
@@ -53,6 +54,8 @@ mkdocstrings-python = "0.7.1"
 mkdocs-version-annotations = "~1.0.0"
 # Allow Markdown files to include other files
 mkdocs-include-markdown-plugin = "~3.6.1"
+# Change log management and generation
+towncrier = "~22.8.0"
 
 
 [tool.black]
@@ -109,3 +112,18 @@ max-line-length=120
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.towncrier]
+package = "nautobot-chatops"
+directory = "changes"
+filename = "docs/admin/release_notes/version_1.10.md"
+template = "development/towncrier_template.j2"
+start_string = "<!-- towncrier release notes start -->"
+issue_format = "[#{issue}](https://github.com/nautobot/nautobot-plugin-chatops/issues/{issue})"
+
+[tool.towncrier.fragment.added]
+[tool.towncrier.fragment.changed]
+[tool.towncrier.fragment.deprecated]
+[tool.towncrier.fragment.fixed]
+[tool.towncrier.fragment.removed]
+[tool.towncrier.fragment.security]

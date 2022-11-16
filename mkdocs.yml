@@ -127,6 +127,7 @@ nav:
       - Contributing to the App: "dev/dev_contributing.md"
       - Design Documentation: "dev/design.md"
       - Development Environment: "dev/dev_environment.md"
+      - Release Checklist: "dev/release_checklist.md"
       - Code Reference:
           - "dev/code_reference/index.md"
           - Models: "dev/code_reference/models.md"
