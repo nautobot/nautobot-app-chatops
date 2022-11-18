@@ -23,6 +23,9 @@ services:
       - "redis"
     <<: *nautobot-build
     <<: *nautobot-base
+    # Uncomment if using Bot Framework Emulator
+    # extra_hosts:
+    #   - "localhost:host-gateway"
   worker:
     entrypoint: "nautobot-server rqworker"
     depends_on:

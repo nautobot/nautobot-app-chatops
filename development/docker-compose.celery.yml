@@ -15,3 +15,6 @@ services:
     volumes:
       - "./nautobot_config.py:/opt/nautobot/nautobot_config.py"
       - "../:/source"
+    # Uncomment if using Bot Framework Emulator
+    # extra_hosts:
+    #   - "localhost:host-gateway"
