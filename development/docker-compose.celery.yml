@@ -8,6 +8,9 @@ services:
       - "creds.env"
     tty: true
     entrypoint: "nautobot-server celery worker -l INFO"
+    # Uncomment if using Bot Framework Emulator
+    # extra_hosts:
+    #   - "localhost:host-gateway"
     depends_on:
       - "nautobot"
     healthcheck:
@@ -15,6 +18,3 @@ services:
     volumes:
       - "./nautobot_config.py:/opt/nautobot/nautobot_config.py"
       - "../:/source"
-    # Uncomment if using Bot Framework Emulator
-    # extra_hosts:
-    #   - "localhost:host-gateway"
