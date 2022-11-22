@@ -3,23 +3,31 @@
 By delivering this as a Nautobot ChatOps plugin, we gain the following benefits:
 
 - No need to stand up a separate HTTP server, just use Nautobot's own HTTP server.
-- Use of `async` is not required because we can hand off long-running tasks to Nautobot's `celery` workers.
+- Use of `async` is not required because we can hand off long-running tasks to Nautobot's `celery` workers. With one notable exception, WebSocket connections will be done with `async`. We have opted for `AIOHTTP` for our WebSocket [clients](https://docs.aiohttp.org/en/stable/client_quickstart.html#aiohttp-client-websockets).
 
 ## Code structure
 
 The design goal of this plugin is to be able to write chatbot commands once and have them run anywhere
 (Slack, Microsoft Teams, WebEx, etc.). Toward that end, it's divided into three layers:
 
-1. input (`nautobot_chatops.views`)
-    - Each module in this layer provides the HTTP endpoint(s) that a given chat platform requires for a chatbot.
-     For example, `nautobot_chatops.views.slack` provides 2 such endpoints:
+1. input
+    1. Webhooks (`nautobot_chatops.views`)
+       - Each module in this layer provides the HTTP endpoint(s) that a given chat platform requires for a chatbot.
+        For example, `nautobot_chatops.views.slack` provides 2 such endpoints:
 
-        1. for inbound slash-commands (invoked by `/command`)
-        2. for inbound interactive actions (invoked by blocks or modal dialogs)
+           1. for inbound slash-commands (invoked by `/command`)
+           2. for inbound interactive actions (invoked by blocks or modal dialogs)
 
-        Different chat platforms may require more or fewer such endpoints.
+           Different chat platforms may require more or fewer such endpoints.
 
-    - Each endpoint view is responsible for pulling relevant data (command, subcommand, parameters) out of the
+    2. WebSockets (`nautobot_chatops.sockets`)
+        - Each module in this layer provides the WebSocket connection and listeners to a given chat platform for a chatbot. For example, `nautobot_chatops.sockets.slack` provides 2 listeners:
+            1. for slash-commands (invoked by `/command`)
+            2. for interactive actions (invoked by blocks or modal dialogs)
+
+            Different chat platforms may require more or fewer listeners.
+
+    - Each endpoint view or listener is responsible for pulling relevant data (command, subcommand, parameters) out of the
      provided chat-platform-specific encoding or data structures (form-encoded, JSON, XML, whatever) and enqueuing
      the extracted data into `celery` for the worker that handles a given command.
 
@@ -69,6 +77,8 @@ The design goal of this plugin is to be able to write chatbot commands once and 
 
 ## Information flow
 
+### Webhooks
+
 ```no-highlight
 [ Chat client ] [ Chat server ] [ Nautobot main process ]
  |                |               |
@@ -83,7 +93,7 @@ The design goal of this plugin is to be able to write chatbot commands once and 
 ...Time passes...
 
 ```no-highlight
-[ Chat client ] [ Chat server ] [ Nautobot django_rq worker process ----------------------------------- ]
+[ Chat client ] [ Chat server ] [ Nautobot celery worker process ----------------------------------- ]
  |                |                                                  | nautobot/workers/*
  |                |                                                  | Pick up next job from queue
  |                |                                                  | Instantiate provided dispatcher
@@ -96,6 +106,57 @@ The design goal of this plugin is to be able to write chatbot commands once and 
  |                |                 | <- send output to dispatcher --|
  |                |                 | nautobot/dispatchers/*
  |                |<--- HTTP POST --|
+ |<- user output--|
+```
+
+### WebSockets
+
+```no-highlight
+[ Chat client ] [ Chat server ] [ Nautobot main process ]
+ |                |               |
+ |-- User input ->|               |
+ |                |-- WEBSOCKET RECV--|
+ |                |               | nautobot_chatops/sockets/*
+ |                |               |-- Enqueue job,dispatcher to Celery --> <queue>
+ |                |-- WEBSOCKET RESP --|
+ |<- "Received" --|
+```
+
+...Time passes...
+
+```no-highlight
+[ Chat client ] [ Chat server ] [ Nautobot celery worker process ----------------------------------- ]
+ |                |                                                  | nautobot/workers/*
+ |                |                                                  | Pick up next job from queue
+ |                |                                                  | Instantiate provided dispatcher
+ |                |                                                  |
+ |                |                 | <- send status to dispatcher --|
+ |                |                 | nautobot/dispatchers/*         |
+ |                |<--- HTTP POST --|                                |-- call Nautobot, REST APIs, etc. -->
+ |<- user output--|                                                  | Additional calls, processing, etc.
+ |                |                                                  |
+ |                |                 | <- send output to dispatcher --|
+ |                |                 | nautobot/dispatchers/*
+ |                |<--- HTTP POST --|
+ |<- user output--|
+```
+
+OR
+
+```no-highlight
+[ Chat client ] [ Chat server ] [ Nautobot celery worker process ----------------------------------- ]
+ |                |                                                  | nautobot/workers/*
+ |                |                                                  | Pick up next job from queue
+ |                |                                                  | Instantiate provided dispatcher
+ |                |                                                  |
+ |                |                 | <- send status to dispatcher --|
+ |                |                 | nautobot/dispatchers/*         |
+ |                |-- WEBSOCKET RESP --|                                |-- call Nautobot, REST APIs, etc. -->
+ |<- user output--|                                                  | Additional calls, processing, etc.
+ |                |                                                  |
+ |                |                 | <- send output to dispatcher --|
+ |                |                 | nautobot/dispatchers/*
+ |                |-- WEBSOCKET RESP --|
  |<- user output--|
 ```
 

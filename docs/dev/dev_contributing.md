@@ -102,7 +102,7 @@ explanation.
 
 The provided `details_str` will be stored in the Nautobot command log history.
 
-## Adding support for a new chat platform
+## Adding support for a new chat platform (Webhooks)
 
 First, you should be familiar with the design goals and constraints involved in Nautobot (`design.md`).
 
@@ -113,3 +113,65 @@ subclass of `Dispatcher`. This new dispatcher class will need to implement any a
 and override any other methods where platform-specific behavior is required (which will probably be most of them).
 
 You shouldn't need to make any changes to the `workers` module in this scenario.
+
+## Adding support for a new chat platform (WebSockets)
+
+First, you should be familiar with the design goals and constraints involved in Nautobot (`design.md`).
+
+You'll need to add a new `nautobot_chatops.sockets.<platform>` submodule that provides the necessary WebSocket connection to the Platform.
+
+You'll also need to add a new `nautobot_chatops.dispatchers.<platform>` submodule that implements an appropriate
+subclass of `Dispatcher`. This new dispatcher class will need to implement any abstract methods of the base class
+and override any other methods where platform-specific behavior is required (which will probably be most of them).
+
+Finally, you will need to add a new `nautobot_chatops.management.start_<platform>_socket` management command that will start the WebSocket async loop. In 2.0 these will likely be condensed to use a single base command with args to select the platform.
+
+You shouldn't need to make any changes to the `workers` module in this scenario.
+
+## Submitting Pull Requests
+
+- It is recommended to open an issue **before** starting work on a pull request, and discuss your idea with the Nautobot maintainers before beginning work. This will help prevent wasting time on something that we might not be able to implement. When suggesting a new feature, also make sure it won't conflict with any work that's already in progress.
+
+- Once you've opened or identified an issue you'd like to work on, ask that it
+  be assigned to you so that others are aware it's being worked on. A maintainer
+  will then mark the issue as "accepted."
+
+- If you followed the project guidelines, have ample tests, code quality, you will first be acknowledged for your work. So, thank you in advance! After that, the PR will be quickly reviewed to ensure that it makes sense as a contribution to the project, and to gauge the work effort or issues with merging into *current*. If the effort required by the core team isn’t trivial, it’ll likely still be a few weeks before it gets thoroughly reviewed and merged, thus it won't be uncommon to move it to *near term* with a `near-term` label. It will just depend on the current backlog.
+
+- All code submissions should meet the following criteria (CI will enforce
+these checks):
+  - Python syntax is valid
+  - All unit tests pass successfully
+  - PEP 8 compliance is enforced, with the exception that lines may be
+    greater than 80 characters in length
+  - At least one [changelog fragment](#creating-changelog-fragments) has
+    been included in the feature branch
+
+### Creating Changelog Fragments
+
+All pull requests to `next` or `develop` must include a changelog fragment file in the `./changes` directory. To create a fragment, use your github issue number and fragment type as the filename. For example, `2362.added`. Valid fragment types are `added`, `changed`, `deprecated`, `fixed`, `removed`, and `security`. The change summary is added to the file in plain text. Change summaries should be complete sentences, starting with a capital letter and ending with a period, and be in past tense. Each line of the change fragment will generate a single change entry in the release notes. Use multiple lines in the same file if your change needs to generate multiple release notes in the same category. If the change needs to create multiple entries in separate categories, create multiple files.
+
+!!! example
+
+    **Wrong**
+    ```plaintext title="changes/1234.fixed"
+    fix critical bug in documentation
+    ```
+
+    **Right**
+    ```plaintext title="changes/1234.fixed"
+    Fixed critical bug in documentation.
+    ```
+
+!!! example "Multiple Entry Example"
+
+    This will generate 2 entries in the `fixed` category and one entry in the `changed` category.
+
+    ```plaintext title="changes/1234.fixed"
+    Fixed critical bug in documentation.
+    Fixed release notes generation.
+    ```
+
+    ```plaintext title="changes/1234.changed"
+    Changed release notes generation.
+    ```
