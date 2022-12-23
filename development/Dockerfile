@@ -52,6 +52,12 @@ COPY . /source
 #  so pip can use it to recognize local constraints.
 RUN pip show nautobot | grep "^Version: " | sed -e 's/Version: /nautobot==/' > constraints.txt
 
+# Install Poetry 1.2.0
+RUN --mount=type=cache,target="/root/.cache/pip" \
+    curl -sSL https://install.python-poetry.org -o /tmp/install-poetry.py && \
+    python /tmp/install-poetry.py --version 1.2.0 && \
+    rm -f /tmp/install-poetry.py
+
 # Use Poetry to grab dev dependencies from the lock file
 # Can be improved in Poetry 1.2 which allows `poetry install --only dev`
 #
