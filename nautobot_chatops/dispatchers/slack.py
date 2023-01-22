@@ -101,6 +101,12 @@ class SlackDispatcher(Dispatcher):
 
         return None
 
+    @classmethod
+    def lookup_user_id_by_email(cls, email) -> Optional[str]:
+        instance = cls(context=None)
+        response = instance.slack_client.users_lookupByEmail(email=email)
+        return response["user"]["id"]
+
     # More complex APIs for presenting structured data - these typically build on the more basic functions below
 
     def command_response_header(self, command, subcommand, args, description="information", image_element=None):

@@ -44,13 +44,14 @@ class CommandLogTable(BaseTable):
             "runtime",
             "platform",
             "user_name",
+            "system_user",
             "command",
             "subcommand",
             "params",
             "status",
             "details",
         )
-        default_columns = ("start_time", "user_name", "command", "subcommand", "params", "status")
+        default_columns = ("start_time", "user_name", "system_user", "command", "subcommand", "params", "status")
 
 
 class AccessGrantTable(BaseTable):

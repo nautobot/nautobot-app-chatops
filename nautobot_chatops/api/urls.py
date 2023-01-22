@@ -5,12 +5,15 @@ from django.urls import path
 
 from django.conf import settings
 from nautobot.core.api import OrderedDefaultRouter
-from nautobot_chatops.api.views.lookup import AccessLookupView
+from nautobot_chatops.api.views.lookup import AccessLookupView, UserEmailLookupView
 from nautobot_chatops.api.views.generic import AccessGrantViewSet, CommandTokenViewSet, NautobotChatopsRootView
 
 
 logger = logging.getLogger(__name__)
-urlpatterns = [path("lookup/", AccessLookupView.as_view(), name="access_lookup")]
+urlpatterns = [
+    path("lookup/", AccessLookupView.as_view(), name="access_lookup"),
+    path("email-lookup/", UserEmailLookupView.as_view, name="email_lookup")
+]
 
 if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_slack"):
     from nautobot_chatops.api.views.slack import SlackSlashCommandView, SlackInteractionView

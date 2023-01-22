@@ -1,5 +1,6 @@
 """Django models for recording user interactions with Nautobot."""
 
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 
@@ -7,7 +8,7 @@ from nautobot.utilities.fields import ColorField
 from nautobot.extras.models.change_logging import ChangeLoggedModel
 from nautobot.core.models import BaseModel
 
-from .choices import AccessGrantTypeChoices, CommandStatusChoices, CommandTokenPlatformChoices
+from .choices import AccessGrantTypeChoices, CommandStatusChoices, CommandTokenPlatformChoices, PlatformChoices
 
 from .constants import (
     COMMAND_LOG_USER_NAME_HELP_TEXT,
@@ -22,6 +23,7 @@ from .constants import (
     ACCESS_GRANT_VALUE_HELP_TEXT,
     COMMAND_TOKEN_COMMENT_HELP_TEXT,
     COMMAND_TOKEN_TOKEN_HELP_TEXT,
+    CHATOPS_USER_ID_HELP_TEXT,
 )
 
 
@@ -51,6 +53,13 @@ class CommandLog(BaseModel):
         default=CommandStatusChoices.STATUS_SUCCEEDED,
     )
     details = models.CharField(max_length=255, default="")
+    system_user = models.ForeignKey(
+        to=settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name="command_log",
+    )
 
     csv_headers = ["Start Time", "Username", "Command", "Subcommand", "Params", "Status"]
 
@@ -136,3 +145,25 @@ class CommandToken(BaseModel, ChangeLoggedModel):
         """Meta-attributes of a CommandToken."""
 
         ordering = ["platform", "token", "comment"]
+
+
+class ChatOpsAccountLink(BaseModel, ChangeLoggedModel):
+    """Connect ChatOps User with Nautobot User."""
+    nautobot_user = models.ForeignKey(
+        to=settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="chatops_user",
+        verbose_name="User",
+    )
+    platform = models.CharField(max_length=32, choices=PlatformChoices)
+    user_id = models.CharField(max_length=255, help_text=CHATOPS_USER_ID_HELP_TEXT, verbose_name="Chat User ID")
+
+    def __str__(self):
+        """String representation of a ChatOps Account Link."""
+        return f'{self.nautobot_user.username} -> {self.platform} {self.user_id}'
+
+    class Meta:
+        unique_together = [
+            ["user_id", "platform"]
+        ]
+        verbose_name = "ChatOps Account Link"

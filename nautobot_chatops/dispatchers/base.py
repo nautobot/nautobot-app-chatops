@@ -2,9 +2,12 @@
 import logging
 from typing import Dict, Optional
 from django.templatetags.static import static
+from django.contrib.auth import get_user_model
 from django.core.cache import cache
+from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 
+from nautobot_chatops.models import ChatOpsAccountLink
 from texttable import Texttable
 
 logger = logging.getLogger(__name__)
@@ -35,6 +38,25 @@ class Dispatcher:
     def __init__(self, context=None):
         """Init this Dispatcher with the provided dict of contextual information (which will vary by app)."""
         self.context = context or {}
+
+    @property
+    def user(self):
+        if self.context.get("user_id"):
+            try:
+                return ChatOpsAccountLink.objects.get(
+                    platform=self.platform_slug,
+                    user_id=self.context["user_id"]
+                ).nautobot_user
+            except ObjectDoesNotExist:
+                logger.warning(
+                    f"Could not find User matching {self.context['user_name']} - id: {self.context['user_id']}."
+                    "Add a ChatOps User to link the accounts."
+                    )
+        user_model = get_user_model()
+        user, _ = user_model.objects.get_or_create(
+            username=settings.PLUGINS_CONFIG["nautobot_chatops"]["fallback_chatops_user"]
+        )
+        return user
 
     def _get_cache_key(self) -> str:
         """Key generator for the cache, adding the plugin prefix name."""

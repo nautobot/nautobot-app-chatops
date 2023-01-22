@@ -40,7 +40,7 @@ def prompt_for_device(action_id, help_text, dispatcher, devices=None, offset=0):
     # In the previous implementation, we grouped the devices into subgroups by site.
     # Unfortunately, while this is possible in Slack, the Adaptive Cards spec (MS Teams / WebEx) can't do it.
     if devices is None:
-        devices = Device.objects.all().order_by("site", "name")
+        devices = Device.objects.restrict(dispatcher.user, "view").order_by("site", "name")
     if not devices:
         dispatcher.send_error("No devices were found")
         return (CommandStatusChoices.STATUS_FAILED, "No devices found")
@@ -602,7 +602,7 @@ def get_device_status(dispatcher, device_name):
         return False  # command did not run to completion and therefore should not be logged
 
     try:
-        device = Device.objects.get(name=device_name)
+        device = Device.objects.restrict(dispatcher.user, "view").get(name=device_name)
     except Device.DoesNotExist:
         dispatcher.send_error(f"I don't know device '{device_name}'")
         prompt_for_device("nautobot get-device-status", "Get Nautobot Device Status", dispatcher)

@@ -4,8 +4,8 @@ from django import forms
 
 from nautobot.utilities.forms import BootstrapMixin
 
-from .models import AccessGrant, CommandToken
-from .choices import AccessGrantTypeChoices, CommandTokenPlatformChoices
+from .models import AccessGrant, CommandToken, ChatOpsAccountLink
+from .choices import AccessGrantTypeChoices, CommandTokenPlatformChoices, PlatformChoices
 from .constants import ACCESS_GRANT_COMMAND_HELP_TEXT, COMMAND_TOKEN_TOKEN_HELP_TEXT
 
 BLANK_CHOICE = (("", "--------"),)
@@ -43,6 +43,17 @@ class AccessGrantForm(BootstrapMixin, forms.ModelForm):
         model = AccessGrant
 
         fields = ("command", "subcommand", "grant_type", "name", "value")
+
+
+class ChatOpsAccountLinkForm(BootstrapMixin, forms.ModelForm):
+    """Form for creating or editing a ChatOps Account Link instance."""
+    email = forms.EmailField(required=False)
+    platform = forms.ChoiceField(choices=PlatformChoices.CHOICES)
+
+    class Meta:
+        """Metaclass attributes of ChatOpsAccountLinkForm."""
+        model = ChatOpsAccountLink
+        fields = ("platform", "email", "user_id")
 
 
 class CommandTokenFilterForm(BootstrapMixin, forms.ModelForm):
