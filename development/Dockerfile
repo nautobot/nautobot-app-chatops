@@ -1,18 +1,18 @@
 # -------------------------------------------------------------------------------------
-# Nautobot Plugin Development Dockerfile Template
+# Nautobot Plugin Developement Dockerfile Template
 # Version: 1.0.0
 #
 # Plugins that need to add additional steps or packages can do in the section below.
 # -------------------------------------------------------------------------------------
 # !!! USE CAUTION WHEN MODIFYING LINES BELOW
 
-# Accepts a desired Nautobot version as build argument, default to 1.2.0
-ARG NAUTOBOT_VER="1.2.0"
+# Accepts a desired Nautobot version as build argument, default to 1.4.0
+ARG NAUTOBOT_VER="1.4"
 
-# Accepts a desired Python version as build argument, default to 3.7
-ARG PYTHON_VER="3.7"
+# Accepts a desired Python version as build argument, default to 3.8
+ARG PYTHON_VER="3.8"
 
-# Retrieve published development image of Nautobot base which should include most CI dependencies
+# Retreive published development image of Nautobot base which should include most CI dependencies
 FROM ghcr.io/nautobot/nautobot-dev:${NAUTOBOT_VER}-py${PYTHON_VER}
 
 # Runtime argument and environment setup
@@ -22,12 +22,13 @@ ENV prometheus_multiproc_dir=/prom_cache
 ENV NAUTOBOT_ROOT ${NAUTOBOT_ROOT}
 
 # Don't need virtual environments in container, parallelized installer has inconsistent behavior
-RUN poetry config virtualenvs.create false \
+RUN poetry self update \
+    &&  poetry config virtualenvs.create false \
     && poetry config installer.parallel false
 
 # !!! USE CAUTION WHEN MODIFYING LINES ABOVE
 # -------------------------------------------------------------------------------------
-# Plugin-specific system build/test dependencies.
+# Plugin-specifc system build/test dependencies.
 # 
 # Example: LDAP requires `libldap2-dev` to be apt-installed before the Python package.
 # -------------------------------------------------------------------------------------
@@ -51,12 +52,6 @@ COPY . /source
 # NAUTOBOT_VER may be a branch name and not a published release therefor we need to get the installed version
 #  so pip can use it to recognize local constraints.
 RUN pip show nautobot | grep "^Version: " | sed -e 's/Version: /nautobot==/' > constraints.txt
-
-# Install Poetry 1.2.0
-RUN --mount=type=cache,target="/root/.cache/pip" \
-    curl -sSL https://install.python-poetry.org -o /tmp/install-poetry.py && \
-    python /tmp/install-poetry.py --version 1.2.0 && \
-    rm -f /tmp/install-poetry.py
 
 # Use Poetry to grab dev dependencies from the lock file
 # Can be improved in Poetry 1.2 which allows `poetry install --only dev`
