@@ -26,8 +26,7 @@ ENV NAUTOBOT_ROOT ${NAUTOBOT_ROOT}
 # and CI and local development may have a newer version of Poetry
 # Since this is only used for development and we don't ship this container, pinning Poetry back is not expressly necessary
 # We also don't need virtual environments in container, parallelized installer has inconsistent behavior
-RUN --mount=type=cache,target="/root/.cache/pip" \
-    curl -sSL https://install.python-poetry.org -o /tmp/install-poetry.py && \
+RUN curl -sSL https://install.python-poetry.org -o /tmp/install-poetry.py && \
     python /tmp/install-poetry.py && \
     rm -f /tmp/install-poetry.py && \
     poetry config virtualenvs.create false && \
