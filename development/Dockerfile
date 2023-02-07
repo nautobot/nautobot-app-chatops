@@ -25,12 +25,11 @@ ENV NAUTOBOT_ROOT ${NAUTOBOT_ROOT}
 # We might be using an older version of Nautobot that includes an older version of Poetry
 # and CI and local development may have a newer version of Poetry
 # Since this is only used for development and we don't ship this container, pinning Poetry back is not expressly necessary
-# We also don't need virtual environments in container, parallelized installer has inconsistent behavior
+# We also don't need virtual environments in container
 RUN curl -sSL https://install.python-poetry.org -o /tmp/install-poetry.py && \
     python /tmp/install-poetry.py && \
     rm -f /tmp/install-poetry.py && \
-    poetry config virtualenvs.create false && \
-    poetry config installer.parallel false
+    poetry config virtualenvs.create false
 
 # !!! USE CAUTION WHEN MODIFYING LINES ABOVE
 # -------------------------------------------------------------------------------------
