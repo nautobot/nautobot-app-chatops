@@ -12,7 +12,7 @@ from nautobot_chatops.api.views.generic import AccessGrantViewSet, CommandTokenV
 logger = logging.getLogger(__name__)
 urlpatterns = [
     path("lookup/", AccessLookupView.as_view(), name="access_lookup"),
-    path("email-lookup/", UserEmailLookupView.as_view, name="email_lookup")
+    path("email-lookup/", UserEmailLookupView.as_view(), name="email_lookup")
 ]
 
 if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_slack"):

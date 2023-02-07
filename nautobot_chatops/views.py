@@ -14,16 +14,16 @@ from django.template.defaulttags import register
 from django.http import HttpResponse
 from django_tables2 import RequestConfig
 
-from nautobot.core.views.generic import ObjectListView, ObjectEditView, BulkDeleteView
+from nautobot.core.views import generic
 from nautobot.utilities.paginator import EnhancedPaginator, get_paginate_count
 from nautobot.utilities.forms import TableConfigForm
 from nautobot.utilities.utils import csv_format
 
 from nautobot_chatops.workers import get_commands_registry
-from nautobot_chatops.models import CommandLog, AccessGrant, CommandToken
-from nautobot_chatops.filters import CommandLogFilterSet, AccessGrantFilterSet, CommandTokenFilterSet
-from nautobot_chatops.forms import AccessGrantFilterForm, AccessGrantForm, CommandTokenFilterForm, CommandTokenForm
-from nautobot_chatops.tables import CommandLogTable, AccessGrantTable, CommandTokenTable
+from nautobot_chatops.models import CommandLog, AccessGrant, CommandToken, ChatOpsAccountLink
+from nautobot_chatops.filters import CommandLogFilterSet, AccessGrantFilterSet, CommandTokenFilterSet, ChatOpsAccountLinkFilterSet
+from nautobot_chatops.forms import AccessGrantFilterForm, AccessGrantForm, CommandTokenFilterForm, CommandTokenForm, ChatOpsAccountLinkForm, ChatOpsAccountLinkFilterForm
+from nautobot_chatops.tables import CommandLogTable, AccessGrantTable, CommandTokenTable, ChatOpsAccountLinkTable
 
 
 @register.filter
@@ -112,7 +112,7 @@ class NautobotHomeView(PermissionRequiredMixin, View):
         return redirect(request.get_full_path())
 
 
-class AccessGrantListView(PermissionRequiredMixin, ObjectListView):
+class AccessGrantListView(PermissionRequiredMixin, generic.ObjectListView):
     """View for listing all extant AccessGrants."""
 
     # Set the action buttons to correspond to what there are views. If import/export are added, this should be updated
@@ -125,7 +125,7 @@ class AccessGrantListView(PermissionRequiredMixin, ObjectListView):
     template_name = "nautobot/access_grant_list.html"
 
 
-class AccessGrantCreateView(PermissionRequiredMixin, ObjectEditView):
+class AccessGrantCreateView(PermissionRequiredMixin, generic.ObjectEditView):
     """View for creating a new AccessGrant."""
 
     permission_required = "nautobot_chatops.add_accessgrant"
@@ -143,7 +143,7 @@ class AccessGrantView(AccessGrantCreateView):
     permission_required = "nautobot_chatops.change_accessgrant"
 
 
-class AccessGrantBulkDeleteView(PermissionRequiredMixin, BulkDeleteView):
+class AccessGrantBulkDeleteView(PermissionRequiredMixin, generic.BulkDeleteView):
     """View for deleting one or more AccessGrant records."""
 
     permission_required = "nautobot_chatops.delete_accessgrant"
@@ -152,7 +152,7 @@ class AccessGrantBulkDeleteView(PermissionRequiredMixin, BulkDeleteView):
     default_return_url = "plugins:nautobot_chatops:accessgrant_list"
 
 
-class CommandTokenListView(PermissionRequiredMixin, ObjectListView):
+class CommandTokenListView(PermissionRequiredMixin, generic.ObjectListView):
     """View for listing all extant CommandTokens."""
 
     # Set the action buttons to correspond to what there are views. If import/export are added, this should be updated
@@ -165,7 +165,7 @@ class CommandTokenListView(PermissionRequiredMixin, ObjectListView):
     template_name = "nautobot/command_token_list.html"
 
 
-class CommandTokenCreateView(PermissionRequiredMixin, ObjectEditView):
+class CommandTokenCreateView(PermissionRequiredMixin, generic.ObjectEditView):
     """View for creating a new CommandToken."""
 
     permission_required = "nautobot_chatops.add_commandtoken"
@@ -183,10 +183,43 @@ class CommandTokenView(CommandTokenCreateView):
     permission_required = "nautobot_chatops.change_commandtoken"
 
 
-class CommandTokenBulkDeleteView(PermissionRequiredMixin, BulkDeleteView):
+class CommandTokenBulkDeleteView(PermissionRequiredMixin, generic.BulkDeleteView):
     """View for deleting one or more CommandToken records."""
 
     permission_required = "nautobot_chatops.delete_commandtoken"
     queryset = CommandToken.objects.filter()
     table = CommandTokenTable
     default_return_url = "plugins:nautobot_chatops:commandtoken_list"
+
+
+class ChatOpsAccountLinkListView(generic.ObjectListView):
+    queryset = ChatOpsAccountLink.objects.all()
+    action_buttons = ("add",)
+    table = ChatOpsAccountLinkTable
+    filterset = ChatOpsAccountLinkFilterSet
+    filterset_form = ChatOpsAccountLinkFilterForm
+
+    def extra_context(self):
+        user = self.request.user
+        table = self.table(self.queryset.filter(nautobot_user=user), user=user)
+        return {
+            "table": table,
+        }
+
+
+class ChatOpsAccountLinkView(generic.ObjectView):
+    queryset = ChatOpsAccountLink.objects.all()
+
+
+class ChatOpsAccountLinkEditView(generic.ObjectEditView):
+    queryset = ChatOpsAccountLink.objects.all()
+    model_form = ChatOpsAccountLinkForm
+    template_name = "nautobot/chatops_account_link_edit.html"
+
+    def alter_obj(self, obj, request, url_args, url_kwargs):
+        obj.nautobot_user = request.user
+        return super().alter_obj(obj, request, url_args, url_kwargs)
+
+
+class ChatOpsAccountLinkDeleteView(generic.ObjectDeleteView):
+    queryset = ChatOpsAccountLink.objects.all()

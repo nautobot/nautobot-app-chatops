@@ -153,6 +153,18 @@ class Dispatcher:
         """
         raise NotImplementedError
 
+    @classmethod
+    def lookup_user_id_by_email(cls, email) -> Optional[str]:
+        """Call out to the chat platform to look up a specific user ID by email.
+
+        Args:
+          email (str): Uniquely identifying email address of the user.
+
+        Returns:
+          (str, None)
+        """
+        raise NotImplementedError
+
     def static_url(self, path):
         """Construct an absolute URL for the given static file path, such as "nautobot/NautobotLogoSquare.png"."""
         static_path = str(static(path))

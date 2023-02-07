@@ -4,8 +4,7 @@ import contextlib
 from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseNotFound
 from django.views import View
 
-from nautobot_chatops.dispatchers import Dispatcher, SlackDispatcher, MattermostDispatcher, MSTeamsDispatcher, WebExDispatcher
-
+from nautobot_chatops.dispatchers import Dispatcher
 
 class AccessLookupView(View):
     """Look up a given access grant value by name."""
@@ -42,21 +41,15 @@ class UserEmailLookupView(View):
 
     def get(self, request, *args, **kwargs):
         """Handle an inbound GET request for a specific access grant value."""
-        dispatchers = {
-            "slack": SlackDispatcher,
-            "mattermost": MattermostDispatcher,
-            "webex": WebExDispatcher,
-            "microsoft_teams": MSTeamsDispatcher,
-        }
         for required_param in ("email", "platform"):
             if required_param not in request.GET:
                 return HttpResponseBadRequest(f"Missing mandatory parameter {required_param}")
 
         value = None
-        dispatcher_class = dispatchers[request.GET("platform")]
-
-        with contextlib.suppress(NotImplementedError):
-            value = dispatcher_class.lookup_user_id_by_email(request.GET["email"])
+        for dispatcher_class in Dispatcher.subclasses():
+            if dispatcher_class.platform_slug == request.GET['platform']:
+                with contextlib.suppress(NotImplementedError):
+                    value = dispatcher_class.lookup_user_id_by_email(request.GET["email"])
         return (
             JsonResponse(data={"user_id": value})
             if value

@@ -2,7 +2,8 @@
 
 from django import forms
 
-from nautobot.utilities.forms import BootstrapMixin
+from nautobot.utilities.forms import BootstrapMixin, StaticSelect2Multiple
+from nautobot.extras.forms import NautobotFilterForm
 
 from .models import AccessGrant, CommandToken, ChatOpsAccountLink
 from .choices import AccessGrantTypeChoices, CommandTokenPlatformChoices, PlatformChoices
@@ -54,6 +55,16 @@ class ChatOpsAccountLinkForm(BootstrapMixin, forms.ModelForm):
         """Metaclass attributes of ChatOpsAccountLinkForm."""
         model = ChatOpsAccountLink
         fields = ("platform", "email", "user_id")
+
+
+class ChatOpsAccountLinkFilterForm(NautobotFilterForm):
+    model = ChatOpsAccountLink
+    field_order = [
+        "q",
+        "platform",
+    ]
+    q = forms.CharField(required=False, label="Search")
+    platform = forms.MultipleChoiceField(choices=PlatformChoices, required=False, widget=StaticSelect2Multiple())
 
 
 class CommandTokenFilterForm(BootstrapMixin, forms.ModelForm):

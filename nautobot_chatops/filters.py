@@ -1,8 +1,11 @@
 """Django FilterSet classes for Nautobot."""
 
-from nautobot.utilities.filters import BaseFilterSet
+import django_filters
+from nautobot.utilities.filters import BaseFilterSet, SearchFilter
+from nautobot.extras.filters import NautobotFilterSet
 
-from nautobot_chatops.models import CommandLog, AccessGrant, CommandToken
+from nautobot_chatops.choices import PlatformChoices
+from nautobot_chatops.models import CommandLog, AccessGrant, ChatOpsAccountLink, CommandToken
 
 
 class CommandLogFilterSet(BaseFilterSet):
@@ -33,6 +36,20 @@ class AccessGrantFilterSet(BaseFilterSet):
 
         model = AccessGrant
         fields = ["command", "subcommand", "grant_type", "value"]
+
+
+class ChatOpsAccountLinkFilterSet(NautobotFilterSet):
+    q = SearchFilter(
+        filter_predicates={
+            "user_id": "icontains",
+            "platform": "icontains",
+        }
+    )
+    platform = django_filters.MultipleChoiceFilter(choices=PlatformChoices)
+
+    class Meta:
+        model = ChatOpsAccountLink
+        fields = "__all__"
 
 
 class CommandTokenFilterSet(BaseFilterSet):

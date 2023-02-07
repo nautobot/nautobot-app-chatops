@@ -5,9 +5,5 @@ The classes implemented in this module implement a common API for "dispatching" 
 """
 
 from .base import Dispatcher
-from .slack import SlackDispatcher
-from .mattermost import MattermostDispatcher
-from .ms_teams import MSTeamsDispatcher
-from .webex import WebExDispatcher
 
-__all__ = ("Dispatcher", "SlackDispatcher", "MattermostDispatcher", "MSTeamsDispatcher", "WebExDispatcher")
+__all__ = ("Dispatcher",)

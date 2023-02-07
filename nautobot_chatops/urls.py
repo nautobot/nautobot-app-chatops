@@ -4,7 +4,7 @@ from django.urls import path
 
 from nautobot.extras.views import ObjectChangeLogView
 
-from nautobot_chatops.models import AccessGrant, CommandToken
+from nautobot_chatops.models import AccessGrant, ChatOpsAccountLink, CommandToken
 from nautobot_chatops.views import (
     CommandTokenBulkDeleteView,
     CommandTokenCreateView,
@@ -15,6 +15,9 @@ from nautobot_chatops.views import (
     AccessGrantView,
     AccessGrantCreateView,
     AccessGrantBulkDeleteView,
+    ChatOpsAccountLinkEditView,
+    ChatOpsAccountLinkListView,
+    ChatOpsAccountLinkDeleteView,
 )
 
 urlpatterns = [
@@ -39,4 +42,14 @@ urlpatterns = [
     path("tokens/<uuid:pk>/edit/", CommandTokenView.as_view(), name="commandtoken_edit"),
     path("tokens/add/", CommandTokenCreateView.as_view(), name="commandtoken_add"),
     path("tokens/delete/", CommandTokenBulkDeleteView.as_view(), name="commandtoken_bulk_delete"),
+    path("account-link/add/", ChatOpsAccountLinkEditView.as_view(), name="chatopsaccountlink_add"),
+    path("account-link/", ChatOpsAccountLinkListView.as_view(), name="chatopsaccountlink_list"),
+    path("account-link/<uuid:pk>/edit/", ChatOpsAccountLinkEditView.as_view(), name="chatopsaccountlink_edit"),
+    path("account-link/<uuid:pk>/delete/", ChatOpsAccountLinkDeleteView.as_view(), name="chatopsaccountlink_delete"),
+    path(
+        "account-link/<uuid:pk>/changelog/",
+        ObjectChangeLogView.as_view(),
+        name="chatopsaccountlink_changelog",
+        kwargs={"model": ChatOpsAccountLink},
+    ),
 ]

@@ -2,9 +2,9 @@
 
 from django_tables2 import TemplateColumn
 
-from nautobot.utilities.tables import BaseTable, ToggleColumn
+from nautobot.utilities.tables import BaseTable, ButtonsColumn, ToggleColumn
 
-from .models import CommandLog, AccessGrant, CommandToken
+from .models import CommandLog, AccessGrant, CommandToken, ChatOpsAccountLink
 
 
 class CommandLogTable(BaseTable):
@@ -112,3 +112,13 @@ class CommandTokenTable(BaseTable):
         model = CommandToken
         fields = ("pk", "platform", "token", "comment", "actions")
         default_columns = ("pk", "platform", "comment", "actions")
+
+
+class ChatOpsAccountLinkTable(BaseTable):
+    pk = ToggleColumn()
+    actions = ButtonsColumn(ChatOpsAccountLink)
+
+    class Meta(BaseTable.Meta):
+        model = ChatOpsAccountLink
+        fields = ("pk", "platform", "user_id", "nautobot_user", "actions")
+        default_columns = ("pk", "platform", "user_id", "nautobot_user", "actions")

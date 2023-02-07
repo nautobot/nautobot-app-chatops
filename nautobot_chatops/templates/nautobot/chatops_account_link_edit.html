@@ -54,7 +54,7 @@ $(document).ready(function() {
                 $("img#lookup-loader").hide();
                 $("#id_value").val("");
                 if (data.status == "404") {
-                    alert("No value found for " + email);
+                    alert("No User ID found for " + email);
                 } else if (data.status == "501") {
                     alert("Unable to look up User ID with " + email + " - sorry!");
                 } else {
