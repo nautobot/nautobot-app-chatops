@@ -18,7 +18,11 @@ class NautobotChatOpsConfig(PluginConfig):
     version = __version__
     author = "Network to Code"
     author_email = "opensource@networktocode.com"
-    description = "Nautobot App that is a multi-platform chatbot supporting Slack, MS Teams, Webex Teams, and Mattermost that simplifies creating chat commands with pre-defined design patterns. Includes the 'nautobot' command that simplifies fetching and updating data in Nautobot."
+    description = """
+        Nautobot App that is a multi-platform chatbot supporting Slack, MS Teams, Webex Teams,
+        and Mattermost that simplifies creating chat commands with pre-defined design patterns.
+        Includes the 'nautobot' command that simplifies fetching and updating data in Nautobot.
+    """
     base_url = "chatops"
     required_settings = []
     default_settings = {
