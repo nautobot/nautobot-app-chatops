@@ -1,9 +1,4 @@
+<!-- TODO: Delete file once minimum Nautobot version is 1.5 -->
 {% extends 'generic/object_list.html' %}
-{% load buttons %}
 
-{% block title %}Nautobot Access Grants{% endblock %}
-
-{% block buttons %}
-    {% if permissions.add %}{% add_button "plugins:nautobot_chatops:accessgrant_add" %}{% endif %}
-    <!-- TODO: "configure", "import", "export" buttons once functionality is implemented -->
-{% endblock %}
+{% block title %}{{ title }}{% endblock %}
