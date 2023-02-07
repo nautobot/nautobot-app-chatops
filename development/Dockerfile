@@ -1,8 +1,8 @@
 # -------------------------------------------------------------------------------------
-# Nautobot Plugin Developement Dockerfile Template
+# Nautobot App Developement Dockerfile Template
 # Version: 1.0.0
 #
-# Plugins that need to add additional steps or packages can do in the section below.
+# Apps that need to add additional steps or packages can do in the section below.
 # -------------------------------------------------------------------------------------
 # !!! USE CAUTION WHEN MODIFYING LINES BELOW
 
@@ -33,7 +33,7 @@ RUN curl -sSL https://install.python-poetry.org -o /tmp/install-poetry.py && \
 
 # !!! USE CAUTION WHEN MODIFYING LINES ABOVE
 # -------------------------------------------------------------------------------------
-# Plugin-specifc system build/test dependencies.
+# App-specifc system build/test dependencies.
 # 
 # Example: LDAP requires `libldap2-dev` to be apt-installed before the Python package.
 # -------------------------------------------------------------------------------------
@@ -45,7 +45,7 @@ RUN curl -sSL https://install.python-poetry.org -o /tmp/install-poetry.py && \
 
 # --> Stop safe to modify section
 # -------------------------------------------------------------------------------------
-# Install Nautobot Plugin
+# Install Nautobot App
 # -------------------------------------------------------------------------------------
 # !!! USE CAUTION WHEN MODIFYING LINES BELOW
 
@@ -68,7 +68,7 @@ RUN poetry export -f requirements.txt --dev --without-hashes --output poetry_fre
 RUN sort poetry_freeze_base.txt poetry_freeze_all.txt | uniq -u > poetry_freeze_dev.txt
 
 # Install all local project as editable, constrained on Nautobot version, to get any additional
-#   direct dependencies of the plugin
+#   direct dependencies of the app
 RUN pip install -c constraints.txt -e .
 
 # Install any dev dependencies frozen from Poetry
