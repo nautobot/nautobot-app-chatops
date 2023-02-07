@@ -22,7 +22,7 @@ include = [
 [tool.poetry.dependencies]
 # TODO Move to ~ requirements instead of ^
 python = "^3.7"
-nautobot = "^1.2.0"
+nautobot = "^1.4.0"
 nautobot-capacity-metrics = "*"
 texttable = "^1.6.2"
 PyJWT = "^2.1.0"
