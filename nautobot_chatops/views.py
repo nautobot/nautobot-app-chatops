@@ -125,6 +125,7 @@ class AccessGrantListView(PermissionRequiredMixin, ObjectListView):
     template_name = "nautobot/access_grant_list.html"
 
     def extra_context(self):
+        """Add extra context for Access Grant List View."""
         return {
             "title": "Nautobot Access Grants",
         }
@@ -170,6 +171,7 @@ class CommandTokenListView(PermissionRequiredMixin, ObjectListView):
     template_name = "nautobot/command_token_list.html"
 
     def extra_context(self):
+        """Add extra context for Command Token List View."""
         return {
             "title": "Nautobot Command Tokens",
         }
