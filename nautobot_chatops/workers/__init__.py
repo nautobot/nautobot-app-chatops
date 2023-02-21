@@ -270,14 +270,9 @@ def handle_subcommands(command, subcommand, params=(), dispatcher_class=None, co
     if subcommand == "help" or not subcommand:
         message = f"I know the following `{dispatcher.command_prefix}{command}` subcommands:\n"
         for subcmd, entry in registry[command].get("subcommands", {}).items():
-            if (
-                settings.PLUGINS_CONFIG["nautobot_chatops"].get("restrict_help")
-                and not AccessGrant.objects.filter(
-                    Q(command="*") | Q(command=command, subcommand="*") | Q(command=command, subcommand=subcmd),
-                )
-                .filter(grant_type=AccessGrantTypeChoices.TYPE_USER)
-                .filter(Q(value="*") | Q(value=context["user_id"]))
-            ):
+            if settings.PLUGINS_CONFIG["nautobot_chatops"].get("restrict_help") and not AccessGrant.objects.filter(
+                Q(command="*") | Q(command=command, subcommand="*") | Q(command=command, subcommand=subcmd),
+            ).filter(grant_type=AccessGrantTypeChoices.TYPE_USER).filter(Q(value="*") | Q(value=context["user_id"])):
                 continue
             message += (
                 f"- `{dispatcher.command_prefix}{command} {subcmd} "
