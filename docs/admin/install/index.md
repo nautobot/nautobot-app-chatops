@@ -72,6 +72,7 @@ The plugin behavior can be controlled with the following list of settings:
 | Configuration Setting        | Description | Mandatory? | Default |
 | ---------------------------- | ----------- | ---------- | ------- |
 | `delete_input_on_submission` | After prompting the user for additional inputs, delete the input prompt from the chat history | No | `False` |
+| `restrict_help` | Only show Help prompt for users based on their Access Grants | No | `False` |
 
 ## Grant Access to the Chatbot
 

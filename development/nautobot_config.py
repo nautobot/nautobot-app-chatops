@@ -137,5 +137,6 @@ PLUGINS_CONFIG = {
         "enable_mattermost": True,
         "mattermost_api_token": os.environ.get("MATTERMOST_API_TOKEN"),
         "mattermost_url": os.environ.get("MATTERMOST_URL"),
+        "restrict_help": True,
     },
 }

@@ -59,6 +59,7 @@ class NautobotChatOpsConfig(PluginConfig):
         # sending all messages as an ephemeral message, meaning only the person interacting with the bot will see the
         # responses.
         "send_all_messages_private": False,
+        "restrict_help": False,
     }
 
     max_version = "1.999"
