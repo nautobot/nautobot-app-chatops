@@ -25,11 +25,11 @@ BOT_EMULATOR_METADATA_URI = "https://login.microsoftonline.com/botframework.com/
 
 def get_bot_signing_keys(metadata_uri=BOT_CONNECTOR_METADATA_URI):
     """Get the keys used by the Bot Connector service to sign requests and the associated algorithms."""
-    response = requests.get(metadata_uri)
+    response = requests.get(metadata_uri, timeout=15)
     id_token_signing_alg_values_supported = response.json()["id_token_signing_alg_values_supported"]
     jwks_uri = response.json()["jwks_uri"]
 
-    response = requests.get(jwks_uri)
+    response = requests.get(jwks_uri, timeout=15)
     # https://renzo.lucioni.xyz/verifying-jwts-with-jwks-and-pyjwt/
     public_keys = {}
     for jwk in response.json()["keys"]:
@@ -155,6 +155,7 @@ class MSTeamsMessagesView(View):
             response = requests.get(
                 f"{context['service_url']}/v3/teams/{context['org_id']}",
                 headers={"Authorization": f"Bearer {MSTeamsDispatcher.get_token()}"},
+                timeout=15,
             )
             response.raise_for_status()
             context["org_name"] = response.json()["name"]
@@ -168,6 +169,7 @@ class MSTeamsMessagesView(View):
             response = requests.get(
                 f"{context['service_url']}/v3/teams/{context['org_id']}/conversations",
                 headers={"Authorization": f"Bearer {MSTeamsDispatcher.get_token()}"},
+                timeout=15,
             )
             response.raise_for_status()
             for conversation in response.json()["conversations"]:

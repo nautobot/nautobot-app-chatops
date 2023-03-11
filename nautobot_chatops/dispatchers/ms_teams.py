@@ -61,6 +61,7 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
                 "client_secret": settings.PLUGINS_CONFIG["nautobot_chatops"]["microsoft_app_password"],
                 "scope": "https://api.botframework.com/.default",
             },
+            timeout=15,
         )
         token = response.json()["access_token"]
         return token
@@ -90,6 +91,7 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
             f"{self.context['service_url']}/v3/conversations/{self.context['conversation_id']}/activities",
             headers={"Authorization": f"Bearer {self.get_token()}"},
             json=content,
+            timeout=15,
         )
         return response
 
@@ -133,6 +135,7 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
                     "tenantId": self.context["tenant_id"],
                     "topicName": "Image upload",
                 },
+                timeout=15,
             )
             response.raise_for_status()
             self.context["conversation_id"] = response.json()["id"]
@@ -191,6 +194,7 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
                 "Content-Length": str(file_size),
                 "Content-Range": f"bytes 0-{file_size-1}/{file_size}",
             },
+            timeout=15,
         )
         response.raise_for_status()
 
@@ -221,6 +225,7 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
         requests.delete(
             f"{self.context['service_url']}/v3/conversations/{self.context['conversation_id']}/activities/{message_id}",
             headers={"Authorization": f"Bearer {self.get_token()}"},
+            timeout=15,
         )
 
     def user_mention(self):
