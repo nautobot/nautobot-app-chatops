@@ -18,7 +18,11 @@ class NautobotChatOpsConfig(PluginConfig):
     version = __version__
     author = "Network to Code"
     author_email = "opensource@networktocode.com"
-    description = "A plugin providing chatops capabilities."
+    description = """
+        Nautobot App that is a multi-platform chatbot supporting Slack, MS Teams, Webex Teams,
+        and Mattermost that simplifies creating chat commands with pre-defined design patterns.
+        Includes the 'nautobot' command that simplifies fetching and updating data in Nautobot.
+    """
     base_url = "chatops"
     required_settings = []
     default_settings = {
@@ -55,10 +59,11 @@ class NautobotChatOpsConfig(PluginConfig):
         # sending all messages as an ephemeral message, meaning only the person interacting with the bot will see the
         # responses.
         "send_all_messages_private": False,
+        "restrict_help": False,
     }
 
     max_version = "1.999"
-    min_version = "1.3.0"
+    min_version = "1.4.0"
     caching_config = {}
 
     def ready(self):

@@ -1,4 +1,4 @@
-"""Websocket Client to receive inbound notifications from Slack, parse them, and enqueue worker actions."""
+"""WebSocket Client to receive inbound notifications from Slack, parse them, and enqueue worker actions."""
 
 import asyncio
 import json

@@ -12,7 +12,7 @@ class AccessGrantTypeChoices(ChoiceSet):
 
     CHOICES = (
         (TYPE_ORGANIZATION, "Organization"),
-        (TYPE_CHANNEL, "Channel"),
+        (TYPE_CHANNEL, "Channel (Room)"),
         (TYPE_USER, "User"),
     )
 

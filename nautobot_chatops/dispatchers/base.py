@@ -160,8 +160,10 @@ class Dispatcher:
         table = Texttable(max_width=120)
         table.set_deco(Texttable.HEADER)
         table.header(header)
+        # Left Align headers to match the alignment of the rows
+        table.set_header_align(["l" for _ in header])
         # Force all columns to be shown as text. Otherwise long numbers (such as account #) get abbreviated as 123.4e10
-        table.set_cols_dtype(["t" for item in header])
+        table.set_cols_dtype(["t" for _ in header])
         table.add_rows(rows, header=False)
         self.send_snippet(table.draw(), title=title)
 
