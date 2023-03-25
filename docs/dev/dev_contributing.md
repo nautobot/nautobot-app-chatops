@@ -91,7 +91,7 @@ def get_rack(dispatcher, site_slug, rack_id):
 ### `return CommandStatusChoices.STATUS_SUCCEEDED`
 
 This indicates that the command was successful, and no further details are necessary in the logging.
-You *could* return another status code besides `STATUS_SUCCEEDED` in this pattern, but in general any other status
+You _could_ return another status code besides `STATUS_SUCCEEDED` in this pattern, but in general any other status
 code should be accompanied by an explanatory message:
 
 ### `return (CommandStatusChoices.STATUS_FAILED, details_str)`
@@ -136,10 +136,10 @@ You shouldn't need to make any changes to the `workers` module in this scenario.
   be assigned to you so that others are aware it's being worked on. A maintainer
   will then mark the issue as "accepted."
 
-- If you followed the project guidelines, have ample tests, code quality, you will first be acknowledged for your work. So, thank you in advance! After that, the PR will be quickly reviewed to ensure that it makes sense as a contribution to the project, and to gauge the work effort or issues with merging into *current*. If the effort required by the core team isn’t trivial, it’ll likely still be a few weeks before it gets thoroughly reviewed and merged, thus it won't be uncommon to move it to *near term* with a `near-term` label. It will just depend on the current backlog.
+- If you followed the project guidelines, have ample tests, code quality, you will first be acknowledged for your work. So, thank you in advance! After that, the PR will be quickly reviewed to ensure that it makes sense as a contribution to the project, and to gauge the work effort or issues with merging into _current_. If the effort required by the core team isn’t trivial, it’ll likely still be a few weeks before it gets thoroughly reviewed and merged, thus it won't be uncommon to move it to _near term_ with a `near-term` label. It will just depend on the current backlog.
 
 - All code submissions should meet the following criteria (CI will enforce
-these checks):
+  these checks):
   - Python syntax is valid
   - All unit tests pass successfully
   - PEP 8 compliance is enforced, with the exception that lines may be
@@ -149,7 +149,7 @@ these checks):
 
 ### Creating Changelog Fragments
 
-All pull requests to `next` or `develop` must include a changelog fragment file in the `./changes` directory. To create a fragment, use your github issue number and fragment type as the filename. For example, `2362.added`. Valid fragment types are `added`, `changed`, `deprecated`, `fixed`, `removed`, and `security`. The change summary is added to the file in plain text. Change summaries should be complete sentences, starting with a capital letter and ending with a period, and be in past tense. Each line of the change fragment will generate a single change entry in the release notes. Use multiple lines in the same file if your change needs to generate multiple release notes in the same category. If the change needs to create multiple entries in separate categories, create multiple files.
+All pull requests to `next` or `develop` must include a changelog fragment file in the `./changes` directory. To create a fragment, use your github issue number and fragment type as the filename. For example, `2362.added`. Valid fragment types are `added`, `changed`, `deprecated`, `fixed`, `removed`, and `security`. The change summary is added to the file in plain text. Change summaries should be complete sentences, starting with a capital letter and ending with a period, and be in past tense. Each line of the change fragment will generate a single change entry in the release notes. Use multiple lines in the same file if your change needs to generate multiple release notes in the same category. If the change needs to create multiple entries in separate categories, create multiple files. In the example below 1234 is the _issue_ number.
 
 !!! example
 

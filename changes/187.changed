@@ -1,0 +1,3 @@
+Adds dependabot.yml control file to only update direct packages.
+Adds watchmedo to the celery dev container to watch Python files and restart the celery worker.
+Updates the example in the dev_contributing about the change fragments.
