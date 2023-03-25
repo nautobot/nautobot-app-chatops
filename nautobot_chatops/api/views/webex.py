@@ -42,10 +42,11 @@ if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_webex") or settings.P
         API = WebexTeamsAPI(access_token=TOKEN)
         BOT_ID = API.people.me().id
     except (AccessTokenError, ApiError):
-        logger.warning(
-            "Missing or invalid WEBEX_TOKEN setting. "
-            "This may be ignored if you are not running Nautobot as a WebEx chatbot."
-        )
+        if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_webex"):
+            logger.warning(
+                "Missing or invalid WEBEX_TOKEN setting. "
+                "This may be ignored if you are not running Nautobot as a WebEx chatbot."
+            )
         API = None
         BOT_ID = None
 
