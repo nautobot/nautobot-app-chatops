@@ -21,6 +21,8 @@ services:
     depends_on:
       - "postgres"
       - "redis"
+    healthcheck:
+      disable: true
     <<: *nautobot-build
     <<: *nautobot-base
   worker:
