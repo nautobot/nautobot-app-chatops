@@ -63,6 +63,7 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
             },
             timeout=15,
         )
+        logger.debug(f"DEBUG: get_token() response {response.json()}")
         try:
             token = response.json()["access_token"]
         except(KeyError) :
