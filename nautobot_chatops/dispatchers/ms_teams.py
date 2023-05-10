@@ -63,7 +63,11 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
             },
             timeout=15,
         )
-        token = response.json()["access_token"]
+        try:
+            token = response.json()["access_token"]
+        except(KeyError) :
+            logger.error("ERROR: get_token() response is missing access_token key")
+            raise KeyError("get_token() response is missing access_token key")
         return token
 
     def _send(self, content, content_type="message"):
