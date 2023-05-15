@@ -1,39 +1,33 @@
 """Set up nautobot testing data."""
-try:
-    from importlib import metadata
-except ImportError:
-    # Python version < 3.8
-    import importlib_metadata as metadata
-
-__version__ = metadata.version("nautobot_chatops")
 
 from nautobot.apps import NautobotAppConfig
 from nautobot.apps import nautobot_database_ready
 
+from nautobot_chatops import __version__
 
-def _bootstrap(_sender, *, apps, **_kwargs):
-    AccessGrantTypeChoices = apps.get_model("nautobot_chatops", "AccessGrantTypeChoices")
+
+# pylint: disable-next=unused-argument
+def _bootstrap(sender, *, apps, **_kwargs):
+    # pylint: disable-next=import-outside-toplevel
+    from nautobot_chatops.models import AccessGrantTypeChoices, CommandTokenPlatformChoices
+
+    # pylint: disable-next=invalid-name
     AccessGrant = apps.get_model("nautobot_chatops", "AccessGrant")
-
-    for slug in ["organization", "channel", "user"]:
+    for grant_type in AccessGrantTypeChoices.values():
         AccessGrant.objects.update_or_create(
-            defaults={
-                "command": "*",
-                "subcommand": "*",
-                "grant_type": AccessGrantTypeChoices.objects.get(slug=slug),
-                "name": "*",
-                "value": "*",
-            },
+            command="*",
+            subcommand="*",
+            grant_type=grant_type,
+            name="*",
+            value="*",
         )
 
-    CommandTokenPlatformChoices = apps.get_model("nautobot_chatops", "CommandTokenPlatformChoices")
+    # pylint: disable-next=invalid-name
     CommandToken = apps.get_model("nautobot_chatops", "CommandToken")
     CommandToken.objects.update_or_create(
-        defaults={
-            "comment": "nautobot",
-            "platform": CommandTokenPlatformChoices.objects.get(slug="mattermost"),
-            "token": "rmdpfdjhnpg988e7ujzyom4euh",
-        }
+        comment="nautobot",
+        platform=CommandTokenPlatformChoices.MATTERMOST,
+        token="rmdpfdjhnpg988e7ujzyom4euh",
     )
 
 
@@ -53,6 +47,8 @@ class NautobotChatOpsTestsBootstrapConfig(NautobotAppConfig):
 
     def ready(self):
         """Function invoked after all plugins have been loaded."""
+
+        # Omitting super().ready() here to avoid calling the parent class's ready() method
         # super().ready()
 
         nautobot_database_ready.connect(_bootstrap, sender=self)

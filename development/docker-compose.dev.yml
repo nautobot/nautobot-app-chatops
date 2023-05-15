@@ -25,8 +25,8 @@ services:
       - "./nautobot_config.py:/opt/nautobot/nautobot_config.py"
       - "../:/source"
   mattermost:
-    image: mattermost/mattermost-preview
-    hostname: mattermost
+    image: "mattermost/mattermost-preview"
+    hostname: "mattermost"
     environment:
       MM_SERVICESETTINGS_ALLOWEDUNTRUSTEDINTERNALCONNECTIONS: "0.0.0.0/0"
       MM_SERVICESETTINGS_ENABLEDEVELOPER: "true"
@@ -37,10 +37,6 @@ services:
     volumes:
       - "./mattermost/dump.sql:/docker-entrypoint-initdb.d/dump.sql"
       - "mattermost-data:/var/lib/mysql"
-      # - "../:/source"
-      # - "./mattermost/config:/mm/mattermost/config"
-    # extra_hosts:
-    #   - "dockerhost:127.0.0.1"
 
 volumes:
-  mattermost-data:
+  mattermost-data: {}

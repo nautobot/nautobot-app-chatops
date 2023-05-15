@@ -40,9 +40,9 @@ namespace = Collection("nautobot_chatops")
 namespace.configure(
     {
         "nautobot_chatops": {
-            "nautobot_ver": "1.4.0",
+            "nautobot_ver": "1.5.2",
             "project_name": "nautobot-chatops",
-            "python_ver": "3.7",
+            "python_ver": "3.8",
             "local": False,
             "compose_dir": os.path.join(os.path.dirname(__file__), "development"),
             "compose_files": [
@@ -152,6 +152,12 @@ def generate_packages(context):
 # START / STOP / DEBUG
 # ------------------------------------------------------------------------------
 @task
+def export(context):
+    """Export docker compose configuration to `compose.yaml` file."""
+    docker_compose(context, "convert > compose.yaml")
+
+
+@task
 def debug(context):
     """Start Nautobot and its dependencies in debug mode."""
     print("Starting Nautobot in debug mode...")
@@ -166,10 +172,10 @@ def start(context, service=None):
 
 
 @task
-def restart(context):
+def restart(context, service=""):
     """Gracefully restart all containers."""
     print("Restarting Nautobot...")
-    docker_compose(context, "restart")
+    docker_compose(context, f"restart {service}")
 
 
 @task
@@ -431,7 +437,6 @@ def tests(context, failfast=False):
 @task
 def backup_mattermost(context, output="./mattermost-backup.sql"):
     """Export Mattermost data to the SQL file."""
-
     command = [
         "exec",
         "--env MYSQL_PWD=mostest",
