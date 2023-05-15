@@ -21,8 +21,7 @@ services:
     depends_on:
       - "postgres"
       - "redis"
-    <<: *nautobot-build
-    <<: *nautobot-base
+    <<: [*nautobot-build, *nautobot-base]
   worker:
     entrypoint: "nautobot-server rqworker"
     depends_on:

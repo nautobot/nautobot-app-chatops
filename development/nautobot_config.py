@@ -117,26 +117,30 @@ CACHES = {
 CACHEOPS_REDIS = parse_redis_connection(redis_database=1)
 
 # Enable installed plugins. Add the name of each plugin to the list.
-PLUGINS = ["nautobot_chatops", "nautobot_capacity_metrics"]
+PLUGINS = [
+    "nautobot_chatops",
+    "nautobot_chatops.tests.bootstrap",
+    "nautobot_capacity_metrics",
+]
 
 # Plugins configuration settings. These settings are used by various plugins that the user may have installed.
 # Each key in the dictionary is the name of an installed plugin and its value is a dictionary of settings.
 PLUGINS_CONFIG = {
     "nautobot_chatops": {
-        "enable_slack": True,
-        "enable_ms_teams": True,
-        "enable_webex": True,
-        "microsoft_app_id": os.environ.get("MICROSOFT_APP_ID"),
-        "microsoft_app_password": os.environ.get("MICROSOFT_APP_PASSWORD"),
-        "slack_app_token": os.environ.get("SLACK_APP_TOKEN"),
-        "slack_api_token": os.environ.get("SLACK_API_TOKEN"),
-        "slack_signing_secret": os.environ.get("SLACK_SIGNING_SECRET"),
-        "slack_slash_command_prefix": os.environ.get("SLACK_SLASH_COMMAND_PREFIX", "/"),
-        "webex_token": os.environ.get("WEBEX_ACCESS_TOKEN"),
-        "webex_signing_secret": os.environ.get("WEBEX_SIGNING_SECRET"),
+        # "enable_slack": True,
+        # "enable_ms_teams": True,
+        # "enable_webex": True,
+        # "microsoft_app_id": os.environ.get("MICROSOFT_APP_ID"),
+        # "microsoft_app_password": os.environ.get("MICROSOFT_APP_PASSWORD"),
+        # "slack_app_token": os.environ.get("SLACK_APP_TOKEN"),
+        # "slack_api_token": os.environ.get("SLACK_API_TOKEN"),
+        # "slack_signing_secret": os.environ.get("SLACK_SIGNING_SECRET"),
+        # "slack_slash_command_prefix": os.environ.get("SLACK_SLASH_COMMAND_PREFIX", "/"),
+        # "webex_token": os.environ.get("WEBEX_ACCESS_TOKEN"),
+        # "webex_signing_secret": os.environ.get("WEBEX_SIGNING_SECRET"),
         "enable_mattermost": True,
         "mattermost_api_token": os.environ.get("MATTERMOST_API_TOKEN"),
         "mattermost_url": os.environ.get("MATTERMOST_URL"),
-        "restrict_help": True,
+        "restrict_help": False,
     },
 }

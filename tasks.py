@@ -15,6 +15,7 @@ limitations under the License.
 from distutils.util import strtobool
 from invoke import Collection, task as invoke_task
 import os
+from pathlib import Path
 
 
 def is_truthy(arg):
@@ -204,9 +205,30 @@ def nbshell(context):
 
 
 @task
-def cli(context):
+def cli(context, service="nautobot"):
     """Launch a bash shell inside the running Nautobot container."""
-    run_command(context, "bash")
+    docker_compose(context, f"exec -- {service} bash", pty=True)
+
+
+@task(
+    help={
+        "service": "Docker-compose service name to view (default: nautobot)",
+        "follow": "Follow logs",
+        "tail": "Tail N number of lines or 'all'",
+    }
+)
+def logs(context, service="", follow=False, tail=None):
+    """View the logs of a docker-compose service."""
+    command = "logs "
+
+    if follow:
+        command += "--follow "
+    if tail:
+        command += f"--tail={tail} "
+
+    if service:
+        command += service
+    docker_compose(context, command)
 
 
 @task(
@@ -404,3 +426,21 @@ def tests(context, failfast=False):
     unittest(context, failfast=failfast)
     print("All tests have passed!")
     unittest_coverage(context)
+
+
+@task
+def backup_mattermost(context, output="./mattermost-backup.sql"):
+    """Export Mattermost data to the SQL file."""
+
+    command = [
+        "exec",
+        "--env MYSQL_PWD=mostest",
+        "--",
+        "mattermost",
+        "mysqldump",
+        "--add-drop-database",
+        "--databases mattermost_test",
+        "-u root",
+        f"> {Path(output).absolute()}",
+    ]
+    docker_compose(context, " ".join(command), pty=True)
