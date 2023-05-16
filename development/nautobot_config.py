@@ -7,6 +7,7 @@ import sys
 from nautobot.core.settings import *  # noqa: F401,F403 pylint: disable=wildcard-import,unused-wildcard-import
 from nautobot.core.settings_funcs import parse_redis_connection
 
+
 def _get_bool_env(name: str):
     value = os.getenv(name, "False")
     return bool(json.loads(value.lower()))
