@@ -57,8 +57,11 @@ git clone git@github.com:nautobot/nautobot-plugin-chatops.git
 cd nautobot-plugin-chatops
 inv build
 inv start
-# Nautobot available as http://127.0.0.1:8080
-# Mattermost available at http://127.0.0.1:8065
+# Nautobot available as http://127.0.0.1:8080 admin / admin
+# Mattermost available at http://127.0.0.1:8065 admin / admin
+
+# To allow Mattermost integration run the following after Nautobot starts:
+inv bootstrap-mattermost
 ```
 
 ### Glossary
@@ -71,4 +74,3 @@ inv start
 - Command: A specific instruction sent by users through the chat Platform, processed by some Provider.
 - Sub-command: An instruction nested within some Command.
 - Command Handler: A code segment within a Worker that processes specific Commands and communicates with the corresponding Provider.
-

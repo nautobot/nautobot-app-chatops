@@ -50,6 +50,7 @@ namespace.configure(
                 "docker-compose.celery.yml",
                 "docker-compose.base.yml",
                 "docker-compose.dev.yml",
+                "mattermost/docker-compose.yml",
                 # "docker-compose.socket.yml",
             ],
         }
@@ -115,7 +116,7 @@ def run_command(context, command, **kwargs):
         if "nautobot" in results.stdout:
             compose_command = f"exec nautobot {command}"
         else:
-            compose_command = f"run --entrypoint '{command}' nautobot"
+            compose_command = f"run --rm --entrypoint '{command}' nautobot"
 
         docker_compose(context, compose_command, pty=True, **kwargs)
 
@@ -153,12 +154,6 @@ def generate_packages(context):
 # START / STOP / DEBUG
 # ------------------------------------------------------------------------------
 @task
-def export(context):
-    """Export docker compose configuration to `compose.yaml` file."""
-    docker_compose(context, "convert > compose.yaml")
-
-
-@task
 def debug(context):
     """Start Nautobot and its dependencies in debug mode."""
     print("Starting Nautobot in debug mode...")
@@ -172,11 +167,11 @@ def start(context, service=None):
     docker_compose(context, "up --detach", service=service)
 
 
-@task
+@task(help={"service": "If specified, only affect this service."})
 def restart(context, service=""):
-    """Gracefully restart all containers."""
+    """Gracefully restart specified or all containers."""
     print("Restarting Nautobot...")
-    docker_compose(context, f"restart {service}")
+    docker_compose(context, "restart", service=service)
 
 
 @task
@@ -190,7 +185,19 @@ def stop(context):
 def destroy(context):
     """Destroy all containers and volumes."""
     print("Destroying Nautobot...")
-    docker_compose(context, "down --volumes")
+    docker_compose(context, "down --remove-orphans --volumes")
+
+
+@task
+def export(context):
+    """Export docker compose configuration to `compose.yaml` file.
+
+    Useful to:
+
+    - Debug docker compose configuration.
+    - Allow using `docker compose` command directly without invoke.
+    """
+    docker_compose(context, "convert > compose.yaml")
 
 
 @task
@@ -384,8 +391,6 @@ def build_and_check_docs(context):
 )
 def unittest(context, keepdb=False, label="nautobot_chatops", failfast=False, buffer=True):
     """Run Nautobot unit tests."""
-    docker_compose(context, "rm --stop -- nautobot")
-
     command = f"coverage run --module nautobot.core.cli test {label}"
 
     if keepdb:
@@ -394,7 +399,7 @@ def unittest(context, keepdb=False, label="nautobot_chatops", failfast=False, bu
         command += " --failfast"
     if buffer:
         command += " --buffer"
-    run_command(context, command, env={"NAUTOBOT_CHATOPS_BOOTSTRAP": "False"})
+    run_command(context, command)
 
 
 @task
@@ -435,6 +440,20 @@ def tests(context, failfast=False):
     unittest(context, failfast=failfast)
     print("All tests have passed!")
     unittest_coverage(context)
+
+
+@task
+def bootstrap_mattermost(context):
+    """Bootstrap Nautobot data to be used with Mattermost."""
+    command = [
+        "nautobot-server",
+        "nbshell",
+        "--pythonpath",
+        "development/mattermost",
+        "--command",
+        '"import nautobot_bootstrap"',
+    ]
+    run_command(context, " ".join(command))
 
 
 @task

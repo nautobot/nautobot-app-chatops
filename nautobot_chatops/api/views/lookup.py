@@ -3,7 +3,7 @@
 from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseNotFound
 from django.views import View
 
-from nautobot_chatops.dispatchers import Dispatcher
+from nautobot_chatops.dispatchers.base import Dispatcher
 
 
 class AccessLookupView(View):

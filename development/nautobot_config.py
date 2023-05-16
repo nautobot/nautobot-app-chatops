@@ -150,6 +150,3 @@ PLUGINS_CONFIG = {
         "webex_token": os.environ.get("WEBEX_ACCESS_TOKEN"),
     },
 }
-
-if _get_bool_env("NAUTOBOT_CHATOPS_BOOTSTRAP"):
-    PLUGINS.append("nautobot_chatops.tests.bootstrap")

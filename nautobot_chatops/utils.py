@@ -1,8 +1,8 @@
 """Utility functions for API view implementations."""
 
 from datetime import datetime, timezone
+from importlib import import_module
 import logging
-import sys
 
 from asgiref.sync import sync_to_async
 from django.db.models import Q
@@ -33,10 +33,7 @@ try:
         # Looking up the function from the registry using the command.
         registry = get_commands_registry()
         function = registry[command]["function"]
-        # Get dispatcher class from module, since the module is already loaded, we can use
-        # sys.modules to map the dispatcher module string to the module. Then pull the class
-        # using getattr.
-        dispatcher_class = getattr(sys.modules[dispatcher_module], dispatcher_name)
+        dispatcher_class = getattr(import_module(dispatcher_module), dispatcher_name)
 
         return function(
             subcommand,

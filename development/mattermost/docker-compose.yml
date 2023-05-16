@@ -1,0 +1,24 @@
+---
+version: "3.8"
+services:
+  nautobot:
+    environment:
+      NAUTOBOT_CHATOPS_ENABLE_MATTERMOST: "True"
+  worker:
+    environment:
+      NAUTOBOT_CHATOPS_ENABLE_MATTERMOST: "True"
+  mattermost:
+    image: "mattermost/mattermost-preview"
+    hostname: "mattermost"
+    environment:
+      MM_SERVICESETTINGS_ALLOWEDUNTRUSTEDINTERNALCONNECTIONS: "0.0.0.0/0"
+      MM_SERVICESETTINGS_ENABLEDEVELOPER: "true"
+      MM_SERVICESETTINGS_SITEURL: "http://mattermost:8065"
+      MM_TEAMSETTINGS_ENABLEOPENSERVER: "true"
+    ports:
+      - "8065:8065"
+    volumes:
+      - "./mattermost/dump.sql:/docker-entrypoint-initdb.d/dump.sql"
+      - "mattermost-data:/var/lib/mysql"
+volumes:
+  mattermost-data: {}
