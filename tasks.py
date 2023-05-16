@@ -87,6 +87,7 @@ def docker_compose(context, command, **kwargs):
     build_env = {
         "NAUTOBOT_VER": context.nautobot_chatops.nautobot_ver,
         "PYTHON_VER": context.nautobot_chatops.python_ver,
+        **kwargs.pop("env", {}),
     }
     compose_command = f'docker-compose --project-name {context.nautobot_chatops.project_name} --project-directory "{context.nautobot_chatops.compose_dir}"'
     for compose_file in context.nautobot_chatops.compose_files:
@@ -116,7 +117,7 @@ def run_command(context, command, **kwargs):
         else:
             compose_command = f"run --entrypoint '{command}' nautobot"
 
-        docker_compose(context, compose_command, pty=True)
+        docker_compose(context, compose_command, pty=True, **kwargs)
 
 
 # ------------------------------------------------------------------------------
@@ -383,6 +384,8 @@ def build_and_check_docs(context):
 )
 def unittest(context, keepdb=False, label="nautobot_chatops", failfast=False, buffer=True):
     """Run Nautobot unit tests."""
+    docker_compose(context, "rm --stop -- nautobot")
+
     command = f"coverage run --module nautobot.core.cli test {label}"
 
     if keepdb:
@@ -391,7 +394,7 @@ def unittest(context, keepdb=False, label="nautobot_chatops", failfast=False, bu
         command += " --failfast"
     if buffer:
         command += " --buffer"
-    run_command(context, command)
+    run_command(context, command, env={"NAUTOBOT_CHATOPS_BOOTSTRAP": "False"})
 
 
 @task

@@ -53,10 +53,9 @@ Sign up [here](https://slack.networktocode.com/)
 ### Quickstart
 
 ```bash
-gh repos clone nautobot/nautobot-plugin-chatops
+git clone git@github.com:nautobot/nautobot-plugin-chatops.git
 cd nautobot-plugin-chatops
 inv build
-# To bootstrap Nautobot data allowing communication with Mattermost enable "nautobot_chatops.tests.bootstrap" App in `development/nautobot_config.py`
 inv start
 # Nautobot available as http://127.0.0.1:8080
 # Mattermost available at http://127.0.0.1:8065

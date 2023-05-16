@@ -1,9 +1,15 @@
 """Nautobot configuration."""
+import json
 import os
 import sys
 
+
 from nautobot.core.settings import *  # noqa: F401,F403 pylint: disable=wildcard-import,unused-wildcard-import
 from nautobot.core.settings_funcs import parse_redis_connection
+
+def _get_bool_env(name: str):
+    value = os.getenv(name, "False")
+    return bool(json.loads(value.lower()))
 
 
 ALLOWED_HOSTS = os.getenv("NAUTOBOT_ALLOWED_HOSTS", "").split(" ")
@@ -119,7 +125,6 @@ CACHEOPS_REDIS = parse_redis_connection(redis_database=1)
 # Enable installed plugins. Add the name of each plugin to the list.
 PLUGINS = [
     "nautobot_chatops",
-    # "nautobot_chatops.tests.bootstrap",
     "nautobot_capacity_metrics",
 ]
 
@@ -127,20 +132,23 @@ PLUGINS = [
 # Each key in the dictionary is the name of an installed plugin and its value is a dictionary of settings.
 PLUGINS_CONFIG = {
     "nautobot_chatops": {
-        # "enable_slack": True,
-        # "enable_ms_teams": True,
-        # "enable_webex": True,
-        # "microsoft_app_id": os.environ.get("MICROSOFT_APP_ID"),
-        # "microsoft_app_password": os.environ.get("MICROSOFT_APP_PASSWORD"),
-        # "slack_app_token": os.environ.get("SLACK_APP_TOKEN"),
-        # "slack_api_token": os.environ.get("SLACK_API_TOKEN"),
-        # "slack_signing_secret": os.environ.get("SLACK_SIGNING_SECRET"),
-        # "slack_slash_command_prefix": os.environ.get("SLACK_SLASH_COMMAND_PREFIX", "/"),
-        # "webex_token": os.environ.get("WEBEX_ACCESS_TOKEN"),
-        # "webex_signing_secret": os.environ.get("WEBEX_SIGNING_SECRET"),
-        "enable_mattermost": True,
+        "enable_mattermost": _get_bool_env("NAUTOBOT_CHATOPS_ENABLE_MATTERMOST"),
+        "enable_ms_teams": _get_bool_env("NAUTOBOT_CHATOPS_ENABLE_MS_TEAMS"),
+        "enable_slack": _get_bool_env("NAUTOBOT_CHATOPS_ENABLE_SLACK"),
+        "enable_webex": _get_bool_env("NAUTOBOT_CHATOPS_ENABLE_WEBEX"),
         "mattermost_api_token": os.environ.get("MATTERMOST_API_TOKEN"),
         "mattermost_url": os.environ.get("MATTERMOST_URL"),
-        "restrict_help": False,
+        "microsoft_app_id": os.environ.get("MICROSOFT_APP_ID"),
+        "microsoft_app_password": os.environ.get("MICROSOFT_APP_PASSWORD"),
+        "restrict_help": _get_bool_env("NAUTOBOT_CHATOPS_RESTRICT_HELP"),
+        "slack_api_token": os.environ.get("SLACK_API_TOKEN"),
+        "slack_app_token": os.environ.get("SLACK_APP_TOKEN"),
+        "slack_signing_secret": os.environ.get("SLACK_SIGNING_SECRET"),
+        "slack_slash_command_prefix": os.environ.get("SLACK_SLASH_COMMAND_PREFIX", "/"),
+        "webex_signing_secret": os.environ.get("WEBEX_SIGNING_SECRET"),
+        "webex_token": os.environ.get("WEBEX_ACCESS_TOKEN"),
     },
 }
+
+if _get_bool_env("NAUTOBOT_CHATOPS_BOOTSTRAP"):
+    PLUGINS.append("nautobot_chatops.tests.bootstrap")
