@@ -125,8 +125,8 @@ CACHEOPS_REDIS = parse_redis_connection(redis_database=1)
 
 # Enable installed plugins. Add the name of each plugin to the list.
 PLUGINS = [
-    "nautobot_chatops",
     "nautobot_capacity_metrics",
+    "nautobot_chatops",
 ]
 
 # Plugins configuration settings. These settings are used by various plugins that the user may have installed.
