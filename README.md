@@ -47,30 +47,3 @@ Interested to see Nautobot ChatOps in action?  It's currently setup on the [Demo
 
 For any questions or comments, please check the [FAQ](https://docs.nautobot.com/projects/chatops/en/latest/user/app_faq/) first and feel free to swing by the [Network to Code slack channel](https://networktocode.slack.com/) (channel #nautobot).
 Sign up [here](https://slack.networktocode.com/)
-
-## `ChatOps` Consolidation
-
-### Quickstart
-
-```bash
-git clone git@github.com:nautobot/nautobot-plugin-chatops.git
-cd nautobot-plugin-chatops
-inv build
-inv start
-# Nautobot available as http://127.0.0.1:8080 admin / admin
-# Mattermost available at http://127.0.0.1:8065 admin / admin
-
-# To allow Mattermost integration run the following after Nautobot starts:
-inv bootstrap-mattermost
-```
-
-### Glossary
-
-- Platform: A communication service, such as Slack, Microsoft Teams, or Mattermost.
-- Dispatcher: A Platform specific class that processes incoming chat messages, executes Nautobot commands, and sends results back to the chat Platform.
-- Platform View: Django View to receive inbound notifications from the Platform, parse them, and enqueue worker actions.
-- Provider: A component that defines Commands, handles data retrieval, and manipulation for particular tools or services (e.g., IP Fabric, Ansible, Panorama, Grafana, ACI, Meraki, Arista CloudVision).
-- Worker: A Provider specific code that processes tasks independently of Platform differences, receiving generic data from Platform-specific views and returning results via a Dispatcher's generic API.
-- Command: A specific instruction sent by users through the chat Platform, processed by some Provider.
-- Sub-command: An instruction nested within some Command.
-- Command Handler: A code segment within a Worker that processes specific Commands and communicates with the corresponding Provider.

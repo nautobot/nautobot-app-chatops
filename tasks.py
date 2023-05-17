@@ -40,9 +40,9 @@ namespace = Collection("nautobot_chatops")
 namespace.configure(
     {
         "nautobot_chatops": {
-            "nautobot_ver": "1.5.2",
+            "nautobot_ver": "1.4.0",
             "project_name": "nautobot-chatops",
-            "python_ver": "3.8",
+            "python_ver": "3.7",
             "local": False,
             "compose_dir": os.path.join(os.path.dirname(__file__), "development"),
             "compose_files": [
@@ -457,7 +457,7 @@ def bootstrap_mattermost(context):
 
 
 @task
-def backup_mattermost(context, output="./mattermost-backup.sql"):
+def backup_mattermost(context, output="./development/mattermost/dump.sql"):
     """Export Mattermost data to the SQL file."""
     command = [
         "exec",

@@ -4,9 +4,6 @@ services:
   nautobot:
     environment:
       NAUTOBOT_CHATOPS_ENABLE_MATTERMOST: "True"
-  worker:
-    environment:
-      NAUTOBOT_CHATOPS_ENABLE_MATTERMOST: "True"
   mattermost:
     image: "mattermost/mattermost-preview"
     hostname: "mattermost"

@@ -7,10 +7,10 @@ except ImportError:
 
 __version__ = metadata.version(__name__)
 
-from nautobot.apps import NautobotAppConfig
+from nautobot.extras.plugins import PluginConfig
 
 
-class NautobotChatOpsConfig(NautobotAppConfig):
+class NautobotChatOpsConfig(PluginConfig):
     """Plugin configuration for the nautobot_chatops plugin."""
 
     name = "nautobot_chatops"
