@@ -459,7 +459,6 @@ def bootstrap_mattermost(context):
 @task
 def backup_mattermost(context, output="./development/mattermost/dump.sql"):
     """Export Mattermost data to the SQL file. Certain tables are ignored."""
-
     ignore_tables = [
         "Audits",
         "ChannelMemberHistory",
