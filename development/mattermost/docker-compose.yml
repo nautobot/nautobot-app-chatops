@@ -1,9 +1,14 @@
 ---
+x-nautobot: &nautobot
+  environment:
+    NAUTOBOT_CHATOPS_ENABLE_MATTERMOST: "True"
+
 version: "3.8"
 services:
   nautobot:
-    environment:
-      NAUTOBOT_CHATOPS_ENABLE_MATTERMOST: "True"
+    <<: *nautobot
+  celery:
+    <<: *nautobot
   mattermost:
     image: "mattermost/mattermost-preview"
     hostname: "mattermost"
