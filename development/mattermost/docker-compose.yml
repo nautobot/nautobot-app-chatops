@@ -13,8 +13,10 @@ services:
     image: "mattermost/mattermost-preview"
     hostname: "mattermost"
     environment:
+      MM_LOGSETTINGS_SENDCRASHREPORTS: "false"
       MM_SERVICESETTINGS_ALLOWEDUNTRUSTEDINTERNALCONNECTIONS: "0.0.0.0/0"
       MM_SERVICESETTINGS_ENABLEDEVELOPER: "true"
+      MM_SERVICESETTINGS_ENABLEDIAGNOSTICS: "false"
       MM_SERVICESETTINGS_SITEURL: "http://mattermost:8065"
       MM_TEAMSETTINGS_ENABLEOPENSERVER: "true"
     ports:

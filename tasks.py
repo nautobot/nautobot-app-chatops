@@ -458,16 +458,46 @@ def bootstrap_mattermost(context):
 
 @task
 def backup_mattermost(context, output="./development/mattermost/dump.sql"):
-    """Export Mattermost data to the SQL file."""
-    command = [
+    """Export Mattermost data to the SQL file. Certain tables are ignored."""
+
+    ignore_tables = [
+        "Audits",
+        "ChannelMemberHistory",
+        "CommandWebhooks",
+        "Posts",
+        "PostsPriority",
+        "Sessions",
+        "UploadSessions",
+    ]
+
+    dump_filename = Path(output).absolute()
+
+    base_command = [
         "exec",
         "--env MYSQL_PWD=mostest",
         "--",
         "mattermost",
         "mysqldump",
-        "--add-drop-database",
         "--databases mattermost_test",
+        "--compact",
         "-u root",
-        f"> {Path(output).absolute()}",
+    ]
+
+    # Dump schema first
+    command = [
+        *base_command,
+        "--add-drop-database",
+        "--no-data",
+        f"> {dump_filename}",
+    ]
+    docker_compose(context, " ".join(command), pty=True)
+
+    # Dump data for all tables except ignored
+    command = [
+        *base_command,
+        *(f"--ignore-table mattermost_test.{table}" for table in ignore_tables),
+        "--no-create-info",
+        "--skip-extended-insert",
+        f">> {dump_filename}",
     ]
     docker_compose(context, " ".join(command), pty=True)
