@@ -26,6 +26,10 @@ oauth_config:
       - im:read
       - mpim:read
 settings:
+  event_subscriptions:
+    request_url: https://<your-URL>/api/plugins/chatops/slack/event/
+    bot_events:
+      - app_mention
   interactivity:
     is_enabled: true
     request_url: https://<your-URL>/api/plugins/chatops/slack/interaction/

@@ -43,6 +43,12 @@ async def main():  # pylint: disable=too-many-statements
             await client.send_socket_mode_response(response)
             await process_interactive(client, req)
 
+        if req.type == "events_api" and req.payload.get("event", dict()).get("type") == "app_mention":
+            client.logger.debug("Received mention of bot")
+            response = SocketModeResponse(envelope_id=req.envelope_id)
+            await client.send_socket_mode_response(response)
+            await process_mention(client, req)
+    
     async def process_slash_command(client, req):
         client.logger.debug("Processing slash command.")
         command = req.payload.get("command")
@@ -86,6 +92,7 @@ async def main():  # pylint: disable=too-many-statements
             "user_name": payload.get("user", {}).get("username"),
             "response_url": payload.get("response_url"),
             "trigger_id": payload.get("trigger_id"),
+            "thread_ts": req.payload.get("event", {}).get("event_ts") or req.payload.get("container", {}).get("thread_ts")
         }
 
         # Check for channel_name if channel_id is present
@@ -181,6 +188,8 @@ async def main():  # pylint: disable=too-many-statements
                 private_metadata = json.loads(payload["view"]["private_metadata"])
                 if "channel_id" in private_metadata:
                     context["channel_id"] = private_metadata["channel_id"]
+                if "thread_ts" in private_metadata:
+                    context["thread_ts"] = private_metadata["thread_ts"]
         else:
             client.logger.error("I didn't understand that notification.")
             return
@@ -208,6 +217,32 @@ async def main():  # pylint: disable=too-many-statements
         # What we'd like to do here is send a "Nautobot is typing..." to the channel,
         # but unfortunately the API we're using doesn't support that (only the legacy/deprecated RTM API does).
         # SlackDispatcher(context).send_busy_indicator()
+
+        return await socket_check_and_enqueue_command(registry, command, subcommand, params, context, SlackDispatcher)
+
+    async def process_mention(client, req):
+        context = {
+            "org_id": req.payload.get("team_id"),
+            "org_name": req.payload.get("team_domain"),
+            "channel_id": req.payload.get("event", {}).get("channel"),
+            "channel_name": req.payload.get("channel_name"),
+            "user_id": req.payload.get("event", {}).get("user"),
+            "user_name": req.payload.get("event", {}).get("user"),
+            "thread_ts": req.payload.get("event", {}).get("thread_ts")
+        }
+        bot_id = req.payload.get("authorizations", [{}])[0].get("user_id")
+        text_after_mention = req.payload.get("event", {}).get("text").split(f"<@{bot_id}>")[-1]
+        text_after_mention = text_after_mention.replace(SLASH_PREFIX, "")
+        try:
+            command, subcommand, params = parse_command_string(text_after_mention)
+        except ValueError as err:
+            client.logger.error("%s", err)
+            return
+
+        registry = get_commands_registry()
+
+        if command not in registry:
+            SlackDispatcher(context).send_markdown(commands_help(prefix=SLASH_PREFIX))
 
         return await socket_check_and_enqueue_command(registry, command, subcommand, params, context, SlackDispatcher)
 
