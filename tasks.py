@@ -15,6 +15,7 @@ limitations under the License.
 from distutils.util import strtobool
 from invoke import Collection, task as invoke_task
 import os
+from pathlib import Path
 
 
 def is_truthy(arg):
@@ -49,6 +50,7 @@ namespace.configure(
                 "docker-compose.celery.yml",
                 "docker-compose.base.yml",
                 "docker-compose.dev.yml",
+                "mattermost/docker-compose.yml",
                 # "docker-compose.socket.yml",
             ],
         }
@@ -86,6 +88,7 @@ def docker_compose(context, command, **kwargs):
     build_env = {
         "NAUTOBOT_VER": context.nautobot_chatops.nautobot_ver,
         "PYTHON_VER": context.nautobot_chatops.python_ver,
+        **kwargs.pop("env", {}),
     }
     compose_command = f'docker-compose --project-name {context.nautobot_chatops.project_name} --project-directory "{context.nautobot_chatops.compose_dir}"'
     for compose_file in context.nautobot_chatops.compose_files:
@@ -113,9 +116,9 @@ def run_command(context, command, **kwargs):
         if "nautobot" in results.stdout:
             compose_command = f"exec nautobot {command}"
         else:
-            compose_command = f"run --entrypoint '{command}' nautobot"
+            compose_command = f"run --rm --entrypoint '{command}' nautobot"
 
-        docker_compose(context, compose_command, pty=True)
+        docker_compose(context, compose_command, pty=True, **kwargs)
 
 
 # ------------------------------------------------------------------------------
@@ -164,11 +167,11 @@ def start(context, service=None):
     docker_compose(context, "up --detach", service=service)
 
 
-@task
-def restart(context):
-    """Gracefully restart all containers."""
+@task(help={"service": "If specified, only affect this service."})
+def restart(context, service=""):
+    """Gracefully restart specified or all containers."""
     print("Restarting Nautobot...")
-    docker_compose(context, "restart")
+    docker_compose(context, "restart", service=service)
 
 
 @task
@@ -182,7 +185,25 @@ def stop(context):
 def destroy(context):
     """Destroy all containers and volumes."""
     print("Destroying Nautobot...")
-    docker_compose(context, "down --volumes")
+    docker_compose(context, "down --remove-orphans --volumes")
+
+
+@task
+def export(context):
+    """Export docker compose configuration to `compose.yaml` file.
+
+    Useful to:
+
+    - Debug docker compose configuration.
+    - Allow using `docker compose` command directly without invoke.
+    """
+    docker_compose(context, "convert > compose.yaml")
+
+
+@task(aliases=("ps",))
+def list_ps(context):
+    """List running containers."""
+    docker_compose(context, "ps")
 
 
 @task
@@ -204,9 +225,36 @@ def nbshell(context):
 
 
 @task
-def cli(context):
+def cli(context, service="nautobot"):
     """Launch a bash shell inside the running Nautobot container."""
-    run_command(context, "bash")
+    docker_compose(context, f"exec -- {service} bash", pty=True)
+
+
+@task
+def lock(context, service="nautobot"):
+    """Launch a bash shell inside the running Nautobot container."""
+    run_command(context, "poetry lock --no-update")
+
+
+@task(
+    help={
+        "service": "Docker-compose service name to view (default: nautobot)",
+        "follow": "Follow logs",
+        "tail": "Tail N number of lines or 'all'",
+    }
+)
+def logs(context, service="", follow=False, tail=None):
+    """View the logs of a docker-compose service."""
+    command = "logs "
+
+    if follow:
+        command += "--follow "
+    if tail:
+        command += f"--tail={tail} "
+
+    if service:
+        command += service
+    docker_compose(context, command)
 
 
 @task(
@@ -404,3 +452,69 @@ def tests(context, failfast=False):
     unittest(context, failfast=failfast)
     print("All tests have passed!")
     unittest_coverage(context)
+
+
+@task
+def bootstrap_mattermost(context):
+    """Bootstrap Nautobot data to be used with Mattermost."""
+    command = [
+        "nautobot-server",
+        "nbshell",
+        "--pythonpath",
+        "development/mattermost",
+        "--command",
+        '"import nautobot_bootstrap"',
+    ]
+    run_command(context, " ".join(command))
+
+
+@task
+def backup_mattermost(context, output="./development/mattermost/dump.sql"):
+    """Export Mattermost data to the SQL file. Certain tables are ignored."""
+    ignore_tables = [
+        "Audits",
+        "ChannelMemberHistory",
+        "CommandWebhooks",
+        "Posts",
+        "PostsPriority",
+        "Sessions",
+        "UploadSessions",
+    ]
+
+    dump_filename = Path(output).absolute()
+
+    base_command = [
+        "exec",
+        "--env MYSQL_PWD=mostest",
+        "--",
+        "mattermost",
+        "mysqldump",
+        "--databases mattermost_test",
+        "--compact",
+        "-u root",
+    ]
+
+    # Dump schema first
+    command = [
+        *base_command,
+        "--add-drop-database",
+        "--no-data",
+        f"> {dump_filename}",
+    ]
+    docker_compose(context, " ".join(command), pty=True)
+
+    # Dump data for all tables except ignored
+    command = [
+        *base_command,
+        *(f"--ignore-table mattermost_test.{table}" for table in ignore_tables),
+        "--no-create-info",
+        "--skip-extended-insert",
+        f">> {dump_filename}",
+    ]
+    docker_compose(context, " ".join(command), pty=True)
+
+
+@task
+def psql(context):
+    """Execute psql cli in postgres container."""
+    docker_compose(context, "exec -- postgres psql --user nautobot nautobot", pty=True)
