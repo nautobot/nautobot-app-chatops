@@ -18,6 +18,7 @@ include = [
 [tool.poetry.plugins."nautobot.workers"]
 "clear" = "nautobot_chatops.workers.clear:clear"
 "nautobot" = "nautobot_chatops.workers.nautobot:nautobot"
+"ansible" = "nautobot_chatops.integrations.ansible.worker:ansible"
 
 [tool.poetry.dependencies]
 # TODO Move to ~ requirements instead of ^
@@ -32,6 +33,10 @@ nautobot-capacity-metrics = "*"
 slack-sdk = "^3.4.2"
 texttable = "^1.6.2"
 webexteamssdk = "^1.3"
+
+# TODO check ansible deps
+pydantic = "^1.8.2"
+requests = "^2.25.1"
 
 [tool.poetry.dev-dependencies]
 black = "*"
@@ -56,6 +61,8 @@ mkdocs-version-annotations = "~1.0.0"
 mkdocs-include-markdown-plugin = "~3.6.1"
 # Change log management and generation
 towncrier = "~22.8.0"
+coverage = "~5.4"
+requests-mock = "^1.9.3"
 
 [tool.poetry.extras]
 all = [

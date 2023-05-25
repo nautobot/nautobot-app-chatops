@@ -1,0 +1,556 @@
+{
+    "count": 6,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 1,
+            "type": "inventory",
+            "url": "/api/v2/inventories/1/",
+            "related": {
+                "created_by": "/api/v2/users/1/",
+                "modified_by": "/api/v2/users/1/",
+                "hosts": "/api/v2/inventories/1/hosts/",
+                "groups": "/api/v2/inventories/1/groups/",
+                "root_groups": "/api/v2/inventories/1/root_groups/",
+                "variable_data": "/api/v2/inventories/1/variable_data/",
+                "script": "/api/v2/inventories/1/script/",
+                "tree": "/api/v2/inventories/1/tree/",
+                "inventory_sources": "/api/v2/inventories/1/inventory_sources/",
+                "update_inventory_sources": "/api/v2/inventories/1/update_inventory_sources/",
+                "activity_stream": "/api/v2/inventories/1/activity_stream/",
+                "job_templates": "/api/v2/inventories/1/job_templates/",
+                "ad_hoc_commands": "/api/v2/inventories/1/ad_hoc_commands/",
+                "access_list": "/api/v2/inventories/1/access_list/",
+                "object_roles": "/api/v2/inventories/1/object_roles/",
+                "instance_groups": "/api/v2/inventories/1/instance_groups/",
+                "copy": "/api/v2/inventories/1/copy/",
+                "organization": "/api/v2/organizations/1/"
+            },
+            "summary_fields": {
+                "organization": {
+                    "id": 1,
+                    "name": "Default",
+                    "description": ""
+                },
+                "created_by": {
+                    "id": 1,
+                    "username": "ntc",
+                    "first_name": "",
+                    "last_name": ""
+                },
+                "modified_by": {
+                    "id": 1,
+                    "username": "ntc",
+                    "first_name": "",
+                    "last_name": ""
+                },
+                "object_roles": {
+                    "admin_role": {
+                        "description": "Can manage all aspects of the inventory",
+                        "name": "Admin",
+                        "id": 22
+                    },
+                    "update_role": {
+                        "description": "May update the inventory",
+                        "name": "Update",
+                        "id": 23
+                    },
+                    "adhoc_role": {
+                        "description": "May run ad hoc commands on the inventory",
+                        "name": "Ad Hoc",
+                        "id": 24
+                    },
+                    "use_role": {
+                        "description": "Can use the inventory in a job template",
+                        "name": "Use",
+                        "id": 25
+                    },
+                    "read_role": {
+                        "description": "May view settings for the inventory",
+                        "name": "Read",
+                        "id": 26
+                    }
+                },
+                "user_capabilities": {
+                    "edit": true,
+                    "delete": true,
+                    "copy": true,
+                    "adhoc": true
+                }
+            },
+            "created": "2020-05-15T22:36:10.743860Z",
+            "modified": "2020-05-15T22:36:10.743873Z",
+            "name": "Demo Inventory",
+            "description": "",
+            "organization": 1,
+            "kind": "",
+            "host_filter": null,
+            "variables": "",
+            "has_active_failures": false,
+            "total_hosts": 1,
+            "hosts_with_active_failures": 0,
+            "total_groups": 0,
+            "groups_with_active_failures": 0,
+            "has_inventory_sources": false,
+            "total_inventory_sources": 0,
+            "inventory_sources_with_failures": 0,
+            "insights_credential": null,
+            "pending_deletion": false
+        },
+        {
+            "id": 9,
+            "type": "inventory",
+            "url": "/api/v2/inventories/9/",
+            "related": {
+                "created_by": "/api/v2/users/1/",
+                "modified_by": "/api/v2/users/1/",
+                "hosts": "/api/v2/inventories/9/hosts/",
+                "groups": "/api/v2/inventories/9/groups/",
+                "root_groups": "/api/v2/inventories/9/root_groups/",
+                "variable_data": "/api/v2/inventories/9/variable_data/",
+                "script": "/api/v2/inventories/9/script/",
+                "tree": "/api/v2/inventories/9/tree/",
+                "inventory_sources": "/api/v2/inventories/9/inventory_sources/",
+                "update_inventory_sources": "/api/v2/inventories/9/update_inventory_sources/",
+                "activity_stream": "/api/v2/inventories/9/activity_stream/",
+                "job_templates": "/api/v2/inventories/9/job_templates/",
+                "ad_hoc_commands": "/api/v2/inventories/9/ad_hoc_commands/",
+                "access_list": "/api/v2/inventories/9/access_list/",
+                "object_roles": "/api/v2/inventories/9/object_roles/",
+                "instance_groups": "/api/v2/inventories/9/instance_groups/",
+                "copy": "/api/v2/inventories/9/copy/",
+                "organization": "/api/v2/organizations/1/"
+            },
+            "summary_fields": {
+                "organization": {
+                    "id": 1,
+                    "name": "Default",
+                    "description": ""
+                },
+                "created_by": {
+                    "id": 1,
+                    "username": "ntc",
+                    "first_name": "",
+                    "last_name": ""
+                },
+                "modified_by": {
+                    "id": 1,
+                    "username": "ntc",
+                    "first_name": "",
+                    "last_name": ""
+                },
+                "object_roles": {
+                    "admin_role": {
+                        "description": "Can manage all aspects of the inventory",
+                        "name": "Admin",
+                        "id": 297
+                    },
+                    "update_role": {
+                        "description": "May update the inventory",
+                        "name": "Update",
+                        "id": 298
+                    },
+                    "adhoc_role": {
+                        "description": "May run ad hoc commands on the inventory",
+                        "name": "Ad Hoc",
+                        "id": 299
+                    },
+                    "use_role": {
+                        "description": "Can use the inventory in a job template",
+                        "name": "Use",
+                        "id": 300
+                    },
+                    "read_role": {
+                        "description": "May view settings for the inventory",
+                        "name": "Read",
+                        "id": 301
+                    }
+                },
+                "user_capabilities": {
+                    "edit": true,
+                    "delete": true,
+                    "copy": true,
+                    "adhoc": true
+                }
+            },
+            "created": "2020-11-06T14:14:56.123686Z",
+            "modified": "2020-11-06T14:14:56.123699Z",
+            "name": "demo_training_inventory",
+            "description": "Demo Inventory",
+            "organization": 1,
+            "kind": "",
+            "host_filter": null,
+            "variables": "---",
+            "has_active_failures": false,
+            "total_hosts": 0,
+            "hosts_with_active_failures": 0,
+            "total_groups": 0,
+            "groups_with_active_failures": 0,
+            "has_inventory_sources": true,
+            "total_inventory_sources": 1,
+            "inventory_sources_with_failures": 0,
+            "insights_credential": null,
+            "pending_deletion": false
+        },
+        {
+            "id": 6,
+            "type": "inventory",
+            "url": "/api/v2/inventories/6/",
+            "related": {
+                "created_by": "/api/v2/users/1/",
+                "modified_by": "/api/v2/users/1/",
+                "hosts": "/api/v2/inventories/6/hosts/",
+                "groups": "/api/v2/inventories/6/groups/",
+                "root_groups": "/api/v2/inventories/6/root_groups/",
+                "variable_data": "/api/v2/inventories/6/variable_data/",
+                "script": "/api/v2/inventories/6/script/",
+                "tree": "/api/v2/inventories/6/tree/",
+                "inventory_sources": "/api/v2/inventories/6/inventory_sources/",
+                "update_inventory_sources": "/api/v2/inventories/6/update_inventory_sources/",
+                "activity_stream": "/api/v2/inventories/6/activity_stream/",
+                "job_templates": "/api/v2/inventories/6/job_templates/",
+                "ad_hoc_commands": "/api/v2/inventories/6/ad_hoc_commands/",
+                "access_list": "/api/v2/inventories/6/access_list/",
+                "object_roles": "/api/v2/inventories/6/object_roles/",
+                "instance_groups": "/api/v2/inventories/6/instance_groups/",
+                "copy": "/api/v2/inventories/6/copy/",
+                "organization": "/api/v2/organizations/1/"
+            },
+            "summary_fields": {
+                "organization": {
+                    "id": 1,
+                    "name": "Default",
+                    "description": ""
+                },
+                "created_by": {
+                    "id": 1,
+                    "username": "ntc",
+                    "first_name": "",
+                    "last_name": ""
+                },
+                "modified_by": {
+                    "id": 1,
+                    "username": "ntc",
+                    "first_name": "",
+                    "last_name": ""
+                },
+                "object_roles": {
+                    "admin_role": {
+                        "description": "Can manage all aspects of the inventory",
+                        "name": "Admin",
+                        "id": 89
+                    },
+                    "update_role": {
+                        "description": "May update the inventory",
+                        "name": "Update",
+                        "id": 90
+                    },
+                    "adhoc_role": {
+                        "description": "May run ad hoc commands on the inventory",
+                        "name": "Ad Hoc",
+                        "id": 91
+                    },
+                    "use_role": {
+                        "description": "Can use the inventory in a job template",
+                        "name": "Use",
+                        "id": 92
+                    },
+                    "read_role": {
+                        "description": "May view settings for the inventory",
+                        "name": "Read",
+                        "id": 93
+                    }
+                },
+                "user_capabilities": {
+                    "edit": true,
+                    "delete": true,
+                    "copy": true,
+                    "adhoc": true
+                }
+            },
+            "created": "2020-07-11T11:55:46.171153Z",
+            "modified": "2020-07-11T11:55:46.171166Z",
+            "name": "NautobotSOT",
+            "description": "All data from Nautobot SoT Agg API (plugin)",
+            "organization": 1,
+            "kind": "",
+            "host_filter": null,
+            "variables": "",
+            "has_active_failures": false,
+            "total_hosts": 69,
+            "hosts_with_active_failures": 0,
+            "total_groups": 34,
+            "groups_with_active_failures": 0,
+            "has_inventory_sources": true,
+            "total_inventory_sources": 1,
+            "inventory_sources_with_failures": 0,
+            "insights_credential": null,
+            "pending_deletion": false
+        },
+        {
+            "id": 2,
+            "type": "inventory",
+            "url": "/api/v2/inventories/2/",
+            "related": {
+                "created_by": "/api/v2/users/1/",
+                "hosts": "/api/v2/inventories/2/hosts/",
+                "groups": "/api/v2/inventories/2/groups/",
+                "root_groups": "/api/v2/inventories/2/root_groups/",
+                "variable_data": "/api/v2/inventories/2/variable_data/",
+                "script": "/api/v2/inventories/2/script/",
+                "tree": "/api/v2/inventories/2/tree/",
+                "inventory_sources": "/api/v2/inventories/2/inventory_sources/",
+                "update_inventory_sources": "/api/v2/inventories/2/update_inventory_sources/",
+                "activity_stream": "/api/v2/inventories/2/activity_stream/",
+                "job_templates": "/api/v2/inventories/2/job_templates/",
+                "ad_hoc_commands": "/api/v2/inventories/2/ad_hoc_commands/",
+                "access_list": "/api/v2/inventories/2/access_list/",
+                "object_roles": "/api/v2/inventories/2/object_roles/",
+                "instance_groups": "/api/v2/inventories/2/instance_groups/",
+                "copy": "/api/v2/inventories/2/copy/",
+                "organization": "/api/v2/organizations/1/"
+            },
+            "summary_fields": {
+                "organization": {
+                    "id": 1,
+                    "name": "Default",
+                    "description": ""
+                },
+                "created_by": {
+                    "id": 1,
+                    "username": "ntc",
+                    "first_name": "",
+                    "last_name": ""
+                },
+                "object_roles": {
+                    "admin_role": {
+                        "description": "Can manage all aspects of the inventory",
+                        "name": "Admin",
+                        "id": 45
+                    },
+                    "update_role": {
+                        "description": "May update the inventory",
+                        "name": "Update",
+                        "id": 46
+                    },
+                    "adhoc_role": {
+                        "description": "May run ad hoc commands on the inventory",
+                        "name": "Ad Hoc",
+                        "id": 47
+                    },
+                    "use_role": {
+                        "description": "Can use the inventory in a job template",
+                        "name": "Use",
+                        "id": 48
+                    },
+                    "read_role": {
+                        "description": "May view settings for the inventory",
+                        "name": "Read",
+                        "id": 49
+                    }
+                },
+                "user_capabilities": {
+                    "edit": true,
+                    "delete": true,
+                    "copy": true,
+                    "adhoc": true
+                }
+            },
+            "created": "2020-06-28T17:21:59.882629Z",
+            "modified": "2020-06-28T22:18:22.466872Z",
+            "name": "ntc-demo-inventory",
+            "description": "Secondary Demo Inventory",
+            "organization": 1,
+            "kind": "",
+            "host_filter": null,
+            "variables": "{\"ansible_python_interpreter\": \"python\", \"ansible_ssh_pass\": \"ntc123\", \"ansible_user\": \"ntc\", \"awx_host\": \"awxjumphost-awx-d6tos6md.srv.ravcloud.com\", \"credentials\": {\"servicenow\": {\"ansible_ssh_pass\": \"ntc123\", \"ansible_user\": \"admin\", \"instance_id\": \"dev59275\"}}, \"flask_server\": \"api.demo.networktocode.com\", \"nautobot_host\": \"https://nautobot.demo.networktocode.com\", \"nautobot_token\": \"1234567890abcdefghijklmnopqrstuvwxyz0123\", \"ntc_vendor\": \"unknown\", \"pause_timer\": 1, \"project_path\": \"/var/lib/awx\", \"show_commands_active\": true, \"slack_channel\": \"#ntc-automation-demos\", \"slack_domain\": \"ntc-internal\", \"slack_icon\": \"http://novask.in/1255033448.png\", \"slack_token\": \"T101A77MM/BFB4ZMPKR/CdenUej1wGNim7UI0JhgQBhD\", \"slack_user\": \"Network Autobot\", \"snow_approver\": {\"pass\": \"coolguy29\", \"user\": \"fred.luddy\"}, \"snow_assignment_group\": \"287ebd7da9fe198100f92cc8d1d2154e\", \"snow_instance\": \"dev59275\", \"snow_user\": \"admin\", \"ticket_state_map\": {\"assess\": {\"comment\": \"Creating ticket for\\n\\n [code]<a href='http://{{ tower_host }}/#/jobs/{{ tower_job_id }}'>Ansible job {{ tower_job_id }} output</a>[/code]\", \"state\": -4}, \"closed\": {\"comment\": \"change has been completed\\n\\n [code]<a href='http://{{ tower_host }}/#/jobs/{{ tower_job_id }}'>Ansible job {{ tower_job_id }} output</a>[/code]\", \"state\": 3}, \"implement\": {\"comment\": \"change is about to begin\\n\\n [code]<a href='http://{{ tower_host }}/#/jobs/{{ tower_job_id }}'>Ansible job {{ tower_job_id }} output</a>[/code]\", \"state\": -1}, \"review\": {\"comment\": \"change is ready for review\\n\\n [code]<a href='http://{{ tower_host }}/#/jobs/{{ tower_job_id }}'>Ansible job {{ tower_job_id }} output</a>[/code]\", \"state\": 0}, \"scheduled\": {\"comment\": \"change is scheduled\\n\\n [code]<a href='http://{{ tower_host }}/#/jobs/{{ tower_job_id }}'>Ansible job {{ tower_job_id }} output</a>[/code]\", \"state\": -2}}, \"topology_name\": \"ntc-demo-01\", \"tower_host\": \"tower.demo.networktocode.com\", \"dns_servers\": [{\"address\": \"10.1.1.1\"}, {\"address\": \"10.2.2.2\"}], \"ntp_servers\": [{\"address\": \"10.1.1.1\"}, {\"address\": \"10.2.2.2\", \"priority\": true}], \"radius_servers\": [{\"address\": \"10.1.1.1\", \"name\": \"PRIMARY\", \"password\": \"abc123\", \"priority\": true, \"vrf\": \"mgmt\"}, {\"address\": \"10.2.2.2\", \"name\": \"SECONDARY\", \"password\": \"abc123\", \"priority\": false, \"vrf\": \"mgmt\"}], \"snmp_contact\": \"John Smith\", \"snmp_location\": \"Network to Code - NYC | NY\", \"snmp_read_only\": \"networktocode\", \"snmp_read_write\": \"secure\", \"snmp_servers\": [{\"address\": \"10.1.1.1\", \"password\": \"networktocode\"}], \"syslog_servers\": [{\"address\": \"10.1.1.1\"}, {\"address\": \"10.2.2.2\"}], \"tacacs_servers\": [{\"address\": \"10.1.1.1\", \"name\": \"PRIMARY\", \"password\": \"abc123\", \"priority\": true, \"vrf\": \"mgmt\"}, {\"address\": \"10.2.2.2\", \"name\": \"SECONDARY\", \"password\": \"abc123\", \"priority\": false, \"vrf\": \"mgmt\"}]}",
+            "has_active_failures": false,
+            "total_hosts": 1,
+            "hosts_with_active_failures": 0,
+            "total_groups": 1,
+            "groups_with_active_failures": 0,
+            "has_inventory_sources": true,
+            "total_inventory_sources": 1,
+            "inventory_sources_with_failures": 0,
+            "insights_credential": null,
+            "pending_deletion": false
+        },
+        {
+            "id": 12,
+            "type": "inventory",
+            "url": "/api/v2/inventories/12/",
+            "related": {
+                "created_by": "/api/v2/users/1/",
+                "hosts": "/api/v2/inventories/12/hosts/",
+                "groups": "/api/v2/inventories/12/groups/",
+                "root_groups": "/api/v2/inventories/12/root_groups/",
+                "variable_data": "/api/v2/inventories/12/variable_data/",
+                "script": "/api/v2/inventories/12/script/",
+                "tree": "/api/v2/inventories/12/tree/",
+                "inventory_sources": "/api/v2/inventories/12/inventory_sources/",
+                "update_inventory_sources": "/api/v2/inventories/12/update_inventory_sources/",
+                "activity_stream": "/api/v2/inventories/12/activity_stream/",
+                "job_templates": "/api/v2/inventories/12/job_templates/",
+                "ad_hoc_commands": "/api/v2/inventories/12/ad_hoc_commands/",
+                "access_list": "/api/v2/inventories/12/access_list/",
+                "object_roles": "/api/v2/inventories/12/object_roles/",
+                "instance_groups": "/api/v2/inventories/12/instance_groups/",
+                "copy": "/api/v2/inventories/12/copy/",
+                "organization": "/api/v2/organizations/1/"
+            },
+            "summary_fields": {
+                "organization": {
+                    "id": 1,
+                    "name": "Default",
+                    "description": ""
+                },
+                "created_by": {
+                    "id": 1,
+                    "username": "ntc",
+                    "first_name": "",
+                    "last_name": ""
+                },
+                "object_roles": {
+                    "admin_role": {
+                        "description": "Can manage all aspects of the inventory",
+                        "name": "Admin",
+                        "id": 425
+                    },
+                    "update_role": {
+                        "description": "May update the inventory",
+                        "name": "Update",
+                        "id": 426
+                    },
+                    "adhoc_role": {
+                        "description": "May run ad hoc commands on the inventory",
+                        "name": "Ad Hoc",
+                        "id": 427
+                    },
+                    "use_role": {
+                        "description": "Can use the inventory in a job template",
+                        "name": "Use",
+                        "id": 428
+                    },
+                    "read_role": {
+                        "description": "May view settings for the inventory",
+                        "name": "Read",
+                        "id": 429
+                    }
+                },
+                "user_capabilities": {
+                    "edit": true,
+                    "delete": true,
+                    "copy": true,
+                    "adhoc": true
+                }
+            },
+            "created": "2021-05-04T11:59:26.504425Z",
+            "modified": "2021-05-04T11:59:26.504466Z",
+            "name": "NTC Internal IT Inventory",
+            "description": "Inventory for Internal IT",
+            "organization": 1,
+            "kind": "",
+            "host_filter": null,
+            "variables": "{\"ansible_private_key_file\": \"internal-it\", \"ansible_python_interpreter\": \"python\", \"ansible_user\": \"centos\", \"aws_access_key_id\": \"{{ lookup('env', 'SVC_ACCT_AWS_ACCESS_KEY_ID') }}\", \"aws_secret_key\": \"{{ lookup('env', 'SVC_ACCT_AWS_SECRET_ACCESS_KEY') }}\", \"docker_hub_b64_creds\": \"{{ lookup('env', 'DOCKER_HUB_B64') }}\", \"github_personal_token\": \"{{ lookup('env', 'GITHUB_SVC_ACCT_TOKEN') }}\", \"github_username\": \"{{ lookup('env', 'GITHUB_SVC_ACCT') }}\", \"itapps_private_key_file\": \"../itapps_update_data\", \"nautobot_token\": \"{{ lookup('env', 'NETBOX_TOKEN') }}\", \"nso_password\": \"{{ lookup('env', 'NSO_PASSWORD') or nso_access_password }}\", \"nso_username\": \"{{ lookup('env', 'NSO_USERNAME') or nso_access_username }}\", \"ntc_net_password\": \"{{ lookup('env', 'NTC_NET_PASSWORD') }}\", \"ntc_net_user\": \"{{ lookup('env', 'NTC_NET_USER') }}\", \"tower_packet_personal_token\": \"{{ lookup('env', 'PACKET_AUTH_TOKEN') }}\", \"tower_password\": \"{{ lookup('env', 'TOWER_PASSWORD') }}\", \"tower_user\": \"{{ lookup('env', 'TOWER_USER') }}\"}",
+            "has_active_failures": false,
+            "total_hosts": 1,
+            "hosts_with_active_failures": 0,
+            "total_groups": 1,
+            "groups_with_active_failures": 0,
+            "has_inventory_sources": true,
+            "total_inventory_sources": 1,
+            "inventory_sources_with_failures": 0,
+            "insights_credential": null,
+            "pending_deletion": false
+        },
+        {
+            "id": 10,
+            "type": "inventory",
+            "url": "/api/v2/inventories/10/",
+            "related": {
+                "created_by": "/api/v2/users/1/",
+                "hosts": "/api/v2/inventories/10/hosts/",
+                "groups": "/api/v2/inventories/10/groups/",
+                "root_groups": "/api/v2/inventories/10/root_groups/",
+                "variable_data": "/api/v2/inventories/10/variable_data/",
+                "script": "/api/v2/inventories/10/script/",
+                "tree": "/api/v2/inventories/10/tree/",
+                "inventory_sources": "/api/v2/inventories/10/inventory_sources/",
+                "update_inventory_sources": "/api/v2/inventories/10/update_inventory_sources/",
+                "activity_stream": "/api/v2/inventories/10/activity_stream/",
+                "job_templates": "/api/v2/inventories/10/job_templates/",
+                "ad_hoc_commands": "/api/v2/inventories/10/ad_hoc_commands/",
+                "access_list": "/api/v2/inventories/10/access_list/",
+                "object_roles": "/api/v2/inventories/10/object_roles/",
+                "instance_groups": "/api/v2/inventories/10/instance_groups/",
+                "copy": "/api/v2/inventories/10/copy/",
+                "organization": "/api/v2/organizations/1/"
+            },
+            "summary_fields": {
+                "organization": {
+                    "id": 1,
+                    "name": "Default",
+                    "description": ""
+                },
+                "created_by": {
+                    "id": 1,
+                    "username": "ntc",
+                    "first_name": "",
+                    "last_name": ""
+                },
+                "object_roles": {
+                    "admin_role": {
+                        "description": "Can manage all aspects of the inventory",
+                        "name": "Admin",
+                        "id": 316
+                    },
+                    "update_role": {
+                        "description": "May update the inventory",
+                        "name": "Update",
+                        "id": 317
+                    },
+                    "adhoc_role": {
+                        "description": "May run ad hoc commands on the inventory",
+                        "name": "Ad Hoc",
+                        "id": 318
+                    },
+                    "use_role": {
+                        "description": "Can use the inventory in a job template",
+                        "name": "Use",
+                        "id": 319
+                    },
+                    "read_role": {
+                        "description": "May view settings for the inventory",
+                        "name": "Read",
+                        "id": 320
+                    }
+                },
+                "user_capabilities": {
+                    "edit": true,
+                    "delete": true,
+                    "copy": true,
+                    "adhoc": true
+                }
+            },
+            "created": "2020-11-14T20:49:43.605413Z",
+            "modified": "2020-11-14T20:49:43.605427Z",
+            "name": "NTC Training Inventory",
+            "description": "Inventory for Course Management",
+            "organization": 1,
+            "kind": "",
+            "host_filter": null,
+            "variables": "{\"ansible_private_key_file\": \"/ntc/packet_private_ssh_key\", \"ansible_python_interpreter\": \"/usr/bin/python3\", \"ansible_ssh_common_args\": \"-o StrictHostKeyChecking=no -o ServerAliveInterval=50\", \"ansible_user\": \"root\", \"packet_project\": \"f1794183-b6df-49da-84b7-8122c5cfb874\", \"remote_user\": \"root\", \"nautobot_host\": \"\", \"itapps_host\": \"https://itapps.prod.ntc.live\"}",
+            "has_active_failures": false,
+            "total_hosts": 0,
+            "hosts_with_active_failures": 0,
+            "total_groups": 1,
+            "groups_with_active_failures": 0,
+            "has_inventory_sources": true,
+            "total_inventory_sources": 1,
+            "inventory_sources_with_failures": 0,
+            "insights_credential": null,
+            "pending_deletion": false
+        }
+    ]
+}

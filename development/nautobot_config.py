@@ -8,8 +8,8 @@ from nautobot.core.settings import *  # noqa: F401,F403 pylint: disable=wildcard
 from nautobot.core.settings_funcs import parse_redis_connection
 
 
-def _get_bool_env(name: str):
-    value = os.getenv(name, "False")
+def _get_bool_env(name: str, default=False):
+    value = os.getenv(name, str(default))
     return bool(json.loads(value.lower()))
 
 
@@ -133,6 +133,12 @@ PLUGINS = [
 # Each key in the dictionary is the name of an installed plugin and its value is a dictionary of settings.
 PLUGINS_CONFIG = {
     "nautobot_chatops": {
+        "ansible": {
+            "tower_uri": os.getenv("NAUTOBOT_TOWER_URI"),
+            "tower_username": os.getenv("NAUTOBOT_TOWER_USERNAME"),
+            "tower_password": os.getenv("NAUTOBOT_TOWER_PASSWORD"),
+            "tower_verify_ssl": _get_bool_env("NAUTOBOT_TOWER_VERIFY_SSL", True),
+        },
         "enable_mattermost": _get_bool_env("NAUTOBOT_CHATOPS_ENABLE_MATTERMOST"),
         "enable_ms_teams": _get_bool_env("NAUTOBOT_CHATOPS_ENABLE_MS_TEAMS"),
         "enable_slack": _get_bool_env("NAUTOBOT_CHATOPS_ENABLE_SLACK"),
