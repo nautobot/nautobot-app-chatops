@@ -13,6 +13,7 @@ from nautobot.extras.plugins import PluginConfig
 
 _CONFLICTING_APP_NAMES = [
     # App names that conflict with nautobot_chatops
+    "nautobot_plugin_chatops_grafana",
 ]
 
 
@@ -81,6 +82,14 @@ class NautobotChatOpsConfig(PluginConfig):
         "tower_username": None,
         "tower_password": None,
         "tower_verify_ssl": False,
+        "grafana_url": None,
+        "grafana_api_key": None,
+        "grafana_default_width": 0,
+        "grafana_default_height": 0,
+        "grafana_default_theme": "dark",
+        "grafana_default_timespan": None,
+        "grafana_org_id": 1,
+        "grafana_default_tz": None,
     }
 
     max_version = "1.999"

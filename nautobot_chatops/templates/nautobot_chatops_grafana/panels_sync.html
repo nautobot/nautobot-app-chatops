@@ -1,0 +1,17 @@
+{% extends 'nautobot_chatops_grafana/sync.html' %}
+{% load static %}
+{% load form_helpers %}
+
+
+<h1>{% block title %}Synchronize a Grafana Dashboards Panels{% endblock %}</h1>
+
+{% block form %}
+<div class="panel panel-default">
+    <div class="panel-body">
+        <p class="lead text-right">
+            <small>This may overwrite local commands with data from the <a href="{{ grafana_url }}/dashboards" target="_blank">Grafana Dashboards</a>. </small>
+        </p>
+        {% render_field form.dashboard %}
+    </div>
+</div>
+{% endblock %}

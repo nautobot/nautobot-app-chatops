@@ -3,6 +3,8 @@
 from nautobot.extras.plugins import PluginMenuItem, PluginMenuButton
 from nautobot.utilities.choices import ButtonColorChoices
 
+from .integrations.grafana.navigation import menu_items as grafana_menu_items
+
 menu_items = (
     PluginMenuItem(
         link="plugins:nautobot_chatops:accessgrant_list",
@@ -37,4 +39,5 @@ menu_items = (
         link_text="Command Usage Records",
         permissions=["nautobot_chatops.view_commandlog"],
     ),
+    *grafana_menu_items,
 )

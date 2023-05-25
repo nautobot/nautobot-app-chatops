@@ -9,6 +9,10 @@ from nautobot.core.models import BaseModel
 
 from .choices import AccessGrantTypeChoices, CommandStatusChoices, CommandTokenPlatformChoices
 
+from .integrations.grafana.models import Dashboard as GrafanaDashboard
+from .integrations.grafana.models import Panel as GrafanaPanel
+from .integrations.grafana.models import PanelVariable as GrafanaPanelVariable
+
 from .constants import (
     COMMAND_LOG_USER_NAME_HELP_TEXT,
     COMMAND_LOG_USER_ID_HELP_TEXT,
@@ -136,3 +140,13 @@ class CommandToken(BaseModel, ChangeLoggedModel):
         """Meta-attributes of a CommandToken."""
 
         ordering = ["platform", "token", "comment"]
+
+
+__all__ = (
+    "CommandLog",
+    "AccessGrant",
+    "CommandToken",
+    "GrafanaDashboard",
+    "GrafanaPanel",
+    "GrafanaPanelVariable",
+)
