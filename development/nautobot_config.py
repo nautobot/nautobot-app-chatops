@@ -150,3 +150,5 @@ PLUGINS_CONFIG = {
         "webex_token": os.environ.get("WEBEX_ACCESS_TOKEN"),
     },
 }
+
+METRICS_ENABLED = _get_bool_env("NAUTOBOT_METRICS_ENABLED")

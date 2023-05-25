@@ -11,9 +11,14 @@ for grant_type in AccessGrantTypeChoices.values():
         value="*",
     )
 
-CommandToken.objects.update_or_create(
-    comment="nautobot",
-    platform=CommandTokenPlatformChoices.MATTERMOST,
-    # The following token is safe to store in the repo because it is only used for local development.
-    token="rmdpfdjhnpg988e7ujzyom4euh",  # nosec
-)
+# The following tokens are for the development only and safe to store in the repo.
+_COMMAND_TOKENS = {
+    "nautobot": "rmdpfdjhnpg988e7ujzyom4euh",  # nosec
+}
+
+for command, token in _COMMAND_TOKENS.items():
+    CommandToken.objects.update_or_create(
+        platform=CommandTokenPlatformChoices.MATTERMOST,
+        comment=command,
+        token=token,
+    )

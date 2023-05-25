@@ -200,6 +200,12 @@ def export(context):
     docker_compose(context, "convert > compose.yaml")
 
 
+@task(aliases=("ps",))
+def list_ps(context):
+    """List running containers."""
+    docker_compose(context, "ps")
+
+
 @task
 def vscode(context):
     """Launch Visual Studio Code with the appropriate Environment variables to run in a container."""
@@ -222,6 +228,12 @@ def nbshell(context):
 def cli(context, service="nautobot"):
     """Launch a bash shell inside the running Nautobot container."""
     docker_compose(context, f"exec -- {service} bash", pty=True)
+
+
+@task
+def lock(context, service="nautobot"):
+    """Launch a bash shell inside the running Nautobot container."""
+    run_command(context, "poetry lock --no-update")
 
 
 @task(
@@ -500,3 +512,9 @@ def backup_mattermost(context, output="./development/mattermost/dump.sql"):
         f">> {dump_filename}",
     ]
     docker_compose(context, " ".join(command), pty=True)
+
+
+@task
+def psql(context):
+    """Execute psql cli in postgres container."""
+    docker_compose(context, "exec -- postgres psql --user nautobot nautobot", pty=True)
