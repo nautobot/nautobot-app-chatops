@@ -43,12 +43,12 @@ async def main():  # pylint: disable=too-many-statements
             await client.send_socket_mode_response(response)
             await process_interactive(client, req)
 
-        if req.type == "events_api" and req.payload.get("event", dict()).get("type") == "app_mention":
+        if req.type == "events_api" and req.payload.get("event", {}).get("type") == "app_mention":
             client.logger.debug("Received mention of bot")
             response = SocketModeResponse(envelope_id=req.envelope_id)
             await client.send_socket_mode_response(response)
             await process_mention(client, req)
-    
+
     async def process_slash_command(client, req):
         client.logger.debug("Processing slash command.")
         command = req.payload.get("command")
@@ -92,7 +92,8 @@ async def main():  # pylint: disable=too-many-statements
             "user_name": payload.get("user", {}).get("username"),
             "response_url": payload.get("response_url"),
             "trigger_id": payload.get("trigger_id"),
-            "thread_ts": req.payload.get("event", {}).get("event_ts") or req.payload.get("container", {}).get("thread_ts")
+            "thread_ts": req.payload.get("event", {}).get("event_ts")
+            or req.payload.get("container", {}).get("thread_ts"),
         }
 
         # Check for channel_name if channel_id is present
@@ -228,7 +229,7 @@ async def main():  # pylint: disable=too-many-statements
             "channel_name": req.payload.get("channel_name"),
             "user_id": req.payload.get("event", {}).get("user"),
             "user_name": req.payload.get("event", {}).get("user"),
-            "thread_ts": req.payload.get("event", {}).get("thread_ts")
+            "thread_ts": req.payload.get("event", {}).get("thread_ts"),
         }
         bot_id = req.payload.get("authorizations", [{}])[0].get("user_id")
         text_after_mention = req.payload.get("event", {}).get("text").split(f"<@{bot_id}>")[-1]

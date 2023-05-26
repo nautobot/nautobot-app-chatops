@@ -140,8 +140,7 @@ class SlackInteractionView(View):
             "user_name": payload.get("user", {}).get("username"),
             "response_url": payload.get("response_url"),
             "trigger_id": payload.get("trigger_id"),
-            "thread_ts": payload.get("event", {}).get("event_ts") or payload.get("container", {}).get("thread_ts")
-
+            "thread_ts": payload.get("event", {}).get("event_ts") or payload.get("container", {}).get("thread_ts"),
         }
 
         # Check for channel_name if channel_id is present
@@ -300,7 +299,7 @@ class SlackEventAPIView(View):
             "channel_name": event.get("channel_name"),
             "user_id": event.get("event", {}).get("user"),
             "user_name": event.get("event", {}).get("user"),
-            "thread_ts": event.get("event", {}).get("thread_ts")
+            "thread_ts": event.get("event", {}).get("thread_ts"),
         }
         bot_id = event.get("authorizations", [{}])[0].get("user_id")
         text_after_mention = event.get("event", {}).get("text").split(f"<@{bot_id}>")[-1]
@@ -309,7 +308,7 @@ class SlackEventAPIView(View):
             command, subcommand, params = parse_command_string(text_after_mention)
         except ValueError as err:
             logger.error("%s", err)
-            return
+            return HttpResponse(f"'Error: {err}' encountered on command '{text_after_mention}'.")
 
         registry = get_commands_registry()
 
