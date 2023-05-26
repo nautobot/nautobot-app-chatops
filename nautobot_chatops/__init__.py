@@ -13,6 +13,8 @@ from nautobot.extras.plugins import PluginConfig
 
 _CONFLICTING_APP_NAMES = [
     # App names that conflict with nautobot_chatops
+    "nautobot_plugin_chatops_ansible",
+    "nautobot_plugin_chatops_ipfabric",
 ]
 
 
@@ -81,6 +83,7 @@ class NautobotChatOpsConfig(PluginConfig):
         "tower_username": None,
         "tower_password": None,
         "tower_verify_ssl": False,
+        "ipfabric": {},
     }
 
     max_version = "1.999"
