@@ -284,3 +284,4 @@ invoke.yml
 
 # Static docs
 /nautobot_chatops/static/nautobot_chatops/docs/
+compose.yaml

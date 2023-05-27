@@ -7,7 +7,24 @@ except ImportError:
 
 __version__ = metadata.version(__name__)
 
+from django.conf import settings
 from nautobot.extras.plugins import PluginConfig
+
+
+_CONFLICTING_APP_NAMES = [
+    # App names that conflict with nautobot_chatops
+]
+
+
+def _check_for_conflicting_apps():
+    intersection = set(_CONFLICTING_APP_NAMES).intersection(set(settings.PLUGINS))
+    if intersection:
+        raise RuntimeError(
+            f"The following apps are installed and conflict with `nautobot-chatops`: {', '.join(intersection)}."
+        )
+
+
+_check_for_conflicting_apps()
 
 
 class NautobotChatOpsConfig(PluginConfig):

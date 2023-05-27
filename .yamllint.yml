@@ -2,6 +2,7 @@
 extends: "default"
 ignore: |
   setup_files/
+  compose.yaml
 rules:
   comments: "enable"
   empty-values: "enable"

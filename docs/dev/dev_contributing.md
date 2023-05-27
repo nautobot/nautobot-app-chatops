@@ -9,6 +9,21 @@ The project is following Network to Code software development guidelines and is 
 - Black, Pylint, Bandit and pydocstyle for Python linting and formatting.
 - Django unit test to ensure the plugin is working properly.
 
+## Quickstart
+
+```bash
+git clone git@github.com:nautobot/nautobot-plugin-chatops.git
+cd nautobot-plugin-chatops
+cp development/creds.example.env development/creds.env
+inv build
+inv start
+# Nautobot available as http://127.0.0.1:8080 admin / admin
+# Mattermost available at http://127.0.0.1:8065 admin / admin
+
+# To allow Mattermost integration run the following after Nautobot starts:
+inv bootstrap-mattermost
+```
+
 ## Adding a new top-level command
 
 First, you should be familiar with the design goals and constraints involved in Nautobot (`design.md`).
