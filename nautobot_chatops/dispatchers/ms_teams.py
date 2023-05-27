@@ -66,9 +66,13 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
         logger.debug(f"DEBUG: get_token() response {response.json()}")
         try:
             token = response.json()["access_token"]
-        except(KeyError) :
-            logger.error("ERROR: get_token() response is missing access_token key, which indicates an error communicating with MS Teams. Check the app_id and app_secret.")
-            raise KeyError("get_token() response is missing access_token key, which indicates an error communicating with MS Teams. Check the app_id and app_secret.")
+        except KeyError:
+            logger.error(
+                "ERROR: get_token() response is missing access_token key, which indicates an error communicating with MS Teams. Check the app_id and app_secret."
+            )
+            raise KeyError(
+                "get_token() response is missing access_token key, which indicates an error communicating with MS Teams. Check the app_id and app_secret."
+            )
         return token
 
     def _send(self, content, content_type="message"):
