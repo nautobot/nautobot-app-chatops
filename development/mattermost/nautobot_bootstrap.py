@@ -14,6 +14,7 @@ for grant_type in AccessGrantTypeChoices.values():
 # The following tokens are for the development only and safe to store in the repo.
 _COMMAND_TOKENS = {
     "ansible": "c7udax974iymjkmoyhi1a11cpy",  # nosec
+    "cloudvision": "pxannsh78iyhbm8fumz8mxk9ih",  # nosec
     "nautobot": "rmdpfdjhnpg988e7ujzyom4euh",  # nosec
 }
 

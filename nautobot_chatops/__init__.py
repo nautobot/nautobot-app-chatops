@@ -13,6 +13,7 @@ from nautobot.extras.plugins import PluginConfig
 
 _CONFLICTING_APP_NAMES = [
     # App names that conflict with nautobot_chatops
+    "nautobot_plugin_chatops_arista_cloudvision",
 ]
 
 
@@ -81,6 +82,13 @@ class NautobotChatOpsConfig(PluginConfig):
         "tower_username": None,
         "tower_password": None,
         "tower_verify_ssl": False,
+        "arista_cloudvision_cvaas_url": "www.arista.io:443",
+        "arista_cloudvision_cvaas_token": None,
+        "arista_cloudvision_cvp_host": None,
+        "arista_cloudvision_cvp_insecure": False,
+        "arista_cloudvision_cvp_password": None,
+        "arista_cloudvision_cvp_username": None,
+        "arista_cloudvision_on_prem": False,
     }
 
     max_version = "1.999"
