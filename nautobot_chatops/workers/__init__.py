@@ -70,7 +70,15 @@ def get_commands_registry():
 
     for worker in pkg_resources.iter_entry_points("nautobot.workers"):
         # See above. However, we still should never have two command worker functions registered under the same name.
-        command_func = worker.load()
+        try:
+            command_func = worker.load()
+        except ImportError as exc:
+            logger.warning(
+                "Unable to load worker %s, probably due to missing extra dependenies. Exception follows:", worker.name
+            )
+            logger.exception(exc)
+            continue
+
         if (
             worker.name in _commands_registry
             and "function" in _commands_registry[worker.name]
