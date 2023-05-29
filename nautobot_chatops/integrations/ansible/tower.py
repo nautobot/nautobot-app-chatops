@@ -1,13 +1,14 @@
 """All interactions with Ansible AWX/Tower."""
 import json
 import logging
-import os
 from urllib.parse import urlparse
 
+from django.conf import settings
 import requests
-from nautobot.core.settings_funcs import is_truthy
 
 logger = logging.getLogger("rq.worker")
+
+_CONFIG = settings.PLUGINS_CONFIG["nautobot_chatops"]
 
 
 def _get_uri(uri):
@@ -31,10 +32,10 @@ class Tower:  # pylint: disable=too-many-function-args
     def __init__(
         self,
         origin,
-        tower_uri=os.getenv("NAUTOBOT_TOWER_URI"),
-        username=os.getenv("NAUTOBOT_TOWER_USERNAME"),
-        password=os.getenv("NAUTOBOT_TOWER_PASSWORD"),
-        verify_ssl=is_truthy(os.getenv("NAUTOBOT_TOWER_VERIFY_SSL", "true")),
+        tower_uri=_CONFIG["tower_uri"],
+        username=_CONFIG["tower_username"],
+        password=_CONFIG["tower_password"],
+        verify_ssl=_CONFIG["tower_verify_ssl"],
     ):  # pylint: disable=too-many-arguments
         """Initialization of Tower class.
 

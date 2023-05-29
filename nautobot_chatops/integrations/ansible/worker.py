@@ -1,16 +1,16 @@
 """Worker functions implementing Nautobot "ansible" command and subcommands."""
 import json
 import logging
-import os
 from collections import namedtuple
 
 import yaml
+from django.conf import settings
 from django_rq import job
 from nautobot_chatops.workers import handle_subcommands, subcommand_of
 
 from .tower import Tower
 
-TOWER_URI = os.getenv("NAUTOBOT_TOWER_URI")
+TOWER_URI = settings.PLUGINS_CONFIG["nautobot_chatops"]["tower_uri"]
 
 ANSIBLE_LOGO_PATH = "nautobot_ansible/Ansible_Logo.png"
 ANSIBLE_LOGO_ALT = "Ansible Logo"
