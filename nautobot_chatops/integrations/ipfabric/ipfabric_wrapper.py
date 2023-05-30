@@ -6,7 +6,7 @@ from ipfabric_diagrams import IPFDiagram
 from ipfabric import IPFClient
 
 
-logger = logging.getLogger("rq.worker")
+logger = logging.getLogger("nautobot")
 
 
 # pylint: disable=R0904, disable=R0903

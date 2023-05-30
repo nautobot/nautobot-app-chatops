@@ -24,7 +24,7 @@ IPFABRIC_LOGO_PATH = "ipfabric/ipfabric_logo.png"
 IPFABRIC_LOGO_ALT = "IPFabric Logo"
 CHATOPS_PLUGIN = "nautobot_chatops"
 
-logger = logging.getLogger("rq.worker")
+logger = logging.getLogger("nautobot")
 
 inventory_field_mapping = {
     "site": "siteName",
