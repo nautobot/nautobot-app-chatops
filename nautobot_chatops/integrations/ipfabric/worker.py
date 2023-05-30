@@ -37,9 +37,9 @@ inventory_host_func_mapper = {inventory_host_fields[0]: is_ip, inventory_host_fi
 
 try:
     ipfabric_api = IpFabric(
-        base_url=settings.PLUGINS_CONFIG[CHATOPS_PLUGIN].get("IPFABRIC_HOST"),
-        token=settings.PLUGINS_CONFIG[CHATOPS_PLUGIN].get("IPFABRIC_API_TOKEN"),
-        verify=settings.PLUGINS_CONFIG[CHATOPS_PLUGIN].get("IPFABRIC_VERIFY"),
+        base_url=settings.PLUGINS_CONFIG[CHATOPS_PLUGIN].get("ipfabric_host"),
+        token=settings.PLUGINS_CONFIG[CHATOPS_PLUGIN].get("ipfabric_api_token"),
+        verify=settings.PLUGINS_CONFIG[CHATOPS_PLUGIN].get("ipfabric_verify"),
     )
 except Exception as exp:  # pylint: disable=W0703
     logger.error("Could not load IP Fabric client. Please verify HTTP access to the IP Fabric instance %s", exp)

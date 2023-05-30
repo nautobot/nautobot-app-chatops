@@ -152,13 +152,11 @@ PLUGINS_CONFIG = {
         "tower_verify_ssl": _get_bool_env("NAUTOBOT_TOWER_VERIFY_SSL", True),
         "webex_signing_secret": os.environ.get("WEBEX_SIGNING_SECRET"),
         "webex_token": os.environ.get("WEBEX_ACCESS_TOKEN"),
-        "ipfabric": {
-            "IPFABRIC_API_TOKEN": os.environ.get("IPFABRIC_API_TOKEN"),
-            "IPFABRIC_HOST": os.environ.get("IPFABRIC_HOST"),
-            # TBD: Add default parameter `True` once ansible will be merged
-            "IPFABRIC_VERIFY": _get_bool_env("IPFABRIC_VERIFY"),
-            "IPFABRIC_TIMEOUT": os.environ.get("IPFABRIC_TIMEOUT", 15),
-        },
+        "ipfabric_api_token": os.environ.get("IPFABRIC_API_TOKEN"),
+        "ipfabric_host": os.environ.get("IPFABRIC_HOST"),
+        # TBD: Add default parameter `True` once ansible will be merged
+        "ipfabric_verify": _get_bool_env("IPFABRIC_VERIFY"),
+        "ipfabric_timeout": os.environ.get("IPFABRIC_TIMEOUT", 15),
     },
 }
 
