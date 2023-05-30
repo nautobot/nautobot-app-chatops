@@ -199,6 +199,15 @@ class TestSlackDispatcher(TestCase):
         # This should not raise an exception
         self.dispatcher.unset_session_entry("key1")
 
+    def test_thread_ts_passed_into_slack_client(self):
+        """Test thread_ts being passed correctly when it exists in the context."""
+        self.dispatcher.context.update({"thread_ts": "12345"})
+        with patch.object(self.dispatcher.slack_client, "chat_postMessage") as mocked_chat_post_message:
+            self.dispatcher.send_markdown("test message")
+            mocked_chat_post_message.assert_called_with(
+                channel="456def", user="abc123", text="test message", thread_ts="12345"
+            )
+
 
 class TestMSTeamsDispatcher(TestSlackDispatcher):
     """Test the MSTeamsDispatcher class."""
