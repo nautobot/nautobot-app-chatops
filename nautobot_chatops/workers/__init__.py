@@ -72,7 +72,7 @@ def get_commands_registry():
         # See above. However, we still should never have two command worker functions registered under the same name.
         try:
             command_func = worker.load()
-        except ImportError as exc:
+        except ModuleNotFoundError as exc:
             logger.warning(
                 "Unable to load worker %s, probably due to missing extra dependenies. Exception follows:", worker.name
             )
