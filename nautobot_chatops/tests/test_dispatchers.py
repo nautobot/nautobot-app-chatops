@@ -125,14 +125,16 @@ class TestSlackDispatcher(TestCase):
         """Make sure files_upload is called with no title."""
         with patch.object(self.dispatcher.slack_client, "files_upload") as mocked_files_upload:
             self.dispatcher.send_snippet("Testing files upload.")
-            mocked_files_upload.assert_called_with(channels="456def", content="Testing files upload.", title=None)
+            mocked_files_upload.assert_called_with(
+                channels="456def", content="Testing files upload.", title=None, thread_ts=None
+            )
 
     def test_send_snippet_title(self):
         """Make sure files_upload is called with title."""
         with patch.object(self.dispatcher.slack_client, "files_upload") as mocked_files_upload:
             self.dispatcher.send_snippet("Testing files upload.", "Testing files upload title.")
             mocked_files_upload.assert_called_with(
-                channels="456def", content="Testing files upload.", title="Testing files upload title."
+                channels="456def", content="Testing files upload.", title="Testing files upload title.", thread_ts=None
             )
 
     @patch("nautobot_chatops.dispatchers.slack.SlackDispatcher.send_blocks")
