@@ -77,6 +77,10 @@ class NautobotChatOpsConfig(PluginConfig):
         # responses.
         "send_all_messages_private": False,
         "restrict_help": False,
+        "tower_uri": None,
+        "tower_username": None,
+        "tower_password": None,
+        "tower_verify_ssl": False,
     }
 
     max_version = "1.999"

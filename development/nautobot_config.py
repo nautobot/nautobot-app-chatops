@@ -8,8 +8,8 @@ from nautobot.core.settings import *  # noqa: F401,F403 pylint: disable=wildcard
 from nautobot.core.settings_funcs import parse_redis_connection
 
 
-def _get_bool_env(name: str):
-    value = os.getenv(name, "False")
+def _get_bool_env(name: str, default=False):
+    value = os.getenv(name, str(default))
     return bool(json.loads(value.lower()))
 
 
@@ -146,6 +146,10 @@ PLUGINS_CONFIG = {
         "slack_app_token": os.environ.get("SLACK_APP_TOKEN"),
         "slack_signing_secret": os.environ.get("SLACK_SIGNING_SECRET"),
         "slack_slash_command_prefix": os.environ.get("SLACK_SLASH_COMMAND_PREFIX", "/"),
+        "tower_uri": os.getenv("NAUTOBOT_TOWER_URI"),
+        "tower_username": os.getenv("NAUTOBOT_TOWER_USERNAME"),
+        "tower_password": os.getenv("NAUTOBOT_TOWER_PASSWORD"),
+        "tower_verify_ssl": _get_bool_env("NAUTOBOT_TOWER_VERIFY_SSL", True),
         "webex_signing_secret": os.environ.get("WEBEX_SIGNING_SECRET"),
         "webex_token": os.environ.get("WEBEX_ACCESS_TOKEN"),
     },
