@@ -69,6 +69,8 @@ PLUGINS = ["nautobot_chatops"]
 
 If you are upgrading to the latest version of the `nautobot-chatops` plugin, please be aware that it now includes the functionality previously provided by the following apps:
 
+- `nautobot_plugin_chatops_meraki`
+
 Therefore, you should **not** have these apps installed and enabled at the same time as this can lead to conflicts and unexpected behavior.
 
 To avoid these issues, you must remove conflicting apps from `PLUGINS` in your Nautobot configuration before enabling the latest version of `nautobot-chatops`. It's recommended to remove conflicting apps from requirements as well.

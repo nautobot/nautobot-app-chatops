@@ -18,6 +18,7 @@ include = [
 [tool.poetry.plugins."nautobot.workers"]
 "clear" = "nautobot_chatops.workers.clear:clear"
 "nautobot" = "nautobot_chatops.workers.nautobot:nautobot"
+"meraki" = "nautobot_chatops.integrations.meraki.worker:cisco_meraki"
 
 [tool.poetry.dependencies]
 # TODO Move to ~ requirements instead of ^
@@ -32,6 +33,8 @@ nautobot-capacity-metrics = "*"
 slack-sdk = "^3.4.2"
 texttable = "^1.6.2"
 webexteamssdk = "^1.3"
+
+meraki = { version = "^1.7.2", optional = true }
 
 [tool.poetry.dev-dependencies]
 black = "*"
@@ -59,6 +62,10 @@ towncrier = "~22.8.0"
 
 [tool.poetry.extras]
 all = [
+    "meraki",
+]
+meraki = [
+    "meraki",
 ]
 
 [tool.black]
