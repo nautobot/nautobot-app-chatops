@@ -241,6 +241,11 @@ class TestMSTeamsDispatcher(TestSlackDispatcher):
         # pylint: disable=W0221
         pass
 
+    def test_thread_ts_passed_into_slack_client(self):
+        """thread_ts is a Slack specific implementation."""
+        # pylint: disable=W0221
+        pass
+
 
 class TestWebExDispatcher(TestSlackDispatcher):
     """Test the WebExDispatcher class."""
@@ -269,6 +274,11 @@ class TestWebExDispatcher(TestSlackDispatcher):
 
     def test_multi_input_dialog(self):
         """Not implemented."""
+        # pylint: disable=W0221
+        pass
+
+    def test_thread_ts_passed_into_slack_client(self):
+        """thread_ts is a Slack specific implementation."""
         # pylint: disable=W0221
         pass
 
@@ -338,6 +348,11 @@ class TestMattermostDispatcher(TestSlackDispatcher):
     def test_send_snippet_title(self):
         """Not implemented."""
         # pylint: disable W0221
+        pass
+
+    def test_thread_ts_passed_into_slack_client(self):
+        """thread_ts is a Slack specific implementation."""
+        # pylint: disable=W0221
         pass
 
     @patch("nautobot_chatops.dispatchers.mattermost.MattermostDispatcher.send_blocks")
