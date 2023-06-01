@@ -13,6 +13,7 @@ from nautobot.extras.plugins import PluginConfig
 
 _CONFLICTING_APP_NAMES = [
     # App names that conflict with nautobot_chatops
+    "nautobot_plugin_chatops_aci",
 ]
 
 
@@ -43,6 +44,7 @@ class NautobotChatOpsConfig(PluginConfig):
     base_url = "chatops"
     required_settings = []
     default_settings = {
+        "aci_creds": None,
         "enable_slack": False,
         "enable_ms_teams": False,
         "enable_webex": False,
