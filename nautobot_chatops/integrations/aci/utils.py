@@ -48,12 +48,14 @@ def build_table(field_names, rows):
     return table
 
 
+# pylint: disable-next=invalid-name
 def tenant_from_dn(dn):
     """Match an ACI tenant in the Distiguished Name (DN)."""
     pattern = "tn-[A-Za-z0-9\-]+"  # noqa: W605  # pylint: disable=anomalous-backslash-in-string
     return re.search(pattern, dn).group().replace("tn-", "").rstrip("/")
 
 
+# pylint: disable-next=invalid-name
 def ap_from_dn(dn):
     """Match an ACI Application Profile in the Distinguished Name (DN)."""
     pattern = "ap-[A-Za-z0-9\-]+"  # noqa: W605 # pylint: disable=anomalous-backslash-in-string

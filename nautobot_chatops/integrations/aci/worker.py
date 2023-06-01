@@ -2,30 +2,36 @@
 
 from distutils.util import strtobool
 from django.conf import settings
-
-
-from nautobot_chatops.workers import subcommand_of, handle_subcommands
-from nautobot_chatops.choices import CommandStatusChoices
 from nautobot.core.celery import nautobot_task
+
+from nautobot_chatops.choices import CommandStatusChoices
+from nautobot_chatops.workers import subcommand_of, handle_subcommands
 from .aci import RequestConnectError, RequestHTTPError, NautobotPluginChatopsAci
 from .utils import logger, send_logo, build_table, send_wait_msg
 
 PLUGIN_SETTINGS = settings.PLUGINS_CONFIG["nautobot_chatops"]
 
-aci_creds = {}
-for key in PLUGIN_SETTINGS["aci_creds"]:
-    subkey = key[key.rfind("_") + 1 :].lower()  # noqa: E203
-    aci_creds.setdefault(subkey, {})
-    if "USERNAME" in key:
-        aci_creds[subkey]["username"] = PLUGIN_SETTINGS["aci_creds"][key]
-    if "PASSWORD" in key:
-        aci_creds[subkey]["password"] = PLUGIN_SETTINGS["aci_creds"][key]
-    if "URI" in key:
-        aci_creds[subkey]["base_uri"] = PLUGIN_SETTINGS["aci_creds"][key]
-    if "VERIFY" in key:
-        aci_creds[subkey]["verify"] = bool(strtobool(PLUGIN_SETTINGS["aci_creds"][key]))
 
-apic_choices = [(key, key) for key in aci_creds.keys()]
+def _read_settings():
+    creds = {}
+    for key in PLUGIN_SETTINGS["aci_creds"]:
+        subkey = key[key.rfind("_") + 1 :].lower()  # noqa: E203
+        creds.setdefault(subkey, {})
+        if "USERNAME" in key:
+            creds[subkey]["username"] = PLUGIN_SETTINGS["aci_creds"][key]
+        if "PASSWORD" in key:
+            creds[subkey]["password"] = PLUGIN_SETTINGS["aci_creds"][key]
+        if "URI" in key:
+            creds[subkey]["base_uri"] = PLUGIN_SETTINGS["aci_creds"][key]
+        if "VERIFY" in key:
+            creds[subkey]["verify"] = bool(strtobool(PLUGIN_SETTINGS["aci_creds"][key]))
+
+    choices = [(key, key) for key in aci_creds]
+
+    return creds, choices
+
+
+aci_creds, apic_choices = _read_settings()
 
 
 @nautobot_task
@@ -51,12 +57,13 @@ def get_tenants(dispatcher, apic):
 
     send_wait_msg(dispatcher)
 
+    # pylint: disable-next=logging-fstring-interpolation
     logger.info(f"Getting list of tenants from APIC {aci_creds[apic]['base_uri']}")
     try:
         tenant_list = aci_obj.get_tenants()
-    except (RequestConnectError, RequestHTTPError) as e:
-        dispatcher.send_error(e)
-        logger.error(e)
+    except (RequestConnectError, RequestHTTPError) as exc:
+        dispatcher.send_error(exc)
+        logger.error(exc)
         return CommandStatusChoices.STATUS_FAILED
 
     table_fields = ["TENANT"]
@@ -86,12 +93,13 @@ def get_aps(dispatcher, apic, tenant):
         return False
 
     if not tenant:
+        # pylint: disable-next=logging-fstring-interpolation
         logger.info(f"Getting list of tenants from APIC {aci_creds[apic]['base_uri']} in tenant {tenant}")
         try:
             tenant_list = aci_obj.get_tenants()
-        except (RequestConnectError, RequestHTTPError) as e:
-            dispatcher.send_error(e)
-            logger.error(e)
+        except (RequestConnectError, RequestHTTPError) as exc:
+            dispatcher.send_error(exc)
+            logger.error(exc)
             return CommandStatusChoices.STATUS_FAILED
         tenant_choices = [(tenant, tenant) for tenant in tenant_list]
         tenant_choices.append(("all", "all"))
@@ -100,15 +108,17 @@ def get_aps(dispatcher, apic, tenant):
 
     send_wait_msg(dispatcher)
 
+    # pylint: disable-next=logging-fstring-interpolation
     logger.info(f"Getting list of Application Profiles from APIC {aci_creds[apic]['base_uri']} in tenant {tenant}")
     try:
         ap_list = aci_obj.get_aps(tenant)
-    except (RequestConnectError, RequestHTTPError) as e:
-        dispatcher.send_error(e)
-        logger.error(e)
+    except (RequestConnectError, RequestHTTPError) as exc:
+        dispatcher.send_error(exc)
+        logger.error(exc)
         return CommandStatusChoices.STATUS_FAILED
 
     table_fields = ["Tenant", "Application Profile"]
+    # pylint: disable-next=invalid-name
     table_rows = [[ap["tenant"], ap["ap"]] for ap in ap_list]
 
     send_logo(
@@ -125,6 +135,7 @@ def get_aps(dispatcher, apic, tenant):
 
 
 @subcommand_of("aci")
+# pylint: disable-next=invalid-name,too-many-branches,too-many-statements,too-many-return-statements
 def get_epgs(dispatcher, apic, tenant, ap):
     """Display Endpoint Groups (EPGs) configured in Cisco ACI."""
     if not apic:
@@ -140,12 +151,13 @@ def get_epgs(dispatcher, apic, tenant, ap):
         return False
 
     if not tenant:
+        # pylint: disable-next=logging-fstring-interpolation
         logger.info(f"Getting list of tenants from APIC {aci_creds[apic]['base_uri']} in tenant {tenant}")
         try:
             tenant_list = aci_obj.get_tenants()
-        except (RequestConnectError, RequestHTTPError) as e:
-            dispatcher.send_error(e)
-            logger.error(e)
+        except (RequestConnectError, RequestHTTPError) as exc:
+            dispatcher.send_error(exc)
+            logger.error(exc)
             return CommandStatusChoices.STATUS_FAILED
         tenant_choices = [(tenant, tenant) for tenant in tenant_list]
         tenant_choices.append(("all", "all"))
@@ -156,12 +168,13 @@ def get_epgs(dispatcher, apic, tenant, ap):
         ap = "all"
 
     if not ap:
+        # pylint: disable-next=logging-fstring-interpolation
         logger.info(f"Getting list of Application Profiles from APIC {aci_creds[apic]['base_uri']} in tenant {tenant}")
         try:
             ap_list = aci_obj.get_aps(tenant)
-        except (RequestConnectError, RequestHTTPError) as e:
-            dispatcher.send_error(e)
-            logger.error(e)
+        except (RequestConnectError, RequestHTTPError) as exc:
+            dispatcher.send_error(exc)
+            logger.error(exc)
             return CommandStatusChoices.STATUS_FAILED
         ap_choices = [(ap["ap"], ap["ap"]) for ap in ap_list]
         ap_choices.append(("all", "all"))
@@ -170,12 +183,13 @@ def get_epgs(dispatcher, apic, tenant, ap):
 
     send_wait_msg(dispatcher)
 
+    # pylint: disable-next=logging-fstring-interpolation
     logger.info(f"Getting list of EPGs from APIC {aci_creds[apic]['base_uri']} for app profile {ap}")
     try:
         epg_list = aci_obj.get_epgs(tenant, ap)
-    except (RequestConnectError, RequestHTTPError) as e:
-        dispatcher.send_error(e)
-        logger.error(e)
+    except (RequestConnectError, RequestHTTPError) as exc:
+        dispatcher.send_error(exc)
+        logger.error(exc)
         return CommandStatusChoices.STATUS_FAILED
 
     table_fields = ["TENANT", "APPLICATION PROFILE", "EPG"]
@@ -194,6 +208,7 @@ def get_epgs(dispatcher, apic, tenant, ap):
 
 
 @subcommand_of("aci")
+# pylint: disable-next=invalid-name,too-many-branches,too-many-locals,too-many-statements,too-many-return-statements
 def get_epg_details(dispatcher, apic, tenant, ap, epg):
     """Display details for an Endpoint Group in Cisco ACI."""
     if not apic:
@@ -209,36 +224,39 @@ def get_epg_details(dispatcher, apic, tenant, ap, epg):
         return False
 
     if not tenant:
+        # pylint: disable-next=logging-fstring-interpolation
         logger.info(f"Getting list of tenants from APIC {aci_creds[apic]['base_uri']} in tenant {tenant}")
         try:
             tenant_list = aci_obj.get_tenants()
-        except (RequestConnectError, RequestHTTPError) as e:
-            dispatcher.send_error(e)
-            logger.error(e)
+        except (RequestConnectError, RequestHTTPError) as exc:
+            dispatcher.send_error(exc)
+            logger.error(exc)
             return CommandStatusChoices.STATUS_FAILED
         tenant_choices = [(tenant, tenant) for tenant in tenant_list]
         dispatcher.prompt_from_menu(f"aci get-epg-details {apic}", "Select Tenant", tenant_choices)
         return False
 
     if not ap:
+        # pylint: disable-next=logging-fstring-interpolation
         logger.info(f"Getting list of Application Profiles from APIC {aci_creds[apic]['base_uri']} in tenant {tenant}")
         try:
             ap_list = aci_obj.get_aps(tenant)
-        except (RequestConnectError, RequestHTTPError) as e:
-            dispatcher.send_error(e)
-            logger.error(e)
+        except (RequestConnectError, RequestHTTPError) as exc:
+            dispatcher.send_error(exc)
+            logger.error(exc)
             return CommandStatusChoices.STATUS_FAILED
         ap_choices = [(ap["ap"], ap["ap"]) for ap in ap_list]
         dispatcher.prompt_from_menu(f"aci get-epg-details {apic} {tenant}", "Select Application Profile", ap_choices)
         return False
 
     if not epg:
+        # pylint: disable-next=logging-fstring-interpolation
         logger.info(f"Getting list of EPGs from APIC {aci_creds[apic]['base_uri']} in ap {ap}")
         try:
             epg_list = aci_obj.get_epgs(tenant, ap)
-        except (RequestConnectError, RequestHTTPError) as e:
-            dispatcher.send_error(e)
-            logger.error(e)
+        except (RequestConnectError, RequestHTTPError) as exc:
+            dispatcher.send_error(exc)
+            logger.error(exc)
             return CommandStatusChoices.STATUS_FAILED
         epg_choices = [(epg["epg"], epg["epg"]) for epg in epg_list]
         dispatcher.prompt_from_menu(f"aci get-epg-details {apic} {tenant} {ap}", "Select Endpoint Group", epg_choices)
@@ -246,12 +264,13 @@ def get_epg_details(dispatcher, apic, tenant, ap, epg):
 
     send_wait_msg(dispatcher)
 
+    # pylint: disable-next=logging-fstring-interpolation
     logger.info(f"Getting EPG details from APIC {aci_creds[apic]['base_uri']} for app profile {ap} epg {epg}")
     try:
         epg_details = aci_obj.get_epg_details(tenant, ap, epg)
-    except (RequestConnectError, RequestHTTPError) as e:
-        dispatcher.send_error(e)
-        logger.error(e)
+    except (RequestConnectError, RequestHTTPError) as exc:
+        dispatcher.send_error(exc)
+        logger.error(exc)
         return CommandStatusChoices.STATUS_FAILED
 
     output = ""
@@ -302,6 +321,7 @@ def get_epg_details(dispatcher, apic, tenant, ap, epg):
     if epg_details["static_paths"]:
         table_fields = ["NODE A", "NODE B", "NODE-A PORT", "NODE-B PORT", "ENCAP", "TYPE"]
         table_rows = []
+        # pylint: disable-next=invalid-name
         for sp in epg_details["static_paths"]:
             if sp["type"] == "non-PC":
                 node_a = sp["node_id"]
@@ -353,12 +373,13 @@ def get_vrfs(dispatcher, apic, tenant):
         return False
 
     if not tenant:
+        # pylint: disable-next=logging-fstring-interpolation
         logger.info(f"Getting list of tenants from APIC {aci_creds[apic]['base_uri']} in tenant {tenant}")
         try:
             tenant_list = aci_obj.get_tenants()
-        except (RequestConnectError, RequestHTTPError) as e:
-            dispatcher.send_error(e)
-            logger.error(e)
+        except (RequestConnectError, RequestHTTPError) as exc:
+            dispatcher.send_error(exc)
+            logger.error(exc)
             return CommandStatusChoices.STATUS_FAILED
         tenant_choices = [(tenant, tenant) for tenant in tenant_list]
         tenant_choices.append(("all", "all"))
@@ -367,12 +388,13 @@ def get_vrfs(dispatcher, apic, tenant):
 
     send_wait_msg(dispatcher)
 
+    # pylint: disable-next=logging-fstring-interpolation
     logger.info(f"Getting list of vrfs from APIC {aci_creds[apic]['base_uri']} for tenant {tenant}")
     try:
         vrf_list = aci_obj.get_vrfs(tenant)
-    except (RequestConnectError, RequestHTTPError) as e:
-        dispatcher.send_error(e)
-        logger.error(e)
+    except (RequestConnectError, RequestHTTPError) as exc:
+        dispatcher.send_error(exc)
+        logger.error(exc)
         return CommandStatusChoices.STATUS_FAILED
 
     table_fields = ["TENANT", "VRF"]
@@ -406,12 +428,13 @@ def get_bds(dispatcher, apic, tenant):
         return False
 
     if not tenant:
+        # pylint: disable-next=logging-fstring-interpolation
         logger.info(f"Getting list of Bridge Domains from APIC {aci_creds[apic]['base_uri']} in tenant {tenant}")
         try:
             tenant_list = aci_obj.get_tenants()
-        except (RequestConnectError, RequestHTTPError) as e:
-            dispatcher.send_error(e)
-            logger.error(e)
+        except (RequestConnectError, RequestHTTPError) as exc:
+            dispatcher.send_error(exc)
+            logger.error(exc)
             return CommandStatusChoices.STATUS_FAILED
         tenant_choices = [(tenant, tenant) for tenant in tenant_list]
         tenant_choices.append(("all", "all"))
@@ -420,12 +443,13 @@ def get_bds(dispatcher, apic, tenant):
 
     send_wait_msg(dispatcher)
 
+    # pylint: disable-next=logging-fstring-interpolation
     logger.info(f"Getting list of Bridge Domains from APIC {aci_creds[apic]['base_uri']} for tenant {tenant}")
     try:
         bd_dict = aci_obj.get_bds(tenant)
-    except (RequestConnectError, RequestHTTPError) as e:
-        dispatcher.send_error(e)
-        logger.error(e)
+    except (RequestConnectError, RequestHTTPError) as exc:
+        dispatcher.send_error(exc)
+        logger.error(exc)
         return CommandStatusChoices.STATUS_FAILED
 
     table_fields = [
@@ -439,18 +463,18 @@ def get_bds(dispatcher, apic, tenant):
         "UNKNOWN UNICAST",
     ]
     table_rows = []
-    for bd in bd_dict:
-        for subnet in bd_dict[bd].get("subnets", [("", "")]):
+    for key, value in bd_dict.items():
+        for subnet in value.get("subnets", [("", "")]):
             table_rows.append(
                 [
-                    bd_dict[bd]["tenant"],
-                    bd,
-                    bd_dict[bd]["description"],
-                    bd_dict[bd]["vrf"],
+                    value["tenant"],
+                    key,
+                    value["description"],
+                    value["vrf"],
                     subnet[0],
-                    bd_dict[bd]["unicast_routing"],
+                    value["unicast_routing"],
                     subnet[1],
-                    bd_dict[bd]["l2unicast"],
+                    value["l2unicast"],
                 ]
             )
 
@@ -485,21 +509,21 @@ def get_pending_nodes(dispatcher, apic):
 
     try:
         node_dict = aci_obj.get_pending_nodes()
-    except (RequestHTTPError, RequestConnectError) as e:
-        dispatcher.send_error(e)
-        logger.error(e)
+    except (RequestHTTPError, RequestConnectError) as exc:
+        dispatcher.send_error(exc)
+        logger.error(exc)
         return CommandStatusChoices.STATUS_FAILED
 
     table_fields = ["S/N", "NODE_ID", "MODEL", "ROLE", "SUPPORTED"]
     table_rows = []
-    for node in node_dict:
+    for key, value in node_dict.items():
         table_rows.append(
             [
-                node,
-                node_dict[node]["node_id"],
-                node_dict[node]["model"],
-                node_dict[node]["role"],
-                node_dict[node]["supported"],
+                key,
+                value["node_id"],
+                value["model"],
+                value["role"],
+                value["supported"],
             ]
         )
 
@@ -530,9 +554,9 @@ def get_nodes(dispatcher, apic):
 
     try:
         node_dict = aci_obj.get_nodes()
-    except (RequestHTTPError, RequestConnectError) as e:
-        dispatcher.send_error(e)
-        logger.error(e)
+    except (RequestHTTPError, RequestConnectError) as exc:
+        dispatcher.send_error(exc)
+        logger.error(exc)
         return CommandStatusChoices.STATUS_FAILED
 
     table_fields = ["POD", "ID", "NAME", "MODEL", "ROLE", "SERIAL", "TEP IP", "OOB IP", "UPTIME"]
@@ -578,9 +602,9 @@ def get_controllers(dispatcher, apic):
 
     try:
         node_dict = aci_obj.get_controllers()
-    except (RequestHTTPError, RequestConnectError) as e:
-        dispatcher.send_error(e)
-        logger.error(e)
+    except (RequestHTTPError, RequestConnectError) as exc:
+        dispatcher.send_error(exc)
+        logger.error(exc)
         return CommandStatusChoices.STATUS_FAILED
 
     table_fields = ["POD", "ID", "NAME", "MODEL", "ROLE", "SERIAL", "TEP IP", "OOB IP", "UPTIME"]
@@ -608,6 +632,7 @@ def get_controllers(dispatcher, apic):
 
 
 @subcommand_of("aci")
+# pylint: disable-next=too-many-locals,too-many-return-statements
 def get_interfaces(dispatcher, apic, pod_id, node_id, state):
     """Display interfaces on a specified node in Cisco ACI."""
     if not apic:
@@ -644,24 +669,24 @@ def get_interfaces(dispatcher, apic, pod_id, node_id, state):
 
     try:
         intf_dict = aci_obj.get_interfaces(pod_id, node_id, state)
-    except (RequestHTTPError, RequestConnectError) as e:
-        dispatcher.send_error(e)
-        logger.error(e)
+    except (RequestHTTPError, RequestConnectError) as exc:
+        dispatcher.send_error(exc)
+        logger.error(exc)
         return CommandStatusChoices.STATUS_FAILED
 
     table_fields = ["INTERFACE", "DESCRIPTION", "SPEED", "LAYER", "MODE", "STATE", "REASON", "USAGE"]
     table_rows = []
-    for intf in intf_dict.keys():
+    for key, value in intf_dict.items():
         table_rows.append(
             [
-                intf,
-                intf_dict[intf]["descr"],
-                intf_dict[intf]["speed"],
-                intf_dict[intf]["layer"],
-                intf_dict[intf]["mode"],
-                intf_dict[intf]["state"],
-                intf_dict[intf]["state_reason"],
-                intf_dict[intf]["usage"],
+                key,
+                value["descr"],
+                value["speed"],
+                value["layer"],
+                value["mode"],
+                value["state"],
+                value["state_reason"],
+                value["usage"],
             ]
         )
 
@@ -678,6 +703,7 @@ def get_interfaces(dispatcher, apic, pod_id, node_id, state):
 
 
 @subcommand_of("aci")
+# pylint: disable-next=too-many-return-statements
 def register_node(dispatcher, apic, serial_nbr, node_id, name):
     """Register a new fabric node in Cisco ACI."""
     if not apic:
@@ -695,9 +721,9 @@ def register_node(dispatcher, apic, serial_nbr, node_id, name):
     if not serial_nbr:
         try:
             node_dict = aci_obj.get_pending_nodes()
-        except (RequestHTTPError, RequestConnectError) as e:
-            dispatcher.send_error(e)
-            logger.error(e)
+        except (RequestHTTPError, RequestConnectError) as exc:
+            dispatcher.send_error(exc)
+            logger.error(exc)
             return CommandStatusChoices.STATUS_FAILED
 
         if not node_dict:
@@ -706,7 +732,7 @@ def register_node(dispatcher, apic, serial_nbr, node_id, name):
             )
             return CommandStatusChoices.STATUS_SUCCEEDED
 
-        serial_nbr_choices = [(sn, sn) for sn in node_dict.keys()]
+        serial_nbr_choices = [(sn, sn) for sn in node_dict]
         multi_input_list = [
             {"type": "select", "label": "Serial Number", "choices": serial_nbr_choices},
             {"type": "text", "label": "Node ID"},
@@ -715,6 +741,7 @@ def register_node(dispatcher, apic, serial_nbr, node_id, name):
         dispatcher.multi_input_dialog("aci", f"register-node {apic}", "Node Details", multi_input_list)
         return False
 
+    # pylint: disable-next=logging-fstring-interpolation
     logger.info(f"SERIAL_NBR: {serial_nbr}, NODE_ID: {node_id}, NAME: {name}")
 
     if aci_obj.register_node(serial_nbr, node_id, name):

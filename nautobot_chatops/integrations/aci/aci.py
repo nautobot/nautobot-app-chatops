@@ -131,6 +131,7 @@ class NautobotPluginChatopsAci:
         ]
         return ap_list
 
+    # pylint: disable-next=invalid-name
     def get_epgs(self, tenant: str, ap: str) -> list:
         """Return EPGs configured in the Cisco APIC."""
         if ap == "all":
@@ -161,6 +162,7 @@ class NautobotPluginChatopsAci:
             ]
         return epg_list
 
+    # pylint: disable-next=invalid-name
     def get_bd_subnet(self, tenant: str, bd: str) -> list:
         """Returns the subnet(s) of a BD, or None."""
         resp = self._get(
@@ -178,6 +180,7 @@ class NautobotPluginChatopsAci:
         )
         subj_list = [subj_dn["vzSubj"]["attributes"]["dn"] for subj_dn in resp.json()["imdata"]]
         filter_list = []
+        # pylint: disable-next=invalid-name
         for dn in subj_list:
             subj_resp = self._get(f"/api/node/mo/{dn}.json?query-target=subtree&target-subtree-class=vzRsSubjFiltAtt")
             for fltr in subj_resp.json()["imdata"]:
@@ -193,6 +196,7 @@ class NautobotPluginChatopsAci:
                     filter_list.append(fltr_dict)
         return filter_list
 
+    # pylint: disable-next=invalid-name
     def get_static_path(self, tenant: str, ap: str, epg: str) -> list:
         """Return static path mapping details for an EPG."""
         resp = self._get(
@@ -201,6 +205,7 @@ class NautobotPluginChatopsAci:
         sp_list = []
         for obj in resp.json()["imdata"]:
             sp_dict = dict(encap=obj["fvRsPathAtt"]["attributes"]["encap"])
+            # pylint: disable-next=invalid-name
             tDn = obj["fvRsPathAtt"]["attributes"]["tDn"]
             if "paths" in tDn and "protpaths" not in tDn:
                 # port on a single node
@@ -227,11 +232,13 @@ class NautobotPluginChatopsAci:
                     resp = self._get(f"/api/node/mo/{tDn}.json")
                     polgrp = resp.json()["imdata"][0]["fabricPathEp"]["attributes"]["name"]
                     resp = self._get(
-                        f"/api/node/mo/uni/infra/funcprof/accbundle-{polgrp}.json?query-target=subtree&target-subtree-class=infraRtAccBaseGrp"
+                        f"/api/node/mo/uni/infra/funcprof/accbundle-{polgrp}.json?"
+                        "query-target=subtree&target-subtree-class=infraRtAccBaseGrp"
                     )
                     sp_dict["node_a_intfs"] = []
                     sp_dict["node_b_intfs"] = []
                     for data in resp.json()["imdata"]:
+                        # pylint: disable-next=invalid-name
                         tDn = data["infraRtAccBaseGrp"]["attributes"]["tDn"]
                         pattern = "-.*/"
                         ifselector = re.search(pattern, tDn).group().lstrip("-").rstrip("/")
@@ -239,7 +246,10 @@ class NautobotPluginChatopsAci:
                             f"/api/node/mo/{tDn}.json?query-target=subtree&target-subtree-class=infraPortBlk"
                         )
                         intfs = [
-                            f"{data['infraPortBlk']['attributes']['toCard']}/{data['infraPortBlk']['attributes']['toPort']}"
+                            (
+                                f"{data['infraPortBlk']['attributes']['toCard']}/"
+                                f"{data['infraPortBlk']['attributes']['toPort']}"
+                            )
                             for data in resp.json()["imdata"]
                         ]
                         if "node_a_ifselector" not in sp_dict:
@@ -259,6 +269,7 @@ class NautobotPluginChatopsAci:
                 sp_list.append(sp_dict)
         return sp_list
 
+    # pylint: disable-next=invalid-name
     def get_epg_details(self, tenant: str, ap: str, epg: str) -> dict:
         """Return EPG configuration details."""
         resp = self._get(f"/api/node/mo/uni/tn-{tenant}/ap-{ap}/epg-{epg}.json?query-target=children")
@@ -317,25 +328,27 @@ class NautobotPluginChatopsAci:
             bd_dict[data["fvBD"]["attributes"]["name"]]["mac"] = data["fvBD"]["attributes"]["mac"]
             bd_dict[data["fvBD"]["attributes"]["name"]]["l2unicast"] = data["fvBD"]["attributes"]["unkMacUcastAct"]
 
-        for bd in bd_dict.keys():
+        for key, value in bd_dict.items():
             # get the containing VRF
             resp = self._get(
-                f"/api/node/mo/uni/tn-{bd_dict[bd]['tenant']}/BD-{bd}.json?query-target=children&target-subtree-class=fvRsCtx"
+                f"/api/node/mo/uni/tn-{value['tenant']}/BD-{key}.json?"
+                "query-target=children&target-subtree-class=fvRsCtx"
             )
 
-            bd_dict[bd]["vrf"] = [data["fvRsCtx"]["attributes"]["tnFvCtxName"] for data in resp.json()["imdata"]][0]
+            value["vrf"] = [data["fvRsCtx"]["attributes"]["tnFvCtxName"] for data in resp.json()["imdata"]][0]
 
             # get subnets
             resp = self._get(
-                f"/api/node/mo/uni/tn-{bd_dict[bd]['tenant']}/BD-{bd}.json?query-target=children&target-subtree-class=fvSubnet"
+                f"/api/node/mo/uni/tn-{value['tenant']}/BD-{key}.json?"
+                "query-target=children&target-subtree-class=fvSubnet"
             )
             subnet_list = [
                 (data["fvSubnet"]["attributes"]["ip"], data["fvSubnet"]["attributes"]["scope"])
                 for data in resp.json()["imdata"]
             ]
             for subnet in subnet_list:
-                bd_dict[bd].setdefault("subnets", [])
-                bd_dict[bd]["subnets"].append(subnet)
+                value.setdefault("subnets", [])
+                value["subnets"].append(subnet)
         return bd_dict
 
     def get_nodes(self) -> dict:
@@ -390,6 +403,7 @@ class NautobotPluginChatopsAci:
 
         node_dict = {}
         for node in resp.json()["imdata"]:
+            # pylint: disable-next=invalid-name
             sn = node["dhcpClient"]["attributes"]["id"]
             node_dict[sn] = {}
             node_dict[sn]["fabric_id"] = node["dhcpClient"]["attributes"]["fabricId"]
@@ -403,11 +417,14 @@ class NautobotPluginChatopsAci:
         """Get interfaces on a specified leaf with filtering by up/down state."""
         if state == "all":
             resp = self._get(
-                f"/api/node/class/topology/pod-{pod_id}/node-{node_id}/l1PhysIf.json?rsp-subtree=children&rsp-subtree-class=ethpmPhysIf&order-by=l1PhysIf.id"
+                f"/api/node/class/topology/pod-{pod_id}/node-{node_id}/l1PhysIf.json?"
+                "rsp-subtree=children&rsp-subtree-class=ethpmPhysIf&order-by=l1PhysIf.id"
             )
         else:
             resp = self._get(
-                f'/api/node/class/topology/pod-{pod_id}/node-{node_id}/l1PhysIf.json?rsp-subtree=children&rsp-subtree-class=ethpmPhysIf&rsp-subtree-filter=eq(ethpmPhysIf.operSt,"{state}")&order-by=l1PhysIf.id'
+                f"/api/node/class/topology/pod-{pod_id}/node-{node_id}/l1PhysIf.json?"
+                "rsp-subtree=children&rsp-subtree-class=ethpmPhysIf&"
+                f'rsp-subtree-filter=eq(ethpmPhysIf.operSt,"{state}")&order-by=l1PhysIf.id'
             )
 
         intf_dict = {}

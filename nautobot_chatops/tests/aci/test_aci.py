@@ -1,10 +1,11 @@
 """Tests for integrations.aci.aci."""
-# pylint: disable=no-self-use, import-outside-toplevel
+# pylint: disable=no-self-use, import-outside-toplevel, invalid-name
 import unittest
 from unittest.mock import patch, Mock
 from nautobot_chatops.integrations.aci.aci import NautobotPluginChatopsAci, RequestHTTPError
 
 
+# pylint: disable-next=too-many-public-methods
 class TestAciMethods(unittest.TestCase):
     """Test NautobotPluginChatopsAci object methods."""
 
