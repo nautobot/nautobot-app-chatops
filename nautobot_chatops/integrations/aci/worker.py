@@ -26,7 +26,7 @@ def _read_settings():
         if "VERIFY" in key:
             creds[subkey]["verify"] = bool(strtobool(PLUGIN_SETTINGS["aci_creds"][key]))
 
-    choices = [(key, key) for key in aci_creds]
+    choices = [(key, key) for key in creds]
 
     return creds, choices
 
