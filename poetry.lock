@@ -4085,4 +4085,4 @@ ipfabric = ["ipfabric", "ipfabric-diagrams", "netutils"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.7.1"
-content-hash = "01e291d325f5afbf8e10d6daef01b6ca133b562fa1d800eeb54dd128ed2dc0e2"
+content-hash = "c12290e6bcc2ce4a4546f872070955ce21d645636dadf9699461a991f0cac801"
