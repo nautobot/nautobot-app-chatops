@@ -83,7 +83,7 @@ class NautobotChatOpsConfig(PluginConfig):
         "tower_verify_ssl": False,
     }
 
-    max_version = "1.999"
+    max_version = "2.999"
     min_version = "1.4.0"
     caching_config = {}
 
