@@ -83,7 +83,10 @@ class NautobotChatOpsConfig(PluginConfig):
         "tower_username": None,
         "tower_password": None,
         "tower_verify_ssl": False,
-        "ipfabric": {},
+        "ipfabric_api_token": None,
+        "ipfabric_host": None,
+        "ipfabric_timeout": None,
+        "ipfabric_verify": False,
     }
 
     max_version = "1.999"
