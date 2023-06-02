@@ -154,9 +154,8 @@ PLUGINS_CONFIG = {
         "webex_token": os.environ.get("WEBEX_ACCESS_TOKEN"),
         "ipfabric_api_token": os.environ.get("IPFABRIC_API_TOKEN"),
         "ipfabric_host": os.environ.get("IPFABRIC_HOST"),
-        # TBD: Add default parameter `True` once ansible will be merged
-        "ipfabric_verify": _get_bool_env("IPFABRIC_VERIFY"),
         "ipfabric_timeout": os.environ.get("IPFABRIC_TIMEOUT", 15),
+        "ipfabric_verify": _get_bool_env("IPFABRIC_VERIFY", True),
     },
 }
 
