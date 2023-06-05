@@ -139,6 +139,7 @@ PLUGINS_CONFIG = {
         "enable_webex": _get_bool_env("NAUTOBOT_CHATOPS_ENABLE_WEBEX"),
         "mattermost_api_token": os.environ.get("MATTERMOST_API_TOKEN"),
         "mattermost_url": os.environ.get("MATTERMOST_URL"),
+        "meraki_dashboard_api_key": os.environ.get("MERAKI_API_KEY"),
         "microsoft_app_id": os.environ.get("MICROSOFT_APP_ID"),
         "microsoft_app_password": os.environ.get("MICROSOFT_APP_PASSWORD"),
         "restrict_help": _get_bool_env("NAUTOBOT_CHATOPS_RESTRICT_HELP"),
