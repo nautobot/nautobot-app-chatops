@@ -67,15 +67,23 @@ PLUGINS = ["nautobot_chatops"]
 
 ### ⚠️ Important Warning: Conflicting Applications
 
-If you are upgrading to the latest version of the `nautobot-chatops` plugin, please be aware that it now includes the functionality previously provided by the following apps:
+If you are upgrading to the latest version of the `nautobot-chatops` app, please be aware that it now includes the functionality previously provided by the following apps:
+
+- nautobot_plugin_chatops_ansible
 
 - `nautobot_plugin_chatops_meraki`
 
 Therefore, you should **not** have these apps installed and enabled at the same time as this can lead to conflicts and unexpected behavior.
 
-To avoid these issues, you must remove conflicting apps from `PLUGINS` in your Nautobot configuration before enabling the latest version of `nautobot-chatops`. It's recommended to remove conflicting apps from requirements as well.
+In order to prevent conflicts when upgrading `nautobot-chatops`, it is necessary to perform the following steps:
 
-Please note: If you fail to remove conflicting apps from `PLUGINS`, the `nautobot-chatops` plugin will raise an exception during startup to prevent potential conflicts.
+- Remove conflicting applications from the `PLUGINS` section in your Nautobot configuration. This should be done before enabling the latest version of `nautobot-chatops`.
+- Relocate the configuration for conflicting apps to the `PLUGIN_CONFIG["nautobot_chatops"]` section of your Nautobot configuration. See `development/nautobot_config.py` for an example of how this should look.
+- Remove conflicting applications from your project's requirements.
+
+By following these steps, you can avoid common issues encountered when upgrading `nautobot-chatops`. Please remember to backup your data and thoroughly test your configuration after performing these changes.
+
+Please note: If you fail to remove conflicting apps from `PLUGINS`, the `nautobot-chatops` app will raise an exception during startup to prevent potential conflicts.
 
 ## App Configuration
 

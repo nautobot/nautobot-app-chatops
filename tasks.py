@@ -51,6 +51,7 @@ namespace.configure(
                 "docker-compose.base.yml",
                 "docker-compose.dev.yml",
                 "mattermost/docker-compose.yml",
+                "ansible/docker-compose.yml",
                 # "docker-compose.socket.yml",
             ],
         }
@@ -153,11 +154,11 @@ def generate_packages(context):
 # ------------------------------------------------------------------------------
 # START / STOP / DEBUG
 # ------------------------------------------------------------------------------
-@task
-def debug(context):
-    """Start Nautobot and its dependencies in debug mode."""
-    print("Starting Nautobot in debug mode...")
-    docker_compose(context, "up")
+@task(help={"service": "If specified, only affect this service."})
+def debug(context, service="nautobot"):
+    """Start `service` and its dependencies in debug mode."""
+    print(f"Starting {service} in debug mode...")
+    docker_compose(context, "up", service=service)
 
 
 @task(help={"service": "If specified, only affect this service."})
@@ -518,3 +519,22 @@ def backup_mattermost(context, output="./development/mattermost/dump.sql"):
 def psql(context):
     """Execute psql cli in postgres container."""
     docker_compose(context, "exec -- postgres psql --user nautobot nautobot", pty=True)
+
+
+@task
+def connect_awx_container(context, container_name="tools_awx_1"):
+    """Connect nautobot and celery containers to awx container.
+
+    Bridge network is defined in `development/ansible/docker-compose.yaml`.
+
+    To run testing awx instance, follow [instructions]
+    (https://github.com/ansible/awx/tree/devel/tools/docker-compose#getting-started)
+
+    Before running `make docker-compose` comment out `- 8080:8080` port mapping in file
+    `tools/docker-compose/ansible/roles/sources/templates/docker-compose.yml.j2` to avoid port conflict with nautobot.
+
+    After setting up awx, cd back to chatops repo and run `invoke connect-awx-container`.
+    """
+    bridge_network = f"{context.nautobot_chatops.project_name}_awx"
+    context.run(f"docker network connect --alias awx {bridge_network} {container_name}")
+    print(f"Container {container_name} connected to {bridge_network} network")

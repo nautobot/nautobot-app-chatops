@@ -1,0 +1,14 @@
+---
+x-nautobot: &nautobot
+  environment:
+    NAUTOBOT_TOWER_URI: "https://awx:8043/"
+  networks:
+    - "default"
+    - "awx"
+services:
+  nautobot:
+    <<: *nautobot
+  celery:
+    <<: *nautobot
+networks:
+  awx: {}
