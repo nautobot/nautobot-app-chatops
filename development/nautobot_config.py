@@ -133,6 +133,7 @@ PLUGINS = [
 # Each key in the dictionary is the name of an installed plugin and its value is a dictionary of settings.
 PLUGINS_CONFIG = {
     "nautobot_chatops": {
+        "aci_creds": {x: os.environ[x] for x in os.environ if "APIC" in x},
         "enable_mattermost": _get_bool_env("NAUTOBOT_CHATOPS_ENABLE_MATTERMOST"),
         "enable_ms_teams": _get_bool_env("NAUTOBOT_CHATOPS_ENABLE_MS_TEAMS"),
         "enable_slack": _get_bool_env("NAUTOBOT_CHATOPS_ENABLE_SLACK"),
