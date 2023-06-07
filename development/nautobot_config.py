@@ -153,6 +153,9 @@ PLUGINS_CONFIG = {
         "tower_verify_ssl": _get_bool_env("NAUTOBOT_TOWER_VERIFY_SSL", True),
         "webex_signing_secret": os.environ.get("WEBEX_SIGNING_SECRET"),
         "webex_token": os.environ.get("WEBEX_ACCESS_TOKEN"),
+        "panorama_host": os.environ.get("PANORAMA_HOST"),
+        "panorama_user": os.environ.get("PANORAMA_USER"),
+        "panorama_password": os.environ.get("PANORAMA_PASSWORD"),
     },
 }
 

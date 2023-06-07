@@ -277,6 +277,41 @@ toml = ["tomli (>=1.1.0)"]
 yaml = ["PyYAML"]
 
 [[package]]
+name = "bcrypt"
+version = "4.0.1"
+description = "Modern password hashing for your software and your servers"
+category = "main"
+optional = true
+python-versions = ">=3.6"
+files = [
+    {file = "bcrypt-4.0.1-cp36-abi3-macosx_10_10_universal2.whl", hash = "sha256:b1023030aec778185a6c16cf70f359cbb6e0c289fd564a7cfa29e727a1c38f8f"},
+    {file = "bcrypt-4.0.1-cp36-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.manylinux_2_24_aarch64.whl", hash = "sha256:08d2947c490093a11416df18043c27abe3921558d2c03e2076ccb28a116cb6d0"},
+    {file = "bcrypt-4.0.1-cp36-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:0eaa47d4661c326bfc9d08d16debbc4edf78778e6aaba29c1bc7ce67214d4410"},
+    {file = "bcrypt-4.0.1-cp36-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:ae88eca3024bb34bb3430f964beab71226e761f51b912de5133470b649d82344"},
+    {file = "bcrypt-4.0.1-cp36-abi3-manylinux_2_24_x86_64.whl", hash = "sha256:a522427293d77e1c29e303fc282e2d71864579527a04ddcfda6d4f8396c6c36a"},
+    {file = "bcrypt-4.0.1-cp36-abi3-manylinux_2_28_aarch64.whl", hash = "sha256:fbdaec13c5105f0c4e5c52614d04f0bca5f5af007910daa8b6b12095edaa67b3"},
+    {file = "bcrypt-4.0.1-cp36-abi3-manylinux_2_28_x86_64.whl", hash = "sha256:ca3204d00d3cb2dfed07f2d74a25f12fc12f73e606fcaa6975d1f7ae69cacbb2"},
+    {file = "bcrypt-4.0.1-cp36-abi3-musllinux_1_1_aarch64.whl", hash = "sha256:089098effa1bc35dc055366740a067a2fc76987e8ec75349eb9484061c54f535"},
+    {file = "bcrypt-4.0.1-cp36-abi3-musllinux_1_1_x86_64.whl", hash = "sha256:e9a51bbfe7e9802b5f3508687758b564069ba937748ad7b9e890086290d2f79e"},
+    {file = "bcrypt-4.0.1-cp36-abi3-win32.whl", hash = "sha256:2caffdae059e06ac23fce178d31b4a702f2a3264c20bfb5ff541b338194d8fab"},
+    {file = "bcrypt-4.0.1-cp36-abi3-win_amd64.whl", hash = "sha256:8a68f4341daf7522fe8d73874de8906f3a339048ba406be6ddc1b3ccb16fc0d9"},
+    {file = "bcrypt-4.0.1-pp37-pypy37_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:bf4fa8b2ca74381bb5442c089350f09a3f17797829d958fad058d6e44d9eb83c"},
+    {file = "bcrypt-4.0.1-pp37-pypy37_pp73-manylinux_2_24_x86_64.whl", hash = "sha256:67a97e1c405b24f19d08890e7ae0c4f7ce1e56a712a016746c8b2d7732d65d4b"},
+    {file = "bcrypt-4.0.1-pp37-pypy37_pp73-manylinux_2_28_x86_64.whl", hash = "sha256:b3b85202d95dd568efcb35b53936c5e3b3600c7cdcc6115ba461df3a8e89f38d"},
+    {file = "bcrypt-4.0.1-pp38-pypy38_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:cbb03eec97496166b704ed663a53680ab57c5084b2fc98ef23291987b525cb7d"},
+    {file = "bcrypt-4.0.1-pp38-pypy38_pp73-manylinux_2_24_x86_64.whl", hash = "sha256:5ad4d32a28b80c5fa6671ccfb43676e8c1cc232887759d1cd7b6f56ea4355215"},
+    {file = "bcrypt-4.0.1-pp38-pypy38_pp73-manylinux_2_28_x86_64.whl", hash = "sha256:b57adba8a1444faf784394de3436233728a1ecaeb6e07e8c22c8848f179b893c"},
+    {file = "bcrypt-4.0.1-pp39-pypy39_pp73-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:705b2cea8a9ed3d55b4491887ceadb0106acf7c6387699fca771af56b1cdeeda"},
+    {file = "bcrypt-4.0.1-pp39-pypy39_pp73-manylinux_2_24_x86_64.whl", hash = "sha256:2b3ac11cf45161628f1f3733263e63194f22664bf4d0c0f3ab34099c02134665"},
+    {file = "bcrypt-4.0.1-pp39-pypy39_pp73-manylinux_2_28_x86_64.whl", hash = "sha256:3100851841186c25f127731b9fa11909ab7b1df6fc4b9f8353f4f1fd952fbf71"},
+    {file = "bcrypt-4.0.1.tar.gz", hash = "sha256:27d375903ac8261cfe4047f6709d16f7d18d39b1ec92aaf72af989552a650ebd"},
+]
+
+[package.extras]
+tests = ["pytest (>=3.2.1,!=3.3.0)"]
+typecheck = ["mypy"]
+
+[[package]]
 name = "billiard"
 version = "3.6.4.0"
 description = "Python multiprocessing fork with improvements and bugfixes"
@@ -1716,6 +1751,17 @@ files = [
 ]
 
 [[package]]
+name = "ipaddr"
+version = "2.2.0"
+description = "Google's IP address manipulation library"
+category = "main"
+optional = true
+python-versions = "*"
+files = [
+    {file = "ipaddr-2.2.0.tar.gz", hash = "sha256:4092dfe667588d16aa12b59acb7c8a4024e5dcb23a681cd0b0b602373eca88d6"},
+]
+
+[[package]]
 name = "isort"
 version = "5.11.5"
 description = "A Python utility / library to sort Python imports."
@@ -2355,6 +2401,29 @@ files = [
 ]
 
 [[package]]
+name = "netmiko"
+version = "3.4.0"
+description = "Multi-vendor library to simplify Paramiko SSH connections to network devices"
+category = "main"
+optional = true
+python-versions = "*"
+files = [
+    {file = "netmiko-3.4.0-py3-none-any.whl", hash = "sha256:b66f25717db3609878f83c85604349dd40a0ab494d8eafd817dcde8388131136"},
+    {file = "netmiko-3.4.0.tar.gz", hash = "sha256:acadb9dd97864ee848e2032f1f0e301c7b31e7a4153757d98f5c8ba1b9614993"},
+]
+
+[package.dependencies]
+ntc-templates = "*"
+paramiko = ">=2.6.0"
+pyserial = "*"
+scp = ">=0.13.2"
+setuptools = ">=38.4.0"
+tenacity = "*"
+
+[package.extras]
+test = ["pytest (>=5.1.2)", "pyyaml (>=5.1.2)"]
+
+[[package]]
 name = "netutils"
 version = "1.4.1"
 description = "Common helper functions useful in network automation."
@@ -2368,6 +2437,21 @@ files = [
 
 [package.extras]
 optionals = ["napalm (>=4.0.0,<5.0.0)"]
+
+[[package]]
+name = "ntc-templates"
+version = "3.3.0"
+description = "TextFSM Templates for Network Devices, and Python wrapper for TextFSM's CliTable."
+category = "main"
+optional = true
+python-versions = ">=3.7,<4.0"
+files = [
+    {file = "ntc_templates-3.3.0-py3-none-any.whl", hash = "sha256:b0941824212ae50668cf9b882e848512d09487128a491909eab9afc30f808a85"},
+    {file = "ntc_templates-3.3.0.tar.gz", hash = "sha256:a74014431715c2029a2d0f065bca447312d55171cea191db1189689ea076b82d"},
+]
+
+[package.dependencies]
+textfsm = ">=1.1.0,<2.0.0"
 
 [[package]]
 name = "oauthlib"
@@ -2397,6 +2481,55 @@ files = [
     {file = "packaging-23.0-py3-none-any.whl", hash = "sha256:714ac14496c3e68c99c29b00845f7a2b85f3bb6f1078fd9f72fd20f0570002b2"},
     {file = "packaging-23.0.tar.gz", hash = "sha256:b6ad297f8907de0fa2fe1ccbd26fdaf387f5f47c7275fedf8cce89f99446cf97"},
 ]
+
+[[package]]
+name = "pan-os-python"
+version = "1.11.0"
+description = "Framework for interacting with Palo Alto Networks devices via API"
+category = "main"
+optional = true
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+files = [
+    {file = "pan_os_python-1.11.0-py2.py3-none-any.whl", hash = "sha256:4f0fb65e2706587cf721b895bbf6b48de55ffd55f5b5139ada9d6565ed7a1616"},
+    {file = "pan_os_python-1.11.0.tar.gz", hash = "sha256:4caac2f100536bdc27df3d4f9ffe9ea74137e372b49ad16d6cf320ce13f96b00"},
+]
+
+[package.dependencies]
+pan-python = ">=0.17.0,<0.18.0"
+
+[[package]]
+name = "pan-python"
+version = "0.17.0"
+description = "Multi-tool set for Palo Alto Networks PAN-OS, Panorama, WildFire and AutoFocus"
+category = "main"
+optional = true
+python-versions = "*"
+files = [
+    {file = "pan-python-0.17.0.tar.gz", hash = "sha256:9c074ea2f69a63996a6fefe8935d60dca61660e14715ac19d257ea9b1c41c6e2"},
+    {file = "pan_python-0.17.0-py2.py3-none-any.whl", hash = "sha256:f4674e40763c46d5933244b3059a57884e4e28205ef6d0f9ce2dc2013e3db010"},
+]
+
+[[package]]
+name = "paramiko"
+version = "3.2.0"
+description = "SSH2 protocol library"
+category = "main"
+optional = true
+python-versions = ">=3.6"
+files = [
+    {file = "paramiko-3.2.0-py3-none-any.whl", hash = "sha256:df0f9dd8903bc50f2e10580af687f3015bf592a377cd438d2ec9546467a14eb8"},
+    {file = "paramiko-3.2.0.tar.gz", hash = "sha256:93cdce625a8a1dc12204439d45033f3261bdb2c201648cfcdc06f9fd0f94ec29"},
+]
+
+[package.dependencies]
+bcrypt = ">=3.2"
+cryptography = ">=3.3"
+pynacl = ">=1.5"
+
+[package.extras]
+all = ["gssapi (>=1.4.1)", "invoke (>=2.0)", "pyasn1 (>=0.1.7)", "pywin32 (>=2.1.8)"]
+gssapi = ["gssapi (>=1.4.1)", "pyasn1 (>=0.1.7)", "pywin32 (>=2.1.8)"]
+invoke = ["invoke (>=2.0)"]
 
 [[package]]
 name = "pathspec"
@@ -2934,6 +3067,33 @@ markdown = ">=3.2"
 pyyaml = "*"
 
 [[package]]
+name = "pynacl"
+version = "1.5.0"
+description = "Python binding to the Networking and Cryptography (NaCl) library"
+category = "main"
+optional = true
+python-versions = ">=3.6"
+files = [
+    {file = "PyNaCl-1.5.0-cp36-abi3-macosx_10_10_universal2.whl", hash = "sha256:401002a4aaa07c9414132aaed7f6836ff98f59277a234704ff66878c2ee4a0d1"},
+    {file = "PyNaCl-1.5.0-cp36-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.manylinux_2_24_aarch64.whl", hash = "sha256:52cb72a79269189d4e0dc537556f4740f7f0a9ec41c1322598799b0bdad4ef92"},
+    {file = "PyNaCl-1.5.0-cp36-abi3-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:a36d4a9dda1f19ce6e03c9a784a2921a4b726b02e1c736600ca9c22029474394"},
+    {file = "PyNaCl-1.5.0-cp36-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_24_x86_64.whl", hash = "sha256:0c84947a22519e013607c9be43706dd42513f9e6ae5d39d3613ca1e142fba44d"},
+    {file = "PyNaCl-1.5.0-cp36-abi3-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:06b8f6fa7f5de8d5d2f7573fe8c863c051225a27b61e6860fd047b1775807858"},
+    {file = "PyNaCl-1.5.0-cp36-abi3-musllinux_1_1_aarch64.whl", hash = "sha256:a422368fc821589c228f4c49438a368831cb5bbc0eab5ebe1d7fac9dded6567b"},
+    {file = "PyNaCl-1.5.0-cp36-abi3-musllinux_1_1_x86_64.whl", hash = "sha256:61f642bf2378713e2c2e1de73444a3778e5f0a38be6fee0fe532fe30060282ff"},
+    {file = "PyNaCl-1.5.0-cp36-abi3-win32.whl", hash = "sha256:e46dae94e34b085175f8abb3b0aaa7da40767865ac82c928eeb9e57e1ea8a543"},
+    {file = "PyNaCl-1.5.0-cp36-abi3-win_amd64.whl", hash = "sha256:20f42270d27e1b6a29f54032090b972d97f0a1b0948cc52392041ef7831fee93"},
+    {file = "PyNaCl-1.5.0.tar.gz", hash = "sha256:8ac7448f09ab85811607bdd21ec2464495ac8b7c66d146bf545b0f08fb9220ba"},
+]
+
+[package.dependencies]
+cffi = ">=1.4.1"
+
+[package.extras]
+docs = ["sphinx (>=1.6.5)", "sphinx-rtd-theme"]
+tests = ["hypothesis (>=3.27.0)", "pytest (>=3.2.1,!=3.3.0)"]
+
+[[package]]
 name = "pyrsistent"
 version = "0.19.3"
 description = "Persistent/Functional/Immutable data structures"
@@ -2969,6 +3129,21 @@ files = [
     {file = "pyrsistent-0.19.3-py3-none-any.whl", hash = "sha256:ccf0d6bd208f8111179f0c26fdf84ed7c3891982f2edaeae7422575f47e66b64"},
     {file = "pyrsistent-0.19.3.tar.gz", hash = "sha256:1a2994773706bbb4995c31a97bc94f1418314923bd1048c6d964837040376440"},
 ]
+
+[[package]]
+name = "pyserial"
+version = "3.5"
+description = "Python Serial Port Extension"
+category = "main"
+optional = true
+python-versions = "*"
+files = [
+    {file = "pyserial-3.5-py2.py3-none-any.whl", hash = "sha256:c4451db6ba391ca6ca299fb3ec7bae67a5c55dde170964c7a14ceefec02f2cf0"},
+    {file = "pyserial-3.5.tar.gz", hash = "sha256:3c77e014170dfffbd816e6ffc205e9842efb10be9f58ec16d3e8675b4925cddb"},
+]
+
+[package.extras]
+cp2110 = ["hidapi"]
 
 [[package]]
 name = "python-crontab"
@@ -3356,10 +3531,25 @@ files = [
 ]
 
 [[package]]
+name = "scp"
+version = "0.14.5"
+description = "scp module for paramiko"
+category = "main"
+optional = true
+python-versions = "*"
+files = [
+    {file = "scp-0.14.5-py2.py3-none-any.whl", hash = "sha256:d224535dd8ed00294f52b0e0e18fde7a6fb7a3d06b97ede9e3f750fa7bf75c09"},
+    {file = "scp-0.14.5.tar.gz", hash = "sha256:64f0015899b3d212cb8088e7d40ebaf0686889ff0e243d5c1242efe8b50f053e"},
+]
+
+[package.dependencies]
+paramiko = "*"
+
+[[package]]
 name = "setuptools"
 version = "67.6.0"
 description = "Easily download, build, install, upgrade, and uninstall Python packages"
-category = "dev"
+category = "main"
 optional = false
 python-versions = ">=3.7"
 files = [
@@ -3541,6 +3731,21 @@ pyyaml = "*"
 typing-extensions = "*"
 
 [[package]]
+name = "tenacity"
+version = "8.2.2"
+description = "Retry code until it succeeds"
+category = "main"
+optional = true
+python-versions = ">=3.6"
+files = [
+    {file = "tenacity-8.2.2-py3-none-any.whl", hash = "sha256:2f277afb21b851637e8f52e6a613ff08734c347dc19ade928e519d7d2d8569b0"},
+    {file = "tenacity-8.2.2.tar.gz", hash = "sha256:43af037822bd0029025877f3b2d97cc4d7bb0c2991000a3d59d71517c5c969e0"},
+]
+
+[package.extras]
+doc = ["reno", "sphinx", "tornado (>=4.5)"]
+
+[[package]]
 name = "text-unidecode"
 version = "1.3"
 description = "The most basic Text::Unidecode port"
@@ -3551,6 +3756,22 @@ files = [
     {file = "text-unidecode-1.3.tar.gz", hash = "sha256:bad6603bb14d279193107714b288be206cac565dfa49aa5b105294dd5c4aab93"},
     {file = "text_unidecode-1.3-py2.py3-none-any.whl", hash = "sha256:1311f10e8b895935241623731c2ba64f4c455287888b18189350b67134a822e8"},
 ]
+
+[[package]]
+name = "textfsm"
+version = "1.1.3"
+description = "Python module for parsing semi-structured text into python tables."
+category = "main"
+optional = true
+python-versions = "*"
+files = [
+    {file = "textfsm-1.1.3-py2.py3-none-any.whl", hash = "sha256:dcbeebc6a6137bed561c71a56344d752e6dbc04ae5ea309252cb70fb97ccc9cd"},
+    {file = "textfsm-1.1.3.tar.gz", hash = "sha256:577ef278a9237f5341ae9b682947cefa4a2c1b24dbe486f94f2c95addc6504b5"},
+]
+
+[package.dependencies]
+future = "*"
+six = "*"
 
 [[package]]
 name = "texttable"
@@ -3977,11 +4198,12 @@ docs = ["furo", "jaraco.packaging (>=9)", "jaraco.tidelift (>=1.4)", "rst.linker
 testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more-itertools", "pytest (>=6)", "pytest-black (>=0.3.7)", "pytest-checkdocs (>=2.4)", "pytest-cov", "pytest-enabler (>=1.3)", "pytest-flake8", "pytest-mypy (>=0.9.1)"]
 
 [extras]
-all = ["PyYAML", "meraki"]
+all = ["PyYAML", "defusedxml", "ipaddr", "meraki", "netmiko", "netutils", "pan-os-python"]
 ansible = ["PyYAML"]
 meraki = ["meraki"]
+panorama = ["defusedxml", "ipaddr", "netmiko", "netutils", "pan-os-python"]
 
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.7"
-content-hash = "a5ddec2b66af767b4e0d30b77ef89e0db32c5a734a0c6e06a73b939b875823e3"
+content-hash = "29ba96449104f8f359e1e47febefa20f800dfe8737ad183240c1128dd28b3bd0"

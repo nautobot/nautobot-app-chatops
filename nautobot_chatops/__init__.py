@@ -14,6 +14,7 @@ from nautobot.extras.plugins import PluginConfig
 _CONFLICTING_APP_NAMES = [
     # App names that conflict with nautobot_chatops
     "nautobot_plugin_chatops_meraki",
+    "nautobot_plugin_chatops_panorama",
 ]
 
 
@@ -83,6 +84,9 @@ class NautobotChatOpsConfig(PluginConfig):
         "tower_username": None,
         "tower_password": None,
         "tower_verify_ssl": False,
+        "panorama_host": None,
+        "panorama_user": None,
+        "panorama_password": None,
     }
 
     max_version = "1.999"
