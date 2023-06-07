@@ -140,6 +140,7 @@ PLUGINS_CONFIG = {
         "enable_webex": _get_bool_env("NAUTOBOT_CHATOPS_ENABLE_WEBEX"),
         "mattermost_api_token": os.environ.get("MATTERMOST_API_TOKEN"),
         "mattermost_url": os.environ.get("MATTERMOST_URL"),
+        "meraki_dashboard_api_key": os.environ.get("MERAKI_API_KEY"),
         "microsoft_app_id": os.environ.get("MICROSOFT_APP_ID"),
         "microsoft_app_password": os.environ.get("MICROSOFT_APP_PASSWORD"),
         "restrict_help": _get_bool_env("NAUTOBOT_CHATOPS_RESTRICT_HELP"),
@@ -153,6 +154,9 @@ PLUGINS_CONFIG = {
         "tower_verify_ssl": _get_bool_env("NAUTOBOT_TOWER_VERIFY_SSL", True),
         "webex_signing_secret": os.environ.get("WEBEX_SIGNING_SECRET"),
         "webex_token": os.environ.get("WEBEX_ACCESS_TOKEN"),
+        "panorama_host": os.environ.get("PANORAMA_HOST"),
+        "panorama_user": os.environ.get("PANORAMA_USER"),
+        "panorama_password": os.environ.get("PANORAMA_PASSWORD"),
     },
 }
 

@@ -71,6 +71,9 @@ If you are upgrading to the latest version of the `nautobot-chatops` app, please
 
 - nautobot_plugin_chatops_aci
 - nautobot_plugin_chatops_ansible
+- nautobot_plugin_chatops_panorama
+
+- `nautobot_plugin_chatops_meraki`
 
 Therefore, you should **not** have these apps installed and enabled at the same time as this can lead to conflicts and unexpected behavior.
 
