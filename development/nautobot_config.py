@@ -1,10 +1,10 @@
-"""Nautobot configuration."""
+"""Nautobot development configuration file."""
+# pylint: disable=invalid-envvar-default
 import json
 import os
 import sys
 
-
-from nautobot.core.settings import *  # noqa: F401,F403 pylint: disable=wildcard-import,unused-wildcard-import
+from nautobot.core.settings import *  # noqa: F403
 from nautobot.core.settings_funcs import parse_redis_connection
 
 
@@ -13,8 +13,13 @@ def _get_bool_env(name: str, default=False):
     return bool(json.loads(value.lower()))
 
 
+#
+# Misc. settings
+#
+
 ALLOWED_HOSTS = os.getenv("NAUTOBOT_ALLOWED_HOSTS", "").split(" ")
 SECRET_KEY = os.getenv("NAUTOBOT_SECRET_KEY", "")
+
 
 nautobot_db_engine = os.getenv("NAUTOBOT_DB_ENGINE", "django.db.backends.postgresql")
 default_db_settings = {
@@ -38,6 +43,10 @@ DATABASES = {
         "ENGINE": nautobot_db_engine,
     }
 }
+
+# Ensure proper Unicode handling for MySQL
+if DATABASES["default"]["ENGINE"] == "django.db.backends.mysql":
+    DATABASES["default"]["OPTIONS"] = {"charset": "utf8mb4"}
 
 #
 # Debug
@@ -123,6 +132,11 @@ CACHES = {
 # Redis Cacheops
 CACHEOPS_REDIS = parse_redis_connection(redis_database=1)
 
+#
+# Celery settings are not defined here because they can be overloaded with
+# environment variables. By default they use `CACHES["default"]["LOCATION"]`.
+#
+
 # Enable installed plugins. Add the name of each plugin to the list.
 PLUGINS = [
     "nautobot_capacity_metrics",
@@ -159,5 +173,3 @@ PLUGINS_CONFIG = {
         "panorama_password": os.environ.get("PANORAMA_PASSWORD"),
     },
 }
-
-METRICS_ENABLED = _get_bool_env("NAUTOBOT_METRICS_ENABLED")

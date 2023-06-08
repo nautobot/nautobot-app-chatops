@@ -68,6 +68,7 @@ mkdocstrings-python = "0.7.1"
 mkdocs-version-annotations = "~1.0.0"
 # Allow Markdown files to include other files
 mkdocs-include-markdown-plugin = "~3.6.1"
+python-dotenv = "^0.21.1"
 # Change log management and generation
 towncrier = "~22.8.0"
 coverage = "~5.4"

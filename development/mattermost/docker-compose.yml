@@ -7,7 +7,7 @@ version: "3.8"
 services:
   nautobot:
     <<: *nautobot
-  celery:
+  worker:
     <<: *nautobot
   mattermost:
     image: "mattermost/mattermost-preview"
