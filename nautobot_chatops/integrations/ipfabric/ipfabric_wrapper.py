@@ -445,6 +445,7 @@ class IpFabric:
             base_url=base_url,
             token=token,
             verify=verify,
+            timeout=timeout,
         )
         self.diagram = IPFDiagram(
             base_url=base_url,
