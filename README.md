@@ -52,3 +52,4 @@ Sign up [here](https://slack.networktocode.com/)
 
 This project includes code originally written in separate plugins, which have been merged into this project:
 - [nautobot-plugin-chatops-ansible](https://github.com/nautobot/nautobot-plugin-chatops-ansible): Thanks [@chipn](https://github.com/chipn), [@dgjustice](https://github.com/dgjustice), [@jvanderaa](https://github.com/jvanderaa), [@jeffkala](https://github.com/jeffkala), [@smk4664](https://github.com/smk4664), [@ubajze](https://github.com/ubajze)
+- [nautobot-plugin-chatops-meraki](https://github.com/nautobot/nautobot-plugin-chatops-meraki): Thanks [@qduk](https://github.com/qduk), [@jedelman8](https://github.com/jedelman8), [@jeffkala](https://github.com/jeffkala), [@whitej6](https://github.com/whitej6), [@ubajze](https://github.com/ubajze), [@ubajze](https://github.com/ubajze)
