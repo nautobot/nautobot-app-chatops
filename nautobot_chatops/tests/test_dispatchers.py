@@ -1,8 +1,9 @@
 """Tests for Nautobot dispatcher class implementations."""
+from copy import deepcopy
 from unittest.mock import patch, MagicMock
 
 from django.conf import settings
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from slack_sdk.errors import SlackApiError
 
 from nautobot_chatops.dispatchers.ms_teams import MSTeamsDispatcher
@@ -247,6 +248,9 @@ class TestMSTeamsDispatcher(TestSlackDispatcher):
         pass
 
 
+_PLUGINS_CONFIG=deepcopy(settings.PLUGINS_CONFIG)
+_PLUGINS_CONFIG["nautobot_chatops"]["webex_token"] = "changeme"
+@override_settings(PLUGINS_CONFIG=_PLUGINS_CONFIG)
 class TestWebExDispatcher(TestSlackDispatcher):
     """Test the WebExDispatcher class."""
 
