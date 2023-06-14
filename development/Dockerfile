@@ -74,8 +74,5 @@ RUN pip install -c constraints.txt -e .[all]
 # Can be improved in Poetry 1.2 which allows `poetry install --only dev`
 RUN pip install -c constraints.txt -r poetry_freeze_dev.txt
 
-# TODO: Remove this workaround once schema-enforcer dependency issue is resolved.
-RUN pip install --no-deps schema-enforcer jsonref jmespath
-
 COPY development/nautobot_config.py ${NAUTOBOT_ROOT}/nautobot_config.py
 # !!! USE CAUTION WHEN MODIFYING LINES ABOVE
