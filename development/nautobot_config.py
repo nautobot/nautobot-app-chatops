@@ -168,4 +168,4 @@ PLUGINS_CONFIG = {
     },
 }
 
-METRICS_ENABLED = (is_truthy(os.getenv("NAUTOBOT_METRICS_ENABLED")),)
+METRICS_ENABLED = is_truthy(os.getenv("NAUTOBOT_METRICS_ENABLED"))
