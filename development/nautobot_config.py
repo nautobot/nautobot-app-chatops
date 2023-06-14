@@ -1,16 +1,9 @@
 """Nautobot configuration."""
-import json
 import os
 import sys
 
-
 from nautobot.core.settings import *  # noqa: F401,F403 pylint: disable=wildcard-import,unused-wildcard-import
-from nautobot.core.settings_funcs import parse_redis_connection
-
-
-def _get_bool_env(name: str, default=False):
-    value = os.getenv(name, str(default))
-    return bool(json.loads(value.lower()))
+from nautobot.core.settings_funcs import is_truthy, parse_redis_connection
 
 
 ALLOWED_HOSTS = os.getenv("NAUTOBOT_ALLOWED_HOSTS", "").split(" ")
@@ -133,31 +126,46 @@ PLUGINS = [
 # Each key in the dictionary is the name of an installed plugin and its value is a dictionary of settings.
 PLUGINS_CONFIG = {
     "nautobot_chatops": {
-        "aci_creds": {x: os.environ[x] for x in os.environ if "APIC" in x},
-        "enable_mattermost": _get_bool_env("NAUTOBOT_CHATOPS_ENABLE_MATTERMOST"),
-        "enable_ms_teams": _get_bool_env("NAUTOBOT_CHATOPS_ENABLE_MS_TEAMS"),
-        "enable_slack": _get_bool_env("NAUTOBOT_CHATOPS_ENABLE_SLACK"),
-        "enable_webex": _get_bool_env("NAUTOBOT_CHATOPS_ENABLE_WEBEX"),
+        # = Common settings ==================
+        "restrict_help": is_truthy(os.getenv("NAUTOBOT_CHATOPS_RESTRICT_HELP")),
+        # = Chat Platforms ===================
+        # - Mattermost -----------------------
+        "enable_mattermost": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_MATTERMOST")),
         "mattermost_api_token": os.environ.get("MATTERMOST_API_TOKEN"),
         "mattermost_url": os.environ.get("MATTERMOST_URL"),
-        "meraki_dashboard_api_key": os.environ.get("MERAKI_API_KEY"),
+        # - Microsoft Teams ------------------
+        "enable_ms_teams": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_MS_TEAMS")),
         "microsoft_app_id": os.environ.get("MICROSOFT_APP_ID"),
         "microsoft_app_password": os.environ.get("MICROSOFT_APP_PASSWORD"),
-        "restrict_help": _get_bool_env("NAUTOBOT_CHATOPS_RESTRICT_HELP"),
+        # - Slack ----------------------------
+        "enable_slack": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_SLACK")),
         "slack_api_token": os.environ.get("SLACK_API_TOKEN"),
         "slack_app_token": os.environ.get("SLACK_APP_TOKEN"),
         "slack_signing_secret": os.environ.get("SLACK_SIGNING_SECRET"),
         "slack_slash_command_prefix": os.environ.get("SLACK_SLASH_COMMAND_PREFIX", "/"),
-        "tower_uri": os.getenv("NAUTOBOT_TOWER_URI"),
-        "tower_username": os.getenv("NAUTOBOT_TOWER_USERNAME"),
-        "tower_password": os.getenv("NAUTOBOT_TOWER_PASSWORD"),
-        "tower_verify_ssl": _get_bool_env("NAUTOBOT_TOWER_VERIFY_SSL", True),
+        # - WebEx ----------------------------
+        "enable_webex": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_WEBEX")),
         "webex_signing_secret": os.environ.get("WEBEX_SIGNING_SECRET"),
         "webex_token": os.environ.get("WEBEX_ACCESS_TOKEN"),
+        # = Integrations =====================
+        # - Cisco ACI ------------------------
+        "enable_aci": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_ACI")),
+        "aci_creds": {x: os.environ[x] for x in os.environ if "APIC" in x},
+        # - Ansible --------------------------
+        "enable_ansible": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_ANSIBLE")),
+        "tower_password": os.getenv("NAUTOBOT_TOWER_PASSWORD"),
+        "tower_uri": os.getenv("NAUTOBOT_TOWER_URI"),
+        "tower_username": os.getenv("NAUTOBOT_TOWER_USERNAME"),
+        "tower_verify_ssl": is_truthy(os.getenv("NAUTOBOT_TOWER_VERIFY_SSL", True)),
+        # - Meraki ---------------------------
+        "enable_meraki": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_MERAKI")),
+        "meraki_dashboard_api_key": os.environ.get("MERAKI_API_KEY"),
+        # - Panorama -------------------------
+        "enable_panorama": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_PANORAMA")),
         "panorama_host": os.environ.get("PANORAMA_HOST"),
-        "panorama_user": os.environ.get("PANORAMA_USER"),
         "panorama_password": os.environ.get("PANORAMA_PASSWORD"),
+        "panorama_user": os.environ.get("PANORAMA_USER"),
     },
 }
 
-METRICS_ENABLED = _get_bool_env("NAUTOBOT_METRICS_ENABLED")
+METRICS_ENABLED = (is_truthy(os.getenv("NAUTOBOT_METRICS_ENABLED")),)

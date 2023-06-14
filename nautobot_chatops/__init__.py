@@ -14,6 +14,7 @@ from nautobot.extras.plugins import PluginConfig
 _CONFLICTING_APP_NAMES = [
     # App names that conflict with nautobot_chatops
     "nautobot_plugin_chatops_aci",
+    "nautobot_plugin_chatops_ansible",
     "nautobot_plugin_chatops_meraki",
     "nautobot_plugin_chatops_panorama",
 ]
@@ -46,17 +47,29 @@ class NautobotChatOpsConfig(PluginConfig):
     base_url = "chatops"
     required_settings = []
     default_settings = {
-        "aci_creds": None,
-        "enable_slack": False,
-        "enable_ms_teams": False,
-        "enable_webex": False,
+        # = ChatOps ==========================
         # Should menus, text input fields, etc. be deleted from the chat history after the user makes a selection?
         "delete_input_on_submission": False,
+        "restrict_help": False,
         # Session Cache
         "session_cache_timeout": 86400,
-        # Slack-specific settings
-        "slack_api_token": None,  # for example, "xoxb-123456"
-        "slack_signing_secret": None,
+        # As requested on https://github.com/nautobot/nautobot-plugin-chatops/issues/114 this setting is used for
+        # sending all messages as an ephemeral message, meaning only the person interacting with the bot will see the
+        # responses.
+        "send_all_messages_private": False,
+        # = Chat Platforms ===================
+        # - Mattermost -----------------------
+        "enable_mattermost": False,
+        "mattermost_api_token": "",
+        "mattermost_url": "",
+        # - Microsoft Teams ------------------
+        "enable_ms_teams": False,
+        "microsoft_app_id": "",
+        "microsoft_app_password": "",
+        # - Slack ----------------------------
+        "enable_slack": False,
+        "slack_api_token": "",  # for example, "xoxb-123456"
+        "slack_signing_secret": "",
         "slack_ephemeral_message_size_limit": 3000,
         # Any prefix that's prepended to all slash-commands for this bot and should be stripped away
         # in order to identify the actual command name to be invoked, eg "/nautobot-"
@@ -65,30 +78,29 @@ class NautobotChatOpsConfig(PluginConfig):
         # where to find Static images. If Django Storages is configured with an External server like S3,
         # this can be ignored.
         # If neither option is provided, then no static images (like Nautobot Logo) will be shown.
-        "slack_socket_static_host": None,
-        # Microsoft-Teams-specific settings
-        "microsoft_app_id": None,
-        "microsoft_app_password": None,
-        # WebEx-specific settings
-        "webex_token": None,
-        "webex_signing_secret": None,
-        "enable_mattermost": False,
-        # Mattermost-specific settings
-        "mattermost_api_token": None,
-        "mattermost_url": None,
-        # As requested on https://github.com/nautobot/nautobot-plugin-chatops/issues/114 this setting is used for
-        # sending all messages as an ephemeral message, meaning only the person interacting with the bot will see the
-        # responses.
-        "send_all_messages_private": False,
-        "restrict_help": False,
-        "meraki_dashboard_api_key": None,
-        "tower_uri": None,
-        "tower_username": None,
-        "tower_password": None,
-        "tower_verify_ssl": False,
-        "panorama_host": None,
-        "panorama_user": None,
-        "panorama_password": None,
+        "slack_socket_static_host": "",
+        # - Webex ----------------------------
+        "enable_webex": False,
+        "webex_token": "",
+        "webex_signing_secret": "",
+        # = Integrations =====================
+        # - Cisco ACI ------------------------
+        "enable_aci": False,
+        "aci_creds": "",
+        # - Ansible --------------------------
+        "enable_ansible": False,
+        "tower_password": "",
+        "tower_uri": "",
+        "tower_username": "",
+        "tower_verify_ssl": True,
+        # - Meraki ---------------------------
+        "enable_meraki": False,
+        "meraki_dashboard_api_key": "",
+        # - Panorama -------------------------
+        "enable_panorama": False,
+        "panorama_host": "",
+        "panorama_password": "",
+        "panorama_user": "",
     }
 
     max_version = "1.999"
