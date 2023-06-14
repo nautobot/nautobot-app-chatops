@@ -8,13 +8,12 @@ from typing import Generator
 from django.conf import settings
 
 from nautobot_chatops.utils import logger
-from nautobot_chatops import NautobotChatOpsConfig
 
 
 def _each_integration() -> Generator[str, None, None]:
     """Return all integrations."""
     for path in Path(__file__).parent.iterdir():
-        if f"enable_{path.name}" in NautobotChatOpsConfig.default_settings:
+        if (path / "worker.py").is_file():
             yield path.name
 
 
