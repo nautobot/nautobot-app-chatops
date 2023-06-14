@@ -248,8 +248,10 @@ class TestMSTeamsDispatcher(TestSlackDispatcher):
         pass
 
 
-_PLUGINS_CONFIG=deepcopy(settings.PLUGINS_CONFIG)
+_PLUGINS_CONFIG = deepcopy(settings.PLUGINS_CONFIG)
 _PLUGINS_CONFIG["nautobot_chatops"]["webex_token"] = "changeme"
+
+
 @override_settings(PLUGINS_CONFIG=_PLUGINS_CONFIG)
 class TestWebExDispatcher(TestSlackDispatcher):
     """Test the WebExDispatcher class."""
