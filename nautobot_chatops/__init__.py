@@ -13,7 +13,10 @@ from nautobot.extras.plugins import PluginConfig
 
 _CONFLICTING_APP_NAMES = [
     # App names that conflict with nautobot_chatops
+    "nautobot_plugin_chatops_aci",
     "nautobot_plugin_chatops_arista_cloudvision",
+    "nautobot_plugin_chatops_meraki",
+    "nautobot_plugin_chatops_panorama",
 ]
 
 
@@ -44,6 +47,7 @@ class NautobotChatOpsConfig(PluginConfig):
     base_url = "chatops"
     required_settings = []
     default_settings = {
+        "aci_creds": None,
         "enable_slack": False,
         "enable_ms_teams": False,
         "enable_webex": False,
@@ -78,6 +82,7 @@ class NautobotChatOpsConfig(PluginConfig):
         # responses.
         "send_all_messages_private": False,
         "restrict_help": False,
+        "meraki_dashboard_api_key": None,
         "tower_uri": None,
         "tower_username": None,
         "tower_password": None,
@@ -89,6 +94,9 @@ class NautobotChatOpsConfig(PluginConfig):
         "arista_cloudvision_cvp_password": None,
         "arista_cloudvision_cvp_username": None,
         "arista_cloudvision_on_prem": False,
+        "panorama_host": None,
+        "panorama_user": None,
+        "panorama_password": None,
     }
 
     max_version = "1.999"

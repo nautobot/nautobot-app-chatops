@@ -18,8 +18,11 @@ include = [
 [tool.poetry.plugins."nautobot.workers"]
 "clear" = "nautobot_chatops.workers.clear:clear"
 "nautobot" = "nautobot_chatops.workers.nautobot:nautobot"
+"aci" = "nautobot_chatops.integrations.aci.worker:aci"
 "ansible" = "nautobot_chatops.integrations.ansible.worker:ansible"
 "cloudvision" = "nautobot_chatops.integrations.arista_cloudvision.worker:cloudvision"
+"meraki" = "nautobot_chatops.integrations.meraki.worker:cisco_meraki"
+"panorama" = "nautobot_chatops.integrations.panorama.worker:panorama"
 
 [tool.poetry.dependencies]
 # TODO Move to ~ requirements instead of ^
@@ -40,6 +43,13 @@ PyYAML = { version = "~6.0", optional = true }
 certifi = { version = ">=2021.5.30", optional = true }
 cloudvision = { version = "^1.1", optional = true }
 cvprac = { version = "^1.0.6", optional = true }
+defusedxml = { version = "^0.7.1", optional = true }
+ipaddr = { version = "^2.2.0", optional = true }
+meraki = { version = "^1.7.2", optional = true }
+netmiko = { version = "^3.4.0", optional = true }
+netutils = { version = "^1.1.0", optional = true }
+pan-os-python = { version = "^1.3.0", optional = true }
+prettytable = { version = "^2.1.0", optional = true }
 protobuf = { version = "^3.17", optional = true }
 
 [tool.poetry.dev-dependencies]
@@ -70,20 +80,40 @@ requests-mock = "^1.9.3"
 
 [tool.poetry.extras]
 all = [
-  "PyYAML",
-  "certifi",
-  "cloudvision",
-  "cvprac",
-  "protobuf"
+    "PyYAML",
+    "certifi",
+    "cloudvision",
+    "cvprac",
+    "defusedxml",
+    "ipaddr",
+    "meraki",
+    "netmiko",
+    "netutils",
+    "pan-os-python",
+    "prettytable",
+    "protobuf"
 ]
-ansible = [
-  "PyYAML",
+aci = [
+    "prettytable",
 ]
 arista_cloudvision = [
-  "certifi",
-  "cloudvision",
-  "cvprac",
-  "protobuf"
+    "certifi",
+    "cloudvision",
+    "cvprac",
+    "protobuf"
+]
+ansible = [
+    "PyYAML",
+]
+meraki = [
+    "meraki",
+]
+panorama = [
+    "defusedxml",
+    "ipaddr",
+    "netmiko",
+    "netutils",
+    "pan-os-python",
 ]
 
 [tool.black]
