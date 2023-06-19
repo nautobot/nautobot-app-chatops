@@ -143,7 +143,7 @@ PLUGINS_CONFIG = {
         "slack_app_token": os.environ.get("SLACK_APP_TOKEN"),
         "slack_signing_secret": os.environ.get("SLACK_SIGNING_SECRET"),
         "slack_slash_command_prefix": os.environ.get("SLACK_SLASH_COMMAND_PREFIX", "/"),
-        # - WebEx ----------------------------
+        # - Cisco Webex ----------------------------
         "enable_webex": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_WEBEX")),
         "webex_signing_secret": os.environ.get("WEBEX_SIGNING_SECRET"),
         "webex_token": os.environ.get("WEBEX_ACCESS_TOKEN"),
@@ -151,16 +151,16 @@ PLUGINS_CONFIG = {
         # - Cisco ACI ------------------------
         "enable_aci": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_ACI")),
         "aci_creds": {x: os.environ[x] for x in os.environ if "APIC" in x},
-        # - Ansible --------------------------
+        # - AWX / Ansible Tower --------------------------
         "enable_ansible": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_ANSIBLE")),
         "tower_password": os.getenv("NAUTOBOT_TOWER_PASSWORD"),
         "tower_uri": os.getenv("NAUTOBOT_TOWER_URI"),
         "tower_username": os.getenv("NAUTOBOT_TOWER_USERNAME"),
         "tower_verify_ssl": is_truthy(os.getenv("NAUTOBOT_TOWER_VERIFY_SSL", True)),
-        # - Meraki ---------------------------
+        # - Cisco Meraki ---------------------------
         "enable_meraki": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_MERAKI")),
         "meraki_dashboard_api_key": os.environ.get("MERAKI_API_KEY"),
-        # - Panorama -------------------------
+        # - Palo Alto Panorama -------------------------
         "enable_panorama": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_PANORAMA")),
         "panorama_host": os.environ.get("PANORAMA_HOST"),
         "panorama_password": os.environ.get("PANORAMA_PASSWORD"),

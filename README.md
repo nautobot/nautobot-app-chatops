@@ -11,10 +11,19 @@
   A multi-platform ChatOps bot App for <a href="https://github.com/nautobot/nautobot">Nautobot</a>.
 </p>
 
-- Support for multiple chat platforms (currently Slack, Microsoft Teams, Mattermost, and WebEx)
-- Write a command once and run it on every supported platform, including rich content formatting
+- Support for multiple chat platforms:
+    - Mattermost
+    - Microsoft Teams
+    - Slack
+    - Cisco Webex
+- Support for multiple integrations:
+    - Cisco ACI
+    - AWX / Ansible Tower
+    - Cisco Meraki
+    - Palo Alto Panorama
+- Write a command once and run it on every supported platform, including rich content formatting.
 - Extensible - other Nautobot plugins can provide additional commands which will be dynamically discovered.
-- Automatic generation of basic help menus (accessed via `help`, `/command help`, or `/command sub-command help`)
+- Automatic generation of basic help menus (accessed via `help`, `/command help`, or `/command sub-command help`).
 - Metrics of command usage via the `nautobot_capacity_metrics` plugin.
 
 ## Documentation
@@ -26,6 +35,7 @@ Full web-based HTML documentation for this app can be found over on the [Nautobo
 - [Developer Guide](https://docs.nautobot.com/projects/chatops/en/latest/dev/dev_contributing/) - Extending the App, Code Reference, Contribution Guide.
 - [Release Notes / Changelog](https://docs.nautobot.com/projects/chatops/en/latest/admin/release_notes/)
 - [Frequently Asked Questions](https://docs.nautobot.com/projects/chatops/en/latest/user/app_faq/)
+- [Glossary](https://docs.nautobot.com/projects/chatops/en/latest/glossary/)
 
 ## Try it Out
 

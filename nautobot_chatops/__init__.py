@@ -79,7 +79,7 @@ class NautobotChatOpsConfig(PluginConfig):
         # this can be ignored.
         # If neither option is provided, then no static images (like Nautobot Logo) will be shown.
         "slack_socket_static_host": "",
-        # - Webex ----------------------------
+        # - Cisco Webex ----------------------
         "enable_webex": False,
         "webex_token": "",
         "webex_signing_secret": "",
@@ -87,16 +87,16 @@ class NautobotChatOpsConfig(PluginConfig):
         # - Cisco ACI ------------------------
         "enable_aci": False,
         "aci_creds": "",
-        # - Ansible --------------------------
+        # - AWX / Ansible Tower --------------
         "enable_ansible": False,
         "tower_password": "",
         "tower_uri": "",
         "tower_username": "",
         "tower_verify_ssl": True,
-        # - Meraki ---------------------------
+        # - Cisco Meraki ---------------------
         "enable_meraki": False,
         "meraki_dashboard_api_key": "",
-        # - Panorama -------------------------
+        # - Palo Alto Panorama ---------------
         "enable_panorama": False,
         "panorama_host": "",
         "panorama_password": "",

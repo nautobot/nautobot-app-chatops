@@ -5,15 +5,10 @@ By delivering this as a Nautobot ChatOps plugin, we gain the following benefits:
 - No need to stand up a separate HTTP server, just use Nautobot's own HTTP server.
 - Use of `async` is not required because we can hand off long-running tasks to Nautobot's `celery` workers. With one notable exception, WebSocket connections will be done with `async`. We have opted for `AIOHTTP` for our WebSocket [clients](https://docs.aiohttp.org/en/stable/client_quickstart.html#aiohttp-client-websockets).
 
-## Glossary
-
-- Platform: A communication service, such as Slack, Microsoft Teams, or Mattermost.
-- Dispatcher: A Platform specific class that processes incoming chat messages, executes Commands, and sends results back to the Platform.
-- Platform View: Django View to handle Platform data.
-- Integration: A component that defines Commands, handles data retrieval, and manipulation for particular tools or services (e.g., IP Fabric, Ansible, Panorama, Grafana, ACI, Meraki, Arista CloudVision).
-- Command: A specific instruction sent by users through the chat Platform, processed by some Integration.
-- Worker: A Command specific module, that processes tasks independently of Platform, receiving data from Platform Views and returning results via a Dispatcher's generic API.
-- Sub-command: An instruction nested within some Command.
+{%
+    include-markdown '../glossary.md'
+    heading-offset=1
+%}
 
 ## Code structure
 
