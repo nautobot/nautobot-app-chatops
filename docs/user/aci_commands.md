@@ -1,6 +1,26 @@
 # Cisco ACI Chat Commands
 
-The following commands are prefixed with `/aci`:
+## Screenshots
+
+### Slack
+
+![image](../images/aci-slack-get-tenants.png)
+
+![image](../images/aci-slack-get-epg-details.png)
+  
+![image](../images/aci-slack-get-bds.png)
+
+### Webex
+
+![image](../images/aci-slack-get-tenants.png)
+
+![image](../images/aci-slack-get-epg-details.png)
+  
+![image](../images/aci-slack-get-bds.png)
+
+## `/aci` Command
+
+The following sub-commands are prefixed with `/aci`:
 
 | Command | Description |
 | ------- | ----------- |
