@@ -24,7 +24,7 @@ Using **Invoke** these configuration options can be overridden using [several me
 
 ### Docker Development Environment
 
-!!! tip
+!!! TIP
     This is the recommended option for development.
 
 This project is managed by [Python Poetry](https://python-poetry.org/) and has a few requirements to setup your development environment:
@@ -42,16 +42,29 @@ invoke build
 invoke start
 ```
 
-The Nautobot server can now be accessed at [http://localhost:8080](http://localhost:8080) and the live documentation at [http://localhost:8001](http://localhost:8001).
+There are the following local endpoints available:
+
+- [Nautobot server](http://localhost:8080)
+- [Live documentation](http://localhost:8001)
+- [Mattermost server](http://localhost:8065)
+
+!!! NOTE
+    Before using Mattermost with Nautobot, run the following command after Nautobot starts up:
+    ```
+    invoke bootstrap-mattermost
+    ```
+
+!!! NOTE
+    Default username / password for Mattermost is the same as for Nautobot: **admin / admin**
 
 To either stop or destroy the development environment use the following options.
 
-- **invoke stop** - Stop the containers, but keep all underlying systems intact
-- **invoke destroy** - Stop and remove all containers, volumes, etc. (This results in data loss due to the volume being deleted)
+- `invoke stop` - Stop the containers, but keep all underlying systems intact.
+- `invoke destroy` - Stop and remove all containers, volumes, etc. This results in data loss due to the volume being deleted.
 
 ### Local Poetry Development Environment
 
-- Create an `invoke.yml` file with the following contents at the root of the repo and edit as necessary
+- Create `invoke.yml` file with the following contents at the root of the repo and edit as necessary.
 
 ```yaml
 ---
@@ -72,7 +85,7 @@ invoke start && sleep 5
 nautobot-server migrate
 ```
 
-!!! note
+!!! NOTE
     If you want to develop on the latest develop branch of Nautobot, run the following command: `poetry add --optional git+https://github.com/nautobot/nautobot@develop`. After the `@` symbol must match either a branch or a tag.
 
 You can now run `nautobot-server` commands as you would from the [Nautobot documentation](https://nautobot.readthedocs.io/en/latest/) for example to start the development server:
@@ -83,7 +96,7 @@ nautobot-server runserver 0.0.0.0:8080 --insecure
 
 Nautobot server can now be accessed at [http://localhost:8080](http://localhost:8080).
 
-It is typically recommended to launch the Nautobot **runserver** command in a separate shell so you can keep developing and manage the webserver separately.
+It is typically recommended to launch the `nautobot runserver` command in a separate shell, so you can keep developing and manage the web server separately.
 
 ### Updating the Documentation
 
@@ -93,7 +106,7 @@ If you need to update any of the documentation dependencies to a newer version, 
 
 ### CLI Helper Commands
 
-The project features a CLI helper based on [Invoke](https://www.pyinvoke.org/) to help setup the development environment. The commands are listed below in 3 categories:
+The project features a CLI helper based on [Invoke](https://www.pyinvoke.org/) to help set up the development environment. The commands are listed below in 3 categories:
 
 - `dev environment`
 - `utility`
@@ -101,41 +114,40 @@ The project features a CLI helper based on [Invoke](https://www.pyinvoke.org/) t
 
 Each command can be executed with `invoke <command>`. All commands support the arguments `--nautobot-ver` and `--python-ver` if you want to manually define the version of Python and Nautobot to use. Each command also has its own help `invoke <command> --help`
 
-!!! note
-    To run the mysql (mariadb) development environment, set the environment variable as such `export NAUTOBOT_USE_MYSQL=1`.
+!!! NOTE
+    To run the MySQL (MariaDB) development environment, set the environment variable as such `export NAUTOBOT_USE_MYSQL=1`.
 
 #### Local Development Environment
 
 ```
-  build            Build all docker images.
-  debug            Start Nautobot and its dependencies in debug mode.
-  destroy          Destroy all containers and volumes.
-  restart          Restart Nautobot and its dependencies in detached mode.
-  start            Start Nautobot and its dependencies in detached mode.
-  stop             Stop Nautobot and its dependencies.
+build            Build all docker images.
+debug            Start Nautobot and its dependencies in debug mode.
+destroy          Destroy all containers and volumes.
+restart          Restart Nautobot and its dependencies in detached mode.
+start            Start Nautobot and its dependencies in detached mode.
+stop             Stop Nautobot and its dependencies.
 ```
 
 #### Utility
 
 ```
-  cli              Launch a bash shell inside the running Nautobot container.
-  create-user      Create a new user in django (default: admin), will prompt for password.
-  makemigrations   Run Make Migration in Django.
-  nbshell          Launch a nbshell session.
+cli              Launch a bash shell inside the running Nautobot container.
+create-user      Create a new user in django (default: admin), will prompt for password.
+makemigrations   Run Make Migration in Django.
+nbshell          Launch a nbshell session.
 ```
 
 #### Testing
 
 ```
-  bandit           Run bandit to validate basic static code security analysis.
-  black            Run black to check that Python files adhere to its style standards.
-  flake8           Run flake8 to check that Python files adhere to its style standards.
-  pydocstyle       Run pydocstyle to validate docstring formatting adheres to NTC defined standards.
-  pylint           Run pylint code analysis.
-  tests            Run all tests for this plugin.
-  unittest         Run Django unit tests for the plugin.
+bandit           Run bandit to validate basic static code security analysis.
+black            Run black to check that Python files adhere to its style standards.
+flake8           Run flake8 to check that Python files adhere to its style standards.
+pydocstyle       Run pydocstyle to validate docstring formatting adheres to NTC defined standards.
+pylint           Run pylint code analysis.
+tests            Run all tests for this plugin.
+unittest         Run Django unit tests for the plugin.
 ```
-
 
 ## Project Overview
 
@@ -143,7 +155,7 @@ This project provides the ability to develop and manage the Nautobot server loca
 
 The upside to having the Nautobot service handled by Docker rather than locally is that you do not have to manage the Nautobot server. The [Docker logs](#docker-logs) provide the majority of the information you will need to help troubleshoot, while getting started quickly and not requiring you to perform several manual steps and remembering to have the Nautobot server running in a separate terminal while you develop.
 
-!!! note
+!!! NOTE
 	The local environment still uses Docker containers for the supporting services (Postgres, Redis, and RQ Worker), but the Nautobot server is handled locally by you, the developer.
 
 Follow the directions below for the specific development environment that you choose.
@@ -174,6 +186,8 @@ cp development/creds.example.env development/creds.env
 ```
 
 ### Invoke - Building the Docker Image
+
+TBD: Update after merging https://github.com/nautobot/nautobot-plugin-chatops/pull/212
 
 The first thing you need to do is build the necessary Docker image for Nautobot that installs the specific `nautobot_ver`. The image is used for Nautobot and the Celery worker service used by Docker Compose.
 
@@ -225,11 +239,24 @@ e72d63129b36   postgres:13-alpine               "docker-entrypoint.s…"   25 se
 
 Once the containers are fully up, you should be able to open up a web browser, and view:
 
-- The Nautobot homepage at [http://localhost:8080](http://localhost:8080)
-- A live version of the documentation at [http://localhost:8001](http://localhost:8001)
+- [Nautobot server](http://localhost:8080)
+- [Live documentation](http://localhost:8001)
+- [Mattermost server](http://localhost:8065)
 
-!!! note
-	Sometimes the containers take a minute to fully spin up. If the page doesn't load right away, wait a minute and try again.
+!!! NOTE
+	Sometimes the containers take a minute to fully spin up. If the page doesn't load right away, wait a minute and try again. To see logs you can run:
+    ```shell
+    invoke logs --follow`
+    ```
+
+!!! NOTE
+    Before using Mattermost with Nautobot, run the following command after Nautobot starts up:
+    ```
+    invoke bootstrap-mattermost
+    ```
+
+!!! NOTE
+    Default username / password for Mattermost is the same as for Nautobot: **admin / admin**
 
 ### Invoke - Creating a Superuser
 
@@ -239,7 +266,7 @@ The Nautobot development image will automatically provision a super user when sp
 - `NAUTOBOT_SUPERUSER_API_TOKEN=0123456789abcdef0123456789abcdef01234567`
 - `NAUTOBOT_SUPERUSER_PASSWORD=admin`
 
-!!! note
+!!! NOTE
 	The default username is **admin**, but can be overridden by specifying **NAUTOBOT_SUPERUSER_USERNAME**.
 
 If you need to create additional superusers, run the follow commands.
@@ -289,7 +316,7 @@ Removing network nautobot_chatops_default
 
 This will safely shut down all of your running Docker containers for this project. When you are ready to spin containers back up, it is as simple as running `invoke start` again [as seen previously](#invoke-starting-the-development-environment).
 
-!!! warning
+!!! WARNING
 	If you're wanting to reset the database and configuration settings, you can use the `invoke destroy` command, but **you will lose any data stored in those containers**, so make sure that is what you want to do.
 
 ### Real-Time Updates? How Cool!
@@ -300,12 +327,12 @@ Now you can start developing your plugin in the project folder!
 
 The magic here is the root directory is mounted inside your Docker containers when built and ran, so **any** changes made to the files in here are directly updated to the Nautobot plugin code running in Docker. This means that as you modify the code in your plugin folder, the changes will be instantly updated in Nautobot.
 
-!!! warning
+!!! WARNING
 	There are a few exceptions to this, as outlined in the section [To Rebuild or Not To Rebuild](#to-rebuild-or-not-to-rebuild).
 
 The back-end Django process is setup to automatically reload itself (it only takes a couple of seconds) every time a file is updated (saved). So for example, if you were to update one of the files like `tables.py`, then save it, the changes will be visible right away in the web browser!
 
-!!! note
+!!! NOTE
 	You may get connection refused while Django reloads, but it should be refreshed fairly quickly.
 
 ### Docker Logs
@@ -316,7 +343,7 @@ When trying to debug an issue, one helpful thing you can look at are the logs wi
 ➜ docker logs <name of container> -f
 ```
 
-!!! note
+!!! NOTE
 	The `-f` tag will keep the logs open, and output them in realtime as they are generated.
 
 So for example, our plugin is named `nautobot-chatops`, the command would most likely be `docker logs nautobot_chatops_nautobot_1 -f`. You can find the name of all running containers via `docker ps`.
@@ -381,7 +408,7 @@ Before you continue, you'll need to update the file `development/nautobot_config
 
 Once the containers are up and running, you should now see the new plugin installed in your Nautobot instance.
 
-!!! note
+!!! NOTE
     You can even launch an `ngrok` service locally on your laptop, pointing to port 8080 (such as for chatops development), and it will point traffic directly to your Docker images.
 
 ### Updating Python Version

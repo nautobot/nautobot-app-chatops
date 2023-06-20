@@ -64,6 +64,7 @@ Provides summary of each manufacturer and how many devices have that manufacture
 
 Scroll the chat history out of view.
 
-## Community Commands
-
-The [nautobot-chatops](https://github.com/topics/nautobot-chatops) topic on GitHub provides a list of Nautobot ChatOps compatible plugins that provide additional commands.
+{%
+    include-markdown './aci_commands.md'
+    heading-offset=1
+%}
