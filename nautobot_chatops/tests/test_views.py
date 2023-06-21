@@ -1,5 +1,7 @@
 """Tests for Nautobot views and related functionality."""
 
+from unittest.mock import patch
+
 from django.conf import settings
 from django.test import TestCase, override_settings
 from django.test.client import RequestFactory
@@ -83,8 +85,9 @@ class TestSignatureVerification(TestCase):
         valid, reason = slack_verify_signature(request_4)
         self.assertTrue(valid)
 
+    @patch.dict("nautobot_chatops.dispatchers.webex.WEBEX_CONFIG", {"enabled": True, "signing_secret": "changeme"})
     def test_verify_signature_webex(self):
-        """Validate the WebEx verify_signature function."""
+        """Validate the Webex verify_signature function."""
         data = {
             "id": "Y2lzY29zcGFyazo",
             "name": "ntc-nautobot-poc messages",

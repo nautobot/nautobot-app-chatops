@@ -1,14 +1,13 @@
 """Tests for Nautobot dispatcher class implementations."""
-from copy import deepcopy
 from unittest.mock import patch, MagicMock
 
 from django.conf import settings
-from django.test import TestCase, override_settings
+from django.test import TestCase
 from slack_sdk.errors import SlackApiError
 
 from nautobot_chatops.dispatchers.ms_teams import MSTeamsDispatcher
 from nautobot_chatops.dispatchers.slack import SlackDispatcher
-from nautobot_chatops.dispatchers.webex import WebExDispatcher
+from nautobot_chatops.dispatchers.webex import WebexDispatcher
 from nautobot_chatops.dispatchers.mattermost import MattermostDispatcher
 
 
@@ -248,19 +247,19 @@ class TestMSTeamsDispatcher(TestSlackDispatcher):
         pass
 
 
-_PLUGINS_CONFIG = deepcopy(settings.PLUGINS_CONFIG)
-_PLUGINS_CONFIG["nautobot_chatops"]["webex_token"] = "changeme"
+class TestWebexDispatcher(TestSlackDispatcher):
+    """Test the WebexDispatcher class."""
 
-
-@override_settings(PLUGINS_CONFIG=_PLUGINS_CONFIG)
-class TestWebExDispatcher(TestSlackDispatcher):
-    """Test the WebExDispatcher class."""
-
-    dispatcher_class = WebExDispatcher
-    platform_name = "WebEx"
+    dispatcher_class = WebexDispatcher
+    platform_name = "Webex"
     enable_opt_name = "enable_webex"
 
-    # Includes all of the test cases defined in TestSlackDispatcher, but uses WebExDispatcher instead
+    # Includes all of the test cases defined in TestSlackDispatcher, but uses WebexDispatcher instead
+
+    @patch.dict("nautobot_chatops.dispatchers.webex.WEBEX_CONFIG", {"enabled": True, "token": "changeme"})
+    def setUp(self):
+        """Per-test-case setup function."""
+        super().setUp()
 
     def test_prompt_from_menu_error(self):
         """Not implemented."""
@@ -288,7 +287,7 @@ class TestWebExDispatcher(TestSlackDispatcher):
         # pylint: disable=W0221
         pass
 
-    @patch("nautobot_chatops.dispatchers.webex.WebExDispatcher.send_markdown")
+    @patch("nautobot_chatops.dispatchers.webex.WebexDispatcher.send_markdown")
     def test_send_large_table(self, mock_send_markdown):
         """Make sure send_large_table() is implemented."""
         header = ["Name", "Status", "Tenant", "Site", "Rack", "Role", "Type", "IP Address"]
@@ -303,7 +302,7 @@ class TestWebExDispatcher(TestSlackDispatcher):
 
         self.dispatcher.send_large_table(header, rows)
 
-        # Make sure the outputs include proper formatting for WebEx
+        # Make sure the outputs include proper formatting for Webex
         self.assertTrue(mock_send_markdown.called)
         self.assertEqual(mock_send_markdown.call_args[0][0], expected_arg0)
 

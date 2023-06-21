@@ -13,7 +13,7 @@ By delivering this as a Nautobot ChatOps plugin, we gain the following benefits:
 ## Code structure
 
 The design goal of this plugin is to be able to write chatbot commands once and have them run anywhere
-(Slack, Microsoft Teams, WebEx, etc.). Toward that end, it's divided into three layers:
+(Slack, Microsoft Teams, Cisco Webex, etc.). Toward that end, it's divided into three layers:
 
 1. input
     1. Webhooks (`nautobot_chatops.views`)
@@ -45,7 +45,7 @@ The design goal of this plugin is to be able to write chatbot commands once and 
 2. worker (`nautobot_chatops.workers`)
 
     - This layer is _completely ignorant_ of chat platforms. All code in this layer does not know or care about the
-     difference between Slack, WebEx, Microsoft Teams, or any other platform we may support in the future.
+     difference between Slack, Cisco Webex, Microsoft Teams, or any other platform we may support in the future.
 
     - Each `job` worker function acts on the provided parameters, then invokes generic methods on its provided
      `Dispatcher` class to post to the channel, prompt the user for more information, or whatever other user-facing
@@ -234,9 +234,9 @@ The setting of `send_all_messages_private` within the configuration applied with
 
 > This table represents the platform support of particular settings
 
-| Platform   | send_all_messages_private |
-| ---------- | ------------------------- |
-| Slack      | ✅                        |
-| MS Teams   | ❌                        |
-| WebEx      | ❌                        |
-| Mattermost | ✅                        |
+| Platform    | send_all_messages_private |
+| ----------- | ------------------------- |
+| Slack       | ✅                        |
+| MS Teams    | ❌                        |
+| Cisco Webex | ❌                        |
+| Mattermost  | ✅                        |

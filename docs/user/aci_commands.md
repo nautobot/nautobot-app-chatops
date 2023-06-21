@@ -10,7 +10,7 @@
   
 ![image](../images/aci-slack-get-bds.png)
 
-### Webex
+### Cisco Webex
 
 ![image](../images/aci-slack-get-tenants.png)
 

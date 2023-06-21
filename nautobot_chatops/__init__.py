@@ -40,7 +40,7 @@ class NautobotChatOpsConfig(PluginConfig):
     author = "Network to Code"
     author_email = "opensource@networktocode.com"
     description = """
-        Nautobot App that is a multi-platform chatbot supporting Slack, MS Teams, Webex Teams,
+        Nautobot App that is a multi-platform chatbot supporting Slack, MS Teams, Cisco Webex,
         and Mattermost that simplifies creating chat commands with pre-defined design patterns.
         Includes the 'nautobot' command that simplifies fetching and updating data in Nautobot.
     """
@@ -83,6 +83,7 @@ class NautobotChatOpsConfig(PluginConfig):
         "enable_webex": False,
         "webex_token": "",
         "webex_signing_secret": "",
+        "webex_msg_char_limit": 7439,
         # = Integrations =====================
         # - Cisco ACI ------------------------
         "enable_aci": False,

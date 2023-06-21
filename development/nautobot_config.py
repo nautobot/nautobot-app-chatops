@@ -145,6 +145,7 @@ PLUGINS_CONFIG = {
         "slack_slash_command_prefix": os.environ.get("SLACK_SLASH_COMMAND_PREFIX", "/"),
         # - Cisco Webex ----------------------------
         "enable_webex": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_WEBEX")),
+        "webex_msg_char_limit": int(os.getenv("WEBEX_MSG_CHAR_LIMIT", "7439")),
         "webex_signing_secret": os.environ.get("WEBEX_SIGNING_SECRET"),
         "webex_token": os.environ.get("WEBEX_ACCESS_TOKEN"),
         # = Integrations =====================

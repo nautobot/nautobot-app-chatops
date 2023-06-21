@@ -1,4 +1,4 @@
-"""Views to receive inbound notifications from WebEx, parse them, and enqueue worker actions."""
+"""Views to receive inbound notifications from Webex, parse them, and enqueue worker actions."""
 
 import hashlib
 import hmac
@@ -16,27 +16,20 @@ from webexteamssdk import WebexTeamsAPI
 from webexteamssdk.exceptions import AccessTokenError, ApiError
 
 from nautobot_chatops.workers import get_commands_registry, commands_help, parse_command_string
-from nautobot_chatops.dispatchers.webex import WebExDispatcher
+from nautobot_chatops.dispatchers.webex import WebexDispatcher
+from nautobot_chatops.dispatchers.webex import WEBEX_CONFIG
 from nautobot_chatops.utils import check_and_enqueue_command
 
 logger = logging.getLogger(__name__)
 
-if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_webex") or settings.PLUGINS_CONFIG["nautobot_chatops"].get(
-    "enable_webex_teams"
-):
-    # v1.4.0 Deprecation warning
-    if settings.PLUGINS_CONFIG["nautobot_chatops"].get("webex_teams_token") and not settings.PLUGINS_CONFIG[
-        "nautobot_chatops"
-    ].get("webex_token"):
-        TOKEN = settings.PLUGINS_CONFIG["nautobot_chatops"]["webex_teams_token"]
-        logger.warning("The 'webex_teams_token' setting is deprecated, please use 'webex_token' instead")
-    else:
-        try:
-            TOKEN = settings.PLUGINS_CONFIG["nautobot_chatops"]["webex_token"]
-        except KeyError as err:
-            ERROR_MSG = "The 'webex_token' setting must be configured"
-            logger.error(ERROR_MSG)
-            raise KeyError(ERROR_MSG) from err
+
+if WEBEX_CONFIG.get("enabled"):
+    try:
+        TOKEN = WEBEX_CONFIG["token"]
+    except KeyError as err:
+        ERROR_MSG = "The 'webex_token' App setting must be configured"
+        logger.error(ERROR_MSG)
+        raise KeyError(ERROR_MSG) from err
 
     try:
         API = WebexTeamsAPI(access_token=TOKEN)
@@ -44,7 +37,7 @@ if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_webex") or settings.P
     except (AccessTokenError, ApiError):
         logger.warning(
             "Missing or invalid WEBEX_TOKEN setting. "
-            "This may be ignored if you are not running Nautobot as a WebEx chatbot."
+            "This may be ignored if you are not running Nautobot as a Webex chatbot."
         )
         API = None
         BOT_ID = None
@@ -54,27 +47,18 @@ if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_webex") or settings.P
 
 def generate_signature(request):
     """Calculate the expected signature of a given request."""
-    # v1.4.0 Deprecation warning
-    if settings.PLUGINS_CONFIG["nautobot_chatops"].get("webex_teams_signing_secret") and not settings.PLUGINS_CONFIG[
-        "nautobot_chatops"
-    ].get("webex_signing_secret"):
-        signing_secret = settings.PLUGINS_CONFIG["nautobot_chatops"].get("webex_teams_signing_secret").encode("utf-8")
-        logger.warning(
-            "The 'webex_teams_signing_secret' setting is deprecated, please use 'webex_signing_secret' instead"
-        )
-    else:
-        try:
-            signing_secret = settings.PLUGINS_CONFIG["nautobot_chatops"]["webex_signing_secret"].encode("utf-8")
-        except KeyError as error:
-            error_msg = "The 'webex_signing_secret' setting must be configured"
-            logger.error(error_msg)
-            raise KeyError(error_msg) from error
+    try:
+        signing_secret = WEBEX_CONFIG["signing_secret"].encode("utf-8")
+    except KeyError as error:
+        error_msg = "The 'webex_signing_secret' setting must be configured"
+        logger.error(error_msg)
+        raise KeyError(error_msg) from error
 
     return hmac.new(signing_secret, request.body, digestmod=hashlib.sha1).hexdigest()
 
 
 def verify_signature(request):
-    """Verify that a given request was legitimately signed by WebEx.
+    """Verify that a given request was legitimately signed by Webex.
 
     https://developer.webex.com/docs/api/guides/webhooks#handling-requests-from-webex-teams
 
@@ -94,8 +78,8 @@ def verify_signature(request):
 
 
 @method_decorator(csrf_exempt, name="dispatch")
-class WebExView(View):
-    """Handle all supported inbound notifications from WebEx."""
+class WebexView(View):
+    """Handle all supported inbound notifications from Webex."""
 
     http_method_names = ["post"]
 
@@ -130,14 +114,14 @@ class WebExView(View):
             "message_id": data.get("messageId") or data.get("id"),
         }
 
-        # In WebEx, the webhook doesn't contain the user/channel/org names. We have to call back for them.
+        # In Webex, the webhook doesn't contain the user/channel/org names. We have to call back for them.
         # For whatever reason, API.organizations.get() is only permitted by admin users, which the bot is not.
         # context["org_name"] = API.organizations.get(context["org_id"]).displayName
         context["channel_name"] = API.rooms.get(context["channel_id"]).title
         context["user_name"] = API.people.get(context["user_id"]).displayName
 
         if body.get("resource") == "messages":
-            # In WebEx, the webhook notification doesn't contain the message text. We have to call back for it.
+            # In Webex, the webhook notification doesn't contain the message text. We have to call back for it.
             message = API.messages.get(context["message_id"])
             command = message.text.strip()
             # Check for a mention of the bot in the HTML (i.e., if this is not a direct message), and remove it if so.
@@ -147,11 +131,11 @@ class WebExView(View):
                     command = re.sub(bot_mention.group(1), "", command).strip()
             command, subcommand, params = parse_command_string(command)
         elif body.get("resource") == "attachmentActions":
-            # In WebEx, the webhook notification doesn't contain the action details. We have to call back for it.
+            # In Webex, the webhook notification doesn't contain the action details. We have to call back for it.
             action = API.attachment_actions.get(body.get("data", {}).get("id"))
             if settings.PLUGINS_CONFIG["nautobot_chatops"].get("delete_input_on_submission"):
                 # Delete the card that this action was triggered from
-                WebExDispatcher(context).delete_message(context["message_id"])
+                WebexDispatcher(context).delete_message(context["message_id"])
             if action.inputs.get("action") == "cancel":
                 return HttpResponse(status=200)
             command, subcommand, params = parse_command_string(action.inputs.get("action"))
@@ -166,7 +150,7 @@ class WebExView(View):
         registry = get_commands_registry()
 
         if command not in registry:
-            WebExDispatcher(context).send_markdown(commands_help())
+            WebexDispatcher(context).send_markdown(commands_help())
             return HttpResponse(status=200)
 
-        return check_and_enqueue_command(registry, command, subcommand, params, context, WebExDispatcher)
+        return check_and_enqueue_command(registry, command, subcommand, params, context, WebexDispatcher)

@@ -5,6 +5,7 @@ import logging
 import sys
 
 from asgiref.sync import sync_to_async
+from django.conf import settings
 from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
 
@@ -13,6 +14,25 @@ from nautobot_chatops.models import AccessGrant, CommandLog
 from nautobot_chatops.metrics import request_command_cntr
 
 logger = logging.getLogger(__name__)
+
+
+def get_app_config_part(prefix: str) -> dict:
+    """Get part of the app config.
+
+    Args:
+        prefix (str): Prefix of the config to get.
+
+    Returns:
+        dict: Config part.
+    """
+    config: dict = settings.PLUGINS_CONFIG["nautobot_chatops"]
+
+    prefix_ = f"{prefix}_"
+    result = {key.replace(prefix_, ""): value for key, value in config.items() if key.startswith(prefix_)}
+
+    result["enabled"] = config.get(f"enable_{prefix}", False)
+
+    return result
 
 
 try:
