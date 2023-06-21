@@ -354,7 +354,7 @@ def get_vlans(dispatcher, filter_type, filter_value_1):
 # pylint: disable=too-many-statements
 @subcommand_of("nautobot")
 def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_value_2):
-    """Return a filtered list of interface connections based on filter type, `filter_value_1` and/or `filter_value_2`."""
+    """Return a filtered list of interface connections based on type, `filter_value_1` and/or `filter_value_2`."""
     interface_ct = ContentType.objects.get_for_model(Interface)
     if not filter_type:
         prompt_for_interface_filter_type(
