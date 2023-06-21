@@ -161,7 +161,7 @@ def examine_termination_endpoints(circuit):
 # pylint: disable=too-many-statements
 @subcommand_of("nautobot")
 def get_vlans(dispatcher, filter_type, filter_value_1):
-    """Return a filtered list of VLANS based on filter type and/or filter_value_1."""
+    """Return a filtered list of VLANs based on filter type and/or `filter_value_1`."""
     # pylint: disable=no-else-return
     if not filter_type:
         prompt_for_vlan_filter_type("nautobot get-vlans", "select a vlan filter", dispatcher)
@@ -354,7 +354,7 @@ def get_vlans(dispatcher, filter_type, filter_value_1):
 # pylint: disable=too-many-statements
 @subcommand_of("nautobot")
 def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_value_2):
-    """Return a filtered list of interface connections based on filter type, filter_value_1 and/or filter_value_2."""
+    """Return a filtered list of interface connections based on filter type, `filter_value_1` and/or `filter_value_2`."""
     interface_ct = ContentType.objects.get_for_model(Interface)
     if not filter_type:
         prompt_for_interface_filter_type(
