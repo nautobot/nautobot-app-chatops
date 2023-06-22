@@ -1,0 +1,9 @@
+{# templates/nautobot_chatops_grafana/dashboard_list.html #}
+{% extends 'generic/object_list.html' %}
+
+{% block buttons %}
+<a  href="{% url 'plugins:nautobot_chatops:grafanadashboard_sync' %}"
+    class="btn btn-warning" title="Synchronize dashboards from Grafana">
+    <span class="mdi mdi-database-sync-outline"></span> Sync
+</a>
+{% endblock %}

@@ -1,0 +1,33 @@
+---
+global:
+  scrape_interval: "15s"
+
+scrape_configs:
+  - job_name: "prometheus"
+    static_configs:
+      - targets: ["localhost:9090"]
+
+  - job_name: "nautobot_system"
+    dns_sd_configs:
+      - names:
+          - "nautobot"
+        type: "A"
+        port: 8080
+
+  - job_name: "nautobot_app"
+    scrape_interval: "2m"
+    metrics_path: "/api/plugins/capacity-metrics/app-metrics"
+    static_configs:
+      - targets: ["nautobot:8080"]
+
+  - job_name: "nautobot_rq"
+    metrics_path: "/api/plugins/capacity-metrics/rq-metrics"
+    static_configs:
+      - targets: ["nautobot:8080"]
+
+  - job_name: "worker"
+    dns_sd_configs:
+      - names:
+          - "worker"
+        type: "A"
+        port: 8001
