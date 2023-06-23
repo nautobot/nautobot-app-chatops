@@ -128,6 +128,10 @@ PLUGINS_CONFIG = {
     "nautobot_chatops": {
         # = Common settings ==================
         "restrict_help": is_truthy(os.getenv("NAUTOBOT_CHATOPS_RESTRICT_HELP")),
+        # TODO: Add following settings
+        # | `delete_input_on_submission` | Removes the input prompt from the chat history after user input | No | `False` |
+        # | `send_all_messages_private` | Ensures only the person interacting with the bot sees the responses | No | `False` |
+        # | `session_cache_timeout` | Controls session cache | No | `86400` |
         # = Chat Platforms ===================
         # - Mattermost -----------------------
         "enable_mattermost": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_MATTERMOST")),
@@ -143,7 +147,7 @@ PLUGINS_CONFIG = {
         "slack_app_token": os.environ.get("SLACK_APP_TOKEN"),
         "slack_signing_secret": os.environ.get("SLACK_SIGNING_SECRET"),
         "slack_slash_command_prefix": os.environ.get("SLACK_SLASH_COMMAND_PREFIX", "/"),
-        # - Cisco Webex ----------------------------
+        # - Cisco Webex ----------------------
         "enable_webex": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_WEBEX")),
         "webex_msg_char_limit": int(os.getenv("WEBEX_MSG_CHAR_LIMIT", "7439")),
         "webex_signing_secret": os.environ.get("WEBEX_SIGNING_SECRET"),
@@ -152,16 +156,26 @@ PLUGINS_CONFIG = {
         # - Cisco ACI ------------------------
         "enable_aci": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_ACI")),
         "aci_creds": {x: os.environ[x] for x in os.environ if "APIC" in x},
-        # - AWX / Ansible Tower --------------------------
+        # - AWX / Ansible Tower --------------
         "enable_ansible": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_ANSIBLE")),
         "tower_password": os.getenv("NAUTOBOT_TOWER_PASSWORD"),
         "tower_uri": os.getenv("NAUTOBOT_TOWER_URI"),
         "tower_username": os.getenv("NAUTOBOT_TOWER_USERNAME"),
         "tower_verify_ssl": is_truthy(os.getenv("NAUTOBOT_TOWER_VERIFY_SSL", True)),
-        # - Cisco Meraki ---------------------------
+        # - Grafana --------------------------
+        "enable_grafana": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_GRAFANA")),
+        "grafana_url": os.environ.get("GRAFANA_URL", ""),
+        "grafana_api_key": os.environ.get("GRAFANA_API_KEY", ""),
+        "grafana_default_width": 0,
+        "grafana_default_height": 0,
+        "grafana_default_theme": "dark",
+        "grafana_default_timespan": "0",
+        "grafana_org_id": 1,
+        "grafana_default_tz": "America/Denver",
+        # - Cisco Meraki ---------------------
         "enable_meraki": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_MERAKI")),
         "meraki_dashboard_api_key": os.environ.get("MERAKI_API_KEY"),
-        # - Palo Alto Panorama -------------------------
+        # - Palo Alto Panorama ---------------
         "enable_panorama": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_PANORAMA")),
         "panorama_host": os.environ.get("PANORAMA_HOST"),
         "panorama_password": os.environ.get("PANORAMA_PASSWORD"),

@@ -4,7 +4,7 @@ import logging
 from typing import Dict
 
 from django.conf import settings
-from django.urls import path
+from django.urls import include, path
 from nautobot.core.api import OrderedDefaultRouter
 from nautobot_chatops.api.views.generic import AccessGrantViewSet, CommandTokenViewSet, NautobotChatopsRootView
 from nautobot_chatops.api.views.lookup import AccessLookupView
@@ -53,3 +53,5 @@ router.register("accessgrant", AccessGrantViewSet)
 app_name = "nautobot_chatops-api"
 
 urlpatterns += router.urls
+
+urlpatterns += [path("grafana/", include("nautobot_chatops.integrations.grafana.api.urls"))]

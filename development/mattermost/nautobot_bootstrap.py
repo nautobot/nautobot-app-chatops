@@ -16,6 +16,7 @@ _COMMAND_TOKENS = {
     "aci": "tc1u8wbh53fwxxdkhswbmu9wsa",  # nosec
     "ansible": "c7udax974iymjkmoyhi1a11cpy",  # nosec
     "clear": "p7phuwhpaiddjxqf8c1hnw33yh",  # nosec
+    "grafana": "o1yiadnpifbzddt3umcedeypdr",  # nosec
     "meraki": "t9irqwjni3dozf3yx6tzak7k3w",  # nosec
     "nautobot": "rmdpfdjhnpg988e7ujzyom4euh",  # nosec
     "panorama": "6nf5cmz1ft8bdfykz46cs5pofo",  # nosec

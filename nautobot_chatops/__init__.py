@@ -15,6 +15,7 @@ _CONFLICTING_APP_NAMES = [
     # App names that conflict with nautobot_chatops
     "nautobot_plugin_chatops_aci",
     "nautobot_plugin_chatops_ansible",
+    "nautobot_plugin_chatops_grafana",
     "nautobot_plugin_chatops_meraki",
     "nautobot_plugin_chatops_panorama",
 ]
@@ -51,12 +52,12 @@ class NautobotChatOpsConfig(PluginConfig):
         # Should menus, text input fields, etc. be deleted from the chat history after the user makes a selection?
         "delete_input_on_submission": False,
         "restrict_help": False,
-        # Session Cache
-        "session_cache_timeout": 86400,
         # As requested on https://github.com/nautobot/nautobot-plugin-chatops/issues/114 this setting is used for
         # sending all messages as an ephemeral message, meaning only the person interacting with the bot will see the
         # responses.
         "send_all_messages_private": False,
+        # Session Cache
+        "session_cache_timeout": 86400,
         # = Chat Platforms ===================
         # - Mattermost -----------------------
         "enable_mattermost": False,
@@ -94,6 +95,16 @@ class NautobotChatOpsConfig(PluginConfig):
         "tower_uri": "",
         "tower_username": "",
         "tower_verify_ssl": True,
+        # - Grafana --------------------------
+        "enable_grafana": False,
+        "grafana_url": None,
+        "grafana_api_key": None,
+        "grafana_default_width": 0,
+        "grafana_default_height": 0,
+        "grafana_default_theme": "dark",
+        "grafana_default_timespan": None,
+        "grafana_org_id": 1,
+        "grafana_default_tz": None,
         # - Cisco Meraki ---------------------
         "enable_meraki": False,
         "meraki_dashboard_api_key": "",

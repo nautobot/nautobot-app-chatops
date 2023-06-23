@@ -50,6 +50,7 @@ namespace.configure(
                 "docker-compose.celery.yml",
                 "docker-compose.base.yml",
                 "docker-compose.dev.yml",
+                "grafana/docker-compose.yml",
                 "mattermost/docker-compose.yml",
                 "ansible/docker-compose.yml",
                 # "docker-compose.socket.yml",
