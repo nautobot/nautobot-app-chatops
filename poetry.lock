@@ -165,6 +165,28 @@ files = [
 ]
 
 [[package]]
+name = "anyio"
+version = "3.7.0"
+description = "High level compatibility layer for multiple asynchronous event loop implementations"
+optional = true
+python-versions = ">=3.7"
+files = [
+    {file = "anyio-3.7.0-py3-none-any.whl", hash = "sha256:eddca883c4175f14df8aedce21054bfca3adb70ffe76a9f607aef9d7fa2ea7f0"},
+    {file = "anyio-3.7.0.tar.gz", hash = "sha256:275d9973793619a5374e1c89a4f4ad3f4b0a5510a2b5b939444bee8f4c4d37ce"},
+]
+
+[package.dependencies]
+exceptiongroup = {version = "*", markers = "python_version < \"3.11\""}
+idna = ">=2.8"
+sniffio = ">=1.1"
+typing-extensions = {version = "*", markers = "python_version < \"3.8\""}
+
+[package.extras]
+doc = ["Sphinx (>=6.1.0)", "packaging", "sphinx-autodoc-typehints (>=1.2.0)", "sphinx-rtd-theme", "sphinxcontrib-jquery"]
+test = ["anyio[trio]", "coverage[toml] (>=4.5)", "hypothesis (>=4.0)", "mock (>=4)", "psutil (>=5.9)", "pytest (>=7.0)", "pytest-mock (>=3.6.1)", "trustme", "uvloop (>=0.17)"]
+trio = ["trio (<0.22)"]
+
+[[package]]
 name = "arrow"
 version = "1.2.3"
 description = "Better dates & times for Python"
@@ -836,6 +858,24 @@ test-randomorder = ["pytest-randomly"]
 tox = ["tox"]
 
 [[package]]
+name = "deepdiff"
+version = "6.3.0"
+description = "Deep Difference and Search of any Python object/data. Recreate objects by adding adding deltas to each other."
+optional = true
+python-versions = ">=3.7"
+files = [
+    {file = "deepdiff-6.3.0-py3-none-any.whl", hash = "sha256:15838bd1cbd046ce15ed0c41e837cd04aff6b3e169c5e06fca69d7aa11615ceb"},
+    {file = "deepdiff-6.3.0.tar.gz", hash = "sha256:6a3bf1e7228ac5c71ca2ec43505ca0a743ff54ec77aa08d7db22de6bc7b2b644"},
+]
+
+[package.dependencies]
+ordered-set = ">=4.0.2,<4.2.0"
+
+[package.extras]
+cli = ["click (==8.1.3)", "pyyaml (==6.0)"]
+optimize = ["orjson"]
+
+[[package]]
 name = "defusedxml"
 version = "0.7.1"
 description = "XML bomb protection for Python stdlib modules"
@@ -1344,6 +1384,20 @@ uritemplate = ">=3.0.0"
 validation = ["swagger-spec-validator (>=2.1.0)"]
 
 [[package]]
+name = "exceptiongroup"
+version = "1.1.1"
+description = "Backport of PEP 654 (exception groups)"
+optional = true
+python-versions = ">=3.7"
+files = [
+    {file = "exceptiongroup-1.1.1-py3-none-any.whl", hash = "sha256:232c37c63e4f682982c8b6459f33a8981039e5fb8756b2074364e5055c498c9e"},
+    {file = "exceptiongroup-1.1.1.tar.gz", hash = "sha256:d484c3090ba2889ae2928419117447a14daf3c1231d5e30d0aae34f354f01785"},
+]
+
+[package.extras]
+test = ["pytest (>=6)"]
+
+[[package]]
 name = "flake8"
 version = "3.9.2"
 description = "the modular source code checker: pep8 pyflakes and co"
@@ -1636,6 +1690,64 @@ colorama = ">=0.4"
 async = ["aiofiles (>=0.7,<1.0)"]
 
 [[package]]
+name = "h11"
+version = "0.14.0"
+description = "A pure-Python, bring-your-own-I/O implementation of HTTP/1.1"
+optional = true
+python-versions = ">=3.7"
+files = [
+    {file = "h11-0.14.0-py3-none-any.whl", hash = "sha256:e3fe4ac4b851c468cc8363d500db52c2ead036020723024a109d37346efaa761"},
+    {file = "h11-0.14.0.tar.gz", hash = "sha256:8f19fbbe99e72420ff35c00b27a34cb9937e902a8b810e2c88300c6f0a3b699d"},
+]
+
+[package.dependencies]
+typing-extensions = {version = "*", markers = "python_version < \"3.8\""}
+
+[[package]]
+name = "httpcore"
+version = "0.16.3"
+description = "A minimal low-level HTTP client."
+optional = true
+python-versions = ">=3.7"
+files = [
+    {file = "httpcore-0.16.3-py3-none-any.whl", hash = "sha256:da1fb708784a938aa084bde4feb8317056c55037247c787bd7e19eb2c2949dc0"},
+    {file = "httpcore-0.16.3.tar.gz", hash = "sha256:c5d6f04e2fc530f39e0c077e6a30caa53f1451096120f1f38b954afd0b17c0cb"},
+]
+
+[package.dependencies]
+anyio = ">=3.0,<5.0"
+certifi = "*"
+h11 = ">=0.13,<0.15"
+sniffio = "==1.*"
+
+[package.extras]
+http2 = ["h2 (>=3,<5)"]
+socks = ["socksio (==1.*)"]
+
+[[package]]
+name = "httpx"
+version = "0.23.3"
+description = "The next generation HTTP client."
+optional = true
+python-versions = ">=3.7"
+files = [
+    {file = "httpx-0.23.3-py3-none-any.whl", hash = "sha256:a211fcce9b1254ea24f0cd6af9869b3d29aba40154e947d2a07bb499b3e310d6"},
+    {file = "httpx-0.23.3.tar.gz", hash = "sha256:9818458eb565bb54898ccb9b8b251a28785dd4a55afbc23d0eb410754fe7d0f9"},
+]
+
+[package.dependencies]
+certifi = "*"
+httpcore = ">=0.15.0,<0.17.0"
+rfc3986 = {version = ">=1.3,<2", extras = ["idna2008"]}
+sniffio = "*"
+
+[package.extras]
+brotli = ["brotli", "brotlicffi"]
+cli = ["click (==8.*)", "pygments (==2.*)", "rich (>=10,<13)"]
+http2 = ["h2 (>=3,<5)"]
+socks = ["socksio (==1.*)"]
+
+[[package]]
 name = "idna"
 version = "3.4"
 description = "Internationalized Domain Names in Applications (IDNA)"
@@ -1730,6 +1842,64 @@ python-versions = "*"
 files = [
     {file = "ipaddr-2.2.0.tar.gz", hash = "sha256:4092dfe667588d16aa12b59acb7c8a4024e5dcb23a681cd0b0b602373eca88d6"},
 ]
+
+[[package]]
+name = "ipfabric"
+version = "6.0.10"
+description = "Python package for interacting with IP Fabric"
+optional = true
+python-versions = ">=3.7.1,<4.0.0"
+files = [
+    {file = "ipfabric-6.0.10-py3-none-any.whl", hash = "sha256:22a45ac36199eb69226dc9213d0d3f4df8d0e156ff7982c9a7dd6ff80409b598"},
+    {file = "ipfabric-6.0.10.tar.gz", hash = "sha256:7dca65f77b14b5bda04ba76abbed0685b81d934e6b1f53a67c54bc8509ba9807"},
+]
+
+[package.dependencies]
+deepdiff = ">=6.2.2,<7.0.0"
+httpx = ">=0.23.2,<0.24.0"
+ipfabric-httpx-auth = ">=6.0.0,<7.0.0"
+macaddress = ">=2.0.2,<2.1.0"
+pydantic = ">=1.8.2,<2.0.0"
+python-dateutil = ">=2.8.2,<3.0.0"
+python-dotenv = ">=0.21,<0.22"
+pytz = ">=2022.4,<2023.0"
+
+[package.extras]
+examples = ["openpyxl (>=3.0.9,<4.0.0)", "pandas (>=1.3.0,<2.0.0)", "python-json-logger (>=2.0.4,<3.0.0)", "pyyaml (>=6.0,<7.0)", "tabulate (>=0.8.9,<0.10.0)"]
+
+[[package]]
+name = "ipfabric-diagrams"
+version = "6.0.2"
+description = "Python package for interacting with IP Fabric Diagrams"
+optional = true
+python-versions = ">=3.7.1,<4.0.0"
+files = [
+    {file = "ipfabric_diagrams-6.0.2-py3-none-any.whl", hash = "sha256:933e58250d7bd09ee5557667fe8bf4add1e9e3e1ec7dd137345f97bdd928b255"},
+    {file = "ipfabric_diagrams-6.0.2.tar.gz", hash = "sha256:a76791e8547f48d70b59e5d653271f224b7482e5d77f995eca3be36886118900"},
+]
+
+[package.dependencies]
+ipfabric = ">=6.0.7,<6.1.0"
+pydantic = ">=1.8.2,<2.0.0"
+typing-extensions = ">=4.1.1,<5.0.0"
+
+[package.extras]
+examples = ["rich (>=12.5.1,<13.0.0)"]
+
+[[package]]
+name = "ipfabric-httpx-auth"
+version = "6.0.1"
+description = "DEPRECATED: Authentication plugin for IP Fabric"
+optional = true
+python-versions = ">=3.7.1,<4.0.0"
+files = [
+    {file = "ipfabric_httpx_auth-6.0.1-py3-none-any.whl", hash = "sha256:7e47559d7a0f575f77b32ddefbeaff416973e36fe5728493c86a85f64ba918ba"},
+    {file = "ipfabric_httpx_auth-6.0.1.tar.gz", hash = "sha256:32c713ed7a2326e9b11c581379e748b8893e24ea97e0388378a95e82b392bc0c"},
+]
+
+[package.dependencies]
+httpx = ">=0.23.0,<0.24.0"
+PyJWT = ">=2.4.0,<3.0.0"
 
 [[package]]
 name = "isodate"
@@ -1943,6 +2113,17 @@ files = [
     {file = "lazy_object_proxy-1.9.0-cp39-cp39-musllinux_1_1_x86_64.whl", hash = "sha256:09763491ce220c0299688940f8dc2c5d05fd1f45af1e42e636b2e8b2303e4382"},
     {file = "lazy_object_proxy-1.9.0-cp39-cp39-win32.whl", hash = "sha256:9090d8e53235aa280fc9239a86ae3ea8ac58eff66a705fa6aa2ec4968b95c821"},
     {file = "lazy_object_proxy-1.9.0-cp39-cp39-win_amd64.whl", hash = "sha256:db1c1722726f47e10e0b5fdbf15ac3b8adb58c091d12b3ab713965795036985f"},
+]
+
+[[package]]
+name = "macaddress"
+version = "2.0.2"
+description = "Like ``ipaddress``, but for hardware identifiers such as MAC addresses."
+optional = true
+python-versions = "*"
+files = [
+    {file = "macaddress-2.0.2-py3-none-any.whl", hash = "sha256:6f4a0430f9b5af6d98a582b8d527ba2cd3f0825fce5503a9ce5c73acb772c30f"},
+    {file = "macaddress-2.0.2.tar.gz", hash = "sha256:1400ccdc28d747102d57ae61e5b78d8985872930810ceb8860cd49abd1e1fa37"},
 ]
 
 [[package]]
@@ -2478,6 +2659,20 @@ files = [
 rsa = ["cryptography (>=3.0.0)"]
 signals = ["blinker (>=1.4.0)"]
 signedtoken = ["cryptography (>=3.0.0)", "pyjwt (>=2.0.0,<3)"]
+
+[[package]]
+name = "ordered-set"
+version = "4.1.0"
+description = "An OrderedSet is a custom MutableSet that remembers its order, so that every"
+optional = true
+python-versions = ">=3.7"
+files = [
+    {file = "ordered-set-4.1.0.tar.gz", hash = "sha256:694a8e44c87657c59292ede72891eb91d34131f6531463aab3009191c77364a8"},
+    {file = "ordered_set-4.1.0-py3-none-any.whl", hash = "sha256:046e1132c71fcf3330438a539928932caf51ddbc582496833e23de611de14562"},
+]
+
+[package.extras]
+dev = ["black", "mypy", "pytest"]
 
 [[package]]
 name = "packaging"
@@ -3486,6 +3681,23 @@ files = [
 six = "*"
 
 [[package]]
+name = "rfc3986"
+version = "1.5.0"
+description = "Validating URI References per RFC 3986"
+optional = true
+python-versions = "*"
+files = [
+    {file = "rfc3986-1.5.0-py2.py3-none-any.whl", hash = "sha256:a86d6e1f5b1dc238b218b012df0aa79409667bb209e58da56d0b94704e712a97"},
+    {file = "rfc3986-1.5.0.tar.gz", hash = "sha256:270aaf10d87d0d4e095063c65bf3ddbc6ee3d0b226328ce21e036f946e421835"},
+]
+
+[package.dependencies]
+idna = {version = "*", optional = true, markers = "extra == \"idna2008\""}
+
+[package.extras]
+idna2008 = ["idna"]
+
+[[package]]
 name = "rfc3986-validator"
 version = "0.1.1"
 description = "Pure python rfc3986 validator"
@@ -3711,6 +3923,17 @@ python-versions = ">=3.6"
 files = [
     {file = "smmap-5.0.0-py3-none-any.whl", hash = "sha256:2aba19d6a040e78d8b09de5c57e96207b09ed71d8e55ce0959eeee6c8e190d94"},
     {file = "smmap-5.0.0.tar.gz", hash = "sha256:c840e62059cd3be204b0c9c9f74be2c09d5648eddd4580d9314c3ecde0b30936"},
+]
+
+[[package]]
+name = "sniffio"
+version = "1.3.0"
+description = "Sniff out which async library your code is running under"
+optional = true
+python-versions = ">=3.7"
+files = [
+    {file = "sniffio-1.3.0-py3-none-any.whl", hash = "sha256:eecefdce1e5bbfb7ad2eeaabf7c1eeb404d7757c379bd1f7e5cce9d8bf425384"},
+    {file = "sniffio-1.3.0.tar.gz", hash = "sha256:e60305c5e5d314f5389259b7f22aaa33d8f7dee49763119234af3755c55b9101"},
 ]
 
 [[package]]
@@ -4339,13 +4562,14 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 
 [extras]
 aci = ["prettytable"]
-all = ["PyYAML", "defusedxml", "diffsync", "ipaddr", "isodate", "meraki", "netmiko", "netutils", "pan-os-python", "prettytable", "pydantic", "schema-enforcer", "termcolor"]
+all = ["PyYAML", "defusedxml", "diffsync", "ipaddr", "ipfabric", "ipfabric-diagrams", "isodate", "meraki", "netmiko", "netutils", "pan-os-python", "prettytable", "pydantic", "schema-enforcer", "termcolor"]
 ansible = ["PyYAML"]
 grafana = ["diffsync", "isodate", "pydantic", "schema-enforcer", "termcolor"]
+ipfabric = ["ipfabric", "ipfabric-diagrams", "netutils"]
 meraki = ["meraki"]
 panorama = ["defusedxml", "ipaddr", "netmiko", "netutils", "pan-os-python"]
 
 [metadata]
 lock-version = "2.0"
-python-versions = "^3.7"
-content-hash = "e2082b4e0e2af0679620a2553aa38ad40ddaea08fe3947f71345bd6260af741e"
+python-versions = "^3.7.1"
+content-hash = "3e964e52a137afe023baae264ca663f9b91e2a8308b4f634fff47a025d090d5c"

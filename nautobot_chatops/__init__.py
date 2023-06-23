@@ -14,7 +14,9 @@ from nautobot.extras.plugins import PluginConfig
 _CONFLICTING_APP_NAMES = [
     # App names that conflict with nautobot_chatops
     "nautobot_plugin_chatops_aci",
+    "nautobot_plugin_chatops_ansible",
     "nautobot_plugin_chatops_grafana",
+    "nautobot_plugin_chatops_ipfabric",
     "nautobot_plugin_chatops_meraki",
     "nautobot_plugin_chatops_panorama",
 ]
@@ -87,6 +89,10 @@ class NautobotChatOpsConfig(PluginConfig):
         "tower_username": None,
         "tower_password": None,
         "tower_verify_ssl": False,
+        "ipfabric_api_token": None,
+        "ipfabric_host": None,
+        "ipfabric_timeout": None,
+        "ipfabric_verify": False,
         "grafana_url": None,
         "grafana_api_key": None,
         "grafana_default_width": 0,
