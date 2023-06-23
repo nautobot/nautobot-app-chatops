@@ -93,10 +93,7 @@ jobs:
       - name: "Copy credentials"
         run: "cp development/creds.example.env development/creds.env"
       - name: "Linting: Pylint"
-        run: |
-          poetry run invoke build
-          poetry run invoke start
-          poetry run invoke pylint
+        run: "poetry run invoke pylint"
     needs:
       - "bandit"
       - "pydocstyle"
