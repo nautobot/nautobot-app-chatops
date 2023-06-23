@@ -8,7 +8,7 @@ x-nautobot: &nautobot
 services:
   nautobot:
     <<: *nautobot
-  celery:
+  worker:
     <<: *nautobot
 networks:
   awx: {}
