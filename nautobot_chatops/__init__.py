@@ -13,8 +13,12 @@ from nautobot.extras.plugins import PluginConfig
 
 _CONFLICTING_APP_NAMES = [
     # App names that conflict with nautobot_chatops
+    "nautobot_plugin_chatops_aci",
     "nautobot_plugin_chatops_ansible",
+    "nautobot_plugin_chatops_grafana",
     "nautobot_plugin_chatops_ipfabric",
+    "nautobot_plugin_chatops_meraki",
+    "nautobot_plugin_chatops_panorama",
 ]
 
 
@@ -45,6 +49,7 @@ class NautobotChatOpsConfig(PluginConfig):
     base_url = "chatops"
     required_settings = []
     default_settings = {
+        "aci_creds": None,
         "enable_slack": False,
         "enable_ms_teams": False,
         "enable_webex": False,
@@ -79,6 +84,7 @@ class NautobotChatOpsConfig(PluginConfig):
         # responses.
         "send_all_messages_private": False,
         "restrict_help": False,
+        "meraki_dashboard_api_key": None,
         "tower_uri": None,
         "tower_username": None,
         "tower_password": None,
@@ -87,6 +93,17 @@ class NautobotChatOpsConfig(PluginConfig):
         "ipfabric_host": None,
         "ipfabric_timeout": None,
         "ipfabric_verify": False,
+        "grafana_url": None,
+        "grafana_api_key": None,
+        "grafana_default_width": 0,
+        "grafana_default_height": 0,
+        "grafana_default_theme": "dark",
+        "grafana_default_timespan": None,
+        "grafana_org_id": 1,
+        "grafana_default_tz": None,
+        "panorama_host": None,
+        "panorama_user": None,
+        "panorama_password": None,
     }
 
     max_version = "1.999"

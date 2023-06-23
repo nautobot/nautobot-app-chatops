@@ -1,7 +1,7 @@
 """Django urlpatterns declaration for nautobot_chatops plugin."""
 
 import logging
-from django.urls import path
+from django.urls import include, path
 
 from django.conf import settings
 from nautobot.core.api import OrderedDefaultRouter
@@ -13,11 +13,12 @@ logger = logging.getLogger(__name__)
 urlpatterns = [path("lookup/", AccessLookupView.as_view(), name="access_lookup")]
 
 if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_slack"):
-    from nautobot_chatops.api.views.slack import SlackSlashCommandView, SlackInteractionView
+    from nautobot_chatops.api.views.slack import SlackSlashCommandView, SlackInteractionView, SlackEventAPIView
 
     urlpatterns += [
         path("slack/slash_command/", SlackSlashCommandView.as_view(), name="slack_slash_command"),
         path("slack/interaction/", SlackInteractionView.as_view(), name="slack_interaction"),
+        path("slack/event/", SlackEventAPIView.as_view(), name="slack_event"),
     ]
 
 if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_ms_teams"):
@@ -59,3 +60,5 @@ router.register("accessgrant", AccessGrantViewSet)
 app_name = "nautobot_chatops-api"
 
 urlpatterns += router.urls
+
+urlpatterns += [path("grafana/", include("nautobot_chatops.integrations.grafana.api.urls"))]

@@ -47,3 +47,9 @@ Interested to see Nautobot ChatOps in action?  It's currently setup on the [Demo
 
 For any questions or comments, please check the [FAQ](https://docs.nautobot.com/projects/chatops/en/latest/user/app_faq/) first and feel free to swing by the [Network to Code slack channel](https://networktocode.slack.com/) (channel #nautobot).
 Sign up [here](https://slack.networktocode.com/)
+
+## Acknowledgements
+
+This project includes code originally written in separate plugins, which have been merged into this project:
+- [nautobot-plugin-chatops-ansible](https://github.com/nautobot/nautobot-plugin-chatops-ansible): Thanks [@chipn](https://github.com/chipn), [@dgjustice](https://github.com/dgjustice), [@jvanderaa](https://github.com/jvanderaa), [@jeffkala](https://github.com/jeffkala), [@smk4664](https://github.com/smk4664), [@ubajze](https://github.com/ubajze)
+- [nautobot-plugin-chatops-meraki](https://github.com/nautobot/nautobot-plugin-chatops-meraki): Thanks [@qduk](https://github.com/qduk), [@jedelman8](https://github.com/jedelman8), [@jeffkala](https://github.com/jeffkala), [@whitej6](https://github.com/whitej6), [@ubajze](https://github.com/ubajze), [@ubajze](https://github.com/ubajze)
