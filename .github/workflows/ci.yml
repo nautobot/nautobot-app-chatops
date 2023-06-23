@@ -95,6 +95,7 @@ jobs:
       - name: "Linting: Pylint"
         run: |
           poetry run invoke build
+          poetry run invoke start
           poetry run invoke pylint
     needs:
       - "bandit"
