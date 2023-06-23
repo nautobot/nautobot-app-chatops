@@ -69,10 +69,10 @@ PLUGINS = ["nautobot_chatops"]
 
 If you are upgrading to the latest version of the `nautobot-chatops` app, please be aware that it now includes the functionality previously provided by the following apps:
 
-- nautobot_plugin_chatops_aci
-- nautobot_plugin_chatops_ansible
-- nautobot_plugin_chatops_panorama
-
+- `nautobot_plugin_chatops_aci`
+- `nautobot_plugin_chatops_ansible`
+- `nautobot_plugin_chatops_grafana`
+- `nautobot_plugin_chatops_panorama`
 - `nautobot_plugin_chatops_meraki`
 
 Therefore, you should **not** have these apps installed and enabled at the same time as this can lead to conflicts and unexpected behavior.

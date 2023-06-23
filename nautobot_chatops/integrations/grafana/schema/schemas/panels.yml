@@ -1,0 +1,57 @@
+---
+$schema: "http://json-schema.org/draft-07/schema#"
+$id: "schemas/panels"
+description: "Panels YAML configuration schema."
+type: "object"
+properties:
+  dashboards:
+    type: "array"
+    items:
+      type: "object"
+      required:
+        - "dashboard_slug"
+        - "dashboard_uid"
+      properties:
+        dashboard_slug:
+          type: "string"
+        dashboard_uid:
+          type: "string"
+        panels:
+          type: "array"
+          items:
+            type: "object"
+            required:
+              - "command_name"
+              - "panel_id"
+              - "friendly_name"
+            properties:
+              command_name:
+                type: "string"
+              panel_id:
+                type: "number"
+              friendly_name:
+                type: "string"
+              variables:
+                type: "array"
+                items:
+                  type: "object"
+                  required:
+                    - "name"
+                  properties:
+                    name:
+                      type: "string"
+                    query:
+                      type: "string"
+                    includeincmd:
+                      type: "boolean"
+                    includeinurl:
+                      type: "boolean"
+                    modelattr:
+                      type: "string"
+                    value:
+                      type: "string"
+                    response:
+                      type: "string"
+                    filter:
+                      type: "object"
+      additionalProperties: false
