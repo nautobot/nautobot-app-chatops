@@ -1,0 +1,38 @@
+---
+services:
+  nautobot:
+    environment:
+      GRAFANA_URL: "http://grafana:3000"
+      NAUTOBOT_CHATOPS_ENABLE_GRAFANA: "True"
+  prometheus:
+    image: "prom/prometheus:v2.34.0"
+    command: "--storage.tsdb.retention.time=1d --config.file=/etc/prometheus/prometheus.yml"
+    ports:
+      - "9090:9090"
+    volumes:
+      - "./grafana/prometheus.yml:/etc/prometheus/prometheus.yml"
+      - "prometheus_data:/prometheus"
+    tty: true
+  grafana:
+    image: "grafana/grafana:8.4.4"
+    volumes:
+      - "./grafana/dashboards:/var/lib/grafana/dashboards"
+      - "./grafana/provisioning:/etc/grafana/provisioning"
+      - "grafana_data:/var/lib/grafana"
+    ports:
+      - "3000:3000"
+    environment:
+      GF_INSTALL_PLUGINS: "grafana-piechart-panel,grafana-googlesheets-datasource,grafana-worldmap-panel,natel-discrete-panel,grafana-github-datasource,agenty-flowcharting-panel,magnesium-wordcloud-panel,novatec-sdg-panel"
+      GF_LOG_FILTERS: "rendering:debug"
+      GF_RENDERING_CALLBACK_URL: "http://grafana:3000/"
+      GF_RENDERING_SERVER_URL: "http://renderer:8081/render"
+      GF_SERVER_ENABLE_GZIP: "true"
+  renderer:
+    image: "grafana/grafana-image-renderer:3.4.2"
+    ports:
+      - "8081:8081"
+    environment:
+      ENABLE_METRICS: "true"
+volumes:
+  grafana_data: {}
+  prometheus_data: {}

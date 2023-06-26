@@ -17,6 +17,8 @@ from nautobot_chatops.views import (
     AccessGrantBulkDeleteView,
 )
 
+from nautobot_chatops.integrations.grafana.urls import urlpatterns as grafana_urlpatterns
+
 urlpatterns = [
     path("", NautobotHomeView.as_view(), name="home"),
     path("access/", AccessGrantListView.as_view(), name="accessgrant_list"),
@@ -39,4 +41,5 @@ urlpatterns = [
     path("tokens/<uuid:pk>/edit/", CommandTokenView.as_view(), name="commandtoken_edit"),
     path("tokens/add/", CommandTokenCreateView.as_view(), name="commandtoken_add"),
     path("tokens/delete/", CommandTokenBulkDeleteView.as_view(), name="commandtoken_bulk_delete"),
+    *grafana_urlpatterns,
 ]

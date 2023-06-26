@@ -3,10 +3,12 @@
 # any override will need to include these volumes to use them.
 # see:  https://github.com/docker/compose/issues/3729
 ---
-version: "3.4"
+version: "3.8"
 services:
   nautobot:
     command: "nautobot-server runserver 0.0.0.0:8080"
+    ports:
+      - "8080:8080"
     volumes:
       - "./nautobot_config.py:/opt/nautobot/nautobot_config.py"
       - "../:/source"
@@ -15,7 +17,8 @@ services:
     ports:
       - "8001:8080"
     volumes:
-      - "../:/source"
+      - "../docs:/source/docs:ro"
+      - "../mkdocs.yml:/source/mkdocs.yml:ro"
     image: "nautobot-chatops-plugin/nautobot:${NAUTOBOT_VER}-py${PYTHON_VER}"
     healthcheck:
       disable: true
@@ -24,3 +27,10 @@ services:
     volumes:
       - "./nautobot_config.py:/opt/nautobot/nautobot_config.py"
       - "../:/source"
+# To expose postgres or redis to the host uncomment the following
+# postgres:
+#   ports:
+#     - "5432:5432"
+# redis:
+#   ports:
+#     - "6379:6379"
