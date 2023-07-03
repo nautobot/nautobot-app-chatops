@@ -148,6 +148,13 @@ PLUGINS = [
 PLUGINS_CONFIG = {
     "nautobot_chatops": {
         "aci_creds": {x: os.environ[x] for x in os.environ if "APIC" in x},
+        "arista_cloudvision_cvaas_url": os.environ.get("ARISTA_CLOUDVISION_CVAAS_URL"),
+        "arista_cloudvision_cvaas_token": os.environ.get("ARISTA_CLOUDVISION_CVAAS_TOKEN"),
+        "arista_cloudvision_cvp_host": os.environ.get("ARISTA_CLOUDVISION_CVP_HOST"),
+        "arista_cloudvision_cvp_insecure": _get_bool_env("ARISTA_CLOUDVISION_CVP_INSECURE"),
+        "arista_cloudvision_cvp_password": os.environ.get("ARISTA_CLOUDVISION_CVP_PASSWORD"),
+        "arista_cloudvision_cvp_username": os.environ.get("ARISTA_CLOUDVISION_CVP_USERNAME"),
+        "arista_cloudvision_on_prem": _get_bool_env("ARISTA_CLOUDVISION_ON_PREM"),
         "enable_mattermost": _get_bool_env("NAUTOBOT_CHATOPS_ENABLE_MATTERMOST"),
         "enable_ms_teams": _get_bool_env("NAUTOBOT_CHATOPS_ENABLE_MS_TEAMS"),
         "enable_slack": _get_bool_env("NAUTOBOT_CHATOPS_ENABLE_SLACK"),
