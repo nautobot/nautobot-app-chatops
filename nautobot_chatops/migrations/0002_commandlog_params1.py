@@ -5,7 +5,6 @@ import nautobot_chatops.models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("nautobot_chatops", "0001_initial"),
     ]

@@ -20,6 +20,8 @@ from nautobot_chatops.views import (
     ChatOpsAccountLinkDeleteView,
 )
 
+from nautobot_chatops.integrations.grafana.urls import urlpatterns as grafana_urlpatterns
+
 urlpatterns = [
     path("", NautobotHomeView.as_view(), name="home"),
     path("access/", AccessGrantListView.as_view(), name="accessgrant_list"),
@@ -52,4 +54,5 @@ urlpatterns = [
         name="chatopsaccountlink_changelog",
         kwargs={"model": ChatOpsAccountLink},
     ),
+    *grafana_urlpatterns,
 ]

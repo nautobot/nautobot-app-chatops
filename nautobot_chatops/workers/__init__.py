@@ -13,8 +13,11 @@ import logging
 import shlex
 import pkg_resources
 
-from nautobot_chatops.choices import CommandStatusChoices
-from nautobot_chatops.models import CommandLog
+from django.conf import settings
+from django.db.models import Q
+
+from nautobot_chatops.choices import AccessGrantTypeChoices, CommandStatusChoices
+from nautobot_chatops.models import AccessGrant
 from nautobot_chatops.utils import create_command_log
 from nautobot_chatops.metrics import request_command_cntr, command_histogram
 
@@ -67,7 +70,15 @@ def get_commands_registry():
 
     for worker in pkg_resources.iter_entry_points("nautobot.workers"):
         # See above. However, we still should never have two command worker functions registered under the same name.
-        command_func = worker.load()
+        try:
+            command_func = worker.load()
+        except ModuleNotFoundError as exc:
+            logger.warning(
+                "Unable to load worker %s, probably due to missing extra dependenies. Exception follows:", worker.name
+            )
+            logger.exception(exc)
+            continue
+
         if (
             worker.name in _commands_registry
             and "function" in _commands_registry[worker.name]
@@ -267,6 +278,10 @@ def handle_subcommands(command, subcommand, params=(), dispatcher_class=None, co
     if subcommand == "help" or not subcommand:
         message = f"I know the following `{dispatcher.command_prefix}{command}` subcommands:\n"
         for subcmd, entry in registry[command].get("subcommands", {}).items():
+            if settings.PLUGINS_CONFIG["nautobot_chatops"].get("restrict_help") and not AccessGrant.objects.filter(
+                Q(command="*") | Q(command=command, subcommand="*") | Q(command=command, subcommand=subcmd),
+            ).filter(grant_type=AccessGrantTypeChoices.TYPE_USER).filter(Q(value="*") | Q(value=context["user_id"])):
+                continue
             message += (
                 f"- `{dispatcher.command_prefix}{command} {subcmd} "
                 f"{' '.join(f'[{param}]' for param in entry['params'])}`\t{entry['doc']}\n"
@@ -298,15 +313,14 @@ def handle_subcommands(command, subcommand, params=(), dispatcher_class=None, co
         result = registry[command]["subcommands"][subcommand]["worker"](dispatcher, *params)
         if result is not False:
             command_log.runtime = datetime.now(timezone.utc) - command_log.start_time
+            status = result
+            details = ""
             # For backward compatibility, a return value of True is considered a "success" status.
             if result is True:
                 status = CommandStatusChoices.STATUS_SUCCEEDED
                 details = ""
             elif isinstance(result, (list, tuple)):
                 status, details = result[:2]
-            else:
-                status = result
-                details = ""
 
             if status not in CommandStatusChoices.values():
                 if not details:

@@ -7,7 +7,31 @@ except ImportError:
 
 __version__ = metadata.version(__name__)
 
+from django.conf import settings
 from nautobot.extras.plugins import PluginConfig
+
+
+_CONFLICTING_APP_NAMES = [
+    # App names that conflict with nautobot_chatops
+    "nautobot_plugin_chatops_aci",
+    "nautobot_plugin_chatops_ansible",
+    "nautobot_plugin_chatops_arista_cloudvision",
+    "nautobot_plugin_chatops_grafana",
+    "nautobot_plugin_chatops_ipfabric",
+    "nautobot_plugin_chatops_meraki",
+    "nautobot_plugin_chatops_panorama",
+]
+
+
+def _check_for_conflicting_apps():
+    intersection = set(_CONFLICTING_APP_NAMES).intersection(set(settings.PLUGINS))
+    if intersection:
+        raise RuntimeError(
+            f"The following apps are installed and conflict with `nautobot-chatops`: {', '.join(intersection)}."
+        )
+
+
+_check_for_conflicting_apps()
 
 
 class NautobotChatOpsConfig(PluginConfig):
@@ -18,10 +42,15 @@ class NautobotChatOpsConfig(PluginConfig):
     version = __version__
     author = "Network to Code"
     author_email = "opensource@networktocode.com"
-    description = "A plugin providing chatops capabilities."
+    description = """
+        Nautobot App that is a multi-platform chatbot supporting Slack, MS Teams, Webex Teams,
+        and Mattermost that simplifies creating chat commands with pre-defined design patterns.
+        Includes the 'nautobot' command that simplifies fetching and updating data in Nautobot.
+    """
     base_url = "chatops"
     required_settings = []
     default_settings = {
+        "aci_creds": None,
         "enable_slack": False,
         "enable_ms_teams": False,
         "enable_webex": False,
@@ -56,10 +85,38 @@ class NautobotChatOpsConfig(PluginConfig):
         # responses.
         "send_all_messages_private": False,
         "fallback_chatops_user": "chatbot",
+        "restrict_help": False,
+        "meraki_dashboard_api_key": None,
+        "tower_uri": None,
+        "tower_username": None,
+        "tower_password": None,
+        "tower_verify_ssl": False,
+        "arista_cloudvision_cvaas_url": "www.arista.io:443",
+        "arista_cloudvision_cvaas_token": None,
+        "arista_cloudvision_cvp_host": None,
+        "arista_cloudvision_cvp_insecure": False,
+        "arista_cloudvision_cvp_password": None,
+        "arista_cloudvision_cvp_username": None,
+        "arista_cloudvision_on_prem": False,
+        "ipfabric_api_token": None,
+        "ipfabric_host": None,
+        "ipfabric_timeout": None,
+        "ipfabric_verify": False,
+        "grafana_url": None,
+        "grafana_api_key": None,
+        "grafana_default_width": 0,
+        "grafana_default_height": 0,
+        "grafana_default_theme": "dark",
+        "grafana_default_timespan": None,
+        "grafana_org_id": 1,
+        "grafana_default_tz": None,
+        "panorama_host": None,
+        "panorama_user": None,
+        "panorama_password": None,
     }
 
     max_version = "1.999"
-    min_version = "1.3.0"
+    min_version = "1.4.0"
     caching_config = {}
 
     def ready(self):

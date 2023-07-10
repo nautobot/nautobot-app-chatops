@@ -70,7 +70,8 @@ While there are sufficient ways of securing inbound API requests from the public
       - On line 34, update `socket_mode_enabled` to `true`
    - If not using Socket mode:
       - On line 12, under setting `features/slash_commands/url`, update `<your-URL>` with a publicly accessible URL to your Nautobot server. Note: The trailing `/api/plugins/...` are required.
-      - Repeat this for line 31, under setting `settings/interactivity/request_url`
+      - Repeat this for line 30, under setting `settings/request_url/request_url`
+      - Repeat this for line 35, under setting `settings/interactivity/request_url`
       - On line 34, verify `socket_mode_enabled` is set to `false`
 4. Review the summarized settings on the next window and click Create.
 5. On the General --> Basic Information page, note the `Signing Secret` near the bottom, under App Credentials. This will be needed later for setting `SLACK_SIGNING_SECRET`.

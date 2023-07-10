@@ -1,0 +1,83 @@
+{
+    "related": {
+        "jobs_graph": "/api/v2/dashboard/graphs/jobs/"
+    },
+    "inventories": {
+        "url": "/api/v2/inventories/",
+        "total": 6,
+        "total_with_inventory_source": 5,
+        "job_failed": 0,
+        "inventory_failed": 0
+    },
+    "inventory_sources": {
+        "ec2": {
+            "url": "/api/v2/inventory_sources/?source=ec2",
+            "failures_url": "/api/v2/inventory_sources/?source=ec2&status=failed",
+            "label": "Amazon EC2",
+            "total": 0,
+            "failed": 0
+        }
+    },
+    "groups": {
+        "url": "/api/v2/groups/",
+        "failures_url": "/api/v2/groups/?has_active_failures=True",
+        "total": 37,
+        "job_failed": 0,
+        "inventory_failed": 0
+    },
+    "hosts": {
+        "url": "/api/v2/hosts/",
+        "failures_url": "/api/v2/hosts/?has_active_failures=True",
+        "total": 72,
+        "failed": 0
+    },
+    "projects": {
+        "url": "/api/v2/projects/",
+        "failures_url": "/api/v2/projects/?last_job_failed=True",
+        "total": 11,
+        "failed": 1
+    },
+    "scm_types": {
+        "git": {
+            "url": "/api/v2/projects/?scm_type=git",
+            "label": "Git",
+            "failures_url": "/api/v2/projects/?scm_type=git&last_job_failed=True",
+            "total": 11,
+            "failed": 1
+        },
+        "svn": {
+            "url": "/api/v2/projects/?scm_type=svn",
+            "label": "Subversion",
+            "failures_url": "/api/v2/projects/?scm_type=svn&last_job_failed=True",
+            "total": 0,
+            "failed": 0
+        },
+        "hg": {
+            "url": "/api/v2/projects/?scm_type=hg",
+            "label": "Mercurial",
+            "failures_url": "/api/v2/projects/?scm_type=hg&last_job_failed=True",
+            "total": 0,
+            "failed": 0
+        }
+    },
+    "users": {
+        "url": "/api/v2/users/",
+        "total": 10
+    },
+    "organizations": {
+        "url": "/api/v2/organizations/",
+        "total": 1
+    },
+    "teams": {
+        "url": "/api/v2/teams/",
+        "total": 0
+    },
+    "credentials": {
+        "url": "/api/v2/credentials/",
+        "total": 17
+    },
+    "job_templates": {
+        "url": "/api/v2/job_templates/",
+        "total": 24
+    }
+}

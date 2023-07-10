@@ -1,0 +1,121 @@
+# jsonschema: schemas/panels
+---
+dashboards:
+  - dashboard_slug: "netbox-application-metrics"
+    dashboard_uid: "CS1NJwSGk"
+    panels:
+      - command_name: "netbox-demo"
+        panel_id: 15
+        friendly_name: "Demo NetBox Queries"
+        variables:
+          - name: "region"
+            query: "Region"
+            includeincmd: false
+            includeinurl: true
+            modelattr: "slug"
+            value: "{{ region.slug }}"
+            response: "tennessee"
+          - name: "site"
+            query: "Site"
+            modelattr: "name"
+            friendly_name: "Site Name"
+            value: "{{ site.slug }}"
+            filter:
+              region: "{{ region.id }}"
+          - name: "device"
+            query: "Device"
+            friendly_name: "Device Name"
+            modelattr: "name"
+            value: "{{ device.name }}"
+            filter:
+              site: "{{ site.id }}"
+          - name: "serial"
+            includeincmd: false
+            includeinurl: true
+            value: "{{ device.serial }}"
+  - dashboard_slug: "network-automation-dashboard"
+    dashboard_uid: "J6m5WATWz"
+    panels:
+      - command_name: "top-hosts"
+        panel_id: 8
+        friendly_name: "Network Automation Top Hosts"
+        variables:
+          - name: "Playbook"
+            includeincmd: false
+            includeinurl: true
+            response: "All"
+          - name: "Site"
+            includeincmd: false
+            includeinurl: true
+            response: "All"
+          - name: "Stage"
+            includeincmd: false
+            includeinurl: true
+            response: "All"
+          - name: "Device"
+            includeincmd: false
+            includeinurl: true
+            response: "All"
+      - command_name: "top-hosts-by-site"
+        panel_id: 8
+        friendly_name: "Network Automation Top Hosts"
+        variables:
+          - name: "Playbook"
+            includeincmd: false
+            includeinurl: true
+            response: "All"
+          - name: "Site"
+            query: "Site"
+            modelattr: "slug"
+            friendly_name: "Site Name"
+            value: "{{ Site.slug }}"
+          - name: "Stage"
+            includeincmd: false
+            includeinurl: true
+            response: "All"
+          - name: "Device"
+            includeincmd: false
+            includeinurl: true
+            response: "All"
+  - dashboard_slug: "configuration-compliance"
+    dashboard_uid: "YnmtZNjWz"
+    panels:
+      - command_name: "config-compliance-map"
+        panel_id: 8
+        friendly_name: "Configuration Compliance Map"
+      - command_name: "config-compliance"
+        panel_id: 10
+        friendly_name: "Configuration Compliance Map"
+  - dashboard_slug: "a-django-prometheus"
+    dashboard_uid: "y1s1P8g7z"
+    panels:
+      - command_name: "total-requests"
+        friendly_name: "Total Requests"
+        panel_id: 13
+      - command_name: "2xx-responses"
+        friendly_name: "2XX Responses"
+        panel_id: 15
+      - command_name: "4xx-responses"
+        friendly_name: "4XX Responses"
+        panel_id: 16
+      - command_name: "5xx-responses"
+        friendly_name: "5XX Responses"
+        panel_id: 17
+      - command_name: "requests"
+        friendly_name: "Requests"
+        panel_id: 2
+      - command_name: "request-latency"
+        friendly_name: "Request Latency"
+        panel_id: 4
+      - command_name: "responses"
+        friendly_name: "Responses"
+        panel_id: 7
+      - command_name: "response-status"
+        friendly_name: "Response Status"
+        panel_id: 11
+      - command_name: "database-ops"
+        friendly_name: "Database Ops"
+        panel_id: 9
+      - command_name: "models-stats"
+        friendly_name: "Models stats"
+        panel_id: 18

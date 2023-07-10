@@ -138,7 +138,7 @@ class Driver:
             data = json.dumps(data)
 
         mm_response = requests.post(
-            self._url + endpoint, headers=self._headers, params=params, data=data, files=multipart_formdata
+            self._url + endpoint, headers=self._headers, params=params, data=data, files=multipart_formdata, timeout=15
         )
         mm_response.raise_for_status()
 
@@ -156,7 +156,7 @@ class Driver:
         Returns:
             dict: Response from Mattermost API. Unless raw, which returns the string.
         """
-        mm_response = requests.get(self._url + endpoint, headers=self._headers, params=params)
+        mm_response = requests.get(self._url + endpoint, headers=self._headers, params=params, timeout=15)
         mm_response.raise_for_status()
         if raw:
             return mm_response
@@ -170,7 +170,7 @@ class Driver:
         Args:
             endpoint (string): Endpoint to post delete to.
         """
-        mm_response = requests.delete(self._url + endpoint, headers=self._headers)
+        mm_response = requests.delete(self._url + endpoint, headers=self._headers, timeout=15)
         mm_response.raise_for_status()
 
     def chat_post_message(self, channel_id, message=None, blocks=None, files=None, snippet=None):

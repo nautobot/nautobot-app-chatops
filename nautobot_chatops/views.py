@@ -124,6 +124,12 @@ class AccessGrantListView(PermissionRequiredMixin, generic.ObjectListView):
     table = AccessGrantTable
     template_name = "nautobot/access_grant_list.html"
 
+    def extra_context(self):
+        """Add extra context for Access Grant List View."""
+        return {
+            "title": "Nautobot Access Grants",
+        }
+
 
 class AccessGrantCreateView(PermissionRequiredMixin, generic.ObjectEditView):
     """View for creating a new AccessGrant."""
@@ -163,6 +169,12 @@ class CommandTokenListView(PermissionRequiredMixin, generic.ObjectListView):
     filterset_form = CommandTokenFilterForm
     table = CommandTokenTable
     template_name = "nautobot/command_token_list.html"
+
+    def extra_context(self):
+        """Add extra context for Command Token List View."""
+        return {
+            "title": "Nautobot Command Tokens",
+        }
 
 
 class CommandTokenCreateView(PermissionRequiredMixin, generic.ObjectEditView):

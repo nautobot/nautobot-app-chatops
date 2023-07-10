@@ -10,6 +10,10 @@ from nautobot.core.models import BaseModel
 
 from .choices import AccessGrantTypeChoices, CommandStatusChoices, CommandTokenPlatformChoices, PlatformChoices
 
+from .integrations.grafana.models import Dashboard as GrafanaDashboard
+from .integrations.grafana.models import Panel as GrafanaPanel
+from .integrations.grafana.models import PanelVariable as GrafanaPanelVariable
+
 from .constants import (
     COMMAND_LOG_USER_NAME_HELP_TEXT,
     COMMAND_LOG_USER_ID_HELP_TEXT,
@@ -167,3 +171,14 @@ class ChatOpsAccountLink(BaseModel, ChangeLoggedModel):
             ["user_id", "platform"]
         ]
         verbose_name = "ChatOps Account Link"
+
+
+__all__ = (
+    "ChatOpsAccountLink"
+    "CommandLog",
+    "AccessGrant",
+    "CommandToken",
+    "GrafanaDashboard",
+    "GrafanaPanel",
+    "GrafanaPanelVariable",
+)
