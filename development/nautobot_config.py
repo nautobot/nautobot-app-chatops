@@ -1,13 +1,17 @@
-"""Nautobot configuration."""
+"""Nautobot development configuration file."""
 import os
 import sys
 
 from nautobot.core.settings import *  # noqa: F401,F403 pylint: disable=wildcard-import,unused-wildcard-import
 from nautobot.core.settings_funcs import is_truthy, parse_redis_connection
 
+#
+# Misc. settings
+#
 
 ALLOWED_HOSTS = os.getenv("NAUTOBOT_ALLOWED_HOSTS", "").split(" ")
 SECRET_KEY = os.getenv("NAUTOBOT_SECRET_KEY", "")
+
 
 nautobot_db_engine = os.getenv("NAUTOBOT_DB_ENGINE", "django.db.backends.postgresql")
 default_db_settings = {
@@ -31,6 +35,10 @@ DATABASES = {
         "ENGINE": nautobot_db_engine,
     }
 }
+
+# Ensure proper Unicode handling for MySQL
+if DATABASES["default"]["ENGINE"] == "django.db.backends.mysql":
+    DATABASES["default"]["OPTIONS"] = {"charset": "utf8mb4"}
 
 #
 # Debug
@@ -116,6 +124,11 @@ CACHES = {
 # Redis Cacheops
 CACHEOPS_REDIS = parse_redis_connection(redis_database=1)
 
+#
+# Celery settings are not defined here because they can be overloaded with
+# environment variables. By default they use `CACHES["default"]["LOCATION"]`.
+#
+
 # Enable installed plugins. Add the name of each plugin to the list.
 PLUGINS = [
     "nautobot_capacity_metrics",
@@ -126,7 +139,7 @@ PLUGINS = [
 # Each key in the dictionary is the name of an installed plugin and its value is a dictionary of settings.
 PLUGINS_CONFIG = {
     "nautobot_chatops": {
-        # = Common settings ==================
+        # = Common Settings ==================
         "restrict_help": is_truthy(os.getenv("NAUTOBOT_CHATOPS_RESTRICT_HELP")),
         # TODO: Add following settings
         # | `delete_input_on_submission` | Removes the input prompt from the chat history after user input | No | `False` |
@@ -162,6 +175,15 @@ PLUGINS_CONFIG = {
         "tower_uri": os.getenv("NAUTOBOT_TOWER_URI"),
         "tower_username": os.getenv("NAUTOBOT_TOWER_USERNAME"),
         "tower_verify_ssl": is_truthy(os.getenv("NAUTOBOT_TOWER_VERIFY_SSL", True)),
+        # - Arista CloudVision ---------------
+        "enable_arista_cloudvision": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_ARISTA_CLOUDVISION")),
+        "arista_cloudvision_cvaas_url": os.environ.get("ARISTA_CLOUDVISION_CVAAS_URL"),
+        "arista_cloudvision_cvaas_token": os.environ.get("ARISTA_CLOUDVISION_CVAAS_TOKEN"),
+        "arista_cloudvision_cvp_host": os.environ.get("ARISTA_CLOUDVISION_CVP_HOST"),
+        "arista_cloudvision_cvp_insecure": is_truthy(os.environ.get("ARISTA_CLOUDVISION_CVP_INSECURE")),
+        "arista_cloudvision_cvp_password": os.environ.get("ARISTA_CLOUDVISION_CVP_PASSWORD"),
+        "arista_cloudvision_cvp_username": os.environ.get("ARISTA_CLOUDVISION_CVP_USERNAME"),
+        "arista_cloudvision_on_prem": is_truthy(os.environ.get("ARISTA_CLOUDVISION_ON_PREM")),
         # - Grafana --------------------------
         "enable_grafana": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_GRAFANA")),
         "grafana_url": os.environ.get("GRAFANA_URL", ""),
@@ -172,6 +194,12 @@ PLUGINS_CONFIG = {
         "grafana_default_timespan": "0",
         "grafana_org_id": 1,
         "grafana_default_tz": "America/Denver",
+        # - IPFabric --------------------------
+        "enable_ipfabric": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_IPFABRIC")),
+        "ipfabric_api_token": os.environ.get("IPFABRIC_API_TOKEN"),
+        "ipfabric_host": os.environ.get("IPFABRIC_HOST"),
+        "ipfabric_timeout": os.environ.get("IPFABRIC_TIMEOUT", 15),
+        "ipfabric_verify": is_truthy(os.environ.get("IPFABRIC_VERIFY", True)),
         # - Cisco Meraki ---------------------
         "enable_meraki": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_MERAKI")),
         "meraki_dashboard_api_key": os.environ.get("MERAKI_API_KEY"),

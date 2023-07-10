@@ -31,6 +31,8 @@ Conflicting Apps list:
 
 - `nautobot_plugin_chatops_aci`
 - `nautobot_plugin_chatops_ansible`
+- `nautobot_plugin_chatops_arista_cloudvision`
+- `nautobot_plugin_chatops_ipfabric`
 - `nautobot_plugin_chatops_grafana`
 - `nautobot_plugin_chatops_meraki`
 - `nautobot_plugin_chatops_panorama`

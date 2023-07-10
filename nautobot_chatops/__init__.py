@@ -15,7 +15,9 @@ _CONFLICTING_APP_NAMES = [
     # App names that conflict with nautobot_chatops
     "nautobot_plugin_chatops_aci",
     "nautobot_plugin_chatops_ansible",
+    "nautobot_plugin_chatops_arista_cloudvision",
     "nautobot_plugin_chatops_grafana",
+    "nautobot_plugin_chatops_ipfabric",
     "nautobot_plugin_chatops_meraki",
     "nautobot_plugin_chatops_panorama",
 ]
@@ -48,7 +50,7 @@ class NautobotChatOpsConfig(PluginConfig):
     base_url = "chatops"
     required_settings = []
     default_settings = {
-        # = ChatOps ==========================
+        # = Common Settings ==================
         # Should menus, text input fields, etc. be deleted from the chat history after the user makes a selection?
         "delete_input_on_submission": False,
         "restrict_help": False,
@@ -95,6 +97,15 @@ class NautobotChatOpsConfig(PluginConfig):
         "tower_uri": "",
         "tower_username": "",
         "tower_verify_ssl": True,
+        # - Arista CloudVision ---------------
+        "enable_arista_cloudvision": False,
+        "arista_cloudvision_cvaas_url": "www.arista.io:443",
+        "arista_cloudvision_cvaas_token": None,
+        "arista_cloudvision_cvp_host": None,
+        "arista_cloudvision_cvp_insecure": False,
+        "arista_cloudvision_cvp_password": None,
+        "arista_cloudvision_cvp_username": None,
+        "arista_cloudvision_on_prem": False,
         # - Grafana --------------------------
         "enable_grafana": False,
         "grafana_url": None,
@@ -105,6 +116,12 @@ class NautobotChatOpsConfig(PluginConfig):
         "grafana_default_timespan": None,
         "grafana_org_id": 1,
         "grafana_default_tz": None,
+        # - IPFabric ---------------------
+        "enable_ipfabric": False,
+        "ipfabric_api_token": None,
+        "ipfabric_host": None,
+        "ipfabric_timeout": None,
+        "ipfabric_verify": False,
         # - Cisco Meraki ---------------------
         "enable_meraki": False,
         "meraki_dashboard_api_key": "",
