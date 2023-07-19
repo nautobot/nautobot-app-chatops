@@ -24,7 +24,7 @@ Using **Invoke** these configuration options can be overridden using [several me
 
 ### Docker Development Environment
 
-!!! TIP
+!!! tip
     This is the recommended option for development.
 
 This project is managed by [Python Poetry](https://python-poetry.org/) and has a few requirements to setup your development environment:
@@ -48,13 +48,13 @@ There are the following local endpoints available:
 - [Live documentation](http://localhost:8001)
 - [Mattermost server](http://localhost:8065)
 
-!!! NOTE
+!!! note
     Before using Mattermost with Nautobot, run the following command after Nautobot starts up:
     ```
     invoke bootstrap-mattermost
     ```
 
-!!! NOTE
+!!! note
     Default username / password for Mattermost is the same as for Nautobot: **admin / admin**
 
 To either stop or destroy the development environment use the following options.
@@ -85,7 +85,7 @@ invoke start && sleep 5
 nautobot-server migrate
 ```
 
-!!! NOTE
+!!! note
     If you want to develop on the latest develop branch of Nautobot, run the following command: `poetry add --optional git+https://github.com/nautobot/nautobot@develop`. After the `@` symbol must match either a branch or a tag.
 
 You can now run `nautobot-server` commands as you would from the [Nautobot documentation](https://nautobot.readthedocs.io/en/latest/) for example to start the development server:
@@ -114,7 +114,7 @@ The project features a CLI helper based on [Invoke](https://www.pyinvoke.org/) t
 
 Each command can be executed with `invoke <command>`. All commands support the arguments `--nautobot-ver` and `--python-ver` if you want to manually define the version of Python and Nautobot to use. Each command also has its own help `invoke <command> --help`
 
-!!! NOTE
+!!! note
     To run the MySQL (MariaDB) development environment, set the environment variable as such `export NAUTOBOT_USE_MYSQL=1`.
 
 #### Local Development Environment
@@ -155,7 +155,7 @@ This project provides the ability to develop and manage the Nautobot server loca
 
 The upside to having the Nautobot service handled by Docker rather than locally is that you do not have to manage the Nautobot server. The [Docker logs](#docker-logs) provide the majority of the information you will need to help troubleshoot, while getting started quickly and not requiring you to perform several manual steps and remembering to have the Nautobot server running in a separate terminal while you develop.
 
-!!! NOTE
+!!! note
 	The local environment still uses Docker containers for the supporting services (Postgres, Redis, and RQ Worker), but the Nautobot server is handled locally by you, the developer.
 
 Follow the directions below for the specific development environment that you choose.
@@ -243,19 +243,19 @@ Once the containers are fully up, you should be able to open up a web browser, a
 - [Live documentation](http://localhost:8001)
 - [Mattermost server](http://localhost:8065)
 
-!!! NOTE
+!!! note
 	Sometimes the containers take a minute to fully spin up. If the page doesn't load right away, wait a minute and try again. To see logs you can run:
     ```shell
     invoke logs --follow`
     ```
 
-!!! NOTE
+!!! note
     Before using Mattermost with Nautobot, run the following command after Nautobot starts up:
     ```
     invoke bootstrap-mattermost
     ```
 
-!!! NOTE
+!!! note
     Default username / password for Mattermost is the same as for Nautobot: **admin / admin**
 
 ### Invoke - Creating a Superuser
@@ -266,7 +266,7 @@ The Nautobot development image will automatically provision a super user when sp
 - `NAUTOBOT_SUPERUSER_API_TOKEN=0123456789abcdef0123456789abcdef01234567`
 - `NAUTOBOT_SUPERUSER_PASSWORD=admin`
 
-!!! NOTE
+!!! note
 	The default username is **admin**, but can be overridden by specifying **NAUTOBOT_SUPERUSER_USERNAME**.
 
 If you need to create additional superusers, run the follow commands.
@@ -316,7 +316,7 @@ Removing network nautobot_chatops_default
 
 This will safely shut down all of your running Docker containers for this project. When you are ready to spin containers back up, it is as simple as running `invoke start` again [as seen previously](#invoke-starting-the-development-environment).
 
-!!! WARNING
+!!! warning
 	If you're wanting to reset the database and configuration settings, you can use the `invoke destroy` command, but **you will lose any data stored in those containers**, so make sure that is what you want to do.
 
 ### Real-Time Updates? How Cool!
@@ -327,12 +327,12 @@ Now you can start developing your plugin in the project folder!
 
 The magic here is the root directory is mounted inside your Docker containers when built and ran, so **any** changes made to the files in here are directly updated to the Nautobot plugin code running in Docker. This means that as you modify the code in your plugin folder, the changes will be instantly updated in Nautobot.
 
-!!! WARNING
+!!! warning
 	There are a few exceptions to this, as outlined in the section [To Rebuild or Not To Rebuild](#to-rebuild-or-not-to-rebuild).
 
 The back-end Django process is setup to automatically reload itself (it only takes a couple of seconds) every time a file is updated (saved). So for example, if you were to update one of the files like `tables.py`, then save it, the changes will be visible right away in the web browser!
 
-!!! NOTE
+!!! note
 	You may get connection refused while Django reloads, but it should be refreshed fairly quickly.
 
 ### Docker Logs
@@ -343,7 +343,7 @@ When trying to debug an issue, one helpful thing you can look at are the logs wi
 ➜ docker logs <name of container> -f
 ```
 
-!!! NOTE
+!!! note
 	The `-f` tag will keep the logs open, and output them in realtime as they are generated.
 
 So for example, our plugin is named `nautobot-chatops`, the command would most likely be `docker logs nautobot_chatops_nautobot_1 -f`. You can find the name of all running containers via `docker ps`.
@@ -408,7 +408,7 @@ Before you continue, you'll need to update the file `development/nautobot_config
 
 Once the containers are up and running, you should now see the new plugin installed in your Nautobot instance.
 
-!!! NOTE
+!!! note
     You can even launch an `ngrok` service locally on your laptop, pointing to port 8080 (such as for chatops development), and it will point traffic directly to your Docker images.
 
 ### Updating Python Version

@@ -33,10 +33,11 @@ Interact with Nautobot by utilizing the following sub-commands:
 | `get-rack` | `[site-slug]` `[rack-id]` | Get information about a specific rack from Nautobot. |
 | `get-vlans` | `[filter-type]` `[filter-value-1]` | Return a filtered list of VLANs based on filter type and/or `filter_value_1`. |
 
-!!! NOTE
+!!! note
     All sub-commands are intended to be used with the `nautobot` prefix. For example, to retrieve a filtered list of VLANs, use the command `/nautobot get-vlans`.
 
-{%
-    include-markdown './aci_commands.md'
-    heading-offset=1
-%}
+### Integrations Commands
+
+The `nautobot-chatops` package includes multiple integrations. Each integration adds chat commands described here:
+
+- [Cisco ACI](./aci_commands.md)

@@ -24,7 +24,7 @@ Ensure the following before beginning the installation:
 
 ### Potential Apps Conflicts
 
-!!! WARNING
+!!! warning
     If upgrading from `1.x` version to `2.x` version of `nautobot-chatops` App, note that it now incorporates features previously provided by individual apps.
 
 Conflicting Apps list:
@@ -45,7 +45,7 @@ To prevent conflicts during `nautobot-chatops` upgrade:
 
 These steps will help prevent issues during `nautobot-chatops` upgrades. Always back up your data and thoroughly test your configuration after these changes.
 
-!!! WARNING
+!!! warning
     If conflicting Apps remain in `PLUGINS`, the `nautobot-chatops` App will raise an exception during startup to prevent potential conflicts.
 
 ## Chat Platforms Configuration
@@ -61,10 +61,10 @@ Set up your chosen chat platform:
 
 ## Installation Guide
 
-!!! NOTE
+!!! note
     Install the App manually or via Python's `pip`. For detailed information, visit the [Nautobot documentation](https://nautobot.readthedocs.io/en/latest/plugins/#install-the-package). The pip package for this App is [`nautobot-chatops`](https://pypi.org/project/nautobot-chatops/).
 
-!!! WARNING
+!!! warning
     Follow the [Nautobot App Installation Instructions](https://nautobot.readthedocs.io/en/stable/plugins/#installing-plugins) for complete and most recent guidelines.
 
 The App is a Python package available on PyPI, installable with `pip`:
