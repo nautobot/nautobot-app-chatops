@@ -4823,7 +4823,7 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 aci = ["prettytable"]
 all = ["PyYAML", "certifi", "cloudvision", "cvprac", "defusedxml", "diffsync", "ipaddr", "ipfabric", "ipfabric-diagrams", "isodate", "meraki", "netmiko", "netutils", "pan-os-python", "prettytable", "protobuf", "pydantic", "schema-enforcer", "termcolor"]
 ansible = ["PyYAML"]
-arista-cloudvision = ["certifi", "cloudvision", "cvprac", "protobuf"]
+aristacv = ["certifi", "cloudvision", "cvprac", "protobuf"]
 grafana = ["diffsync", "isodate", "pydantic", "schema-enforcer", "termcolor"]
 ipfabric = ["ipfabric", "ipfabric-diagrams", "netutils"]
 meraki = ["meraki"]
@@ -4832,4 +4832,4 @@ panorama = ["defusedxml", "ipaddr", "netmiko", "netutils", "pan-os-python"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.7.2"
-content-hash = "f0569c34e3f73f8517b7d97fed2c7e58a19089032585f3658707528b17a7fa52"
+content-hash = "00f94a241b1810fa3537f981cdb20eb000f094a3f20e00455706cac9d17e5304"

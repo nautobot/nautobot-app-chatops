@@ -19,7 +19,7 @@ def _get_config() -> dict:
     plugin_settings = settings.PLUGINS_CONFIG["nautobot_chatops"]
 
     def get(name):
-        return plugin_settings.get(f"arista_cloudvision_{name}", None)
+        return plugin_settings.get(f"aristacv_{name}", None)
 
     return {
         "cvaas_url": get("cvaas_url"),

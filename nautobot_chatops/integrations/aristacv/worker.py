@@ -50,14 +50,14 @@ def check_credentials(dispatcher):
     if CONFIG["on_prem"]:
         if not CONFIG.get("cvp_username") and not CONFIG.get("cvp_password") and not CONFIG.get("cvp_host"):
             dispatcher.send_warning(
-                "Please ensure environment variables ARISTA_CLOUDVISION_CVP_USERNAME, ARISTA_CLOUDVISION_CVP_PASSWORD "
-                "and ARISTA_CLOUDVISION_CVP_URL are set and your nautobot config file is updated."
+                "Please ensure environment variables ARISTACV_CVP_USERNAME, ARISTACV_CVP_PASSWORD "
+                "and ARISTACV_CVP_URL are set and your nautobot config file is updated."
             )
             return False
     else:
         if not CONFIG.get("cvaas_token"):
             dispatcher.send_warning(
-                "Please ensure environment variable ARISTA_CLOUDVISION_CVAAS_TOKEN "
+                "Please ensure environment variable ARISTACV_CVAAS_TOKEN "
                 "is set and your nautobot config file is updated."
             )
             return False

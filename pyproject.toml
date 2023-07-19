@@ -19,7 +19,7 @@ include = [
 "aci" = "nautobot_chatops.integrations.aci.worker:aci"
 "ansible" = "nautobot_chatops.integrations.ansible.worker:ansible"
 "clear" = "nautobot_chatops.workers.clear:clear"
-"cloudvision" = "nautobot_chatops.integrations.arista_cloudvision.worker:cloudvision"
+"cloudvision" = "nautobot_chatops.integrations.aristacv.worker:cloudvision"
 "grafana" = "nautobot_chatops.integrations.grafana.worker:grafana"
 "ipfabric" = "nautobot_chatops.integrations.ipfabric.worker:ipfabric"
 "meraki" = "nautobot_chatops.integrations.meraki.worker:cisco_meraki"
@@ -111,7 +111,7 @@ all = [
 aci = [
     "prettytable",
 ]
-arista_cloudvision = [
+aristacv = [
     "certifi",
     "cloudvision",
     "cvprac",
