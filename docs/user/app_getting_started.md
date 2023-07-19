@@ -41,3 +41,9 @@ Interact with Nautobot by utilizing the following sub-commands:
 The `nautobot-chatops` package includes multiple integrations. Each integration adds chat commands described here:
 
 - [Cisco ACI](./aci_commands.md)
+- [AWX / Ansible Tower](./ansible_commands.md)
+- [Arista CloudVision](./aristacv_commands.md)
+- [Grafana](./grafana_commands.md)
+- [IPFabric](./ipfabric_commands.md)
+- [Cisco Meraki](./meraki_commands.md)
+- [Palo Alto Panorama](./panorama_commands.md)

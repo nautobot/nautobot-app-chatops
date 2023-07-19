@@ -134,5 +134,8 @@ Set up integrations using the specific guides:
 
 - [Cisco ACI](./aci_setup.md)
 - [AWX / Ansible Tower](./ansible_setup.md)
+- [Arista CloudVision](./aristacv_setup.md)
+- [Grafana](./grafana_setup.md)
+- [IPFabric](./ipfabric_setup.md)
 - [Cisco Meraki](./meraki_setup.md)
 - [Palo Alto Panorama](./panorama_setup.md)

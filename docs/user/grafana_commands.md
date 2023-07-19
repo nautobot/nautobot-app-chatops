@@ -1,8 +1,11 @@
-# Cisco ACI Chat Commands
+# Grafana Chat Commands
 
-## `/aci` Command
+## `/grafana` Command
 
-Interact with Cisco ACI by utilizing the following sub-commands:
+Interact with Grafana by utilizing the following sub-commands:
+
+R: The output should be only the the table similar to the following one, replaced with commands defined later.
+R: Ommit the `dispatcher` arg.
 
 | Command | Arguments | Description |
 | ------- | --------- | ----------- |
@@ -19,22 +22,8 @@ Interact with Cisco ACI by utilizing the following sub-commands:
 | `register-node` | `[APIC]` `[serial-nbr]` `[node-id]` `[name]` | Register a new fabric node. |
 
 !!! note
-    All sub-commands are intended to be used with the `/aci` prefix. For example, to display tenants configured in Cisco ACI, use the command `/aci get-tenants`.
+    All sub-commands are intended to be used with the `/grafana` prefix.
 
 ## Screenshots
 
-### Slack
-
-![image](../images/aci-slack-get-tenants.png)
-
-![image](../images/aci-slack-get-epg-details.png)
-  
-![image](../images/aci-slack-get-bds.png)
-
-### Cisco Webex
-
-![image](../images/aci-slack-get-tenants.png)
-
-![image](../images/aci-slack-get-epg-details.png)
-  
-![image](../images/aci-slack-get-bds.png)
+TBD

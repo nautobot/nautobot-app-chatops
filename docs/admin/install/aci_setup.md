@@ -79,20 +79,20 @@ When executing chat commands, you will be presented with a selection dialog cont
 - Fix `nautobot_config.py` by removing `nautobot_plugin_chatops_aci` from `PLUGINS` and merging App configuration into `nautobot_chatops`:
     ```python
     PLUGINS = [
-      "nautobot_chatops",
-      # "nautobot_plugin_chatops_aci"  # REMOVE THIS LINE
+        "nautobot_chatops",
+        # "nautobot_plugin_chatops_aci"  # REMOVE THIS LINE
     ]
 
     PLUGINS_CONFIG = {
-      # "nautobot_plugin_chatops_aci": {  REMOVE THIS APP CONFIGURATION
-      #     "aci_creds": ...  # MOVE THIS LINE TO `nautobot_chatops` SECTION
-      # }
-      "nautobot_chatops": {
-          # Enable Cisco ACI integration
-          "enable_aci": True,
-          # Following line is moved from `nautobot_plugin_chatops_aci`
-          "aci_creds": {x: os.environ[x] for x in os.environ if "APIC" in x},
-      }
+        # "nautobot_plugin_chatops_aci": {  REMOVE THIS APP CONFIGURATION
+        #     "aci_creds": ...  # MOVE THIS LINE TO `nautobot_chatops` SECTION
+        # }
+        "nautobot_chatops": {
+            # Enable Cisco ACI integration
+            "enable_aci": True,
+            # Following line is moved from `nautobot_plugin_chatops_aci`
+            "aci_creds": {x: os.environ[x] for x in os.environ if "APIC" in x},
+        }
     }
     ```
 
