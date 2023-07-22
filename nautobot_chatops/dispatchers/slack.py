@@ -152,12 +152,14 @@ class SlackDispatcher(Dispatcher):
                     channel=self.context.get("channel_id"),
                     user=self.context.get("user_id"),
                     text=message,
+                    thread_ts=self.context.get("thread_ts"),
                 )
             else:
                 self.slack_client.chat_postMessage(
                     channel=self.context.get("channel_id"),
                     user=self.context.get("user_id"),
                     text=message,
+                    thread_ts=self.context.get("thread_ts"),
                 )
         except SlackClientError as slack_error:
             self.send_exception(slack_error)
@@ -195,9 +197,7 @@ class SlackDispatcher(Dispatcher):
                         "blocks": blocks,
                         # Embed the current channel information into to the modal as modals don't store this otherwise
                         "private_metadata": json.dumps(
-                            {
-                                "channel_id": self.context.get("channel_id"),
-                            }
+                            {"channel_id": self.context.get("channel_id"), "thread_ts": self.context.get("thread_ts")}
                         ),
                         "callback_id": callback_id,
                     },
@@ -207,12 +207,14 @@ class SlackDispatcher(Dispatcher):
                     channel=self.context.get("channel_id"),
                     user=self.context.get("user_id"),
                     blocks=blocks,
+                    thread_ts=self.context.get("thread_ts"),
                 )
             else:
                 self.slack_client.chat_postMessage(
                     channel=self.context.get("channel_id"),
                     user=self.context.get("user_id"),
                     blocks=blocks,
+                    thread_ts=self.context.get("thread_ts"),
                 )
         except SlackClientError as slack_error:
             self.send_exception(slack_error)
@@ -235,9 +237,14 @@ class SlackDispatcher(Dispatcher):
                 message_list = self.split_message(text, SLACK_PRIVATE_MESSAGE_LIMIT)
                 for msg in message_list:
                     # Send the blocks as a list, this needs to be the case for Slack to send appropriately.
-                    self.send_blocks([self.markdown_block(f"```\n{msg}\n```")], ephemeral=ephemeral)
+                    self.send_blocks(
+                        [self.markdown_block(f"```\n{msg}\n```")],
+                        ephemeral=ephemeral,
+                    )
             else:
-                self.slack_client.files_upload(channels=channels, content=text, title=title)
+                self.slack_client.files_upload(
+                    channels=channels, content=text, title=title, thread_ts=self.context.get("thread_ts")
+                )
         except SlackClientError as slack_error:
             self.send_exception(slack_error)
 
@@ -263,7 +270,7 @@ class SlackDispatcher(Dispatcher):
             channels = [self.context.get("channel_id")]
         channels = ",".join(channels)
         logger.info("Sending image %s to %s", image_path, channels)
-        self.slack_client.files_upload(channels=channels, file=image_path)
+        self.slack_client.files_upload(channels=channels, file=image_path, thread_ts=self.context.get("thread_ts"))
 
     def send_warning(self, message):
         """Send a warning message to the user/channel specified by the context."""

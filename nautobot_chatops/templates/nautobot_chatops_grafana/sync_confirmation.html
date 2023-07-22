@@ -1,0 +1,9 @@
+{% extends 'utilities/confirmation_form.html' %}
+{% load form_helpers %}
+
+{% block title %}Synchronize Data?{% endblock %}
+
+{% block message %}
+<p>Are you sure you want to run a synchronization with Grafana?</p>
+<p><strong>Note:</strong> this may overwrite local commands with data from the <a href="{{ grafana_url }}/dashboards" target="_blank">Grafana Dashboards</a>.</p>
+{% endblock %}

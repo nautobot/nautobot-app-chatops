@@ -1,0 +1,632 @@
+{
+    "count": 5,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 68,
+            "type": "job",
+            "url": "/api/v2/jobs/68/",
+            "related": {
+                "created_by": "/api/v2/users/1/",
+                "labels": "/api/v2/jobs/68/labels/",
+                "inventory": "/api/v2/inventories/2/",
+                "project": "/api/v2/projects/8/",
+                "organization": "/api/v2/organizations/1/",
+                "credentials": "/api/v2/jobs/68/credentials/",
+                "unified_job_template": "/api/v2/job_templates/12/",
+                "stdout": "/api/v2/jobs/68/stdout/",
+                "job_events": "/api/v2/jobs/68/job_events/",
+                "job_host_summaries": "/api/v2/jobs/68/job_host_summaries/",
+                "activity_stream": "/api/v2/jobs/68/activity_stream/",
+                "notifications": "/api/v2/jobs/68/notifications/",
+                "create_schedule": "/api/v2/jobs/68/create_schedule/",
+                "job_template": "/api/v2/job_templates/12/",
+                "cancel": "/api/v2/jobs/68/cancel/",
+                "relaunch": "/api/v2/jobs/68/relaunch/"
+            },
+            "summary_fields": {
+                "organization": {
+                    "id": 1,
+                    "name": "Default",
+                    "description": ""
+                },
+                "inventory": {
+                    "id": 2,
+                    "name": "Nautobot Inventory",
+                    "description": "",
+                    "has_active_failures": true,
+                    "total_hosts": 7,
+                    "hosts_with_active_failures": 1,
+                    "total_groups": 0,
+                    "has_inventory_sources": true,
+                    "total_inventory_sources": 1,
+                    "inventory_sources_with_failures": 0,
+                    "organization_id": 1,
+                    "kind": ""
+                },
+                "project": {
+                    "id": 8,
+                    "name": "GitHub",
+                    "description": "",
+                    "status": "successful",
+                    "scm_type": "git"
+                },
+                "job_template": {
+                    "id": 12,
+                    "name": "Run Test",
+                    "description": ""
+                },
+                "unified_job_template": {
+                    "id": 12,
+                    "name": "Run Test",
+                    "description": "",
+                    "unified_job_type": "job"
+                },
+                "instance_group": {
+                    "id": 1,
+                    "name": "tower",
+                    "is_containerized": false
+                },
+                "created_by": {
+                    "id": 1,
+                    "username": "admin",
+                    "first_name": "",
+                    "last_name": ""
+                },
+                "user_capabilities": {
+                    "delete": true,
+                    "start": true
+                },
+                "labels": {
+                    "count": 0,
+                    "results": []
+                },
+                "credentials": []
+            },
+            "created": "2021-03-05T16:52:13.312000Z",
+            "modified": "2021-03-05T16:52:13.550717Z",
+            "name": "Run Test",
+            "description": "",
+            "unified_job_template": 12,
+            "launch_type": "manual",
+            "status": "failed",
+            "failed": true,
+            "started": "2021-03-05T16:52:13.605004Z",
+            "finished": "2021-03-05T16:52:16.323636Z",
+            "canceled_on": null,
+            "elapsed": 2.719,
+            "job_explanation": "",
+            "execution_node": "awx",
+            "controller_node": "",
+            "job_type": "run",
+            "inventory": 2,
+            "project": 8,
+            "playbook": "playbooks/testing.yml",
+            "scm_branch": "",
+            "forks": 0,
+            "limit": "",
+            "verbosity": 0,
+            "extra_vars": "{}",
+            "job_tags": "",
+            "force_handlers": false,
+            "skip_tags": "",
+            "start_at_task": "",
+            "timeout": 0,
+            "use_fact_cache": false,
+            "organization": 1,
+            "job_template": 12,
+            "passwords_needed_to_start": [],
+            "allow_simultaneous": false,
+            "artifacts": {},
+            "scm_revision": "adc049175fb79ac390eb7a500d8bbb32a3cc0617",
+            "instance_group": 1,
+            "diff_mode": false,
+            "job_slice_number": 0,
+            "job_slice_count": 1,
+            "webhook_service": "",
+            "webhook_credential": null,
+            "webhook_guid": ""
+        },
+        {
+            "id": 64,
+            "type": "job",
+            "url": "/api/v2/jobs/64/",
+            "related": {
+                "created_by": "/api/v2/users/1/",
+                "labels": "/api/v2/jobs/64/labels/",
+                "inventory": "/api/v2/inventories/2/",
+                "project": "/api/v2/projects/8/",
+                "organization": "/api/v2/organizations/1/",
+                "credentials": "/api/v2/jobs/64/credentials/",
+                "unified_job_template": "/api/v2/job_templates/12/",
+                "stdout": "/api/v2/jobs/64/stdout/",
+                "job_events": "/api/v2/jobs/64/job_events/",
+                "job_host_summaries": "/api/v2/jobs/64/job_host_summaries/",
+                "activity_stream": "/api/v2/jobs/64/activity_stream/",
+                "notifications": "/api/v2/jobs/64/notifications/",
+                "create_schedule": "/api/v2/jobs/64/create_schedule/",
+                "job_template": "/api/v2/job_templates/12/",
+                "cancel": "/api/v2/jobs/64/cancel/",
+                "relaunch": "/api/v2/jobs/64/relaunch/"
+            },
+            "summary_fields": {
+                "organization": {
+                    "id": 1,
+                    "name": "Default",
+                    "description": ""
+                },
+                "inventory": {
+                    "id": 2,
+                    "name": "Nautobot Inventory",
+                    "description": "",
+                    "has_active_failures": true,
+                    "total_hosts": 7,
+                    "hosts_with_active_failures": 1,
+                    "total_groups": 0,
+                    "has_inventory_sources": true,
+                    "total_inventory_sources": 1,
+                    "inventory_sources_with_failures": 0,
+                    "organization_id": 1,
+                    "kind": ""
+                },
+                "project": {
+                    "id": 8,
+                    "name": "GitHub",
+                    "description": "",
+                    "status": "successful",
+                    "scm_type": "git"
+                },
+                "job_template": {
+                    "id": 12,
+                    "name": "Run Test",
+                    "description": ""
+                },
+                "unified_job_template": {
+                    "id": 12,
+                    "name": "Run Test",
+                    "description": "",
+                    "unified_job_type": "job"
+                },
+                "instance_group": {
+                    "id": 1,
+                    "name": "tower",
+                    "is_containerized": false
+                },
+                "created_by": {
+                    "id": 1,
+                    "username": "admin",
+                    "first_name": "",
+                    "last_name": ""
+                },
+                "user_capabilities": {
+                    "delete": true,
+                    "start": true
+                },
+                "labels": {
+                    "count": 0,
+                    "results": []
+                },
+                "credentials": []
+            },
+            "created": "2021-03-05T02:38:01.352025Z",
+            "modified": "2021-03-05T02:38:01.600285Z",
+            "name": "Run Test",
+            "description": "",
+            "unified_job_template": 12,
+            "launch_type": "manual",
+            "status": "successful",
+            "failed": false,
+            "started": "2021-03-05T02:38:01.665837Z",
+            "finished": "2021-03-05T02:38:03.640444Z",
+            "canceled_on": null,
+            "elapsed": 1.975,
+            "job_explanation": "",
+            "execution_node": "awx",
+            "controller_node": "",
+            "job_type": "run",
+            "inventory": 2,
+            "project": 8,
+            "playbook": "testing.yml",
+            "scm_branch": "",
+            "forks": 0,
+            "limit": "",
+            "verbosity": 0,
+            "extra_vars": "{}",
+            "job_tags": "",
+            "force_handlers": false,
+            "skip_tags": "",
+            "start_at_task": "",
+            "timeout": 0,
+            "use_fact_cache": false,
+            "organization": 1,
+            "job_template": 12,
+            "passwords_needed_to_start": [],
+            "allow_simultaneous": false,
+            "artifacts": {},
+            "scm_revision": "deab6442cc8729c05824abdf6572721d8a31f1a9",
+            "instance_group": 1,
+            "diff_mode": false,
+            "job_slice_number": 0,
+            "job_slice_count": 1,
+            "webhook_service": "",
+            "webhook_credential": null,
+            "webhook_guid": ""
+        },
+        {
+            "id": 62,
+            "type": "job",
+            "url": "/api/v2/jobs/62/",
+            "related": {
+                "created_by": "/api/v2/users/1/",
+                "labels": "/api/v2/jobs/62/labels/",
+                "inventory": "/api/v2/inventories/2/",
+                "project": "/api/v2/projects/8/",
+                "organization": "/api/v2/organizations/1/",
+                "credentials": "/api/v2/jobs/62/credentials/",
+                "unified_job_template": "/api/v2/job_templates/12/",
+                "stdout": "/api/v2/jobs/62/stdout/",
+                "job_events": "/api/v2/jobs/62/job_events/",
+                "job_host_summaries": "/api/v2/jobs/62/job_host_summaries/",
+                "activity_stream": "/api/v2/jobs/62/activity_stream/",
+                "notifications": "/api/v2/jobs/62/notifications/",
+                "create_schedule": "/api/v2/jobs/62/create_schedule/",
+                "job_template": "/api/v2/job_templates/12/",
+                "cancel": "/api/v2/jobs/62/cancel/",
+                "relaunch": "/api/v2/jobs/62/relaunch/"
+            },
+            "summary_fields": {
+                "organization": {
+                    "id": 1,
+                    "name": "Default",
+                    "description": ""
+                },
+                "inventory": {
+                    "id": 2,
+                    "name": "Nautobot Inventory",
+                    "description": "",
+                    "has_active_failures": true,
+                    "total_hosts": 7,
+                    "hosts_with_active_failures": 1,
+                    "total_groups": 0,
+                    "has_inventory_sources": true,
+                    "total_inventory_sources": 1,
+                    "inventory_sources_with_failures": 0,
+                    "organization_id": 1,
+                    "kind": ""
+                },
+                "project": {
+                    "id": 8,
+                    "name": "GitHub",
+                    "description": "",
+                    "status": "successful",
+                    "scm_type": "git"
+                },
+                "job_template": {
+                    "id": 12,
+                    "name": "Run Test",
+                    "description": ""
+                },
+                "unified_job_template": {
+                    "id": 12,
+                    "name": "Run Test",
+                    "description": "",
+                    "unified_job_type": "job"
+                },
+                "instance_group": {
+                    "id": 1,
+                    "name": "tower",
+                    "is_containerized": false
+                },
+                "created_by": {
+                    "id": 1,
+                    "username": "admin",
+                    "first_name": "",
+                    "last_name": ""
+                },
+                "user_capabilities": {
+                    "delete": true,
+                    "start": true
+                },
+                "labels": {
+                    "count": 0,
+                    "results": []
+                },
+                "credentials": []
+            },
+            "created": "2021-03-05T02:32:03.454947Z",
+            "modified": "2021-03-05T02:32:03.715510Z",
+            "name": "Run Test",
+            "description": "",
+            "unified_job_template": 12,
+            "launch_type": "manual",
+            "status": "failed",
+            "failed": true,
+            "started": "2021-03-05T02:32:03.770506Z",
+            "finished": "2021-03-05T02:32:05.875826Z",
+            "canceled_on": null,
+            "elapsed": 2.105,
+            "job_explanation": "",
+            "execution_node": "awx",
+            "controller_node": "",
+            "job_type": "run",
+            "inventory": 2,
+            "project": 8,
+            "playbook": "testing.yml",
+            "scm_branch": "",
+            "forks": 0,
+            "limit": "",
+            "verbosity": 0,
+            "extra_vars": "{}",
+            "job_tags": "",
+            "force_handlers": false,
+            "skip_tags": "",
+            "start_at_task": "",
+            "timeout": 0,
+            "use_fact_cache": false,
+            "organization": 1,
+            "job_template": 12,
+            "passwords_needed_to_start": [],
+            "allow_simultaneous": false,
+            "artifacts": {},
+            "scm_revision": "fa03a7ece2ea84ec38081c8aecbde62cea4283dd",
+            "instance_group": 1,
+            "diff_mode": false,
+            "job_slice_number": 0,
+            "job_slice_count": 1,
+            "webhook_service": "",
+            "webhook_credential": null,
+            "webhook_guid": ""
+        },
+        {
+            "id": 13,
+            "type": "job",
+            "url": "/api/v2/jobs/13/",
+            "related": {
+                "created_by": "/api/v2/users/1/",
+                "labels": "/api/v2/jobs/13/labels/",
+                "inventory": "/api/v2/inventories/2/",
+                "project": "/api/v2/projects/8/",
+                "organization": "/api/v2/organizations/1/",
+                "credentials": "/api/v2/jobs/13/credentials/",
+                "unified_job_template": "/api/v2/job_templates/11/",
+                "stdout": "/api/v2/jobs/13/stdout/",
+                "job_events": "/api/v2/jobs/13/job_events/",
+                "job_host_summaries": "/api/v2/jobs/13/job_host_summaries/",
+                "activity_stream": "/api/v2/jobs/13/activity_stream/",
+                "notifications": "/api/v2/jobs/13/notifications/",
+                "create_schedule": "/api/v2/jobs/13/create_schedule/",
+                "job_template": "/api/v2/job_templates/11/",
+                "cancel": "/api/v2/jobs/13/cancel/",
+                "relaunch": "/api/v2/jobs/13/relaunch/"
+            },
+            "summary_fields": {
+                "organization": {
+                    "id": 1,
+                    "name": "Default",
+                    "description": ""
+                },
+                "inventory": {
+                    "id": 2,
+                    "name": "Nautobot Inventory",
+                    "description": "",
+                    "has_active_failures": true,
+                    "total_hosts": 7,
+                    "hosts_with_active_failures": 1,
+                    "total_groups": 0,
+                    "has_inventory_sources": true,
+                    "total_inventory_sources": 1,
+                    "inventory_sources_with_failures": 0,
+                    "organization_id": 1,
+                    "kind": ""
+                },
+                "project": {
+                    "id": 8,
+                    "name": "GitHub",
+                    "description": "",
+                    "status": "successful",
+                    "scm_type": "git"
+                },
+                "job_template": {
+                    "id": 11,
+                    "name": "Get env",
+                    "description": ""
+                },
+                "unified_job_template": {
+                    "id": 11,
+                    "name": "Get env",
+                    "description": "",
+                    "unified_job_type": "job"
+                },
+                "instance_group": {
+                    "id": 1,
+                    "name": "tower",
+                    "is_containerized": false
+                },
+                "created_by": {
+                    "id": 1,
+                    "username": "admin",
+                    "first_name": "",
+                    "last_name": ""
+                },
+                "user_capabilities": {
+                    "delete": true,
+                    "start": true
+                },
+                "labels": {
+                    "count": 0,
+                    "results": []
+                },
+                "credentials": []
+            },
+            "created": "2021-02-22T23:28:59.026939Z",
+            "modified": "2021-02-22T23:28:59.462933Z",
+            "name": "Get env",
+            "description": "",
+            "unified_job_template": 11,
+            "launch_type": "manual",
+            "status": "successful",
+            "failed": false,
+            "started": "2021-02-22T23:28:59.519315Z",
+            "finished": "2021-02-22T23:29:03.786166Z",
+            "canceled_on": null,
+            "elapsed": 4.267,
+            "job_explanation": "",
+            "execution_node": "awx",
+            "controller_node": "",
+            "job_type": "run",
+            "inventory": 2,
+            "project": 8,
+            "playbook": "get_environment.yml",
+            "scm_branch": "",
+            "forks": 0,
+            "limit": "",
+            "verbosity": 0,
+            "extra_vars": "{}",
+            "job_tags": "",
+            "force_handlers": false,
+            "skip_tags": "",
+            "start_at_task": "",
+            "timeout": 0,
+            "use_fact_cache": false,
+            "organization": 1,
+            "job_template": 11,
+            "passwords_needed_to_start": [],
+            "allow_simultaneous": false,
+            "artifacts": {},
+            "scm_revision": "f0c3f6d2cb5314f863c7ba96cc58746c52975ed8",
+            "instance_group": 1,
+            "diff_mode": false,
+            "job_slice_number": 0,
+            "job_slice_count": 1,
+            "webhook_service": "",
+            "webhook_credential": null,
+            "webhook_guid": ""
+        },
+        {
+            "id": 8,
+            "type": "job",
+            "url": "/api/v2/jobs/8/",
+            "related": {
+                "created_by": "/api/v2/users/1/",
+                "labels": "/api/v2/jobs/8/labels/",
+                "inventory": "/api/v2/inventories/2/",
+                "project": "/api/v2/projects/8/",
+                "organization": "/api/v2/organizations/1/",
+                "credentials": "/api/v2/jobs/8/credentials/",
+                "unified_job_template": "/api/v2/job_templates/10/",
+                "stdout": "/api/v2/jobs/8/stdout/",
+                "job_events": "/api/v2/jobs/8/job_events/",
+                "job_host_summaries": "/api/v2/jobs/8/job_host_summaries/",
+                "activity_stream": "/api/v2/jobs/8/activity_stream/",
+                "notifications": "/api/v2/jobs/8/notifications/",
+                "create_schedule": "/api/v2/jobs/8/create_schedule/",
+                "job_template": "/api/v2/job_templates/10/",
+                "cancel": "/api/v2/jobs/8/cancel/",
+                "relaunch": "/api/v2/jobs/8/relaunch/"
+            },
+            "summary_fields": {
+                "organization": {
+                    "id": 1,
+                    "name": "Default",
+                    "description": ""
+                },
+                "inventory": {
+                    "id": 2,
+                    "name": "Nautobot Inventory",
+                    "description": "",
+                    "has_active_failures": true,
+                    "total_hosts": 7,
+                    "hosts_with_active_failures": 1,
+                    "total_groups": 0,
+                    "has_inventory_sources": true,
+                    "total_inventory_sources": 1,
+                    "inventory_sources_with_failures": 0,
+                    "organization_id": 1,
+                    "kind": ""
+                },
+                "project": {
+                    "id": 8,
+                    "name": "GitHub",
+                    "description": "",
+                    "status": "successful",
+                    "scm_type": "git"
+                },
+                "job_template": {
+                    "id": 10,
+                    "name": "Update DNS",
+                    "description": ""
+                },
+                "unified_job_template": {
+                    "id": 10,
+                    "name": "Update DNS",
+                    "description": "",
+                    "unified_job_type": "job"
+                },
+                "instance_group": {
+                    "id": 1,
+                    "name": "tower",
+                    "is_containerized": false
+                },
+                "created_by": {
+                    "id": 1,
+                    "username": "admin",
+                    "first_name": "",
+                    "last_name": ""
+                },
+                "user_capabilities": {
+                    "delete": true,
+                    "start": true
+                },
+                "labels": {
+                    "count": 0,
+                    "results": []
+                },
+                "credentials": []
+            },
+            "created": "2021-02-19T21:23:53.175817Z",
+            "modified": "2021-02-19T21:23:56.741349Z",
+            "name": "Update DNS",
+            "description": "",
+            "unified_job_template": 10,
+            "launch_type": "manual",
+            "status": "canceled",
+            "failed": true,
+            "started": "2021-02-19T21:23:56.821275Z",
+            "finished": "2021-02-19T21:24:00.524066Z",
+            "canceled_on": "2021-02-19T21:24:00.117403Z",
+            "elapsed": 3.703,
+            "job_explanation": "",
+            "execution_node": "awx",
+            "controller_node": "",
+            "job_type": "run",
+            "inventory": 2,
+            "project": 8,
+            "playbook": "dns.yml",
+            "scm_branch": "",
+            "forks": 0,
+            "limit": "",
+            "verbosity": 0,
+            "extra_vars": "{}",
+            "job_tags": "",
+            "force_handlers": false,
+            "skip_tags": "",
+            "start_at_task": "",
+            "timeout": 0,
+            "use_fact_cache": false,
+            "organization": 1,
+            "job_template": 10,
+            "passwords_needed_to_start": [],
+            "allow_simultaneous": false,
+            "artifacts": {},
+            "scm_revision": "f6f301f77697b6ae723111cca01acfe022c3c9c2",
+            "instance_group": 1,
+            "diff_mode": false,
+            "job_slice_number": 0,
+            "job_slice_count": 1,
+            "webhook_service": "",
+            "webhook_credential": null,
+            "webhook_guid": ""
+        }
+    ]
+}

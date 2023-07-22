@@ -65,6 +65,32 @@ PLUGINS = ["nautobot_chatops"]
 # }
 ```
 
+### ⚠️ Important Warning: Conflicting Applications
+
+If you are upgrading to the latest version of the `nautobot-chatops` app, please be aware that it now includes the functionality previously provided by the following apps:
+
+- 'nautobot_plugin_chatops_ansible'
+- 'nautobot_plugin_chatops_ipfabric'
+- `nautobot_plugin_chatops_aci`
+- `nautobot_plugin_chatops_ansible`
+- `nautobot_plugin_chatops_grafana`
+- `nautobot_plugin_chatops_meraki`
+- `nautobot_plugin_chatops_panorama`
+
+- `nautobot_plugin_chatops_arista_cloudvision`
+
+Therefore, you should **not** have these apps installed and enabled at the same time as this can lead to conflicts and unexpected behavior.
+
+In order to prevent conflicts when upgrading `nautobot-chatops`, it is necessary to perform the following steps:
+
+- Remove conflicting applications from the `PLUGINS` section in your Nautobot configuration. This should be done before enabling the latest version of `nautobot-chatops`.
+- Relocate the configuration for conflicting apps to the `PLUGIN_CONFIG["nautobot_chatops"]` section of your Nautobot configuration. See `development/nautobot_config.py` for an example of how this should look.
+- Remove conflicting applications from your project's requirements.
+
+By following these steps, you can avoid common issues encountered when upgrading `nautobot-chatops`. Please remember to backup your data and thoroughly test your configuration after performing these changes.
+
+Please note: If you fail to remove conflicting apps from `PLUGINS`, the `nautobot-chatops` app will raise an exception during startup to prevent potential conflicts.
+
 ## App Configuration
 
 The plugin behavior can be controlled with the following list of settings:

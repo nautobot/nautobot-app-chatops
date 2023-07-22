@@ -1,13 +1,25 @@
-"""Nautobot configuration."""
+"""Nautobot development configuration file."""
+# pylint: disable=invalid-envvar-default
+import json
 import os
 import sys
 
-from nautobot.core.settings import *  # noqa: F401,F403 pylint: disable=wildcard-import,unused-wildcard-import
+from nautobot.core.settings import *  # noqa: F403
 from nautobot.core.settings_funcs import parse_redis_connection
 
 
+def _get_bool_env(name: str, default=False):
+    value = os.getenv(name, str(default))
+    return bool(json.loads(value.lower()))
+
+
+#
+# Misc. settings
+#
+
 ALLOWED_HOSTS = os.getenv("NAUTOBOT_ALLOWED_HOSTS", "").split(" ")
 SECRET_KEY = os.getenv("NAUTOBOT_SECRET_KEY", "")
+
 
 nautobot_db_engine = os.getenv("NAUTOBOT_DB_ENGINE", "django.db.backends.postgresql")
 default_db_settings = {
@@ -31,6 +43,10 @@ DATABASES = {
         "ENGINE": nautobot_db_engine,
     }
 }
+
+# Ensure proper Unicode handling for MySQL
+if DATABASES["default"]["ENGINE"] == "django.db.backends.mysql":
+    DATABASES["default"]["OPTIONS"] = {"charset": "utf8mb4"}
 
 #
 # Debug
@@ -116,27 +132,63 @@ CACHES = {
 # Redis Cacheops
 CACHEOPS_REDIS = parse_redis_connection(redis_database=1)
 
+#
+# Celery settings are not defined here because they can be overloaded with
+# environment variables. By default they use `CACHES["default"]["LOCATION"]`.
+#
+
 # Enable installed plugins. Add the name of each plugin to the list.
-PLUGINS = ["nautobot_chatops", "nautobot_capacity_metrics"]
+PLUGINS = [
+    "nautobot_capacity_metrics",
+    "nautobot_chatops",
+]
 
 # Plugins configuration settings. These settings are used by various plugins that the user may have installed.
 # Each key in the dictionary is the name of an installed plugin and its value is a dictionary of settings.
 PLUGINS_CONFIG = {
     "nautobot_chatops": {
-        "enable_slack": True,
-        "enable_ms_teams": True,
-        "enable_webex": True,
-        "microsoft_app_id": os.environ.get("MICROSOFT_APP_ID"),
-        "microsoft_app_password": os.environ.get("MICROSOFT_APP_PASSWORD"),
-        "slack_app_token": os.environ.get("SLACK_APP_TOKEN"),
-        "slack_api_token": os.environ.get("SLACK_API_TOKEN"),
-        "slack_signing_secret": os.environ.get("SLACK_SIGNING_SECRET"),
-        "slack_slash_command_prefix": os.environ.get("SLACK_SLASH_COMMAND_PREFIX", "/"),
-        "webex_token": os.environ.get("WEBEX_ACCESS_TOKEN"),
-        "webex_signing_secret": os.environ.get("WEBEX_SIGNING_SECRET"),
-        "enable_mattermost": True,
+        "aci_creds": {x: os.environ[x] for x in os.environ if "APIC" in x},
+        "arista_cloudvision_cvaas_url": os.environ.get("ARISTA_CLOUDVISION_CVAAS_URL"),
+        "arista_cloudvision_cvaas_token": os.environ.get("ARISTA_CLOUDVISION_CVAAS_TOKEN"),
+        "arista_cloudvision_cvp_host": os.environ.get("ARISTA_CLOUDVISION_CVP_HOST"),
+        "arista_cloudvision_cvp_insecure": _get_bool_env("ARISTA_CLOUDVISION_CVP_INSECURE"),
+        "arista_cloudvision_cvp_password": os.environ.get("ARISTA_CLOUDVISION_CVP_PASSWORD"),
+        "arista_cloudvision_cvp_username": os.environ.get("ARISTA_CLOUDVISION_CVP_USERNAME"),
+        "arista_cloudvision_on_prem": _get_bool_env("ARISTA_CLOUDVISION_ON_PREM"),
+        "enable_mattermost": _get_bool_env("NAUTOBOT_CHATOPS_ENABLE_MATTERMOST"),
+        "enable_ms_teams": _get_bool_env("NAUTOBOT_CHATOPS_ENABLE_MS_TEAMS"),
+        "enable_slack": _get_bool_env("NAUTOBOT_CHATOPS_ENABLE_SLACK"),
+        "enable_webex": _get_bool_env("NAUTOBOT_CHATOPS_ENABLE_WEBEX"),
+        "grafana_url": os.environ.get("GRAFANA_URL", ""),
+        "grafana_api_key": os.environ.get("GRAFANA_API_KEY", ""),
+        "grafana_default_width": 0,
+        "grafana_default_height": 0,
+        "grafana_default_theme": "dark",
+        "grafana_default_timespan": "0",
+        "grafana_org_id": 1,
+        "grafana_default_tz": "America/Denver",
         "mattermost_api_token": os.environ.get("MATTERMOST_API_TOKEN"),
         "mattermost_url": os.environ.get("MATTERMOST_URL"),
-        "restrict_help": True,
+        "meraki_dashboard_api_key": os.environ.get("MERAKI_API_KEY"),
+        "microsoft_app_id": os.environ.get("MICROSOFT_APP_ID"),
+        "microsoft_app_password": os.environ.get("MICROSOFT_APP_PASSWORD"),
+        "restrict_help": _get_bool_env("NAUTOBOT_CHATOPS_RESTRICT_HELP"),
+        "slack_api_token": os.environ.get("SLACK_API_TOKEN"),
+        "slack_app_token": os.environ.get("SLACK_APP_TOKEN"),
+        "slack_signing_secret": os.environ.get("SLACK_SIGNING_SECRET"),
+        "slack_slash_command_prefix": os.environ.get("SLACK_SLASH_COMMAND_PREFIX", "/"),
+        "tower_uri": os.getenv("NAUTOBOT_TOWER_URI"),
+        "tower_username": os.getenv("NAUTOBOT_TOWER_USERNAME"),
+        "tower_password": os.getenv("NAUTOBOT_TOWER_PASSWORD"),
+        "tower_verify_ssl": _get_bool_env("NAUTOBOT_TOWER_VERIFY_SSL", True),
+        "webex_signing_secret": os.environ.get("WEBEX_SIGNING_SECRET"),
+        "webex_token": os.environ.get("WEBEX_ACCESS_TOKEN"),
+        "ipfabric_api_token": os.environ.get("IPFABRIC_API_TOKEN"),
+        "ipfabric_host": os.environ.get("IPFABRIC_HOST"),
+        "ipfabric_timeout": os.environ.get("IPFABRIC_TIMEOUT", 15),
+        "ipfabric_verify": _get_bool_env("IPFABRIC_VERIFY", True),
+        "panorama_host": os.environ.get("PANORAMA_HOST"),
+        "panorama_user": os.environ.get("PANORAMA_USER"),
+        "panorama_password": os.environ.get("PANORAMA_PASSWORD"),
     },
 }
