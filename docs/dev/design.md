@@ -32,7 +32,7 @@ The design goal of this plugin is to be able to write chatbot commands once and 
 
             Different chat platforms may require more or fewer listeners.
 
-    - Each endpoint view or listener is responsible for pulling relevant data (command, subcommand, parameters) out of the
+    - Each endpoint view or listener is responsible for pulling relevant data (command, sub-command, parameters) out of the
      provided chat-platform-specific encoding or data structures (form-encoded, JSON, XML, whatever) and enqueuing
      the extracted data into `celery` for the worker that handles a given command.
 
@@ -167,22 +167,21 @@ OR
 
 ## Design considerations
 
-### Command-subcommand structure
+### Command / sub-command structure
 
-In general, we recommend structuring commands as a two-tiered command-subcommand structure, rather than implementing
+In general, we recommend structuring commands as a two-tiered command / sub-command structure, rather than implementing
 every command as a top-level worker function. (`/nautobot get-device-info <device>`, `/nautobot get-vlan-info <vlan>`, etc.
 rather than `/nautobot-get-device-info <device>`, `/nautobot-get-vlan-info <vlan>`, etc.) This is because:
 
 - On platforms such as Slack, each separate slash-command must be enabled and configured separately on the server, so an excessive number of distinct top-level commands will make the chatbot inconvenient to deploy.
 - Platforms such as Microsoft Teams may limit the number of top-level commands that are displayed to the user in a chat client, so large numbers of commands may be difficult to discover.
 
-That said, the implementation of Nautobot allows it to transparently support both syntaxes (`/command-sub-command` as
-well as `/command sub-command`; if the deployer takes the time to set up the bot accordingly.
+That said, the implementation of Nautobot allows it to transparently support both syntaxes, `/command-sub-command` and `/command sub-command`; if the deployer takes the time to set up the bot accordingly.
 
 ### Multi-word Parameters
 
 Nautobot dispatchers now allow multi-word arguments to be passed into commands. An example of this is passing city
-names to a subcommand parameters. As an example, say we have a command that perfoms a lookup for all sites in Nautobot
+names to a sub-command parameters. As an example, say we have a command that perfoms a lookup for all sites in Nautobot
 that match a city. The command and parameters might look like `/nautobot get-sites location Dallas` where Dallas is the
 city we want to search for. For the command to support cities such as `Las Vegas` we would want to quote the city
 argument. The new command should look as `/nautobot get-sites location 'Las Vegas'`.
@@ -212,7 +211,7 @@ Some known limitations of currently supported platforms:
   to even less than that (commonly 3000 characters).
   Longer content will either need to be split across multiple messages/blocks or be presented as a `snippet`
   (file attachment), which has no such limitations.
-- Very limited table functionality in blocks. The `fields` attribute can be used for small two-column tables but it
+- Very limited table functionality in blocks. The `fields` attribute can be used for small two-column tables, but it
   is limited to a maximum of 5 rows by Slack.
 - Markdown in a block is wrapped to a maximum width of XXX characters; text-only Markdown messages are not
   wrapped to a fixed width but are still limited to the 4000-character maximum length.
