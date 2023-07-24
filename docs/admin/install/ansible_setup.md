@@ -51,7 +51,7 @@ PLUGINS_CONFIG = {
 
 ## Upgrading from `nautobot-plugin-chatops-ansible` App
 
-!!! WARNING
+!!! warning
     When upgrading from `nautobot-plugin-chatops-ansible` App, it's necessary to [avoid conflicts](index.md#potential-apps-conflicts).
 
 - Uninstall the old App:

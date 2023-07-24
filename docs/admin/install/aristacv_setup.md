@@ -68,7 +68,7 @@ Once you have updated your environment file, restart both nautobot and nautobot-
 
 ## Upgrading from `nautobot-plugin-chatops-arista-cloudvision` App
 
-!!! WARNING
+!!! warning
     When upgrading from `nautobot-plugin-chatops-arista-cloudvision` App, it's necessary to [avoid conflicts](index.md#potential-apps-conflicts).
 
 - Uninstall the old App:

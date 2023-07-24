@@ -45,7 +45,7 @@ The alternative option is to set the environmental variable:
 
 ## Upgrading from `nautobot-plugin-chatops-meraki` App
 
-!!! WARNING
+!!! warning
     When upgrading from `nautobot-plugin-chatops-meraki` App, it's necessary to [avoid conflicts](index.md#potential-apps-conflicts).
 
 - Uninstall the old App:

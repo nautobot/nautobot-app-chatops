@@ -21,4 +21,20 @@ Interact with Palo Alto Panorama by utilizing the following sub-commands:
 
 ## Screenshots
 
-TBD
+![Help](../images/panorama-01.png)
+
+![Validate Rule Exists Success](../images/panorama-02.png)
+
+![Validate Rule Exists Failure](../images/panorama-03.png)
+
+![Upload Software](../images/panorama-04.png)
+
+![Capture Traffic Filter](../images/panorama-05.png)
+
+![Capture Traffic](../images/panorama-06.png)
+
+![Get Devices](../images/panorama-07.png)
+
+![Get DeviceGroups](../images/panorama-08.png)
+
+![Get Device Rules](../images/panorama-09.png)

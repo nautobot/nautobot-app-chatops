@@ -65,7 +65,7 @@ When executing chat commands, you will be presented with a selection dialog cont
 
 ## Upgrading from `nautobot-plugin-chatops-aci` App
 
-!!! WARNING
+!!! warning
     When upgrading from `nautobot-plugin-chatops-aci` App, it's necessary to [avoid conflicts](index.md#potential-apps-conflicts).
 
 - Uninstall the old App:
