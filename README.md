@@ -19,6 +19,9 @@
 - Support for multiple integrations:
     - Cisco ACI
     - AWX / Ansible Tower
+    - Arista CloudVision
+    - Grafana
+    - IPFabric
     - Cisco Meraki
     - Palo Alto Panorama
 - Write a command once and run it on every supported platform, including rich content formatting.

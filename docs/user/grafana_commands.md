@@ -4,9 +4,6 @@
 
 Interact with Grafana by utilizing the following sub-commands:
 
-R: The output should be only the the table similar to the following one, replaced with commands defined later.
-R: Ommit the `dispatcher` arg.
-
 | Command | Arguments | Description |
 | ------- | --------- | ----------- |
 | `get-aps` | `[APIC]` `[tenant]` | Display Application Profiles configured for a given tenant. |
@@ -23,7 +20,3 @@ R: Ommit the `dispatcher` arg.
 
 !!! note
     All sub-commands are intended to be used with the `/grafana` prefix.
-
-## Screenshots
-
-TBD
