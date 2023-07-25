@@ -102,6 +102,14 @@ nav:
       - App Overview: "user/app_overview.md"
       - Getting Started: "user/app_getting_started.md"
       - Frequently Asked Questions: "user/app_faq.md"
+      - Integrations:
+          - "user/aci_commands.md"
+          - "user/ansible_commands.md"
+          - "user/aristacv_commands.md"
+          - "user/grafana_commands.md"
+          - "user/ipfabric_commands.md"
+          - "user/meraki_commands.md"
+          - "user/panorama_commands.md"
   - Administrator Guide:
       - Install and Configure:
           - "admin/install/index.md"
@@ -109,11 +117,19 @@ nav:
           - "admin/install/mattermost_setup.md"
           - "admin/install/webex_setup.md"
           - "admin/install/microsoft_teams_setup.md"
+          - "admin/install/aci_setup.md"
+          - "admin/install/ansible_setup.md"
+          - "admin/install/aristacv_setup.md"
+          - "admin/install/grafana_setup.md"
+          - "admin/install/ipfabric_setup.md"
+          - "admin/install/meraki_setup.md"
+          - "admin/install/panorama_setup.md"
       - Upgrade: "admin/upgrade.md"
       - Uninstall: "admin/uninstall.md"
       - Compatibility Matrix: "admin/compatibility_matrix.md"
       - Release Notes:
           - "admin/release_notes/index.md"
+          - v2.0: "admin/release_notes/version_2.0.md"
           - v1.11: "admin/release_notes/version_1.11.md"
           - v1.10: "admin/release_notes/version_1.10.md"
           - v1.9: "admin/release_notes/version_1.9.md"
@@ -130,6 +146,7 @@ nav:
       - Design Documentation: "dev/design.md"
       - Development Environment: "dev/dev_environment.md"
       - Release Checklist: "dev/release_checklist.md"
+      - Glossary: "glossary.md"
       - Code Reference:
           - "dev/code_reference/index.md"
           - Models: "dev/code_reference/models.md"

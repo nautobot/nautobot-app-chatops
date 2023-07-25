@@ -1,1 +1,0 @@
-Add a try/except block and error logger message when access_token missing from get_token() response.
