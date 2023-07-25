@@ -22,9 +22,9 @@
 
 - [#67](https://github.com/nautobot/nautobot-plugin-chatops/issues/67) - Modified the clear command to not work within Slack threads.
 - [#196](https://github.com/nautobot/nautobot-plugin-chatops/issues/196) - Update to microsoft IPs and correcting the one in the doc.
-- [#218](https://github.com/nautobot/nautobot-plugin-chatops/issues/218) - - Added `/clear` command to development Mattermost.
-- [#218](https://github.com/nautobot/nautobot-plugin-chatops/issues/218) - - Improved integration workers loading.
-- [#218](https://github.com/nautobot/nautobot-plugin-chatops/issues/218) - - Sorted App config and environment variables.
-- [#218](https://github.com/nautobot/nautobot-plugin-chatops/issues/218) - - Sorted pyproject configurations.
+- [#218](https://github.com/nautobot/nautobot-plugin-chatops/issues/218) - Added `/clear` command to development Mattermost.
+- [#218](https://github.com/nautobot/nautobot-plugin-chatops/issues/218) - Improved integration workers loading.
+- [#218](https://github.com/nautobot/nautobot-plugin-chatops/issues/218) - Sorted App config and environment variables.
+- [#218](https://github.com/nautobot/nautobot-plugin-chatops/issues/218) - Sorted pyproject configurations.
 
 
