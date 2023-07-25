@@ -1,37 +1,24 @@
 # Contributing to Nautobot ChatOps
 
-Pull requests are welcomed and automatically built and tested against multiple version of Python and multiple version of Nautobot through Github Actions.
+The project is packaged with a light [development environment](dev_environment.md) based on `docker-compose` to help with the local development of the project and to run tests.
 
-The project is packaged with a light development environment based on `docker-compose` to help with the local development of the project and to run the tests within Github Actions.
+The project is following Network to Code software development guidelines and is leveraging the following:
 
-The project is following Network to Code software development guidelines and is leveraging:
-
-- Black, Pylint, Bandit and pydocstyle for Python linting and formatting.
+- Python linting and formatting: `black`, `pylint`, `bandit`, `flake8`, and `pydocstyle`.
+- YAML linting is done with `yamllint`.
 - Django unit test to ensure the plugin is working properly.
 
-## Quickstart
-
-```bash
-git clone git@github.com:nautobot/nautobot-plugin-chatops.git
-cd nautobot-plugin-chatops
-cp development/creds.example.env development/creds.env
-inv build
-inv start
-# Nautobot available as http://127.0.0.1:8080 admin / admin
-# Mattermost available at http://127.0.0.1:8065 admin / admin
-
-# To allow Mattermost integration run the following after Nautobot starts:
-inv bootstrap-mattermost
-```
+Documentation is built using [mkdocs](https://www.mkdocs.org/).
+The [Docker based development environment](dev_environment.md#docker-development-environment) automatically starts a container hosting a live version of the documentation website on [http://localhost:8001](http://localhost:8001) that auto-refreshes when you make any changes to your local files.
 
 ## Adding a new top-level command
 
 First, you should be familiar with the design goals and constraints involved in Nautobot (`design.md`).
-Be sure that this is really what you want to do, versus adding a subcommand instead.
+Be sure that this is really what you want to do, versus adding a sub-command instead.
 
 We recommend that each command exist as its own submodule under `nautobot_chatops/workers/` (or, as a separate package
-entirely, such as `nautobot_chatops_mycommand/worker.py`, using the entrypoint/plugin capability described in `design.md`)
-so as to keep code files to a reasonable size and complexity. This submodule or package should implement a
+entirely, such as `nautobot_chatops_mycommand/worker.py`, using the `entrypoint/plugin` capability described in `design.md`)
+to keep code files to a reasonable size and complexity. This submodule or package should implement a
 `celery` worker function(s). In general this worker function shouldn't need to do much more than call
 the `handle_subcommands` helper function provided:
 
@@ -48,8 +35,8 @@ def mycommand(subcommand, **kwargs)
     return handle_subcommands("mycommand", subcommand, **kwargs)
 ```
 
-By using `handle_subcommands`, the top-level command worker will automatically recognize the subcommand "help",
-as well as any subcommands registered using the `@subcommand_of` decorator.
+By using `handle_subcommands`, the top-level command worker will automatically recognize the sub-command "help",
+as well as any sub-commands registered using the `@subcommand_of` decorator.
 
 You shouldn't need to make any changes to the `views` or `dispatchers` modules in this scenario.
 
@@ -59,15 +46,15 @@ You will probably then need to delete the bot deployment from your team and re-d
 
 You will also need to log in to api.slack.com and add the new slash-command to your bot's configuration.
 
-## Adding a new subcommand
+## Adding a new sub-command
 
 First, you should be familiar with the design goals and constraints involved in Nautobot (`design.md`).
 
-To register a subcommand, write a function whose name matches the subcommand's name (any `_` in the function name
-will be automatically converted to `-` for the subcommand name), and decorate it with the `@subcommand_of` decorator.
+To register a sub-command, write a function whose name matches the sub-command's name (any `_` in the function name
+will be automatically converted to `-` for the sub-command name), and decorate it with the `@subcommand_of` decorator.
 This function must take `dispatcher` (an instance of any `Dispatcher` subclass) as its first argument; any additional
 positional arguments become arguments in the chat app UI. The docstring of this function will become the help text
-displayed for this subcommand when a user invokes `<command> help`, so it should be concise and to the point.
+displayed for this sub-command when a user invokes `<command> help`, so it should be concise and to the point.
 
 ```python
 from nautobot_chatops.workers import subcommand_of
@@ -84,12 +71,12 @@ With the above code, the command `mycommand do_something [first_arg] [second_arg
 
 You shouldn't need to make any changes to the `views` or `dispatchers` modules in this scenario.
 
-A subcommand worker function should always return one of the following:
+A sub-command worker function should always return one of the following:
 
 ### `return False`
 
-This indicates that the function did not do anything meaningful and it so should not be logged in Nautobot's
-command log. Typically this is only returned when not all required parameters have been provided by the user
+This indicates that the function did not do anything meaningful, and it so should not be logged in Nautobot's
+command log. Typically, this is only returned when not all required parameters have been provided by the user
 and so the function needs to prompt the user for additional inputs, for example:
 
 ```python
@@ -133,13 +120,14 @@ You shouldn't need to make any changes to the `workers` module in this scenario.
 
 First, you should be familiar with the design goals and constraints involved in Nautobot (`design.md`).
 
-You'll need to add a new `nautobot_chatops.sockets.<platform>` submodule that provides the necessary WebSocket connection to the Platform.
+You'll need to add a new `nautobot_chatops.sockets.<platform>` submodule that provides the necessary WebSockets connection to the Platform.
 
 You'll also need to add a new `nautobot_chatops.dispatchers.<platform>` submodule that implements an appropriate
 subclass of `Dispatcher`. This new dispatcher class will need to implement any abstract methods of the base class
 and override any other methods where platform-specific behavior is required (which will probably be most of them).
 
-Finally, you will need to add a new `nautobot_chatops.management.start_<platform>_socket` management command that will start the WebSocket async loop. In 2.0 these will likely be condensed to use a single base command with args to select the platform.
+Finally, you will need to add a new `nautobot_chatops.management.start_<platform>_socket` management command that will start the WebSockets asynchronous loop.
+In 2.0 these will likely be condensed to use a single base command with arguments to select the platform.
 
 You shouldn't need to make any changes to the `workers` module in this scenario.
 
@@ -164,7 +152,7 @@ these checks):
 
 ### Creating Changelog Fragments
 
-All pull requests to `next` or `develop` must include a changelog fragment file in the `./changes` directory. To create a fragment, use your github issue number and fragment type as the filename. For example, `2362.added`. Valid fragment types are `added`, `changed`, `deprecated`, `fixed`, `removed`, and `security`. The change summary is added to the file in plain text. Change summaries should be complete sentences, starting with a capital letter and ending with a period, and be in past tense. Each line of the change fragment will generate a single change entry in the release notes. Use multiple lines in the same file if your change needs to generate multiple release notes in the same category. If the change needs to create multiple entries in separate categories, create multiple files.
+All pull requests to `next` or `develop` must include a changelog fragment file in the `./changes` directory. To create a fragment, use your GitHub issue number and fragment type as the filename. For example, `2362.added`. Valid fragment types are `added`, `changed`, `deprecated`, `fixed`, `removed`, and `security`. The change summary is added to the file in plain text. Change summaries should be complete sentences, starting with a capital letter and ending with a period, and be in past tense. Each line of the change fragment will generate a single change entry in the release notes. Use multiple lines in the same file if your change needs to generate multiple release notes in the same category. If the change needs to create multiple entries in separate categories, create multiple files.
 
 !!! example
 
@@ -190,3 +178,38 @@ All pull requests to `next` or `develop` must include a changelog fragment file 
     ```plaintext title="changes/1234.changed"
     Changed release notes generation.
     ```
+
+## Branching Policy
+
+The branching policy includes the following tenets:
+
+* The `develop` branch is the primary branch to develop off of.
+* PRs intended to add new features should be sourced from the `develop` branch.
+* PRs intended to address bug fixes and security patches should be sourced from the `develop` branch.
+* PRs intended to add new features that break backward compatibility should be discussed before a PR is created.
+
+Nautobot ChatOps app will observe semantic versioning, as of 1.0. This may result in a quick turn around in minor versions to keep pace with an ever-growing feature set.
+
+## Release Policy
+
+Nautobot ChatOps currently has no intended scheduled release schedule, and will release new features in minor versions.
+
+When a new release of any kind (e.g. from `develop` to `main`, or a release of a `stable-<major>.<minor>`) is created the following should happen.
+
+- A release PR is created:
+    - Add and/or update to the changelog in `docs/admin/release_notes/version_<major>.<minor>.md` file to reflect the changes.
+    - Update the mkdocs.yml file to include updates when adding a new release_notes version file.
+    - Change the version from `<major>.<minor>.<patch>-beta` to `<major>.<minor>.<patch>` in `pyproject.toml`.
+    - Set the PR to the proper branch, e.g. either `main` or `stable-<major>.<minor>`.
+- Ensure the tests for the PR pass.
+- Merge the PR.
+- Create a new tag:
+    - The tag should be in the form of `v<major>.<minor>.<patch>`.
+    - The title should be in the form of `v<major>.<minor>.<patch>`.
+    - The description should be the changes that were added to the `version_<major>.<minor>.md` document.
+- If merged into `main`, then push from `main` to `develop`, in order to retain the merge commit created when the PR was merged.
+- If there is a new `<major>.<minor>`, create a `stable-<major>.<minor>` for the **previous** version, so that security updates to old versions may be applied more easily.
+- A post release PR is created:
+    - Change the version from `<major>.<minor>.<patch>` to `<major>.<minor>.<patch + 1>-beta` in `pyproject.toml`.
+    - Set the PR to the proper branch, e.g. either `develop` or `stable-<major>.<minor>`.
+    - Once tests pass, merge.

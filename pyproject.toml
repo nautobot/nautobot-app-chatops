@@ -19,7 +19,7 @@ include = [
 "aci" = "nautobot_chatops.integrations.aci.worker:aci"
 "ansible" = "nautobot_chatops.integrations.ansible.worker:ansible"
 "clear" = "nautobot_chatops.workers.clear:clear"
-"cloudvision" = "nautobot_chatops.integrations.arista_cloudvision.worker:cloudvision"
+"cloudvision" = "nautobot_chatops.integrations.aristacv.worker:cloudvision"
 "grafana" = "nautobot_chatops.integrations.grafana.worker:grafana"
 "ipfabric" = "nautobot_chatops.integrations.ipfabric.worker:ipfabric"
 "meraki" = "nautobot_chatops.integrations.meraki.worker:cisco_meraki"
@@ -27,21 +27,12 @@ include = [
 "panorama" = "nautobot_chatops.integrations.panorama.worker:panorama"
 
 [tool.poetry.dependencies]
-# TODO Move to ~ requirements instead of ^
-python = "^3.7.1"
 Markdown = "!=3.3.5"
 PyJWT = "^2.1.0"
+PyYAML = { version = "^6.0", optional = true }
 aiodns = "^1.0"
 aiohttp = "^3.7.3"
 asgiref = "^3.4.1"
-nautobot = "^1.4.0"
-nautobot-capacity-metrics = "*"
-requests = "^2.25.1"
-slack-sdk = "^3.4.2"
-texttable = "^1.6.2"
-webexteamssdk = "^1.3"
-
-PyYAML = { version = "~6.0", optional = true }
 certifi = { version = ">=2021.5.30", optional = true }
 cloudvision = { version = "^1.1", optional = true }
 cvprac = { version = "^1.0.6", optional = true }
@@ -52,14 +43,21 @@ ipfabric = { version = "~6.0.9", optional = true }
 ipfabric-diagrams = { version = "~6.0.2", optional = true }
 isodate =  { version = "^0.6.1", optional = true }
 meraki = { version = "^1.7.2", optional = true }
+nautobot = "^1.4.0"
+nautobot-capacity-metrics = "*"
 netmiko = { version = "^3.4.0", optional = true }
 netutils = { version = "^1.1.0", optional = true }
 pan-os-python = { version = "^1.3.0", optional = true }
 prettytable = { version = "^2.1.0", optional = true }
 protobuf = { version = "^3.17", optional = true }
 pydantic = { version = "^1.8.2", optional = true }
+python = "^3.7.2"
+requests = ">=2.25.1"
 schema-enforcer = { version = "^1.2.1", optional = true }
+slack-sdk = "^3.4.2"
 termcolor = { version = "1.1.0", optional = true }
+texttable = "^1.6.2"
+webexteamssdk = "^1.3"
 
 [tool.poetry.dev-dependencies]
 black = "*"
@@ -113,7 +111,7 @@ all = [
 aci = [
     "prettytable",
 ]
-arista_cloudvision = [
+aristacv = [
     "certifi",
     "cloudvision",
     "cvprac",

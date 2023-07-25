@@ -1,4 +1,4 @@
-"""Unit tests for nautobot_chatops.integrations.arista_cloudvision."""
+"""Unit tests for Arista CloudVision integration API."""
 from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse

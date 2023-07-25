@@ -11,10 +11,22 @@
   A multi-platform ChatOps bot App for <a href="https://github.com/nautobot/nautobot">Nautobot</a>.
 </p>
 
-- Support for multiple chat platforms (currently Slack, Microsoft Teams, Mattermost, and WebEx)
-- Write a command once and run it on every supported platform, including rich content formatting
+- Support for multiple chat platforms:
+    - Mattermost
+    - Microsoft Teams
+    - Slack
+    - Cisco Webex
+- Support for multiple integrations:
+    - Cisco ACI
+    - AWX / Ansible Tower
+    - Arista CloudVision
+    - Grafana
+    - IPFabric
+    - Cisco Meraki
+    - Palo Alto Panorama
+- Write a command once and run it on every supported platform, including rich content formatting.
 - Extensible - other Nautobot plugins can provide additional commands which will be dynamically discovered.
-- Automatic generation of basic help menus (accessed via `help`, `/command help`, or `/command sub-command help`)
+- Automatic generation of basic help menus (accessed via `help`, `/command help`, or `/command sub-command help`).
 - Metrics of command usage via the `nautobot_capacity_metrics` plugin.
 
 ## Documentation
@@ -23,9 +35,10 @@ Full web-based HTML documentation for this app can be found over on the [Nautobo
 
 - [User Guide](https://docs.nautobot.com/projects/chatops/en/latest/user/app_overview/) - Overview, Using the App, Getting Started
 - [Administrator Guide](https://docs.nautobot.com/projects/chatops/en/latest/admin/install/) - How to Install, Configure, Upgrade, or Uninstall the App.
-- [Developer Guide](https://docs.nautobot.com/projects/chatops/en/latest/dev/dev_contributing/) - Extending the App, Code Reference, Contribution Guide.
+- [Developer Guide](https://docs.nautobot.com/projects/chatops/en/latest/dev/contributing/) - Extending the App, Code Reference, Contribution Guide.
 - [Release Notes / Changelog](https://docs.nautobot.com/projects/chatops/en/latest/admin/release_notes/)
 - [Frequently Asked Questions](https://docs.nautobot.com/projects/chatops/en/latest/user/app_faq/)
+- [Glossary](https://docs.nautobot.com/projects/chatops/en/latest/glossary/)
 
 ## Try it Out
 
@@ -51,5 +64,40 @@ Sign up [here](https://slack.networktocode.com/)
 ## Acknowledgements
 
 This project includes code originally written in separate plugins, which have been merged into this project:
-- [nautobot-plugin-chatops-ansible](https://github.com/nautobot/nautobot-plugin-chatops-ansible): Thanks [@chipn](https://github.com/chipn), [@dgjustice](https://github.com/dgjustice), [@jvanderaa](https://github.com/jvanderaa), [@jeffkala](https://github.com/jeffkala), [@smk4664](https://github.com/smk4664), [@ubajze](https://github.com/ubajze)
-- [nautobot-plugin-chatops-meraki](https://github.com/nautobot/nautobot-plugin-chatops-meraki): Thanks [@qduk](https://github.com/qduk), [@jedelman8](https://github.com/jedelman8), [@jeffkala](https://github.com/jeffkala), [@whitej6](https://github.com/whitej6), [@ubajze](https://github.com/ubajze), [@ubajze](https://github.com/ubajze)
+
+- [nautobot-plugin-chatops-aci](https://github.com/nautobot/nautobot-plugin-chatops-aci):
+    Thanks
+    [@mamullen13316](https://github.com/mamullen13316),
+    [@smk4664](https://github.com/smk4664),
+    [@ubajze](https://github.com/ubajze),
+    [@whitej6](https://github.com/whitej6),
+- [nautobot-plugin-chatops-ansible](https://github.com/nautobot/nautobot-plugin-chatops-ansible):
+    Thanks
+    [@chipn](https://github.com/chipn),
+    [@dgjustice](https://github.com/dgjustice),
+    [@jeffkala](https://github.com/jeffkala),
+    [@jvanderaa](https://github.com/jvanderaa),
+    [@matt852](https://github.com/matt852),
+    [@smk4664](https://github.com/smk4664),
+    [@ubajze](https://github.com/ubajze),
+    [@whitej6](https://github.com/whitej6),
+- [nautobot-plugin-chatops-meraki](https://github.com/nautobot/nautobot-plugin-chatops-meraki):
+    Thanks
+    [@jedelman8](https://github.com/jedelman8),
+    [@jeffkala](https://github.com/jeffkala),
+    [@qduk](https://github.com/qduk),
+    [@tim-fiola](https://github.com/tim-fiola),
+    [@ubajze](https://github.com/ubajze),
+    [@whitej6](https://github.com/whitej6),
+- [nautobot-plugin-chatops-panorama](https://github.com/nautobot/nautobot-plugin-chatops-panorama):
+    Thanks
+    [@FragmentedPacket](https://github.com/FragmentedPacket),
+    [@PhillSimonds](https://github.com/PhillSimonds),
+    [@armartirosyan](https://github.com/armartirosyan),
+    [@itdependsnetworks](https://github.com/itdependsnetworks),
+    [@jamesholland-uk](https://github.com/jamesholland-uk),
+    [@jdrew82](https://github.com/jdrew82),
+    [@matt852](https://github.com/matt852),
+    [@qduk](https://github.com/qduk),
+    [@ubajze](https://github.com/ubajze),
+    [@whitej6](https://github.com/whitej6),

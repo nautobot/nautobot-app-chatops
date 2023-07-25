@@ -17,10 +17,13 @@ theme:
     - "navigation.tracking"
     - "navigation.tabs"
     - "navigation.tabs.sticky"
+    - "navigation.footer"
     - "search.suggest"
     - "search.highlight"
     - "search.share"
     - "navigation.indexes"
+    - "content.action.edit"
+    - "content.action.view"
   favicon: "assets/favicon.ico"
   logo: "assets/nautobot_logo.svg"
   palette:
@@ -78,19 +81,18 @@ markdown_extensions:
   - "pymdownx.inlinehilite"
   - "pymdownx.snippets"
   - "pymdownx.superfences"
-
+  - "footnotes"
 plugins:
   - "search"
   - "include-markdown"
   - "mkdocs-version-annotations"
-  - mkdocstrings:
+  - "mkdocstrings":
       default_handler: "python"
       handlers:
         python:
           paths: ["."]
           options:
             show_root_heading: true
-
 watch:
   - "README.md"
 
@@ -107,8 +109,8 @@ nav:
           - "admin/install/mattermost_setup.md"
           - "admin/install/webex_setup.md"
           - "admin/install/microsoft_teams_setup.md"
-      - Upgrade: "admin/admin_upgrade.md"
-      - Uninstall: "admin/admin_uninstall.md"
+      - Upgrade: "admin/upgrade.md"
+      - Uninstall: "admin/uninstall.md"
       - Compatibility Matrix: "admin/compatibility_matrix.md"
       - Release Notes:
           - "admin/release_notes/index.md"
@@ -124,8 +126,7 @@ nav:
           - v1.2: "admin/release_notes/version_1.2.md"
           - v1.1: "admin/release_notes/version_1.1.md"
   - Developer Guide:
-      - Extending the App: "dev/dev_extending.md"
-      - Contributing to the App: "dev/dev_contributing.md"
+      - Contributing to the App: "dev/contributing.md"
       - Design Documentation: "dev/design.md"
       - Development Environment: "dev/dev_environment.md"
       - Release Checklist: "dev/release_checklist.md"

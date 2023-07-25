@@ -1,106 +1,120 @@
-# Installing the App in Nautobot
+# Nautobot ChatOps Installation Guide
 
-There are four main phases to enable Nautobot ChatOps:
+This guide outlines the process of enabling Nautobot ChatOps, which includes:
 
-1. Configure the specific chat platform
-2. Install the plugin
-3. Configure `nautobot_config.py` to support nautobot-chatops
-4. Grant access to the chatbot in the Nautobot Web UI
+1. [Configuring the specific chat platform](#chat-platforms-configuration)
+2. [Installing the App](#installation-guide)
+3. [Configuring the App](#configuration-guide)
+4. [Granting chatbot access in the Nautobot Web UI](#granting-access-to-the-chat-platform)
+5. [Testing the installation](#test-your-chatbot)
+6. [Configuring integrations](#integrations-configuration)
+
+{% include-markdown '../../glossary.md' heading-offset=1 %}
 
 ## Prerequisites
 
-- The plugin is compatible with Nautobot 1.2.0 and higher.
-- Databases supported: PostgreSQL, MySQL
-- Publicly accessible URL for Nautobot or ability/permission to use ngrok to get a publicly accessible URL for Nautobot
-- `sudo` access on the Nautobot server
-- Administrative access within the Nautobot Web UI
+Ensure the following before beginning the installation:
 
-!!! note
-    Some chat platforms, such as Slack, require a signed certificate from a trusted provider on the Nautobot server in order
-    to allow the application platform to communicate with the Nautobot server
+- Nautobot 1.4.0 or higher is installed.
+- Your chat platform can access Nautobot via an HTTPS URL.
+    - Some chat platforms require **SSL certificate verification** to communicate with the Nautobot server.
+    - For development, you may use HTTP.
+- You have `sudo` access on the Nautobot server.
+- You have administrative access within the Nautobot Web UI.
 
-## Access Requirements
-
-### [Setup for Slack](slack_setup.md)
-
-### [Setup for Microsoft Teams](microsoft_teams_setup.md)
-
-### [Setup for WebEx](webex_setup.md)
-
-### [Setup for Mattermost](mattermost_setup.md)
-
-## Install Guide
-
-!!! note
-    Plugins can be installed manually or using Python's `pip`. See the [nautobot documentation](https://nautobot.readthedocs.io/en/latest/plugins/#install-the-package) for more details. The pip package name for this plugin is [`nautobot_chatops`](https://pypi.org/project/nautobot_chatops/).
+### Potential Apps Conflicts
 
 !!! warning
-    You should follow the [Nautobot Plugin Installation Instructions](https://nautobot.readthedocs.io/en/stable/plugins/#installing-plugins) for the full and up-to-date list of instructions.
+    If upgrading from `1.x` version to `2.x` version of `nautobot-chatops` App, note that it now incorporates features previously provided by individual apps.
 
-The plugin is available as a Python package via PyPI and can be installed with `pip`:
+Conflicting Apps list:
+
+- `nautobot_plugin_chatops_aci`
+- `nautobot_plugin_chatops_ansible`
+- `nautobot_plugin_chatops_arista_cloudvision`
+- `nautobot_plugin_chatops_ipfabric`
+- `nautobot_plugin_chatops_grafana`
+- `nautobot_plugin_chatops_meraki`
+- `nautobot_plugin_chatops_panorama`
+
+To prevent conflicts during `nautobot-chatops` upgrade:
+
+- Remove conflicting applications from the `PLUGINS` section in your Nautobot configuration before enabling the latest `nautobot-chatops` version.
+- Transfer the configuration for conflicting apps to the `PLUGIN_CONFIG["nautobot_chatops"]` section of your Nautobot configuration. See `development/nautobot_config.py` for an example. Each [integration set up guide](#integrations-configuration) contains a chapter with upgrade instructions.
+- Remove conflicting applications from your project's requirements.
+
+These steps will help prevent issues during `nautobot-chatops` upgrades. Always back up your data and thoroughly test your configuration after these changes.
+
+!!! warning
+    If conflicting Apps remain in `PLUGINS`, the `nautobot-chatops` App will raise an exception during startup to prevent potential conflicts.
+
+## Chat Platforms Configuration
+
+The `nautobot-chatops` package supports multiple chat platforms.
+
+Set up your chosen chat platform:
+
+- [Mattermost](./mattermost_setup.md)
+- [Microsoft Teams](./microsoft_teams_setup.md)
+- [Slack](./slack_setup.md)
+- [Cisco Webex](./webex_setup.md)
+
+## Installation Guide
+
+!!! note
+    Install the App manually or via Python's `pip`. For detailed information, visit the [Nautobot documentation](https://nautobot.readthedocs.io/en/latest/plugins/#install-the-package). The pip package for this App is [`nautobot-chatops`](https://pypi.org/project/nautobot-chatops/).
+
+!!! warning
+    Follow the [Nautobot App Installation Instructions](https://nautobot.readthedocs.io/en/stable/plugins/#installing-plugins) for complete and most recent guidelines.
+
+The App is a Python package available on PyPI, installable with `pip`:
 
 ```shell
 pip install nautobot-chatops
 ```
 
-To ensure Nautobot Plugin ChatOps is automatically re-installed during future upgrades, create a file named `local_requirements.txt` (if not already existing) in the Nautobot root directory (alongside `requirements.txt`) and list the `nautobot-chatops` package as the Nautobot user:
+To use specific integrations, add them as extra dependencies:
+
+```shell
+pip install nautobot-chatops[ansible]
+```
+
+To auto-install Nautobot ChatOps during future upgrades, add `nautobot-chatops` to `local_requirements.txt` (create if not
+
+ present) in the Nautobot root directory, adjacent to `requirements.txt`:
 
 ```no-highlight
 echo nautobot-chatops >> local_requirements.txt
 ```
 
-Once installed, the plugin needs to be enabled in your Nautobot configuration. The following block of code below shows the additional configuration required to be added to your `nautobot_config.py` file:
+After installation, enable the App in your Nautobot configuration by updating your `nautobot_config.py` file:
 
-- Append `"nautobot_chatops"` to the `PLUGINS` list.
-- Append the `"nautobot_chatops"` dictionary to the `PLUGINS_CONFIG` dictionary and override any defaults.
+- Include `"nautobot_chatops"` in the `PLUGINS` list.
+- Add the `"nautobot_chatops"` dictionary to `PLUGINS_CONFIG` and override defaults if necessary.
 
 ```python
 # In your nautobot_config.py
 PLUGINS = ["nautobot_chatops"]
 
-# PLUGINS_CONFIG = {
-#   "nautobot_chatops": {
-#     ADD YOUR SETTINGS HERE
-#   }
-# }
+PLUGINS_CONFIG = {
+    "nautobot_chatops": {
+        # ADD YOUR SETTINGS HERE
+    }
+}
 ```
 
-### ⚠️ Important Warning: Conflicting Applications
+## Configuration Guide
 
-If you are upgrading to the latest version of the `nautobot-chatops` app, please be aware that it now includes the functionality previously provided by the following apps:
+Adjust the App's behavior with the following settings:
 
-- 'nautobot_plugin_chatops_ansible'
-- 'nautobot_plugin_chatops_ipfabric'
-- `nautobot_plugin_chatops_aci`
-- `nautobot_plugin_chatops_ansible`
-- `nautobot_plugin_chatops_grafana`
-- `nautobot_plugin_chatops_meraki`
-- `nautobot_plugin_chatops_panorama`
+| Configuration Setting | Description | Mandatory? | Default |
+| - | - | - | - |
+| `delete_input_on_submission` | Removes the input prompt from the chat history after user input | No | `False` |
+| `restrict_help` | Shows Help prompt only to users based on their Access Grants | No | `False` |
+| `send_all_messages_private` | Ensures only the person interacting with the bot sees the responses | No | `False` |
+| `session_cache_timeout` | Controls session cache | No | `86400` |
 
-- `nautobot_plugin_chatops_arista_cloudvision`
-
-Therefore, you should **not** have these apps installed and enabled at the same time as this can lead to conflicts and unexpected behavior.
-
-In order to prevent conflicts when upgrading `nautobot-chatops`, it is necessary to perform the following steps:
-
-- Remove conflicting applications from the `PLUGINS` section in your Nautobot configuration. This should be done before enabling the latest version of `nautobot-chatops`.
-- Relocate the configuration for conflicting apps to the `PLUGIN_CONFIG["nautobot_chatops"]` section of your Nautobot configuration. See `development/nautobot_config.py` for an example of how this should look.
-- Remove conflicting applications from your project's requirements.
-
-By following these steps, you can avoid common issues encountered when upgrading `nautobot-chatops`. Please remember to backup your data and thoroughly test your configuration after performing these changes.
-
-Please note: If you fail to remove conflicting apps from `PLUGINS`, the `nautobot-chatops` app will raise an exception during startup to prevent potential conflicts.
-
-## App Configuration
-
-The plugin behavior can be controlled with the following list of settings:
-
-| Configuration Setting        | Description | Mandatory? | Default |
-| ---------------------------- | ----------- | ---------- | ------- |
-| `delete_input_on_submission` | After prompting the user for additional inputs, delete the input prompt from the chat history | No | `False` |
-| `restrict_help` | Only show Help prompt for users based on their Access Grants | No | `False` |
-
-## Grant Access to the Chatbot
+## Granting Access to the Chat Platform
 
 {%
     include-markdown '../../models/accessgrant.md'
@@ -110,4 +124,18 @@ The plugin behavior can be controlled with the following list of settings:
 
 ## Test Your Chatbot
 
-Now test your chatbot within your specific chat application.
+Finally, test your chatbot's functionality within your chosen chat application, using a command like `/nautobot get-devices`.
+
+## Integrations Configuration
+
+The `nautobot-chatops` package includes multiple integrations. Each requires extra dependencies defined in `pyproject.toml`. See the [installation guide](#installation-guide) for instructions on installing these dependencies.
+
+Set up integrations using the specific guides:
+
+- [Cisco ACI](./aci_setup.md)
+- [AWX / Ansible Tower](./ansible_setup.md)
+- [Arista CloudVision](./aristacv_setup.md)
+- [Grafana](./grafana_setup.md)
+- [IPFabric](./ipfabric_setup.md)
+- [Cisco Meraki](./meraki_setup.md)
+- [Palo Alto Panorama](./panorama_setup.md)

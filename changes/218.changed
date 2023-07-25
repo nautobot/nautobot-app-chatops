@@ -1,0 +1,4 @@
+- Added `/clear` command to development Mattermost.
+- Improved integration workers loading.
+- Sorted App config and environment variables.
+- Sorted pyproject configurations.
