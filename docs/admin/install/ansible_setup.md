@@ -20,17 +20,13 @@ Create a top-level command named `ansible` in your enabled chat platform. For de
 
 You must define the following values in your `nautobot_config.py` file:
 
-```
-| Configuration Setting | Mandatory? | Default     |
+| Configuration Setting | Mandatory? | Default |
 | --------------------- | ---------- | ----------- |
-| `enable_ansible`      | Yes        | False       |
-| `tower_password`      | No         |             |
-| `tower_uri`           | No         |             |
-| `tower_username`      | No         |             |
-| `tower_verify_ssl`    | No         | True        |
-```
-
-R: Convert each configuration item to a table row with the setting name, whether it is mandatory or not, and the default value if available.
+| `enable_ansible` | Yes | False |
+| `tower_password` | No | |
+| `tower_uri` | No | |
+| `tower_username` | No | |
+| `tower_verify_ssl` | No | True |
 
 Below is an example snippet from `development/nautobot_config.py` that demonstrates how to enable and configure AWX / Ansible Tower integration:
 

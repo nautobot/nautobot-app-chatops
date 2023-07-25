@@ -81,6 +81,31 @@ This project includes code originally written in separate plugins, which have be
     [@smk4664](https://github.com/smk4664),
     [@ubajze](https://github.com/ubajze),
     [@whitej6](https://github.com/whitej6),
+- [nautobot-plugin-chatops-arista-cloudvision](https://github.com/nautobot/nautobot-plugin-chatops-arista-cloudvision):
+    Thanks
+    [@qduk](https://github.com/qduk),
+    [@ubajze](https://github.com/ubajze),
+    [@whitej6](https://github.com/whitej6),
+- [nautobot-plugin-chatops-grafana](https://github.com/nautobot/nautobot-plugin-chatops-grafana):
+    Thanks
+    [@jedelman8](https://github.com/jedelman8),
+    [@josh-silvas](https://github.com/josh-silvas),
+    [@nniehoff](https://github.com/nniehoff),
+    [@tim-fiola](https://github.com/tim-fiola),
+    [@ubajze](https://github.com/ubajze),
+    [@whitej6](https://github.com/whitej6),
+- [nautobot-plugin-chatops-ipfabric](https://github.com/nautobot/nautobot-plugin-chatops-ipfabric):
+    Thanks
+    [@alhogan](https://github.com/alhogan),
+    [@chadell](https://github.com/chadell),
+    [@chipn](https://github.com/chipn),
+    [@justinjeffery-ipf](https://github.com/justinjeffery-ipf),
+    [@nniehoff](https://github.com/nniehoff),
+    [@pke11y](https://github.com/pke11y),
+    [@scetron](https://github.com/scetron),
+    [@smk4664](https://github.com/smk4664),
+    [@ubajze](https://github.com/ubajze),
+    [@whitej6](https://github.com/whitej6),
 - [nautobot-plugin-chatops-meraki](https://github.com/nautobot/nautobot-plugin-chatops-meraki):
     Thanks
     [@jedelman8](https://github.com/jedelman8),
