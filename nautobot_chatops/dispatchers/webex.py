@@ -94,6 +94,16 @@ class WebExDispatcher(AdaptiveCardsDispatcher):
 
         return None
 
+    @classmethod
+    def lookup_user_id_by_email(cls, email) -> Optional[str]:
+        instance = cls(context=None)
+        try:
+            response = instance.client.people.list(email=email)
+            for person in response:
+                return person.id
+        except ApiError:
+            return None
+
     @BACKEND_ACTION_MARKDOWN.time()
     def send_markdown(self, message, ephemeral=None):
         """Send a markdown-formatted text message to the user/channel specified by the context."""

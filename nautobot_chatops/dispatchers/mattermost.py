@@ -310,6 +310,15 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
 
         return None
 
+    @classmethod
+    def lookup_user_id_by_email(cls, email) -> Optional[str]:
+        instance = cls(context=None)
+        try:
+            response = instance.mm_client.get(f"/users/email/{email}")
+            return response["id"]
+        except NotFoundException:
+            return None
+
     # More complex APIs for presenting structured data - these typically build on the more basic functions below
     def command_response_header(self, command, subcommand, args, description="information", image_element=None):
         """Construct a consistently forwarded header including the command that was issued.

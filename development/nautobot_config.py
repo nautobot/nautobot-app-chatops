@@ -172,6 +172,7 @@ PLUGINS_CONFIG = {
         "meraki_dashboard_api_key": os.environ.get("MERAKI_API_KEY"),
         "microsoft_app_id": os.environ.get("MICROSOFT_APP_ID"),
         "microsoft_app_password": os.environ.get("MICROSOFT_APP_PASSWORD"),
+        "microsoft_tenant_id": os.environ.get("MICROSOFT_TENANT_ID"),
         "restrict_help": _get_bool_env("NAUTOBOT_CHATOPS_RESTRICT_HELP"),
         "slack_api_token": os.environ.get("SLACK_API_TOKEN"),
         "slack_app_token": os.environ.get("SLACK_APP_TOKEN"),

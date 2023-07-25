@@ -73,6 +73,7 @@ class NautobotChatOpsConfig(PluginConfig):
         # Microsoft-Teams-specific settings
         "microsoft_app_id": None,
         "microsoft_app_password": None,
+        "microsoft_tenant_id": None,
         # WebEx-specific settings
         "webex_token": None,
         "webex_signing_secret": None,

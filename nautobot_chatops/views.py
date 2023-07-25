@@ -16,7 +16,14 @@ from django_tables2 import RequestConfig
 
 from nautobot.core.views import generic
 from nautobot.utilities.paginator import EnhancedPaginator, get_paginate_count
-from nautobot.utilities.forms import TableConfigForm
+try:
+    NAUTOBOT = "2.x"
+    from nautobot.core.utils.requests import normalize_querydict
+    from nautobot.core.forms import TableConfigForm, restrict_form_fields
+except ImportError:
+    NAUTOBOT = "1.x"
+    from nautobot.utilities.utils import normalize_querydict
+    from nautobot.utilities.forms import TableConfigForm, restrict_form_fields
 from nautobot.utilities.utils import csv_format
 
 from nautobot_chatops.workers import get_commands_registry
@@ -232,6 +239,30 @@ class ChatOpsAccountLinkEditView(generic.ObjectEditView):
         obj.nautobot_user = request.user
         return super().alter_obj(obj, request, url_args, url_kwargs)
 
+    def get(self, request, *args, **kwargs):
+        obj = self.alter_obj(self.get_object(kwargs), request, args, kwargs)
+
+        if NAUTOBOT == "2.x":
+            initial_data = normalize_querydict(request.GET, form_class=self.model_form)
+        else:
+            initial_data = normalize_querydict(request.GET)
+        if not initial_data.get("email") and request.user.is_authenticated:
+            initial_data["email"] = request.user.email
+        form = self.model_form(instance=obj, initial=initial_data)
+        restrict_form_fields(form, request.user)
+
+        return render(
+            request,
+            self.template_name,
+            {
+                "obj": obj,
+                "obj_type": self.queryset.model._meta.verbose_name,
+                "form": form,
+                "return_url": self.get_return_url(request, obj),
+                "editing": obj.present_in_database,
+                **self.get_extra_context(request, obj),
+            },
+        )
 
 class ChatOpsAccountLinkDeleteView(generic.ObjectDeleteView):
     queryset = ChatOpsAccountLink.objects.all()
