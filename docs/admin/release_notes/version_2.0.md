@@ -27,4 +27,6 @@
 - [#218](https://github.com/nautobot/nautobot-plugin-chatops/issues/218) - Sorted App config and environment variables.
 - [#218](https://github.com/nautobot/nautobot-plugin-chatops/issues/218) - Sorted pyproject configurations.
 
+### Removed
 
+- Removed support for Python 3.7
