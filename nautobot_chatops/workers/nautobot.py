@@ -1,8 +1,13 @@
 """Worker functions for interacting with Nautobot."""
 
+import uuid
+
+
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db.models import Count
 from django.contrib.contenttypes.models import ContentType
+from django.shortcuts import get_object_or_404
 from django_rq import job
 
 from nautobot.dcim.models.device_components import Interface, FrontPort, RearPort
@@ -11,7 +16,10 @@ from nautobot.dcim.choices import DeviceStatusChoices
 from nautobot.dcim.models import Device, Site, DeviceRole, DeviceType, Manufacturer, Rack, Region, Cable
 from nautobot.ipam.models import VLAN, Prefix, VLANGroup, Role
 from nautobot.tenancy.models import Tenant
-from nautobot.extras.models import Status
+from nautobot.extras.context_managers import web_request_context
+from nautobot.extras.jobs import run_job
+from nautobot.extras.models import Job, JobResult, ScheduledJob, Status
+from nautobot.extras.utils import get_job_content_type
 
 from nautobot_chatops.choices import CommandStatusChoices
 from nautobot_chatops.workers import subcommand_of, handle_subcommands
@@ -1015,6 +1023,43 @@ def get_circuit_providers(dispatcher, *args):
     dispatcher.send_large_table(header, rows)
     return CommandStatusChoices.STATUS_SUCCEEDED
 
+
+@subcommand_of("nautobot")
+def init_job(dispatcher, job_name):
+    """Initiate a job in Nautobot by job name."""
+
+    # Replace this with user mapping
+    job_username = "meganerd"
+
+    # Get instance of the user who will run the job
+    User = get_user_model()
+    user_instance = User.objects.get(username=job_username)
+ 
+    # Get the job model instance using job name
+    job_model = Job.objects.get(name=job_name)
+    job_class_path = job_model.class_path
+    
+    # Create an instance of job result
+    job_result = JobResult.objects.create(
+        name=job_model.class_path,
+        job_kwargs={"data": {}, "commit": True, "profile": False},
+        obj_type=get_job_content_type(),
+        user=None, #user_instance,
+        job_model=job_model,
+        job_id=uuid.uuid4(),
+    )
+    
+    # Emulate HTTP context for the request as the user
+    with web_request_context(user=user_instance) as request:
+        run_job(data={}, request=request, commit=True, job_result_pk=job_result.pk)
+
+    blocks = [
+        dispatcher.markdown_block(f"job {job_class_path} initated!"),
+    ]
+    
+    dispatcher.send_blocks(blocks)
+
+    return CommandStatusChoices.STATUS_SUCCEEDED
 
 @subcommand_of("nautobot")
 def about(dispatcher, *args):
