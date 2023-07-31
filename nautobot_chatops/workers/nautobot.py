@@ -7,7 +7,6 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db.models import Count
 from django.contrib.contenttypes.models import ContentType
-from django.shortcuts import get_object_or_404
 from django_rq import job
 
 from nautobot.dcim.models.device_components import Interface, FrontPort, RearPort
@@ -18,7 +17,7 @@ from nautobot.ipam.models import VLAN, Prefix, VLANGroup, Role
 from nautobot.tenancy.models import Tenant
 from nautobot.extras.context_managers import web_request_context
 from nautobot.extras.jobs import run_job
-from nautobot.extras.models import Job, JobResult, ScheduledJob, Status
+from nautobot.extras.models import Job, JobResult, Status
 from nautobot.extras.utils import get_job_content_type
 
 from nautobot_chatops.choices import CommandStatusChoices
@@ -1031,8 +1030,8 @@ def init_job(dispatcher, job_name):
     job_username = "meganerd"
 
     # Get instance of the user who will run the job
-    User = get_user_model()
-    user_instance = User.objects.get(username=job_username)
+    user = get_user_model()
+    user_instance = user.objects.get(username=job_username)
 
     # Get the job model instance using job name
     job_model = Job.objects.get(name=job_name)
