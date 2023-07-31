@@ -1034,21 +1034,21 @@ def init_job(dispatcher, job_name):
     # Get instance of the user who will run the job
     User = get_user_model()
     user_instance = User.objects.get(username=job_username)
- 
+
     # Get the job model instance using job name
     job_model = Job.objects.get(name=job_name)
     job_class_path = job_model.class_path
-    
+
     # Create an instance of job result
     job_result = JobResult.objects.create(
         name=job_model.class_path,
         job_kwargs={"data": {}, "commit": True, "profile": False},
         obj_type=get_job_content_type(),
-        user=None, #user_instance,
+        user=None,  # user_instance,
         job_model=job_model,
         job_id=uuid.uuid4(),
     )
-    
+
     # Emulate HTTP context for the request as the user
     with web_request_context(user=user_instance) as request:
         run_job(data={}, request=request, commit=True, job_result_pk=job_result.pk)
@@ -1056,10 +1056,11 @@ def init_job(dispatcher, job_name):
     blocks = [
         dispatcher.markdown_block(f"job {job_class_path} initated!"),
     ]
-    
+
     dispatcher.send_blocks(blocks)
 
     return CommandStatusChoices.STATUS_SUCCEEDED
+
 
 @subcommand_of("nautobot")
 def about(dispatcher, *args):
