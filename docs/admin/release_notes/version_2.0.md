@@ -2,7 +2,7 @@
 # v2.0 Release Notes
 
 <!-- towncrier release notes start -->
-## [v2.0.0 (2023-07-25)](https://github.com/nautobot/nautobot-plugin-chatops/releases/tag/v2.0.0)
+## [v2.0.0 (2023-07-31)](https://github.com/nautobot/nautobot-plugin-chatops/releases/tag/v2.0.0)
 
 ### Added
 
