@@ -1027,7 +1027,6 @@ def get_circuit_providers(dispatcher, *args):
 @subcommand_of("nautobot")
 def init_job(dispatcher, job_name):
     """Initiate a job in Nautobot by job name."""
-
     # Replace this with user mapping
     job_username = "meganerd"
 
