@@ -1043,7 +1043,7 @@ def init_job(dispatcher, job_name):
         name=job_model.class_path,
         job_kwargs={"data": {}, "commit": True, "profile": False},
         obj_type=get_job_content_type(),
-        user=None,  # user_instance,
+        user=user_instance,
         job_model=job_model,
         job_id=uuid.uuid4(),
     )
