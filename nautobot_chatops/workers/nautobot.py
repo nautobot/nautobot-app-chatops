@@ -1052,7 +1052,7 @@ def init_job(dispatcher, job_name):
         run_job(data={}, request=request, commit=True, job_result_pk=job_result.pk)
 
     blocks = [
-        dispatcher.markdown_block(f"job {job_class_path} initated!"),
+        dispatcher.markdown_block(f"The requested job {job_class_path} was initiated!"),
     ]
 
     dispatcher.send_blocks(blocks)
