@@ -133,7 +133,7 @@ class NautobotChatOpsConfig(PluginConfig):
     }
 
     max_version = "1.999"
-    min_version = "1.4.0"
+    min_version = "1.5.4"
     caching_config = {}
 
     def ready(self):

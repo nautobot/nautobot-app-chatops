@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nautobot-chatops"
-version = "1.11.0"
+version = "2.0.0"
 description = "A plugin providing chatbot capabilities for Nautobot"
 authors = ["Network to Code, LLC <opensource@networktocode.com>"]
 readme = "README.md"
@@ -43,7 +43,7 @@ ipfabric = { version = "~6.0.9", optional = true }
 ipfabric-diagrams = { version = "~6.0.2", optional = true }
 isodate =  { version = "^0.6.1", optional = true }
 meraki = { version = "^1.7.2", optional = true }
-nautobot = "^1.4.0"
+nautobot = "^1.5.4"
 nautobot-capacity-metrics = "*"
 netmiko = { version = "^3.4.0", optional = true }
 netutils = { version = "^1.1.0", optional = true }
@@ -51,7 +51,7 @@ pan-os-python = { version = "^1.3.0", optional = true }
 prettytable = { version = "^2.1.0", optional = true }
 protobuf = { version = "^3.17", optional = true }
 pydantic = { version = "^1.8.2", optional = true }
-python = "^3.7.2"
+python = "^3.8.0"
 requests = ">=2.25.1"
 schema-enforcer = { version = "^1.2.1", optional = true }
 slack-sdk = "^3.4.2"
@@ -63,19 +63,21 @@ webexteamssdk = "^1.3"
 black = "*"
 yamllint = "*"
 bandit = "*"
-pylint = "*"
+# Pinning older pylint due to https://github.com/pylint-dev/pylint/issues/7381
+pylint = "2.13.9"
 pylint-django = "*"
 pydocstyle = "*"
 prybar = "*"
 invoke = "*"
 flake8 = "^3.9.2"
+griffe = "0.30.1"
 # Rendering docs to HTML
 mkdocs = "1.3.1"
 # Material for mkdocs theme
 mkdocs-material = "8.4.2"
 # Automatic documentation from sources, for MkDocs
-mkdocstrings = "0.19"
-mkdocstrings-python = "0.7.1"
+mkdocstrings = "0.22.0"
+mkdocstrings-python = "1.1.2"
 # Render custom markdown for version added/changed/remove notes
 mkdocs-version-annotations = "~1.0.0"
 # Allow Markdown files to include other files
@@ -142,6 +144,7 @@ panorama = [
     "netutils",
     "pan-os-python",
 ]
+nautobot = ["nautobot"]
 
 [tool.black]
 line-length = 120
@@ -201,7 +204,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.towncrier]
 package = "nautobot_chatops"
 directory = "changes"
-filename = "docs/admin/release_notes/version_1.11.md"
+filename = "docs/admin/release_notes/version_2.0.md"
 template = "development/towncrier_template.j2"
 start_string = "<!-- towncrier release notes start -->"
 issue_format = "[#{issue}](https://github.com/nautobot/nautobot-plugin-chatops/issues/{issue})"
