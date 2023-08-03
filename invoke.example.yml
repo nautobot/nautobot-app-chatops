@@ -1,0 +1,14 @@
+---
+nautobot_chatops:
+  project_name: "nautobot-chatops"
+  nautobot_ver: "1.5.4"
+  local: false
+  python_ver: "3.8"
+  compose_dir: "development"
+  compose_files:
+    - "docker-compose.base.yml"
+    - "docker-compose.redis.yml"
+    - "docker-compose.postgres.yml"
+    - "mattermost/docker-compose.yml"
+    - "ansible/docker-compose.yml"
+    - "docker-compose.dev.yml"

@@ -1,0 +1,9 @@
+{# templates/nautobot_chatops_grafana/panel_list.html #}
+{% extends 'generic/object_list.html' %}
+
+{% block buttons %}
+<a  href="{% url 'plugins:nautobot_chatops:grafanapanel_sync' %}"
+    class="btn btn-warning" title="Synchronize panels from Grafana">
+    <span class="mdi mdi-database-sync-outline"></span> Sync
+</a>
+{% endblock %}

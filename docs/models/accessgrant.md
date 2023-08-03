@@ -8,8 +8,8 @@ organization, team, channel(room), or user who has access to the chat system.
 
 For most realistic deployments, open and unrestricted access to the bot from any chat account is undesirable.
 Therefore, in this version, access to the chatbot defaults to "deny all" when initially installed, but varying scopes
-(per organization, per channel, per user) and degrees (all commands, all subcommands of a single command,
-single subcommand of a single command) of access can be granted through Nautobot.
+(per organization, per channel, per user) and degrees (all commands, all sub-commands of a single command,
+single sub-command of a single command) of access can be granted through Nautobot.
 
 The access grants are maintained in Nautobot's database for persistence, and are change-logged like other Nautobot records.
 
@@ -30,7 +30,7 @@ but some examples are provided below to help you get started.
 In the simplest realistic configuration example, access to all chatbot commands is granted for all users and
 all channels in a single organization scope.
 
-| Command | Subcommand | Grant type    | Name   | Value       |
+| Command | Sub-command | Grant type    | Name   | Value       |
 | ------- | ---------- | ------------- | ------ | ----------- |
 | `*`     | `*`        | organization  | my-org | `T202B88NN` |
 | `*`     | `*`        | channel(room) | any    | `*`         |
@@ -42,20 +42,20 @@ In this example, Nautobot is providing two separate command groupings, each of w
 different team within the organization. Each team has a dedicated channel on the chat platform, to which access is
 already controlled by other means, so we can allow all users within a given channel access.
 
-| Command   | Subcommand | Grant type    | Name    | Value       |
+| Command   | Sub-command | Grant type    | Name    | Value       |
 | --------- | ---------- | ------------- | ------- | ----------- |
 | `*`       | `*`        | organization  | my-org  | `T202B88NN` |
 | `support` | `*`        | channel(room) | support | `C2020H455` |
 | `devops`  | `*`        | channel(room) | devops  | `C3030I566` |
 | `*`       | `*`        | user          | any     | `*`         |
 
-## Example: Restrict Specific Command and Subcommand to Specific Users in a Specific Channel
+## Example: Restrict Specific Command and Sub-command to Specific Users in a Specific Channel
 
-In this example, Nautobot has a potentially-destructive subcommand that should only be used by a handful of admin users.
-Other subcommands under this subcommand can be used by anyone in the devops channel.
+In this example, Nautobot has a potentially-destructive sub-command that should only be used by a handful of admin users.
+Other sub-commands under this sub-command can be used by anyone in the devops channel.
 Other commands are harmless fun and can be used by any user in the organization in any channel.
 
-| Command   | Subcommand | Grant type    | Name    | Value       |
+| Command   | Sub-command | Grant type    | Name    | Value       |
 | --------- | ---------- | ------------- | ------- | ----------- |
 | `*`       | `*`        | organization  | my-org  | `T202B88NN` |
 | `jokes`   | `*`        | channel(room) | any     | `*`         |
