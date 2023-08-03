@@ -1,4 +1,5 @@
-from unittest.mock import MagicMock, patch
+"""Tests for the /nautobot chatops commands."""
+from unittest.mock import MagicMock
 
 from django.test import TestCase
 from nautobot.dcim.models import Site
