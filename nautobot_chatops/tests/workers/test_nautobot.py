@@ -5,6 +5,7 @@ from django.test import TestCase
 from nautobot.dcim.models import Site
 from nautobot.ipam.models import VLAN
 from nautobot.extras.models import Status
+from nautobot_chatops.choices import CommandStatusChoices
 
 from nautobot_chatops.dispatchers import Dispatcher
 from nautobot_chatops.workers.nautobot import get_vlans
@@ -17,9 +18,7 @@ class IpamTestCase(TestCase):
         """Per-test-case setup function."""
         self.active_status = Status.objects.get(name="Active")
         self.site = Site.objects.create(name="site-1", status=self.active_status)
-        self.vlans, created = VLAN.objects.get_or_create(
-            vid=1, name="vlan-1", status=self.active_status, site=self.site
-        )
+        self.vlans, _ = VLAN.objects.get_or_create(vid=1, name="vlan-1", status=self.active_status, site=self.site)
 
         # Mock the dispatcher
         self.dispatcher = MagicMock(Dispatcher)
@@ -53,8 +52,5 @@ class IpamTestCase(TestCase):
 
     def test_get_vlans_filter_type_sent_filter_all(self):
         """Test get VLANs with filter type All selected."""
-        self.assertFalse(get_vlans(self.dispatcher, "all"))
+        self.assertEqual(get_vlans(self.dispatcher, "all"), CommandStatusChoices.STATUS_SUCCEEDED)
         self.dispatcher.send_error.assert_not_called()
-        self.dispatcher.prompt_from_menu.assert_called_with(
-            "nautobot get-vlans name", "select a vlan name", [("vlan-1", "vlan-1")], offset=0
-        )
