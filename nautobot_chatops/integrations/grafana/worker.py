@@ -9,7 +9,7 @@ from jinja2 import Template
 from django_rq import job
 from django.core.exceptions import FieldError, ObjectDoesNotExist, MultipleObjectsReturned
 from pydantic.error_wrappers import ValidationError  # pylint: disable=no-name-in-module
-from nautobot.utilities.querysets import RestrictedQuerySet
+from nautobot.core.models.querysets import RestrictedQuerySet
 from nautobot_chatops.dispatchers import Dispatcher
 from nautobot_chatops.workers import handle_subcommands, add_subcommand
 from nautobot_chatops.integrations.grafana.models import Panel, PanelVariable

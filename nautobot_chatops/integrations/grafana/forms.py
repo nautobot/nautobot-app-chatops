@@ -11,9 +11,8 @@ from django.forms import (
     MultipleHiddenInput,
 )
 from django.core.serializers.json import DjangoJSONEncoder
-from nautobot.utilities.forms import BootstrapMixin
+from nautobot.core.forms import BootstrapMixin, BulkEditForm
 from nautobot.extras.forms import CustomFieldModelCSVForm
-from nautobot.utilities.forms import BulkEditForm
 from nautobot_chatops.integrations.grafana.models import Dashboard, Panel, PanelVariable
 
 

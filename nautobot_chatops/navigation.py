@@ -1,7 +1,7 @@
 """Plugin additions to the Nautobot navigation menu."""
 
 from nautobot.extras.plugins import PluginMenuItem, PluginMenuButton
-from nautobot.utilities.choices import ButtonColorChoices
+from nautobot.core.choices import ButtonColorChoices
 
 from .integrations.grafana.navigation import menu_items as grafana_menu_items
 

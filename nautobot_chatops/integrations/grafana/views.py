@@ -15,7 +15,7 @@ from nautobot.core.views.generic import (
     BulkDeleteView,
     BulkEditView,
 )
-from nautobot.utilities.forms import ConfirmationForm
+from nautobot.core.forms import ConfirmationForm
 from nautobot_chatops.integrations.grafana.diffsync.sync import run_dashboard_sync, run_panels_sync, run_variables_sync
 from nautobot_chatops.integrations.grafana.tables import PanelViewTable, DashboardViewTable, PanelVariableViewTable
 from nautobot_chatops.integrations.grafana.models import Panel, Dashboard, PanelVariable

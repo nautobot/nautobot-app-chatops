@@ -7,7 +7,7 @@ except ImportError:
 
 from django.urls import reverse
 
-from nautobot.utilities.testing import APITestCase, APIViewTestCases
+from nautobot.core.testing import APITestCase, APIViewTestCases
 from nautobot_chatops.models import AccessGrant, CommandToken
 
 

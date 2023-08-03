@@ -6,7 +6,7 @@ from django.conf import settings
 from django.test import TestCase, override_settings
 from django.test.client import RequestFactory
 
-from nautobot.utilities.testing import ViewTestCases
+from nautobot.core.testing import ViewTestCases
 from nautobot_chatops.api.views.slack import (
     verify_signature as slack_verify_signature,
     generate_signature as slack_generate_signature,

@@ -3,7 +3,7 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 
-from nautobot.utilities.fields import ColorField
+from nautobot.core.models.fields import ColorField
 from nautobot.extras.models.change_logging import ChangeLoggedModel
 from nautobot.core.models import BaseModel
 

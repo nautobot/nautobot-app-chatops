@@ -1,7 +1,7 @@
 """Django table classes for Nautobot."""
 
 from django_tables2 import TemplateColumn, Column, BooleanColumn
-from nautobot.utilities.tables import BaseTable, ToggleColumn, ButtonsColumn
+from nautobot.core.tables import BaseTable, ToggleColumn, ButtonsColumn
 from nautobot_chatops.integrations.grafana.models import Panel, Dashboard, PanelVariable
 
 
