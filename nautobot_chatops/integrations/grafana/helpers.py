@@ -16,6 +16,7 @@ SPECIAL_CHAR = {
     ">": "greater-than",
 }
 
+
 def format_command(command: str) -> str:
     """_format_command_name will format the panel titles into a valid slash command.
 

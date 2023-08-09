@@ -25,7 +25,7 @@ except Exception:
     grafana_urlpatterns = []
     logger = logging.getLogger(__name__)
     logger.warning("Grafana ChatOps integration is not available.", exc_info=True)
-    
+
 
 urlpatterns = [
     path("", NautobotHomeView.as_view(), name="home"),
