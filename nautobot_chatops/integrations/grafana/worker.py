@@ -12,8 +12,7 @@ from pydantic.error_wrappers import ValidationError  # pylint: disable=no-name-i
 from nautobot.utilities.querysets import RestrictedQuerySet
 from nautobot_chatops.dispatchers import Dispatcher
 from nautobot_chatops.workers import handle_subcommands, add_subcommand
-from nautobot_chatops.integrations.grafana.models import Panel, PanelVariable
-from nautobot_chatops.integrations.grafana.helpers import VALID_MODELS
+from nautobot_chatops.integrations.grafana.models import Panel, PanelVariable, VALID_MODELS
 from nautobot_chatops.integrations.grafana.grafana import (
     SLASH_COMMAND,
     LOGGER,
