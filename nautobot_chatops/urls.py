@@ -1,4 +1,5 @@
 """Django urlpatterns declaration for nautobot_chatops plugin."""
+import logging
 
 from django.urls import path
 
@@ -17,7 +18,14 @@ from nautobot_chatops.views import (
     AccessGrantBulkDeleteView,
 )
 
-from nautobot_chatops.integrations.grafana.urls import urlpatterns as grafana_urlpatterns
+try:
+    from nautobot_chatops.integrations.grafana.urls import urlpatterns as grafana_urlpatterns
+# pylint: disable-next=broad-except
+except Exception:
+    grafana_urlpatterns = []
+    logger = logging.getLogger(__name__)
+    logger.warning("Grafana ChatOps integration is not available.", exc_info=True)
+
 
 urlpatterns = [
     path("", NautobotHomeView.as_view(), name="home"),

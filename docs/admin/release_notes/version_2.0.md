@@ -2,12 +2,17 @@
 # v2.0 Release Notes
 
 <!-- towncrier release notes start -->
+## [v2.0.2 (2023-08-11)](https://github.com/nautobot/nautobot-plugin-chatops/releases/tag/v2.0.2)
+
+### Changed
+
+- [#233](https://github.com/nautobot/nautobot-plugin-chatops/pull/233) - Fixed App initialization when `[grafana]` extra is not installed.
+
 ## [v2.0.1 (2023-08-08)](https://github.com/nautobot/nautobot-plugin-chatops/releases/tag/v2.0.1)
 
 ### Changed
 
 - [#228](https://github.com/nautobot/nautobot-plugin-chatops/issues/228) - Move Contributing Changelog Fragments higher in documentation
-
 
 ## [v2.0.0 (2023-08-02)](https://github.com/nautobot/nautobot-plugin-chatops/releases/tag/v2.0.0)
 
