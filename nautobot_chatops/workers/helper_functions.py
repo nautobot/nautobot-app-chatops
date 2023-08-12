@@ -81,7 +81,7 @@ def prompt_for_vlan_filter_type(action_id, help_text, dispatcher):
         ("Group", "group"),
         ("Name", "name"),
         ("Role", "role"),
-        ("Site", "site"),
+        ("Site (Location)", "site"),
         ("Status", "status"),
         ("Tenant", "tenant"),
         ("All (no filter)", "all"),
