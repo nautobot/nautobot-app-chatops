@@ -5,7 +5,7 @@ from typing import Dict
 
 from django.conf import settings
 from django.urls import include, path
-from nautobot.core.api import OrderedDefaultRouter
+from nautobot.apps.api import OrderedDefaultRouter
 from nautobot_chatops.api.views.generic import AccessGrantViewSet, CommandTokenViewSet, NautobotChatopsRootView
 from nautobot_chatops.api.views.lookup import AccessLookupView
 

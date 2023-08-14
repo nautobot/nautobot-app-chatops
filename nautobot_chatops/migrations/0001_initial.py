@@ -2,7 +2,7 @@
 
 import django.contrib.postgres.fields
 from django.db import migrations, models, connection
-import nautobot.utilities.fields
+import nautobot.core.models.fields
 import uuid
 
 
@@ -47,7 +47,7 @@ class Migration(migrations.Migration):
                 ("user_name", models.CharField(max_length=255)),
                 ("user_id", models.CharField(max_length=255)),
                 ("platform", models.CharField(max_length=64)),
-                ("platform_color", nautobot.utilities.fields.ColorField(max_length=6)),
+                ("platform_color", nautobot.core.models.fields.ColorField(max_length=6)),
                 ("command", models.CharField(max_length=64)),
                 ("subcommand", models.CharField(max_length=64)),
                 ("status", models.CharField(default="succeeded", max_length=32)),

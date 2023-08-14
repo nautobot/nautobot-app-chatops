@@ -839,11 +839,11 @@ def get_devices(dispatcher, filter_type, filter_value):
 
 
 @subcommand_of("nautobot")
-def get_rack(dispatcher, site_slug, rack_id):
+def get_rack(dispatcher, site_key, rack_id):
     """Get information about a specific rack from Nautobot."""
     site_lt = LocationType.objects.get(name="Site")
     rack_ct = ContentType.objects.get_for_model(Rack)
-    if menu_item_check(site_slug):
+    if menu_item_check(site_key):
         # Only include sites with a non-zero number of racks
         site_options = [
             (site.name, site.composite_key)
@@ -853,23 +853,23 @@ def get_rack(dispatcher, site_slug, rack_id):
             dispatcher.send_error("No sites with associated racks were found")
             return (CommandStatusChoices.STATUS_SUCCEEDED, "No sites with associated racks were found")
         dispatcher.prompt_from_menu(
-            "nautobot get-rack", "Select a site", site_options, offset=menu_offset_value(site_slug)
+            "nautobot get-rack", "Select a site", site_options, offset=menu_offset_value(site_key)
         )
         return False  # command did not run to completion and therefore should not be logged
 
     try:
-        site = Location.objects.get(composite_key=site_slug, location_type=site_lt)
+        site = Location.objects.get(composite_key=site_key, location_type=site_lt)
     except Location.DoesNotExist:
-        dispatcher.send_error(f"Site (Location) {site_slug} not found")
-        return (CommandStatusChoices.STATUS_FAILED, f'Site (Location) "{site_slug}" not found')
+        dispatcher.send_error(f"Site (Location) {site_key} not found")
+        return (CommandStatusChoices.STATUS_FAILED, f'Site (Location) "{site_key}" not found')
 
     if menu_item_check(rack_id):
         rack_options = [(rack.name, rack.composite_key) for rack in Rack.objects.filter(location=site)]
         if not rack_options:
-            dispatcher.send_error(f"No racks associated with site {site_slug} were found")
-            return (CommandStatusChoices.STATUS_SUCCEEDED, f'No racks found for site "{site_slug}"')
+            dispatcher.send_error(f"No racks associated with site {site_key} were found")
+            return (CommandStatusChoices.STATUS_SUCCEEDED, f'No racks found for site "{site_key}"')
         dispatcher.prompt_from_menu(
-            f"nautobot get-rack {site_slug}", "Select a rack", rack_options, offset=menu_offset_value(rack_id)
+            f"nautobot get-rack {site_key}", "Select a rack", rack_options, offset=menu_offset_value(rack_id)
         )
         return False  # command did not run to completion and therefore should not be logged
 
@@ -887,7 +887,7 @@ def get_rack(dispatcher, site_slug, rack_id):
         dispatcher.command_response_header(
             "nautobot",
             "get-rack",
-            [("Site", site.name, site_slug), ("Rack", rack.name, str(rack_id))],
+            [("Site", site.name, site_key), ("Rack", rack.name, str(rack_id))],
             "rack overview",
             nautobot_logo(dispatcher),
         )
@@ -1080,11 +1080,11 @@ def get_manufacturer_summary(dispatcher):
 
 
 @subcommand_of("nautobot")
-def get_circuit_connections(dispatcher, provider_slug, circuit_id):
+def get_circuit_connections(dispatcher, provider_key, circuit_id):
     """For a given circuit, find the objects the circuit connects to."""
-    # Check for the Slack menu item limit; if a provider_slug is not initially provided,
+    # Check for the Slack menu item limit; if a provider_key is not initially provided,
     # then menu_item_check will return True and provider_options will be defined
-    if menu_item_check(provider_slug):
+    if menu_item_check(provider_key):
         # Only list circuit providers that have a nonzero amount of circuits.
         provider_options = [
             (provider.name, provider.composite_key)
@@ -1097,21 +1097,21 @@ def get_circuit_connections(dispatcher, provider_slug, circuit_id):
             dispatcher.send_error(no_provider_error_msg)
             return (CommandStatusChoices.STATUS_SUCCEEDED, no_provider_error_msg)
 
-        # Prompt user to select a circuit provider_slug from a list of provider_options
+        # Prompt user to select a circuit provider_key from a list of provider_options
         dispatcher.prompt_from_menu(
             "nautobot get-circuit-connections",  # command sub-command
             "Select a circuit provider",  # Prompt to user
             provider_options,  # Options to choose from
-            offset=menu_offset_value(provider_slug),
+            offset=menu_offset_value(provider_key),
         )
         return False  # command did not run to completion and therefore should not be logged
 
-    # Now that provider_slug is defined, get the provider object from the provider_slug;
-    # return an error msg if provider does not exist for that provider_slug
+    # Now that provider_key is defined, get the provider object from the provider_key;
+    # return an error msg if provider does not exist for that provider_key
     try:
-        provider = Provider.objects.get(composite_key=provider_slug)
+        provider = Provider.objects.get(composite_key=provider_key)
     except Provider.DoesNotExist:  # If provider cannot be found, return STATUS_FAILED with msg
-        provider_not_found_error_msg = f"Circuit provider with key {provider_slug} does not exist"
+        provider_not_found_error_msg = f"Circuit provider with key {provider_key} does not exist"
         dispatcher.send_error(provider_not_found_error_msg)
         return (CommandStatusChoices.STATUS_FAILED, provider_not_found_error_msg)
 
@@ -1122,11 +1122,11 @@ def get_circuit_connections(dispatcher, provider_slug, circuit_id):
             (circuit.cid, circuit.cid) for circuit in Circuit.objects.filter(provider__composite_key=provider.composite_key)
         ]
         if not circuit_options:
-            no_circuits_found_error_msg = f"No circuits with provider slug {provider.composite_key} were found"
+            no_circuits_found_error_msg = f"No circuits with provider key {provider.composite_key} were found"
             dispatcher.send_error(no_circuits_found_error_msg)
             return (CommandStatusChoices.STATUS_SUCCEEDED, no_circuits_found_error_msg)
         dispatcher.prompt_from_menu(
-            f"nautobot get-circuit-connections {provider_slug}",
+            f"nautobot get-circuit-connections {provider_key}",
             "Select a circuit",
             circuit_options,
             offset=menu_offset_value(circuit_id),
