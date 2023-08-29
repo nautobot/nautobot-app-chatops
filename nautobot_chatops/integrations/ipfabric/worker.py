@@ -3,6 +3,7 @@ import logging
 import tempfile
 import os
 from datetime import datetime
+import pandas as pd
 
 from django.conf import settings
 from django_rq import job
@@ -1068,11 +1069,15 @@ def table_diff(
     else:
         for key in diff:
             if len(diff[key]) > 0:
-                dispatcher.send_large_table(
-                    diff[key][0].keys(),
-                    [[row[i] for i in row] for row in diff[key]],
-                    title=f"{key.title()}",
-                )
+                try:
+                    dispatcher.send_large_table(
+                        diff[key][0].keys(),
+                        [[row[i] for i in row] for row in diff[key]],
+                        title=f"{key.title()}",
+                    )
+                except ValueError:
+                    text = pd.DataFrame(diff[key])
+                    dispatcher.send_snippet(text=text.to_csv(index=False), title=key)
             else:
                 dispatcher.send_markdown(f"{key.title()}: None")
     return CommandStatusChoices.STATUS_SUCCEEDED
