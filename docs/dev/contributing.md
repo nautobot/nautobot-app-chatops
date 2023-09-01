@@ -25,11 +25,9 @@ the `handle_subcommands` helper function provided:
 ```python
 # nautobot_chatops/workers/mycommand.py
 
-from django_rq import job
-
 from nautobot_chatops.workers import handle_subcommands, subcommand_of
 
-@job("default")
+
 def mycommand(subcommand, **kwargs)
     """Perform mycommand and its subcommands."""
     return handle_subcommands("mycommand", subcommand, **kwargs)

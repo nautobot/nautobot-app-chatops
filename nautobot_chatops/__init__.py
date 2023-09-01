@@ -136,14 +136,14 @@ class NautobotChatOpsConfig(PluginConfig):
     # min_version = "1.5.4"
     caching_config = {}
 
-    def ready(self):
-        """Function invoked after all plugins have been loaded."""
-        super().ready()
-        # pylint: disable=import-outside-toplevel
-        # from nautobot_capacity_metrics import register_metric_func
-        # from .metrics_app import metric_commands
+    # def ready(self):
+    # """Function invoked after all plugins have been loaded."""
+    # super().ready()
+    # pylint: disable=import-outside-toplevel
+    # from nautobot_capacity_metrics import register_metric_func
+    # from .metrics_app import metric_commands
 
-        # register_metric_func(metric_commands)
+    # register_metric_func(metric_commands)
 
 
 config = NautobotChatOpsConfig  # pylint:disable=invalid-name

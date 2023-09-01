@@ -2,12 +2,12 @@
 
 from rest_framework import serializers
 
-from nautobot.core.api import ValidatedModelSerializer
+from nautobot.core.api import NautobotModelSerializer
 
-from nautobot_chatops.models import AccessGrant, CommandToken
+from nautobot_chatops.models import AccessGrant, CommandLog, CommandToken
 
 
-class CommandTokenSerializer(ValidatedModelSerializer):
+class CommandTokenSerializer(NautobotModelSerializer):
     """API serializer for interacting with CommandToken objects."""
 
     url = serializers.HyperlinkedIdentityField(view_name="plugins-api:nautobot_chatops-api:commandtoken-detail")
@@ -19,7 +19,7 @@ class CommandTokenSerializer(ValidatedModelSerializer):
         fields = ("id", "comment", "platform", "token", "url")
 
 
-class AccessGrantSerializer(ValidatedModelSerializer):
+class AccessGrantSerializer(NautobotModelSerializer):
     """API serializer for interacting with AccessGrant objects."""
 
     url = serializers.HyperlinkedIdentityField(view_name="plugins-api:nautobot_chatops-api:accessgrant-detail")
@@ -29,3 +29,13 @@ class AccessGrantSerializer(ValidatedModelSerializer):
 
         model = AccessGrant
         fields = ("id", "command", "subcommand", "grant_type", "name", "value", "url")
+
+
+class CommandLogSerializer(NautobotModelSerializer):
+    """API serializer for interacting with CommandLog objects."""
+
+    class Meta:
+        """Meta for CommandLog Serializer."""
+
+        model = CommandLog
+        fields = ("id", "start_time", "user_name", "user_id", "platform", "command", "subcommand", "params", "status", "details")

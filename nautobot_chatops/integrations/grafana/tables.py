@@ -58,4 +58,18 @@ class PanelVariableViewTable(BaseTable):
         """Meta for class PanelVariableViewTable."""
 
         model = PanelVariable
-        fields = tuple(["pk"] + PanelVariable.csv_headers + ["actions"])
+        fields = [
+            "pk",
+            "panel",
+            "name",
+            "friendly_name",
+            "query",
+            "modelattr",
+            "value",
+            "response",
+            "positional_order",
+            "includeincmd",
+            "includeinurl",
+            "filter",
+            "actions",
+        ]

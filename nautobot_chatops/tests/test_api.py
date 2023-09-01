@@ -79,6 +79,6 @@ class AccessGrantTest(APIViewTestCases.APIViewTestCase):  # pylint: disable=too-
     @classmethod
     def setUpTestData(cls):
         """Generate test data for the AccessGrant Endpoint."""
-        AccessGrant.objects.create(command="*", subcommand="*", grant_type="organization", name="test1", value="*")
-        AccessGrant.objects.create(command="*", subcommand="*", grant_type="channel", name="test2", value="*")
-        AccessGrant.objects.create(command="*", subcommand="*", grant_type="user", name="test3", value="*")
+        AccessGrant.objects.create(command="*", subcommand="*", grant_type="organization", name="test1", value="test1")
+        AccessGrant.objects.create(command="*", subcommand="*", grant_type="channel", name="test2", value="test2")
+        AccessGrant.objects.create(command="*", subcommand="*", grant_type="user", name="test3", value="test3")

@@ -28,6 +28,13 @@ from nautobot_chatops.workers.helper_functions import (
 # pylint: disable=too-many-return-statements,too-many-branches
 
 
+interface_ct = ContentType.objects.get_for_model(Interface)
+device_ct = ContentType.objects.get_for_model(Device)
+rack_ct = ContentType.objects.get_for_model(Rack)
+site_lt = LocationType.objects.get_or_create(name="Site")
+region_lt = LocationType.objects.get_or_create(name="Region", defaults={"nestable": True})
+
+
 def nautobot(subcommand, **kwargs):
     """Interact with Nautobot."""
     return handle_subcommands("nautobot", subcommand, **kwargs)
@@ -109,18 +116,18 @@ def send_vlan_table(dispatcher, vlans, filter_type):
     dispatcher.send_large_table(header, rows)
 
 
-def get_filtered_connections(device, interface_ct):
+def get_filtered_connections(device, interface):
     """Query cables by Django filter and return the query."""
     return Cable.objects.filter(
         _termination_a_device=device,
         status__name="Connected",
-        termination_a_type=interface_ct.pk,
-        termination_b_type=interface_ct.pk,
+        termination_a_type=interface.pk,
+        termination_b_type=interface.pk,
     ).exclude(_termination_b_device=None).exclude(_termination_a_device=None) | Cable.objects.filter(
         _termination_b_device=device,
         status__name="Connected",
-        termination_a_type=interface_ct.pk,
-        termination_b_type=interface_ct.pk,
+        termination_a_type=interface.pk,
+        termination_b_type=interface.pk,
     ).exclude(
         _termination_b_device=None
     ).exclude(
@@ -161,7 +168,6 @@ def examine_termination_endpoints(circuit):
 def get_vlans(dispatcher, filter_type, filter_value_1):
     """Return a filtered list of VLANs based on filter type and/or `filter_value_1`."""
     content_type = ContentType.objects.get_for_model(VLAN)
-    site_lt = LocationType.objects.get(name="Site")
     # pylint: disable=no-else-return
     if not filter_type:
         prompt_for_vlan_filter_type("nautobot get-vlans", "select a vlan filter", dispatcher)
@@ -206,7 +212,10 @@ def get_vlans(dispatcher, filter_type, filter_value_1):
             choices = list(sorted(set(choices)))
         elif filter_type == "site":
             choices = [
-                (site.name, site.composite_key) for site in Location.objects.annotate(Count("vlans")).filter(location_type=site_lt).filter(vlans__count__gt=0)
+                (site.name, site.composite_key)
+                for site in Location.objects.annotate(Count("vlans"))
+                .filter(location_type=site_lt)
+                .filter(vlans__count__gt=0)
             ]
         elif filter_type == "group":
             choices = [
@@ -219,9 +228,7 @@ def get_vlans(dispatcher, filter_type, filter_value_1):
                 for tenant in Tenant.objects.annotate(Count("vlans")).filter(vlans__count__gt=0)
             ]
         elif filter_type == "role":
-            choices = [
-                (role.name, role.name) for role in Role.objects.filter(content_types=content_type)
-            ]
+            choices = [(role.name, role.name) for role in Role.objects.filter(content_types=content_type)]
 
         if not choices:
             dispatcher.send_error(f"VLAN {filter_type} {filter_value_1} not found")
@@ -355,10 +362,6 @@ def get_vlans(dispatcher, filter_type, filter_value_1):
 @subcommand_of("nautobot")
 def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_value_2):
     """Return a filtered list of interface connections based on type, `filter_value_1` and/or `filter_value_2`."""
-    interface_ct = ContentType.objects.get_for_model(Interface)
-    device_ct = ContentType.objects.get_for_model(Device)
-    site_lt = LocationType.objects.get(name="Site")
-    region_lt = LocationType.objects.get(name="Region")
     if not filter_type:
         prompt_for_interface_filter_type(
             "nautobot get-interface-connections", "Select an interface connection filter", dispatcher
@@ -373,13 +376,13 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
             # choices of all the sites with one or more devices.
             choices = [
                 (site.name, site.composite_key)
-                for site in Location.objects.annotate(Count("devices")).filter(location_type=site_lt).filter(devices__count__gt=0).order_by("name")
+                for site in Location.objects.annotate(Count("devices"))
+                .filter(location_type=site_lt)
+                .filter(devices__count__gt=0)
+                .order_by("name")
             ]
         elif filter_type == "role":
-            choices = [
-                (role.name, role.name)
-                for role in Role.objects.filter(content_types=device_ct).order_by("name")
-            ]
+            choices = [(role.name, role.name) for role in Role.objects.filter(content_types=device_ct).order_by("name")]
         elif filter_type == "region":
             choices = [
                 (region.name, region.composite_key)
@@ -732,8 +735,6 @@ def get_device_facts(dispatcher, device_name):
 @subcommand_of("nautobot")
 def get_devices(dispatcher, filter_type, filter_value):
     """Get a filtered list of devices from Nautobot."""
-    device_ct = ContentType.objects.get_for_model(Device)
-    site_lt = LocationType.objects.get(name="Site")
     if not filter_type:
         prompt_for_device_filter_type("nautobot get-devices", "Select a device filter", dispatcher)
         return False  # command did not run to completion and therefore should not be logged
@@ -841,8 +842,6 @@ def get_devices(dispatcher, filter_type, filter_value):
 @subcommand_of("nautobot")
 def get_rack(dispatcher, site_key, rack_id):
     """Get information about a specific rack from Nautobot."""
-    site_lt = LocationType.objects.get(name="Site")
-    rack_ct = ContentType.objects.get_for_model(Rack)
     if menu_item_check(site_key):
         # Only include sites with a non-zero number of racks
         site_options = [
@@ -906,7 +905,6 @@ def get_rack(dispatcher, site_key, rack_id):
 @subcommand_of("nautobot")
 def get_circuits(dispatcher, filter_type, filter_value):
     """Get a filtered list of circuits from Nautobot."""
-    site_lt = LocationType.objects.get(name="Site")
     if not filter_type:
         prompt_for_circuit_filter_type("nautobot get-circuits", "Select a circuit filter", dispatcher)
         return False  # command did not run to completion and therefore should not be logged
@@ -1088,9 +1086,7 @@ def get_circuit_connections(dispatcher, provider_key, circuit_id):
         # Only list circuit providers that have a nonzero amount of circuits.
         provider_options = [
             (provider.name, provider.composite_key)
-            for provider in Provider.objects.annotate(Count("circuits"))
-            .filter(circuits__count__gt=0)
-            .order_by("name")
+            for provider in Provider.objects.annotate(Count("circuits")).filter(circuits__count__gt=0).order_by("name")
         ]
         if not provider_options:  # No providers with associated circuits exist
             no_provider_error_msg = "No Providers with circuits were found"
@@ -1119,7 +1115,8 @@ def get_circuit_connections(dispatcher, provider_key, circuit_id):
     # then menu_item_check will return True and circuit_options will be defined
     if menu_item_check(circuit_id):
         circuit_options = [
-            (circuit.cid, circuit.cid) for circuit in Circuit.objects.filter(provider__composite_key=provider.composite_key)
+            (circuit.cid, circuit.cid)
+            for circuit in Circuit.objects.filter(provider__composite_key=provider.composite_key)
         ]
         if not circuit_options:
             no_circuits_found_error_msg = f"No circuits with provider key {provider.composite_key} were found"

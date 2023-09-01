@@ -3,7 +3,7 @@
 from unittest.mock import patch
 
 from django.conf import settings
-from django.test import TestCase, override_settings
+from django.test import TestCase
 from django.test.client import RequestFactory
 
 from nautobot.core.testing import ViewTestCases
@@ -196,10 +196,3 @@ class TestNautobotHomeView(ViewTestCases):
             details="This is for testing.",
         )
         commandlog_a.validated_save()
-
-    @override_settings(EXEMPT_VIEW_PERMISSIONS=["*"])
-    def test_queryset_to_csv(self):
-        """This view has a custom queryset_to_csv() implementation."""
-        response = self.client.get(f"{self._get_url}?export")  # pylint: disable=no-member
-        self.assertHttpStatus(response, 200)  # pylint: disable=no-member
-        self.assertEqual(response.get("Content-Type"), "text/csv")  # pylint: disable=no-member

@@ -6,7 +6,6 @@ from datetime import datetime
 from typing import NoReturn, List, Union, Dict
 from isodate import ISO8601Error, parse_duration
 from jinja2 import Template
-from django_rq import job
 from django.core.exceptions import FieldError, ObjectDoesNotExist, MultipleObjectsReturned
 from pydantic.error_wrappers import ValidationError  # pylint: disable=no-name-in-module
 from nautobot.core.models.querysets import RestrictedQuerySet
@@ -30,7 +29,6 @@ def grafana_logo(dispatcher):
     return dispatcher.image_element(dispatcher.static_url(GRAFANA_LOGO_PATH), alt_text=GRAFANA_LOGO_ALT)
 
 
-@job("default")
 def grafana(subcommand, **kwargs):
     """Pull Panels from Grafana."""
     initialize_subcommands()

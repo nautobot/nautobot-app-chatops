@@ -4,7 +4,7 @@ from django import forms
 
 from nautobot.core.forms import BootstrapMixin
 
-from .models import AccessGrant, CommandToken
+from .models import AccessGrant, CommandLog, CommandToken
 from .choices import AccessGrantTypeChoices, CommandTokenPlatformChoices
 from .constants import ACCESS_GRANT_COMMAND_HELP_TEXT, COMMAND_TOKEN_TOKEN_HELP_TEXT
 
@@ -43,6 +43,26 @@ class AccessGrantForm(BootstrapMixin, forms.ModelForm):
         model = AccessGrant
 
         fields = ("command", "subcommand", "grant_type", "name", "value")
+
+
+class CommandLogFilterForm(BootstrapMixin, forms.ModelForm):
+    """Form for filtering Command Logs."""
+
+    command = forms.CharField(required=False)
+    subcommand = forms.CharField(required=False)
+
+    class Meta:
+        """Metaclass attributes of AccessGrantFilterForm."""
+
+        model = CommandLog
+
+        fields = [
+            "platform",
+            "command",
+            "subcommand",
+            "status",
+            "details",
+        ]
 
 
 class CommandTokenFilterForm(BootstrapMixin, forms.ModelForm):

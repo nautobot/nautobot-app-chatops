@@ -29,7 +29,7 @@ items = [
         ),
     ),
     NavMenuItem(
-        link="plugins:nautobot_chatops:home",
+        link="plugins:nautobot_chatops:commandlog_list",
         name="Command Usage Records",
         permissions=["nautobot_chatops.view_commandlog"],
     ),

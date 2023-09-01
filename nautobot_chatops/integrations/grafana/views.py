@@ -24,18 +24,15 @@ from nautobot_chatops.integrations.grafana.filters import DashboardFilter, Panel
 from nautobot_chatops.integrations.grafana.forms import (
     DashboardsForm,
     DashboardsFilterForm,
-    DashboardCSVForm,
     DashboardBulkEditForm,
     PanelsForm,
     PanelsSyncForm,
-    PanelsCSVForm,
     PanelsFilterForm,
     PanelsBulkEditForm,
     PanelVariablesForm,
     PanelVariablesSyncForm,
     PanelVariablesFilterForm,
     PanelVariablesBulkEditForm,
-    PanelVariablesCSVForm,
 )
 
 # -------------------------------------------------------------------------------------
@@ -121,7 +118,6 @@ class DashboardsBulkImportView(BulkImportView):
     """View for bulk import of eox notices."""
 
     queryset = Dashboard.objects.all()
-    model_form = DashboardCSVForm
     table = DashboardViewTable
     default_return_url = "plugins:nautobot_chatops:grafanadashboards"
 
@@ -233,7 +229,6 @@ class PanelsBulkImportView(BulkImportView):
     """View for bulk import of Panels."""
 
     queryset = Panel.objects.all()
-    model_form = PanelsCSVForm
     table = PanelViewTable
     default_return_url = "plugins:nautobot_chatops:grafanapanel"
 
@@ -313,7 +308,6 @@ class VariablesBulkImportView(BulkImportView):
     """View for bulk import of Variables."""
 
     queryset = PanelVariable.objects.all()
-    model_form = PanelVariablesCSVForm
     table = PanelVariableViewTable
     default_return_url = "plugins:nautobot_chatops:grafanapanelvariables"
 
