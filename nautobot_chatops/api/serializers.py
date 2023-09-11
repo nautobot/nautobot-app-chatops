@@ -38,4 +38,15 @@ class CommandLogSerializer(NautobotModelSerializer):
         """Meta for CommandLog Serializer."""
 
         model = CommandLog
-        fields = ("id", "start_time", "user_name", "user_id", "platform", "command", "subcommand", "params", "status", "details")
+        fields = (
+            "id",
+            "start_time",
+            "user_name",
+            "user_id",
+            "platform",
+            "command",
+            "subcommand",
+            "params",
+            "status",
+            "details",
+        )

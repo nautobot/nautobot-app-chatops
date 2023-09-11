@@ -186,18 +186,18 @@ class PanelVariablesFilterForm(BootstrapMixin, ModelForm):
         model = PanelVariable
 
         fields = [
-        "q",
-        "panel",
-        "name",
-        "friendly_name",
-        "query",
-        "modelattr",
-        "value",
-        "response",
-        "positional_order",
-        "includeincmd",
-        "includeinurl",
-    ]
+            "q",
+            "panel",
+            "name",
+            "friendly_name",
+            "query",
+            "modelattr",
+            "value",
+            "response",
+            "positional_order",
+            "includeincmd",
+            "includeinurl",
+        ]
 
         widgets = {}
 
