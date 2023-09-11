@@ -47,7 +47,7 @@ def prompt_for_device(action_id, help_text, dispatcher, devices=None, offset=0):
     if not devices:
         dispatcher.send_error("No devices were found")
         return (CommandStatusChoices.STATUS_FAILED, "No devices found")
-    choices = [(f"{device.location.name}: {device.name}", device.name) for device in devices]
+    choices = [(f"{device.location.name}: {device.name}", device.pk) for device in devices]
     return dispatcher.prompt_from_menu(action_id, help_text, choices, offset=offset)
 
 
@@ -217,16 +217,16 @@ def get_vlans(dispatcher, filter_type, filter_value_1):
             ]
         elif filter_type == "group":
             choices = [
-                (group.name, group.name)
+                (group.name, group.pk)
                 for group in VLANGroup.objects.annotate(Count("vlans")).filter(vlans__count__gt=0)
             ]
         elif filter_type == "tenant":
             choices = [
-                (tenant.name, tenant.name)
+                (tenant.name, tenant.pk)
                 for tenant in Tenant.objects.annotate(Count("vlans")).filter(vlans__count__gt=0)
             ]
         elif filter_type == "role":
-            choices = [(role.name, role.name) for role in Role.objects.filter(content_types=content_type)]
+            choices = [(role.name, role.pk) for role in Role.objects.filter(content_types=content_type)]
 
         if not choices:
             dispatcher.send_error(f"VLAN {filter_type} {filter_value_1} not found")
@@ -287,7 +287,7 @@ def get_vlans(dispatcher, filter_type, filter_value_1):
             )
     elif filter_type == "group":
         try:
-            group = VLANGroup.objects.get(name=filter_value_1)
+            group = VLANGroup.objects.get(pk=filter_value_1)
         except VLANGroup.DoesNotExist:
             dispatcher.send_error(f"Group {filter_value_1} not found")
             return (
@@ -303,7 +303,7 @@ def get_vlans(dispatcher, filter_type, filter_value_1):
             )
     elif filter_type == "tenant":
         try:
-            tenant = Tenant.objects.get(name=filter_value_1)
+            tenant = Tenant.objects.get(pk=filter_value_1)
         except Tenant.DoesNotExist:
             dispatcher.send_error(f"Tenant {filter_value_1} not found")
             return (
@@ -319,7 +319,7 @@ def get_vlans(dispatcher, filter_type, filter_value_1):
             )
     elif filter_type == "role":
         try:
-            role = Role.objects.get(name=filter_value_1, content_types=content_type)
+            role = Role.objects.get(pk=filter_value_1, content_types=content_type)
         except Role.DoesNotExist:
             dispatcher.send_error(f"Role {filter_value_1} not found")
             return (
@@ -381,7 +381,7 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
                 .order_by("name")
             ]
         elif filter_type == "role":
-            choices = [(role.name, role.name) for role in Role.objects.filter(content_types=device_ct).order_by("name")]
+            choices = [(role.name, role.pk) for role in Role.objects.filter(content_types=device_ct).order_by("name")]
         elif filter_type == "model":
             # TODO Switch to utilizing Natural Key instead of PK.
             choices = [
@@ -464,11 +464,11 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
         return False
 
     if filter_type == "device" and filter_value_1 and filter_value_2:
-        device_name = str(filter_value_2)
+        device_key = filter_value_2
         try:
-            device = Device.objects.get(name=device_name)
+            device = Device.objects.get(pk=device_key)
         except Device.DoesNotExist:
-            dispatcher.send_error(f"Device {device_name} not found")
+            dispatcher.send_error(f"Device {device_key} not found")
             return (
                 CommandStatusChoices.STATUS_FAILED,
                 f'Device "{filter_value_2}" not found',
@@ -512,7 +512,7 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
         devices = Device.objects.filter(location=value)
     elif filter_type == "role":
         try:
-            value = Role.objects.get(name=filter_value_1, content_types=device_ct)
+            value = Role.objects.get(pk=filter_value_1, content_types=device_ct)
         except Role.DoesNotExist:
             dispatcher.send_error(f"Role {filter_value_1} not found")
             return (
@@ -559,21 +559,21 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
 
 
 @subcommand_of("nautobot")
-def get_device_status(dispatcher, device_name):
+def get_device_status(dispatcher, device_key):
     """Get the status of a device in Nautobot."""
-    if menu_item_check(device_name):
+    if menu_item_check(device_key):
         prompt_for_device(
             "nautobot get-device-status",
             "Get Nautobot Device Status",
             dispatcher,
-            offset=menu_offset_value(device_name),
+            offset=menu_offset_value(device_key),
         )
         return False  # command did not run to completion and therefore should not be logged
 
     try:
-        device = Device.objects.get(name=device_name)
+        device = Device.objects.get(pk=device_key)
     except Device.DoesNotExist:
-        dispatcher.send_error(f"I don't know device '{device_name}'")
+        dispatcher.send_error(f"I don't know device '{device_key}'")
         prompt_for_device("nautobot get-device-status", "Get Nautobot Device Status", dispatcher)
         return False  # command did not run to completion and therefore should not be logged
 
@@ -581,11 +581,11 @@ def get_device_status(dispatcher, device_name):
         *dispatcher.command_response_header(
             "nautobot",
             "get-device-status",
-            [("Name", device_name)],
+            [("Name", device_key)],
             "device status",
             nautobot_logo(dispatcher),
         ),
-        dispatcher.markdown_block(f"The status of {dispatcher.bold(device_name)} is {dispatcher.bold(device.status)}"),
+        dispatcher.markdown_block(f"The status of {dispatcher.bold(device_key)} is {dispatcher.bold(device.status)}"),
     ]
 
     dispatcher.send_blocks(blocks)
@@ -593,36 +593,36 @@ def get_device_status(dispatcher, device_name):
 
 
 @subcommand_of("nautobot")
-def change_device_status(dispatcher, device_name, status):
+def change_device_status(dispatcher, device_key, status):
     """Set the status of a device in Nautobot."""
-    if menu_item_check(device_name):
+    if menu_item_check(device_key):
         prompt_for_device(
             "nautobot change-device-status",
             "Change Nautobot Device Status",
             dispatcher,
-            offset=menu_offset_value(device_name),
+            offset=menu_offset_value(device_key),
         )
         return False  # command did not run to completion and therefore should not be logged
 
     try:
-        device = Device.objects.get(name=device_name)
+        device = Device.objects.get(pk=device_key)
     except Device.DoesNotExist:
-        dispatcher.send_error(f"I don't know device '{device_name}'")
+        dispatcher.send_error(f"I don't know device '{device_key}'")
         prompt_for_device("nautobot change-device-status", "Change Nautobot Device Status", dispatcher)
         return False  # command did not run to completion and therefore should not be logged
 
     if menu_item_check(status):
         dispatcher.prompt_from_menu(
-            f"nautobot change-device-status {device_name}",
-            f"Change Nautobot Device Status for {device_name}",
-            [(status.name, status.name) for status in Status.objects.get_for_model(Device)],
-            default=(device.status.name, device.status.name),
+            f"nautobot change-device-status {device_key}",
+            f"Change Nautobot Device Status for {device_key}",
+            [(status.name, status.pk) for status in Status.objects.get_for_model(Device)],
+            default=(device.status.name, device.status.pk),
             confirm=True,
             offset=menu_offset_value(status),
         )
         return False  # command did not run to completion and therefore should not be logged
 
-    device.status = Status.objects.get_for_model(Device).get(name=status)
+    device.status = Status.objects.get_for_model(Device).get(pk=status)
     try:
         device.clean_fields()
     except ValidationError:
@@ -635,12 +635,12 @@ def change_device_status(dispatcher, device_name, status):
             *dispatcher.command_response_header(
                 "nautobot",
                 "change-device-status",
-                [("Device name", device_name), ("Status", status)],
+                [("Device name", device_key), ("Status", status)],
                 "device status change",
                 nautobot_logo(dispatcher),
             ),
             dispatcher.markdown_block(
-                f"Nautobot status for {dispatcher.bold(device_name)} "
+                f"Nautobot status for {dispatcher.bold(device_key)} "
                 f"successfully changed to {dispatcher.monospace(status)}."
             ),
         ]
@@ -649,21 +649,21 @@ def change_device_status(dispatcher, device_name, status):
 
 
 @subcommand_of("nautobot")
-def get_device_facts(dispatcher, device_name):
+def get_device_facts(dispatcher, device_key):
     """Get detailed facts about a device from Nautobot in YAML format."""
-    if menu_item_check(device_name):
+    if menu_item_check(device_key):
         prompt_for_device(
             "nautobot get-device-facts",
             "Get Nautobot Device Facts",
             dispatcher,
-            offset=menu_offset_value(device_name),
+            offset=menu_offset_value(device_key),
         )
         return False  # command did not run to completion and therefore should not be logged
 
     try:
-        device = Device.objects.get(name=device_name)
+        device = Device.objects.get(pk=device_key)
     except Device.DoesNotExist:
-        dispatcher.send_error(f"I don't know device '{device_name}'")
+        dispatcher.send_error(f"I don't know device '{device_key}'")
         prompt_for_device("nautobot get-device-facts", "Get Nautobot Device Facts", dispatcher)
         return False  # command did not run to completion and therefore should not be logged
 
@@ -671,7 +671,7 @@ def get_device_facts(dispatcher, device_name):
         dispatcher.command_response_header(
             "nautobot",
             "get-device-facts",
-            [("Name", device_name)],
+            [("Name", device_key)],
             "fact data",
             nautobot_logo(dispatcher),
         )
@@ -689,6 +689,7 @@ def get_device_facts(dispatcher, device_name):
         f"primary_ip: {device.primary_ip.address if device.primary_ip else '~'}\n"
         f"created: {device.created}\n"
         f"updated: {device.last_updated}\n"
+        f"pk: {device.pk}\n"
         "```\n"
     )
     return CommandStatusChoices.STATUS_SUCCEEDED
@@ -711,11 +712,11 @@ def get_devices(dispatcher, filter_type, filter_value):
             location_types = LocationType.objects.filter(content_type=device_ct)
             choices = [(site.name, site.pk) for site in Location.objects.filter(location_type=location_types)]
         elif filter_type == "role":
-            choices = [(role.name, role.name) for role in Role.objects.filter(content_types=device_ct)]
+            choices = [(role.name, role.pk) for role in Role.objects.filter(content_types=device_ct)]
         elif filter_type == "model":
             choices = [(device_type.model, device_type.pk) for device_type in DeviceType.objects.all()]
         elif filter_type == "manufacturer":
-            choices = [(manufacturer.name, manufacturer.name) for manufacturer in Manufacturer.objects.all()]
+            choices = [(manufacturer.name, manufacturer.pk) for manufacturer in Manufacturer.objects.all()]
         else:
             dispatcher.send_error(f"I don't know how to filter by {filter_type}")
             return (CommandStatusChoices.STATUS_FAILED, f'Unknown filter type "{filter_type}"')
@@ -733,7 +734,7 @@ def get_devices(dispatcher, filter_type, filter_value):
         return False  # command did not run to completion and therefore should not be logged
 
     if filter_type == "name":
-        devices = Device.objects.filter(name=filter_value)
+        devices = Device.objects.filter(pk=filter_value)
     elif filter_type == "site":
         try:
             site = Location.objects.get(pk=filter_value)
@@ -743,7 +744,7 @@ def get_devices(dispatcher, filter_type, filter_value):
         devices = Device.objects.filter(location=site)
     elif filter_type == "role":
         try:
-            role = Role.objects.get(name=filter_value, content_types=device_ct)
+            role = Role.objects.get(pk=filter_value, content_types=device_ct)
         except Role.DoesNotExist:
             dispatcher.send_error(f"Role {filter_value} not found")
             return (CommandStatusChoices.STATUS_FAILED, f'Role "{filter_value}" not found')
@@ -760,7 +761,7 @@ def get_devices(dispatcher, filter_type, filter_value):
         # but the previous implementation supported this filter, so here we go.
         # TODO: is there a better way?
         try:
-            manufacturer = Manufacturer.objects.get(name=filter_value)
+            manufacturer = Manufacturer.objects.get(pk=filter_value)
         except Manufacturer.DoesNotExist:
             dispatcher.send_error(f"Manufacturer {filter_value} not found")
             return (CommandStatusChoices.STATUS_FAILED, f'Manufacturer "{filter_value}" not found')
@@ -875,9 +876,9 @@ def get_circuits(dispatcher, filter_type, filter_value):
 
     if filter_type != "all" and menu_item_check(filter_value):
         if filter_type == "type":
-            choices = [(ctype.name, ctype.name) for ctype in CircuitType.objects.all()]
+            choices = [(ctype.name, ctype.pk) for ctype in CircuitType.objects.all()]
         elif filter_type == "provider":
-            choices = [(prov.name, prov.name) for prov in Provider.objects.all()]
+            choices = [(prov.name, prov.pk) for prov in Provider.objects.all()]
         elif filter_type == "site":
             location_type = LocationType.objects.filter(content_types=ContentType.objects.get_for_model(Circuit))
             choices = [(site.name, site.pk) for site in Location.objects.filter(location_type=location_type)]
@@ -901,14 +902,14 @@ def get_circuits(dispatcher, filter_type, filter_value):
         circuits = Circuit.objects.all()
     elif filter_type == "type":
         try:
-            ctype = CircuitType.objects.get(name=filter_value)
+            ctype = CircuitType.objects.get(pk=filter_value)
         except CircuitType.DoesNotExist:
             dispatcher.send_error(f"Circuit type {filter_value} not found")
             return (CommandStatusChoices.STATUS_FAILED, f'Circuit type "{filter_value}" not found')
         circuits = Circuit.objects.filter(type=ctype)
     elif filter_type == "provider":
         try:
-            prov = Provider.objects.get(name=filter_value)
+            prov = Provider.objects.get(pk=filter_value)
         except Provider.DoesNotExist:
             dispatcher.send_error(f"Provider {filter_value} not found")
             return (CommandStatusChoices.STATUS_FAILED, f'Provider "{filter_value}" not found')
@@ -1043,14 +1044,14 @@ def get_manufacturer_summary(dispatcher):
 
 
 @subcommand_of("nautobot")
-def get_circuit_connections(dispatcher, provider_name, circuit_id):
+def get_circuit_connections(dispatcher, provider_key, circuit_id):
     """For a given circuit, find the objects the circuit connects to."""
     # Check for the Slack menu item limit; if a provider_key is not initially provided,
     # then menu_item_check will return True and provider_options will be defined
-    if menu_item_check(provider_name):
+    if menu_item_check(provider_key):
         # Only list circuit providers that have a nonzero amount of circuits.
         provider_options = [
-            (provider.name, provider.name)
+            (provider.name, provider.pk)
             for provider in Provider.objects.annotate(Count("circuits")).filter(circuits__count__gt=0).order_by("name")
         ]
         if not provider_options:  # No providers with associated circuits exist
@@ -1063,16 +1064,16 @@ def get_circuit_connections(dispatcher, provider_name, circuit_id):
             "nautobot get-circuit-connections",  # command sub-command
             "Select a circuit provider",  # Prompt to user
             provider_options,  # Options to choose from
-            offset=menu_offset_value(provider_name),
+            offset=menu_offset_value(provider_key),
         )
         return False  # command did not run to completion and therefore should not be logged
 
     # Now that provider_key is defined, get the provider object from the provider_key;
     # return an error msg if provider does not exist for that provider_key
     try:
-        provider = Provider.objects.get(name=provider_name)
+        provider = Provider.objects.get(pk=provider_key)
     except Provider.DoesNotExist:  # If provider cannot be found, return STATUS_FAILED with msg
-        provider_not_found_error_msg = f"Circuit provider with name {provider_name} does not exist"
+        provider_not_found_error_msg = f"Circuit provider with name {provider_key} does not exist"
         dispatcher.send_error(provider_not_found_error_msg)
         return (CommandStatusChoices.STATUS_FAILED, provider_not_found_error_msg)
 
@@ -1080,14 +1081,14 @@ def get_circuit_connections(dispatcher, provider_name, circuit_id):
     # then menu_item_check will return True and circuit_options will be defined
     if menu_item_check(circuit_id):
         circuit_options = [
-            (circuit.cid, circuit.cid) for circuit in Circuit.objects.filter(provider__name=provider.name)
+            (circuit.cid, circuit.cid) for circuit in Circuit.objects.filter(provider__pk=provider.pk)
         ]
         if not circuit_options:
             no_circuits_found_error_msg = f"No circuits with provider name {provider.name} were found"
             dispatcher.send_error(no_circuits_found_error_msg)
             return (CommandStatusChoices.STATUS_SUCCEEDED, no_circuits_found_error_msg)
         dispatcher.prompt_from_menu(
-            f"nautobot get-circuit-connections {provider_name}",
+            f"nautobot get-circuit-connections {provider_key}",
             "Select a circuit",
             circuit_options,
             offset=menu_offset_value(circuit_id),
@@ -1110,7 +1111,7 @@ def get_circuit_connections(dispatcher, provider_name, circuit_id):
         dispatcher.command_response_header(
             "nautobot",  # command
             "get-circuit-connections",  # sub_command
-            [("Provider Name", provider.name), ("Circuit ID", circuit.cid)],  # args
+            [("Provider PK", provider.pk), ("Circuit ID", circuit.cid)],  # args
             "circuit connection info",  # description
             nautobot_logo(dispatcher),  # image_element
         )
