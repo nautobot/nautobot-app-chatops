@@ -90,6 +90,10 @@ def get_commands_registry():
                     worker.name,
                 )
             continue
+        except Exception as exc:
+            logger.warning("Unable to load worker %s, skipping. Exception follows:", worker.name)
+            logger.exception(exc)
+            continue
 
         if (
             worker.name in _commands_registry
@@ -110,7 +114,6 @@ def get_commands_registry():
 
     # Mark the registry as initialized
     _registry_initialized = True
-
     return _commands_registry
 
 

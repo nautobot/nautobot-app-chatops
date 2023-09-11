@@ -28,11 +28,6 @@ from nautobot_chatops.workers.helper_functions import (
 # pylint: disable=too-many-return-statements,too-many-branches
 
 
-interface_ct = ContentType.objects.get_for_model(Interface)
-device_ct = ContentType.objects.get_for_model(Device)
-rack_ct = ContentType.objects.get_for_model(Rack)
-
-
 def nautobot(subcommand, **kwargs):
     """Interact with Nautobot."""
     return handle_subcommands("nautobot", subcommand, **kwargs)
@@ -360,6 +355,8 @@ def get_vlans(dispatcher, filter_type, filter_value_1):
 @subcommand_of("nautobot")
 def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_value_2):
     """Return a filtered list of interface connections based on type, `filter_value_1` and/or `filter_value_2`."""
+    device_ct = ContentType.objects.get_for_model(Device)
+    interface_ct = ContentType.objects.get_for_model(Interface)
     if not filter_type:
         prompt_for_interface_filter_type(
             "nautobot get-interface-connections", "Select an interface connection filter", dispatcher
@@ -699,6 +696,7 @@ def get_device_facts(dispatcher, device_key):
 @subcommand_of("nautobot")
 def get_devices(dispatcher, filter_type, filter_value):
     """Get a filtered list of devices from Nautobot."""
+    device_ct = ContentType.objects.get_for_model(Device)
     if not filter_type:
         prompt_for_device_filter_type("nautobot get-devices", "Select a device filter", dispatcher)
         return False  # command did not run to completion and therefore should not be logged
@@ -807,6 +805,7 @@ def get_devices(dispatcher, filter_type, filter_value):
 @subcommand_of("nautobot")
 def get_rack(dispatcher, site_key, rack_id):
     """Get information about a specific rack from Nautobot."""
+    rack_ct = ContentType.objects.get_for_model(Rack)
     if menu_item_check(site_key):
         # Only include sites with a non-zero number of racks
         location_types = LocationType.objects.filter(content_types=rack_ct)
