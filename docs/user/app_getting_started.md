@@ -36,6 +36,10 @@ Interact with Nautobot by utilizing the following sub-commands:
 !!! note
     All sub-commands are intended to be used with the `nautobot` prefix. For example, to retrieve a filtered list of VLANs, use the command `/nautobot get-vlans`.
 
++/- 3.0.0
+    Due to the removal of slug in Nautobot 2.0, the command shortcuts will use the PK value of an object. This will be
+    changed to the Natural Key or PK in an upcoming release.
+
 ### Integrations Commands
 
 The `nautobot-chatops` package includes multiple integrations. Each integration adds chat commands described here:

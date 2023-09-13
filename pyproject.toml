@@ -212,7 +212,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.towncrier]
 package = "nautobot_chatops"
 directory = "changes"
-filename = "docs/admin/release_notes/version_2.0.md"
+filename = "docs/admin/release_notes/version_3.0.md"
 template = "development/towncrier_template.j2"
 start_string = "<!-- towncrier release notes start -->"
 issue_format = "[#{issue}](https://github.com/nautobot/nautobot-plugin-chatops/issues/{issue})"
