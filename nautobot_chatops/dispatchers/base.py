@@ -12,6 +12,8 @@ from texttable import Texttable
 
 logger = logging.getLogger(__name__)
 
+_APP_CONFIG: Dict = settings.PLUGINS_CONFIG["nautobot_chatops"]
+
 
 class Dispatcher:
     """Abstract base class for all chat-app dispatchers."""
@@ -75,7 +77,7 @@ class Dispatcher:
         cache.set(
             self._get_cache_key(),
             session_value,
-            timeout=settings.PLUGINS_CONFIG["nautobot_chatops"]["session_cache_timeout"],
+            timeout=_APP_CONFIG["session_cache_timeout"],
         )
 
     def unset_session_entry(self, key: str):
@@ -100,7 +102,7 @@ class Dispatcher:
         cache.set(
             self._get_cache_key(),
             session_value,
-            timeout=settings.PLUGINS_CONFIG["nautobot_chatops"]["session_cache_timeout"],
+            timeout=_APP_CONFIG["session_cache_timeout"],
         )
 
     def unset_session(self):
@@ -112,22 +114,16 @@ class Dispatcher:
         """Get a list of all subclasses of Dispatcher that are known to Nautobot."""
         # TODO: this should be dynamic using entry_points
         # pylint: disable=import-outside-toplevel, unused-import, cyclic-import
-        if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_slack"):
+        if _APP_CONFIG.get("enable_slack"):
             from .slack import SlackDispatcher
 
-        if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_ms_teams"):
+        if _APP_CONFIG.get("enable_ms_teams"):
             from .ms_teams import MSTeamsDispatcher
 
-        # v1.4.0 backwards compatibility
-        if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_webex") or settings.PLUGINS_CONFIG[
-            "nautobot_chatops"
-        ].get("enable_webex_teams"):
-            from .webex import WebExDispatcher
+        if _APP_CONFIG.get("enable_webex"):
+            from .webex import WebexDispatcher
 
-            if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_webex_teams"):
-                logger.warning("The 'enable_webex_teams' setting is deprecated, please use 'enable_webex' instead.")
-
-        if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_mattermost"):
+        if _APP_CONFIG.get("enable_mattermost"):
             from .mattermost import MattermostDispatcher
 
         subclasses = set()
@@ -189,7 +185,7 @@ class Dispatcher:
     def send_large_table(self, header, rows, title=None):
         """Send a large table of data to the user/channel.
 
-        The below default implementation works for both Slack and WebEx.
+        The below default implementation works for both Slack and Webex.
         """
         table = Texttable(max_width=120)
         table.set_deco(Texttable.HEADER)
@@ -256,7 +252,7 @@ class Dispatcher:
         """Send a Markdown-formatted text message to the user/channel specified by the context."""
         # pylint: disable=unused-argument
         if ephemeral is None:
-            ephemeral = settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_private"]
+            ephemeral = _APP_CONFIG["send_all_messages_private"]
         raise NotImplementedError
 
     def send_blocks(
@@ -270,7 +266,7 @@ class Dispatcher:
         """Send a series of formatting blocks to the user/channel specified by the context."""
         # pylint: disable=unused-argument
         if ephemeral is None:
-            ephemeral = settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_private"]
+            ephemeral = _APP_CONFIG["send_all_messages_private"]
         raise NotImplementedError
 
     def send_snippet(self, text, title=None, ephemeral=None):

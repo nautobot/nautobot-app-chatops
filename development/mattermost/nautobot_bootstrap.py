@@ -15,6 +15,7 @@ for grant_type in AccessGrantTypeChoices.values():
 _COMMAND_TOKENS = {
     "aci": "tc1u8wbh53fwxxdkhswbmu9wsa",  # nosec
     "ansible": "c7udax974iymjkmoyhi1a11cpy",  # nosec
+    "clear": "p7phuwhpaiddjxqf8c1hnw33yh",  # nosec
     "cloudvision": "pxannsh78iyhbm8fumz8mxk9ih",  # nosec
     "grafana": "o1yiadnpifbzddt3umcedeypdr",  # nosec
     "ipfabric": "uqydyxkx4tykinw5z5u9dany1o",  # nosec

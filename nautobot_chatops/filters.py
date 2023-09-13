@@ -1,8 +1,6 @@
 """Django FilterSet classes for Nautobot."""
 
-import django_filters
-from nautobot.utilities.filters import BaseFilterSet, SearchFilter
-from nautobot.extras.filters import NautobotFilterSet
+from nautobot.core.filters import BaseFilterSet
 
 from nautobot_chatops.choices import PlatformChoices
 from nautobot_chatops.models import CommandLog, AccessGrant, ChatOpsAccountLink, CommandToken

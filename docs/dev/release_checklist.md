@@ -10,7 +10,7 @@ Required Python packages are maintained in two files: `pyproject.toml` and `poet
 
 #### The `pyproject.toml` file
 
-Python packages are defined inside of `pyproject.toml`. The `[tool.poetry.dependencies]` section of this file contains a list of all the packages required by Nautobot ChatOps.
+Python packages are defined inside `pyproject.toml`. The `[tool.poetry.dependencies]` section of this file contains a list of all the packages required by Nautobot ChatOps.
 
 Where possible, we use [tilde requirements](https://python-poetry.org/docs/dependency-specification/#tilde-requirements) to specify a minimal version with some ability to update, for example:
 
@@ -47,9 +47,9 @@ Every minor version release should refresh `poetry.lock`, so that it lists the m
 
 Add the release notes (`docs/release-notes/X.Y.md`) to the table of contents within `mkdocs.yml`, and point `index.md` to the new file.
 
-### Verify and Revise the Install Documentation
+### Verify and Revise the Installation Documentation
 
-Follow the [install instructions](../admin/install/index.md) to perform a new production installation of Nautobot ChatOps.
+Follow the [installation instructions](../admin/install/index.md) to perform a new production installation of Nautobot ChatOps.
 
 The goal of this step is to walk through the entire install process *as documented* to make sure nothing there needs to be changed or updated, to catch any errors or omissions in the documentation, and to ensure that it is current with each release.
 
@@ -120,7 +120,7 @@ Please see the [official Poetry documentation on `version`](https://python-poetr
 
 Create a release branch off of `develop` (`git checkout -b release-1.4.3 develop`)
 
-Generate release notes with `towncrier build --version 1.4.3` and answer `yes` to the prompt `Is it okay if I remove those files? [Y/n]:`. This will update the release notes in `docs/admin/release_notes/version_1.4.md`, stage that file in git, and `git rm` all of the fragments that have now been incorporated into the release notes.
+Generate release notes with `towncrier build --version 1.4.3` and answer `yes` to the prompt `Is it okay if I remove those files? [Y/n]:`. This will update the release notes in `docs/admin/release_notes/version_1.4.md`, stage that file in git, and `git rm` all the fragments that have now been incorporated into the release notes.
 
 Run `invoke markdownlint` to make sure the generated release notes pass the linter checks.
 
@@ -133,7 +133,7 @@ Commit and push the staged changes.
 
 ### Submit Pull Requests
 
-Submit a pull request to merge your release branch into `develop`. Once merged, submit another pull request titled **"Release vX.Y.Z"** to merge the `develop` branch into `main`. Copy the documented release notes into the pull request's body.
+Submit a pull request to merge your release branch into `develop`. Once merged, submit another pull request titled `**"Release vX.Y.Z"**` to merge the `develop` branch into `main`. Copy the documented release notes into the pull request's body.
 
 Once CI has completed on the PR, merge it.
 

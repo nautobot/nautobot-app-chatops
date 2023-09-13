@@ -45,9 +45,9 @@ namespace = Collection("nautobot_chatops")
 namespace.configure(
     {
         "nautobot_chatops": {
-            "nautobot_ver": "1.4.0",
+            "nautobot_ver": "2.0.0-rc.2",
             "project_name": "nautobot-chatops",
-            "python_ver": "3.8",
+            "python_ver": "3.10",
             "local": False,
             "compose_dir": os.path.join(os.path.dirname(__file__), "development"),
             "compose_files": [

@@ -2,7 +2,7 @@
 
 from django_tables2 import TemplateColumn
 
-from nautobot.utilities.tables import BaseTable, ButtonsColumn, ToggleColumn
+from nautobot.core.tables import BaseTable, ButtonsColumn, ToggleColumn
 
 from .models import CommandLog, AccessGrant, CommandToken, ChatOpsAccountLink
 

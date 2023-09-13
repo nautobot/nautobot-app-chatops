@@ -19,3 +19,5 @@ While that last supported version will not be strictly enforced via the `max_ver
 | 1.8.X           | 1.1.0                          | 1.4.99 [Official]             |
 | 1.9.X           | 1.2.0                          | 1.5.99 [Official]             |
 | 1.10.X          | 1.3.0                          | 1.5.99 [Official]             |
+| 2.0.X           | 1.5.4                          | 1.6.99 [Official]             |
+| 3.0.X           | 2.0.0                          | 2.2.99 [Official]             |

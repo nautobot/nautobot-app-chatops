@@ -3,9 +3,26 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.core.serializers.json import DjangoJSONEncoder
 from django.utils.translation import gettext_lazy as _
-from nautobot.extras.utils import extras_features
+from nautobot.circuits import models as circuit_models
 from nautobot.core.models.generics import PrimaryModel, OrganizationalModel
-from nautobot_chatops.integrations.grafana.helpers import VALID_MODELS
+from nautobot.dcim import models as dcim_models
+from nautobot.extras import models as extra_models
+from nautobot.extras.utils import extras_features
+from nautobot.ipam import models as ipam_models
+from nautobot.tenancy import models as tenancy_models
+from nautobot.virtualization import models as virtualization_models
+
+
+# Valid models to be used in Panel Variables as query options. If a model doesn't exist in
+# this list, you cannot set or use the `query` field in a panel variable.
+VALID_MODELS = (
+    dcim_models,
+    ipam_models,
+    extra_models,
+    tenancy_models,
+    virtualization_models,
+    circuit_models,
+)
 
 
 @extras_features(
@@ -25,8 +42,6 @@ class GrafanaDashboard(PrimaryModel):
     friendly_name = models.CharField(max_length=255, default="", blank=True)
     dashboard_uid = models.CharField(max_length=64, unique=True, blank=False)
 
-    csv_headers = ["dashboard_slug", "dashboard_uid", "friendly_name"]
-
     class Meta:
         """Metadata for the model."""
 
@@ -35,10 +50,6 @@ class GrafanaDashboard(PrimaryModel):
     def __str__(self):
         """String value for HTML rendering."""
         return f"{self.dashboard_slug}"
-
-    def to_csv(self):
-        """Return fields for bulk view."""
-        return self.dashboard_slug, self.dashboard_uid, self.friendly_name
 
 
 Dashboard = GrafanaDashboard
@@ -62,8 +73,6 @@ class GrafanaPanel(OrganizationalModel):
     panel_id = models.IntegerField(blank=False)
     active = models.BooleanField(default=False)
 
-    csv_headers = ["dashboard", "command_name", "friendly_name", "panel_id", "active"]
-
     class Meta:
         """Metadata for the model."""
 
@@ -72,10 +81,6 @@ class GrafanaPanel(OrganizationalModel):
     def __str__(self):
         """String value for HTML rendering."""
         return f"{self.command_name}"
-
-    def to_csv(self):
-        """Return fields for bulk view."""
-        return self.dashboard, self.command_name, self.friendly_name, self.panel_id, self.active
 
 
 Panel = GrafanaPanel
@@ -104,20 +109,6 @@ class GrafanaPanelVariable(OrganizationalModel):
     response = models.CharField(max_length=255)
     filter = models.JSONField(blank=True, default=dict, encoder=DjangoJSONEncoder)
     positional_order = models.IntegerField(default=100)
-
-    csv_headers = [
-        "panel",
-        "name",
-        "friendly_name",
-        "query",
-        "modelattr",
-        "value",
-        "response",
-        "positional_order",
-        "includeincmd",
-        "includeinurl",
-        "filter",
-    ]
 
     class Meta:
         """Metadata for the model."""
@@ -152,22 +143,6 @@ class GrafanaPanelVariable(OrganizationalModel):
                 )
 
         raise ValidationError(_(f"`{self.query}` is not a valid Nautobot model."))
-
-    def to_csv(self):
-        """Return fields for bulk view."""
-        return (
-            self.panel,
-            self.name,
-            self.friendly_name,
-            self.query,
-            self.includeincmd,
-            self.includeinurl,
-            self.modelattr,
-            self.value,
-            self.response,
-            self.filter,
-            self.positional_order,
-        )
 
 
 PanelVariable = GrafanaPanelVariable

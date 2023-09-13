@@ -2,10 +2,10 @@
 
 from django import forms
 
-from nautobot.utilities.forms import BootstrapMixin, StaticSelect2Multiple
+from nautobot.core.forms import BootstrapMixin, StaticSelect2Multiple
 from nautobot.extras.forms import NautobotFilterForm
 
-from .models import AccessGrant, CommandToken, ChatOpsAccountLink
+from .models import AccessGrant, CommandLog, CommandToken, ChatOpsAccountLink
 from .choices import AccessGrantTypeChoices, CommandTokenPlatformChoices, PlatformChoices
 from .constants import ACCESS_GRANT_COMMAND_HELP_TEXT, COMMAND_TOKEN_TOKEN_HELP_TEXT
 
@@ -65,6 +65,26 @@ class ChatOpsAccountLinkFilterForm(NautobotFilterForm):
     ]
     q = forms.CharField(required=False, label="Search")
     platform = forms.MultipleChoiceField(choices=PlatformChoices, required=False, widget=StaticSelect2Multiple())
+
+
+class CommandLogFilterForm(BootstrapMixin, forms.ModelForm):
+    """Form for filtering Command Logs."""
+
+    command = forms.CharField(required=False)
+    subcommand = forms.CharField(required=False)
+
+    class Meta:
+        """Metaclass attributes of AccessGrantFilterForm."""
+
+        model = CommandLog
+
+        fields = [
+            "platform",
+            "command",
+            "subcommand",
+            "status",
+            "details",
+        ]
 
 
 class CommandTokenFilterForm(BootstrapMixin, forms.ModelForm):

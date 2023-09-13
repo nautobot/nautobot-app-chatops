@@ -2,7 +2,6 @@
 
 from datetime import datetime, timezone
 
-from django_rq import job
 
 from nautobot_chatops.choices import CommandStatusChoices
 from nautobot_chatops.dispatchers.slack import SlackDispatcher
@@ -11,7 +10,6 @@ from nautobot_chatops.workers import get_commands_registry
 
 
 # pylint: disable=unused-argument
-@job("default")
 def clear(subcommand, params, dispatcher_class=None, context=None, **kwargs):
     """Scroll the chat history out of view."""
     # This command is somewhat unique as it doesn't have any subcommands or parameters.

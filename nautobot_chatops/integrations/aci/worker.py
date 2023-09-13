@@ -1,8 +1,8 @@
 """Worker functions implementing Nautobot "aci" command and subcommands."""
 
-from distutils.util import strtobool
 from django.conf import settings
 from nautobot.core.celery import nautobot_task
+from nautobot.core.settings_funcs import is_truthy
 
 from nautobot_chatops.choices import CommandStatusChoices
 from nautobot_chatops.workers import subcommand_of, handle_subcommands
@@ -24,7 +24,7 @@ def _read_settings():
         if "URI" in key:
             creds[subkey]["base_uri"] = PLUGIN_SETTINGS["aci_creds"][key]
         if "VERIFY" in key:
-            creds[subkey]["verify"] = bool(strtobool(PLUGIN_SETTINGS["aci_creds"][key]))
+            creds[subkey]["verify"] = is_truthy(PLUGIN_SETTINGS["aci_creds"][key])
 
     choices = [(key, key) for key in creds]
 

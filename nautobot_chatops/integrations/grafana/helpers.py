@@ -2,13 +2,6 @@
 from typing import List
 from termcolor import colored
 
-from nautobot.dcim import models as dcim_models
-from nautobot.ipam import models as ipam_models
-from nautobot.extras import models as extra_models
-from nautobot.tenancy import models as tenancy_models
-from nautobot.virtualization import models as virtualization_models
-from nautobot.circuits import models as circuit_models
-
 from schema_enforcer import config
 from schema_enforcer.schemas.manager import SchemaManager
 from schema_enforcer.instances.file import InstanceFileManager
@@ -22,17 +15,6 @@ SPECIAL_CHAR = {
     "<": "less-than",
     ">": "greater-than",
 }
-
-# Valid models to be used in Panel Variables as query options. If a model doesn't exist in
-# this list, you cannot set or use the `query` field in a panel variable.
-VALID_MODELS = (
-    dcim_models,
-    ipam_models,
-    extra_models,
-    tenancy_models,
-    virtualization_models,
-    circuit_models,
-)
 
 
 def format_command(command: str) -> str:

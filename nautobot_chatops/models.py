@@ -3,11 +3,10 @@
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.urls import reverse
 
-from nautobot.utilities.fields import ColorField
-from nautobot.extras.models.change_logging import ChangeLoggedModel
-from nautobot.core.models import BaseModel
-
+from nautobot.core.models.fields import ColorField
+from nautobot.core.models.generics import PrimaryModel
 from .choices import AccessGrantTypeChoices, CommandStatusChoices, CommandTokenPlatformChoices, PlatformChoices
 
 from .integrations.grafana.models import Dashboard as GrafanaDashboard
@@ -31,7 +30,7 @@ from .constants import (
 )
 
 
-class CommandLog(BaseModel):
+class CommandLog(PrimaryModel):
     """Record of a single fully-executed Nautobot command.
 
     Incomplete commands (those requiring additional user input) should not be recorded,
@@ -65,19 +64,6 @@ class CommandLog(BaseModel):
         related_name="command_log",
     )
 
-    csv_headers = ["Start Time", "Username", "Command", "Subcommand", "Params", "Status"]
-
-    def to_csv(self):
-        """Indicates model fields to return as csv."""
-        return (
-            self.start_time,
-            self.user_name,
-            self.command,
-            self.subcommand,
-            self.params if self.params else "",
-            self.status,
-        )
-
     @property
     def status_label_class(self):
         """Bootstrap CSS label class for each status value."""
@@ -95,13 +81,17 @@ class CommandLog(BaseModel):
         """String representation of a CommandLog entry."""
         return f"{self.user_name} on {self.platform}: {self.command} {self.subcommand} {self.params} ({self.status})"
 
+    def get_absolute_url(self, api=False):
+        """Override the objects absolute url since we have no detail view."""
+        return reverse("plugins:nautobot_chatops:commandlog_list")
+
     class Meta:
         """Meta-attributes of a CommandLog."""
 
         ordering = ["start_time"]
 
 
-class AccessGrant(BaseModel, ChangeLoggedModel):
+class AccessGrant(PrimaryModel):
     """Record of a single form of access granted to the chatbot."""
 
     command = models.CharField(max_length=64, help_text=ACCESS_GRANT_COMMAND_HELP_TEXT)
@@ -128,13 +118,18 @@ class AccessGrant(BaseModel, ChangeLoggedModel):
         """String representation of an AccessGrant."""
         return f'cmd: "{self.command} {self.subcommand}", {self.grant_type}: "{self.name}" ({self.value})'
 
+    def get_absolute_url(self, api=False):
+        """Override the objects absolute url since we have no detail view."""
+        return reverse("plugins:nautobot_chatops:accessgrant_list")
+
     class Meta:
         """Meta-attributes of an AccessGrant."""
 
         ordering = ["command", "subcommand", "grant_type"]
+        unique_together = [["command", "subcommand", "grant_type", "value"]]
 
 
-class CommandToken(BaseModel, ChangeLoggedModel):
+class CommandToken(PrimaryModel):
     """Record of a Token granted for the chat platform and chat command."""
 
     comment = models.CharField(max_length=255, help_text=COMMAND_TOKEN_COMMENT_HELP_TEXT, blank=True, default="")
@@ -145,13 +140,18 @@ class CommandToken(BaseModel, ChangeLoggedModel):
         """String representation of a CommandToken."""
         return f'platform: "{self.platform}", token: "{self.token}", comment: "{self.comment}"'
 
+    def get_absolute_url(self, api=False):
+        """Override the objects absolute url since we have no detail view."""
+        return reverse("plugins:nautobot_chatops:commandtoken_list")
+
     class Meta:
         """Meta-attributes of a CommandToken."""
 
         ordering = ["platform", "token", "comment"]
+        unique_together = [["platform", "token"]]
 
 
-class ChatOpsAccountLink(BaseModel, ChangeLoggedModel):
+class ChatOpsAccountLink(PrimaryModel):
     """Connect ChatOps User with Nautobot User."""
     nautobot_user = models.ForeignKey(
         to=settings.AUTH_USER_MODEL,
