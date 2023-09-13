@@ -44,7 +44,9 @@ def prompt_for_device(action_id, help_text, dispatcher, devices=None, offset=0):
         return (CommandStatusChoices.STATUS_FAILED, "No devices found")
     choices = [
         (
-            f"{'>'.join([str(ancestor) for ancestor in device.location.ancestors()])}{'>' if device.location.ancestors() else ''}{device.location.name}: {device.name}",
+            f"{'>'.join([str(ancestor) for ancestor in device.location.ancestors()])}"
+            f"{'>' if device.location.ancestors() else ''}"
+            f"{device.location.name}: {device.name}",
             str(device.pk),
         )
         for device in devices
@@ -212,7 +214,9 @@ def get_vlans(dispatcher, filter_type, filter_value_1):
             location_types = LocationType.objects.filter(content_types=ContentType.objects.get_for_model(VLAN))
             choices = [
                 (
-                    f"{'>'.join([str(ancestor) for ancestor in location.ancestors()])}{'>' if location.ancestors() else ''}{location.name}",
+                    f"{'>'.join([str(ancestor) for ancestor in location.ancestors()])}"
+                    f"{'>' if location.ancestors() else ''}"
+                    f"{location.name}",
                     str(location.pk),
                 )
                 for location in Location.objects.annotate(Count("vlans"))
@@ -381,7 +385,9 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
             location_types = LocationType.objects.filter(content_types=device_ct)
             choices = [
                 (
-                    f"{'>'.join([str(ancestor) for ancestor in location.ancestors()])}{'>' if location.ancestors() else ''}{location.name}",
+                    f"{'>'.join([str(ancestor) for ancestor in location.ancestors()])}"
+                    f"{'>' if location.ancestors() else ''}"
+                    f"{location.name}",
                     str(location.pk),
                 )
                 for location in Location.objects.annotate(Count("devices"))
@@ -723,7 +729,9 @@ def get_devices(dispatcher, filter_type, filter_value):
             location_types = LocationType.objects.filter(content_types=device_ct)
             choices = [
                 (
-                    f"{'>'.join([str(ancestor) for ancestor in location.ancestors()])}{'>' if location.ancestors() else ''}{location.name}",
+                    f"{'>'.join([str(ancestor) for ancestor in location.ancestors()])}"
+                    f"{'>' if location.ancestors() else ''}"
+                    f"{location.name}",
                     str(location.pk),
                 )
                 for location in Location.objects.filter(location_type__in=location_types)
@@ -830,7 +838,9 @@ def get_rack(dispatcher, location_key, rack_id):
         location_types = LocationType.objects.filter(content_types=rack_ct)
         location_options = [
             (
-                f"{'>'.join([str(ancestor) for ancestor in location.ancestors()])}{'>' if location.ancestors() else ''}{location.name}",
+                f"{'>'.join([str(ancestor) for ancestor in location.ancestors()])}"
+                f"{'>' if location.ancestors() else ''}"
+                f"{location.name}",
                 str(location.pk),
             )
             for location in Location.objects.filter(location_type__in=location_types).order_by("name")
@@ -902,10 +912,14 @@ def get_circuits(dispatcher, filter_type, filter_value):
         elif filter_type == "provider":
             choices = [(prov.name, str(prov.pk)) for prov in Provider.objects.all()]
         elif filter_type == "location":
-            location_types = LocationType.objects.filter(content_types=ContentType.objects.get_for_model(CircuitTermination))
+            location_types = LocationType.objects.filter(
+                content_types=ContentType.objects.get_for_model(CircuitTermination)
+            )
             choices = [
                 (
-                    f"{'>'.join([str(ancestor) for ancestor in location.ancestors()])}{'>' if location.ancestors() else ''}{location.name}",
+                    f"{'>'.join([str(ancestor) for ancestor in location.ancestors()])}"
+                    f"{'>' if location.ancestors() else ''}"
+                    f"{location.name}",
                     str(location.pk),
                 )
                 for location in Location.objects.filter(location_type__in=location_types)

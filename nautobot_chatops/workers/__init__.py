@@ -90,7 +90,7 @@ def get_commands_registry():
                     worker.name,
                 )
             continue
-        except Exception as exc:
+        except Exception as exc:  # pylint: disable=broad-except
             logger.warning("Unable to load worker %s, skipping. Exception follows:", worker.name)
             logger.exception(exc)
             continue
