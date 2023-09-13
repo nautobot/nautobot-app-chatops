@@ -2,12 +2,15 @@
 
 This guide outlines the process of enabling Nautobot ChatOps, which includes:
 
-1. [Configuring the specific chat platform](#chat-platforms-configuration)
-2. [Installing the App](#installation-guide)
-3. [Configuring the App](#configuration-guide)
-4. [Granting chatbot access in the Nautobot Web UI](#granting-access-to-the-chat-platform)
-5. [Testing the installation](#test-your-chatbot)
-6. [Configuring integrations](#integrations-configuration)
+- [Nautobot ChatOps Installation Guide](#nautobot-chatops-installation-guide)
+  - [Prerequisites](#prerequisites)
+    - [Potential Apps Conflicts](#potential-apps-conflicts)
+  - [Chat Platforms Configuration](#chat-platforms-configuration)
+  - [Installation Guide](#installation-guide)
+  - [Configuration Guide](#configuration-guide)
+  - [Granting Access to the Chat Platform](#granting-access-to-the-chat-platform)
+  - [Test Your Chatbot](#test-your-chatbot)
+  - [Integrations Configuration](#integrations-configuration)
 
 {% include-markdown '../../glossary.md' heading-offset=1 %}
 
@@ -15,7 +18,7 @@ This guide outlines the process of enabling Nautobot ChatOps, which includes:
 
 Ensure the following before beginning the installation:
 
-- Nautobot 1.4.0 or higher is installed.
+- Nautobot 1.5.4 or higher is installed.
 - Your chat platform can access Nautobot via an HTTPS URL.
     - Some chat platforms require **SSL certificate verification** to communicate with the Nautobot server.
     - For development, you may use HTTP.

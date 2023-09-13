@@ -1,0 +1,1 @@
+Fixed App initialization when `[grafana]` extra is not installed.
