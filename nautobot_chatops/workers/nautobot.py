@@ -35,14 +35,20 @@ def nautobot(subcommand, **kwargs):
 
 def prompt_for_device(action_id, help_text, dispatcher, devices=None, offset=0):
     """Prompt the user to select a valid device from a drop-down menu."""
-    # In the previous implementation, we grouped the devices into subgroups by site.
+    # In the previous implementation, we grouped the devices into subgroups by location.
     # Unfortunately, while this is possible in Slack, the Adaptive Cards spec (MS Teams / Webex) can't do it.
     if devices is None:
         devices = Device.objects.all().order_by("location", "name")
     if not devices:
         dispatcher.send_error("No devices were found")
         return (CommandStatusChoices.STATUS_FAILED, "No devices found")
-    choices = [(f"{device.location.name}: {device.name}", device.pk) for device in devices]
+    choices = [
+        (
+            f"{'>'.join([str(ancestor) for ancestor in device.location.ancestors()])}{'>' if device.location.ancestors() else ''}{device.location.name}: {device.name}",
+            str(device.pk),
+        )
+        for device in devices
+    ]
     return dispatcher.prompt_from_menu(action_id, help_text, choices, offset=offset)
 
 
@@ -90,12 +96,12 @@ def send_vlan_table(dispatcher, vlans, filter_type):
     """Returns a large vlan table based on filter_type."""
     if ("name" in filter_type) or ("id" in filter_type):
         vlans = [vlans]
-    header = ["ID", "Site", "Group", "Name", "Prefixes", "Tenant", "Status", "Role", "Description"]
+    header = ["ID", "Location", "Group", "Name", "Prefixes", "Tenant", "Status", "Role", "Description"]
     rows = [
         (
             vlan.vid,
-            vlan.site,
-            vlan.group,
+            vlan.location,
+            vlan.vlan_group,
             vlan.name,
             get_prefix_for_vlan(vlan),
             vlan.tenant,
@@ -143,12 +149,12 @@ def analyze_circuit_endpoints(endpoint):
 def examine_termination_endpoints(circuit):
     """Given a Circuit object, determine the A, Z side endpoints."""
     try:
-        term_a = circuit.termination_a.trace()[0][2]
+        term_a = circuit.circuit_termination_a.trace()[0][2]
         endpoint_info_a = analyze_circuit_endpoints(term_a)
     except (AttributeError, IndexError):
         endpoint_info_a = "No A Side Connection in Database"
     try:
-        term_z = circuit.termination_z.trace()[0][2]
+        term_z = circuit.circuit_termination_z.trace()[0][2]
         endpoint_info_z = analyze_circuit_endpoints(term_z)
     except (AttributeError, IndexError):
         endpoint_info_z = "No Z Side Connection in Database"
@@ -201,27 +207,30 @@ def get_vlans(dispatcher, filter_type, filter_value_1):
             return False
         elif filter_type == "status":
             vlans = VLAN.objects.all()
-            choices = [(status.name, status.pk) for status in Status.objects.get_for_model(VLAN)]
-        elif filter_type == "site":
-            location_types = LocationType.objects.filter(content_type=ContentType.objects.get_for_model(VLAN))
+            choices = [(status.name, str(status.pk)) for status in Status.objects.get_for_model(VLAN)]
+        elif filter_type == "location":
+            location_types = LocationType.objects.filter(content_types=ContentType.objects.get_for_model(VLAN))
             choices = [
-                (site.name, site.pk)
-                for site in Location.objects.annotate(Count("vlans"))
-                .filter(location_type=location_types)
+                (
+                    f"{'>'.join([str(ancestor) for ancestor in location.ancestors()])}{'>' if location.ancestors() else ''}{location.name}",
+                    str(location.pk),
+                )
+                for location in Location.objects.annotate(Count("vlans"))
+                .filter(location_type__in=location_types)
                 .filter(vlans__count__gt=0)
             ]
         elif filter_type == "group":
             choices = [
-                (group.name, group.pk)
+                (group.name, str(group.pk))
                 for group in VLANGroup.objects.annotate(Count("vlans")).filter(vlans__count__gt=0)
             ]
         elif filter_type == "tenant":
             choices = [
-                (tenant.name, tenant.pk)
+                (tenant.name, str(tenant.pk))
                 for tenant in Tenant.objects.annotate(Count("vlans")).filter(vlans__count__gt=0)
             ]
         elif filter_type == "role":
-            choices = [(role.name, role.pk) for role in Role.objects.filter(content_types=content_type)]
+            choices = [(role.name, str(role.pk)) for role in Role.objects.filter(content_types=content_type)]
 
         if not choices:
             dispatcher.send_error(f"VLAN {filter_type} {filter_value_1} not found")
@@ -264,21 +273,21 @@ def get_vlans(dispatcher, filter_type, filter_value_1):
                 CommandStatusChoices.STATUS_FAILED,
                 f'No VLANs with status "{filter_value_1}" found',
             )
-    elif filter_type == "site":
+    elif filter_type == "location":
         try:
-            site = Location.objects.get(pk=filter_value_1)
+            location = Location.objects.get(pk=filter_value_1)
         except Location.DoesNotExist:
-            dispatcher.send_error(f"Site (Location) {filter_value_1} not found")
+            dispatcher.send_error(f"Location {filter_value_1} not found")
             return (
                 CommandStatusChoices.STATUS_FAILED,
-                f'Site (Location) "{filter_value_1}" not found',
+                f'Location "{filter_value_1}" not found',
             )
-        vlans = VLAN.objects.filter(location=site)
+        vlans = VLAN.objects.filter(location=location)
         if not vlans:
-            dispatcher.send_error(f"No VLANs found in site (location) {filter_value_1}")
+            dispatcher.send_error(f"No VLANs found in location {filter_value_1}")
             return (
                 CommandStatusChoices.STATUS_FAILED,
-                f'No VLANs found in site (location) "{filter_value_1}"',
+                f'No VLANs found in location "{filter_value_1}"',
             )
     elif filter_type == "group":
         try:
@@ -289,7 +298,7 @@ def get_vlans(dispatcher, filter_type, filter_value_1):
                 CommandStatusChoices.STATUS_FAILED,
                 f'Group "{filter_value_1}" not found',
             )
-        vlans = VLAN.objects.filter(group=group)
+        vlans = VLAN.objects.filter(vlan_group=group)
         if not vlans:
             dispatcher.send_error(f"No VLANs found in group {filter_value_1}")
             return (
@@ -365,24 +374,29 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
 
     filter_type = filter_type.lower()
     if menu_item_check(filter_value_1):
-        if filter_type in ["device", "site"]:
-            # Since the device filter prompts the user to pick a site first in order to further
-            # query devices located in the chosen site, the device filter will start off with
-            # choices of all the sites with one or more devices.
-            location_types = LocationType.objects.filter(content_type=device_ct)
+        if filter_type in ["device", "location"]:
+            # Since the device filter prompts the user to pick a location first in order to further
+            # query devices located in the chosen location, the device filter will start off with
+            # choices of all the locations with one or more devices.
+            location_types = LocationType.objects.filter(content_types=device_ct)
             choices = [
-                (site.name, site.pk)
-                for site in Location.objects.annotate(Count("devices"))
-                .filter(location_type=location_types)
+                (
+                    f"{'>'.join([str(ancestor) for ancestor in location.ancestors()])}{'>' if location.ancestors() else ''}{location.name}",
+                    str(location.pk),
+                )
+                for location in Location.objects.annotate(Count("devices"))
+                .filter(location_type__in=location_types)
                 .filter(devices__count__gt=0)
                 .order_by("name")
             ]
         elif filter_type == "role":
-            choices = [(role.name, role.pk) for role in Role.objects.filter(content_types=device_ct).order_by("name")]
+            choices = [
+                (role.name, str(role.pk)) for role in Role.objects.filter(content_types=device_ct).order_by("name")
+            ]
         elif filter_type == "model":
             # TODO Switch to utilizing Natural Key instead of PK.
             choices = [
-                (device_type.model, device_type.pk)
+                (device_type.model, str(device_type.pk))
                 for device_type in DeviceType.objects.all().order_by("manufacturer__name", "model")
             ]
         elif filter_type == "all":
@@ -434,7 +448,7 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
         else:
             dispatcher.prompt_from_menu(
                 f"nautobot get-interface-connections {filter_type}",
-                "Select a site",
+                "Select a location",
                 choices,
                 offset=menu_offset_value(filter_value_1),
             )
@@ -443,15 +457,15 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
     # 3 param slash command
     if filter_type == "device" and menu_item_check(filter_value_2):
         try:
-            site = Location.objects.get(pk=filter_value_1)
+            location = Location.objects.get(pk=filter_value_1)
         except Location.DoesNotExist:
-            dispatcher.send_error(f"Site (Location) {filter_value_1} not found")
+            dispatcher.send_error(f"Location {filter_value_1} not found")
             return (
                 CommandStatusChoices.STATUS_FAILED,
-                f'Site (Location) "{filter_value_1}" not found',
+                f'Location "{filter_value_1}" not found',
             )  # command did not run to completion and therefore should not be logged
 
-        device_options = [(device.name, device.name) for device in Device.objects.filter(location=site)]
+        device_options = [(device.name, str(device.pk)) for device in Device.objects.filter(location=location)]
         dispatcher.prompt_from_menu(
             f"nautobot get-interface-connections {filter_type} {filter_value_1}",
             "Select a device",
@@ -495,16 +509,15 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
             return CommandStatusChoices.STATUS_SUCCEEDED
 
     # 2 param slash command
-    sites = []
     devices = []
-    if filter_type == "site":
+    if filter_type == "location":
         try:
             value = Location.objects.get(pk=filter_value_1)
         except Location.DoesNotExist:
-            dispatcher.send_error(f"Site {filter_value_1} not found")
+            dispatcher.send_error(f"Location {filter_value_1} not found")
             return (
                 CommandStatusChoices.STATUS_FAILED,
-                f'Site "{filter_value_1}" not found',
+                f'Location "{filter_value_1}" not found',
             )  # command did not run to completion and therefore should not be logged
         devices = Device.objects.filter(location=value)
     elif filter_type == "role":
@@ -563,7 +576,7 @@ def get_device_status(dispatcher, device_key):
             "nautobot get-device-status",
             "Get Nautobot Device Status",
             dispatcher,
-            offset=menu_offset_value(device_key),
+            offset=menu_offset_value(str(device_key)),
         )
         return False  # command did not run to completion and therefore should not be logged
 
@@ -578,11 +591,11 @@ def get_device_status(dispatcher, device_key):
         *dispatcher.command_response_header(
             "nautobot",
             "get-device-status",
-            [("Name", device_key)],
+            [("PK", device_key)],
             "device status",
             nautobot_logo(dispatcher),
         ),
-        dispatcher.markdown_block(f"The status of {dispatcher.bold(device_key)} is {dispatcher.bold(device.status)}"),
+        dispatcher.markdown_block(f"The status of {dispatcher.bold(device.name)} is {dispatcher.bold(device.status)}"),
     ]
 
     dispatcher.send_blocks(blocks)
@@ -612,14 +625,14 @@ def change_device_status(dispatcher, device_key, status):
         dispatcher.prompt_from_menu(
             f"nautobot change-device-status {device_key}",
             f"Change Nautobot Device Status for {device_key}",
-            [(status.name, status.pk) for status in Status.objects.get_for_model(Device)],
-            default=(device.status.name, device.status.pk),
+            [(status.name, str(status.pk)) for status in Status.objects.get_for_model(Device)],
+            default=(device.status.name, str(device.status.pk)),
             confirm=True,
             offset=menu_offset_value(status),
         )
         return False  # command did not run to completion and therefore should not be logged
-
-    device.status = Status.objects.get_for_model(Device).get(pk=status)
+    change_status = Status.objects.get_for_model(Device).get(pk=status)
+    device.status = change_status
     try:
         device.clean_fields()
     except ValidationError:
@@ -632,13 +645,13 @@ def change_device_status(dispatcher, device_key, status):
             *dispatcher.command_response_header(
                 "nautobot",
                 "change-device-status",
-                [("Device name", device_key), ("Status", status)],
+                [("Device PK", device_key), ("Status PK", status)],
                 "device status change",
                 nautobot_logo(dispatcher),
             ),
             dispatcher.markdown_block(
-                f"Nautobot status for {dispatcher.bold(device_key)} "
-                f"successfully changed to {dispatcher.monospace(status)}."
+                f"Nautobot status for {dispatcher.bold(device.name)} "
+                f"successfully changed to {dispatcher.monospace(change_status.name)}."
             ),
         ]
     )
@@ -681,7 +694,7 @@ def get_device_facts(dispatcher, device_key):
         f"name: {device.name}\n"
         f"manufacturer: {device.device_type.manufacturer.name}\n"
         f"model: {device.device_type.model}\n"
-        f"role: {device.device_role.name if device.device_role else '~'}\n"
+        f"role: {device.role.name if device.role else '~'}\n"
         f"platform: {device.platform.name if device.platform else '~'}\n"
         f"primary_ip: {device.primary_ip.address if device.primary_ip else '~'}\n"
         f"created: {device.created}\n"
@@ -706,15 +719,21 @@ def get_devices(dispatcher, filter_type, filter_value):
         if filter_type == "name":
             dispatcher.prompt_for_text(f"nautobot get-devices {filter_type}", "Enter device name", "Device name")
             return False  # command did not run to completion and therefore should not be logged
-        elif filter_type == "site":
-            location_types = LocationType.objects.filter(content_type=device_ct)
-            choices = [(site.name, site.pk) for site in Location.objects.filter(location_type=location_types)]
+        elif filter_type == "location":
+            location_types = LocationType.objects.filter(content_types=device_ct)
+            choices = [
+                (
+                    f"{'>'.join([str(ancestor) for ancestor in location.ancestors()])}{'>' if location.ancestors() else ''}{location.name}",
+                    str(location.pk),
+                )
+                for location in Location.objects.filter(location_type__in=location_types)
+            ]
         elif filter_type == "role":
-            choices = [(role.name, role.pk) for role in Role.objects.filter(content_types=device_ct)]
+            choices = [(role.name, str(role.pk)) for role in Role.objects.filter(content_types=device_ct)]
         elif filter_type == "model":
-            choices = [(device_type.model, device_type.pk) for device_type in DeviceType.objects.all()]
+            choices = [(device_type.model, str(device_type.pk)) for device_type in DeviceType.objects.all()]
         elif filter_type == "manufacturer":
-            choices = [(manufacturer.name, manufacturer.pk) for manufacturer in Manufacturer.objects.all()]
+            choices = [(manufacturer.name, str(manufacturer.pk)) for manufacturer in Manufacturer.objects.all()]
         else:
             dispatcher.send_error(f"I don't know how to filter by {filter_type}")
             return (CommandStatusChoices.STATUS_FAILED, f'Unknown filter type "{filter_type}"')
@@ -732,21 +751,21 @@ def get_devices(dispatcher, filter_type, filter_value):
         return False  # command did not run to completion and therefore should not be logged
 
     if filter_type == "name":
-        devices = Device.objects.filter(pk=filter_value)
-    elif filter_type == "site":
+        devices = Device.objects.filter(name=filter_value)
+    elif filter_type == "location":
         try:
-            site = Location.objects.get(pk=filter_value)
+            location = Location.objects.get(pk=filter_value)
         except Location.DoesNotExist:
-            dispatcher.send_error(f"Site (Location) {filter_value} not found")
-            return (CommandStatusChoices.STATUS_FAILED, f'Site (Location) "{filter_value}" not found')
-        devices = Device.objects.filter(location=site)
+            dispatcher.send_error(f"Location {filter_value} not found")
+            return (CommandStatusChoices.STATUS_FAILED, f'Location "{filter_value}" not found')
+        devices = Device.objects.filter(location=location)
     elif filter_type == "role":
         try:
             role = Role.objects.get(pk=filter_value, content_types=device_ct)
         except Role.DoesNotExist:
             dispatcher.send_error(f"Role {filter_value} not found")
             return (CommandStatusChoices.STATUS_FAILED, f'Role "{filter_value}" not found')
-        devices = Device.objects.filter(device_role=role)
+        devices = Device.objects.filter(role=role)
     elif filter_type == "model":
         try:
             device_type = DeviceType.objects.get(pk=filter_value)
@@ -783,15 +802,15 @@ def get_devices(dispatcher, filter_type, filter_value):
         )
     )
 
-    header = ["Name", "Status", "Tenant", "Site", "Rack", "Role", "Type", "IP Address"]
+    header = ["Name", "Status", "Tenant", "Location", "Rack", "Role", "Type", "IP Address"]
     rows = [
         (
             str(device.name),
             str(device.status),
             str(device.tenant) if device.tenant else "",
-            str(device.site),
+            str(device.location) if device.location else "",
             str(device.rack) if device.rack else "",
-            str(device.device_role),
+            str(device.role),
             str(device.device_type),
             str(device.primary_ip.address).split("/", maxsplit=1)[0] if device.primary_ip else "",
         )
@@ -803,36 +822,40 @@ def get_devices(dispatcher, filter_type, filter_value):
 
 
 @subcommand_of("nautobot")
-def get_rack(dispatcher, site_key, rack_id):
+def get_rack(dispatcher, location_key, rack_id):
     """Get information about a specific rack from Nautobot."""
     rack_ct = ContentType.objects.get_for_model(Rack)
-    if menu_item_check(site_key):
-        # Only include sites with a non-zero number of racks
+    if menu_item_check(location_key):
+        # Only include locations with a non-zero number of racks
         location_types = LocationType.objects.filter(content_types=rack_ct)
-        site_options = [
-            (site.name, site.pk) for site in Location.objects.filter(location_type=location_types).order_by("name")
+        location_options = [
+            (
+                f"{'>'.join([str(ancestor) for ancestor in location.ancestors()])}{'>' if location.ancestors() else ''}{location.name}",
+                str(location.pk),
+            )
+            for location in Location.objects.filter(location_type__in=location_types).order_by("name")
         ]
-        if not site_options:
-            dispatcher.send_error("No sites with associated racks were found")
-            return (CommandStatusChoices.STATUS_SUCCEEDED, "No sites with associated racks were found")
+        if not location_options:
+            dispatcher.send_error("No locations with associated racks were found")
+            return (CommandStatusChoices.STATUS_SUCCEEDED, "No locations with associated racks were found")
         dispatcher.prompt_from_menu(
-            "nautobot get-rack", "Select a site", site_options, offset=menu_offset_value(site_key)
+            "nautobot get-rack", "Select a location", location_options, offset=menu_offset_value(location_key)
         )
         return False  # command did not run to completion and therefore should not be logged
 
     try:
-        site = Location.objects.get(pk=site_key)
+        location = Location.objects.get(pk=location_key)
     except Location.DoesNotExist:
-        dispatcher.send_error(f"Site (Location) {site_key} not found")
-        return (CommandStatusChoices.STATUS_FAILED, f'Site (Location) "{site_key}" not found')
+        dispatcher.send_error(f"Location {location_key} not found")
+        return (CommandStatusChoices.STATUS_FAILED, f'Location "{location_key}" not found')
 
     if menu_item_check(rack_id):
-        rack_options = [(rack.name, rack.pk) for rack in Rack.objects.filter(location=site)]
+        rack_options = [(rack.name, str(rack.pk)) for rack in Rack.objects.filter(location=location)]
         if not rack_options:
-            dispatcher.send_error(f"No racks associated with site {site_key} were found")
-            return (CommandStatusChoices.STATUS_SUCCEEDED, f'No racks found for site "{site_key}"')
+            dispatcher.send_error(f"No racks associated with location {location_key} were found")
+            return (CommandStatusChoices.STATUS_SUCCEEDED, f'No racks found for location "{location_key}"')
         dispatcher.prompt_from_menu(
-            f"nautobot get-rack {site_key}", "Select a rack", rack_options, offset=menu_offset_value(rack_id)
+            f"nautobot get-rack {location_key}", "Select a rack", rack_options, offset=menu_offset_value(rack_id)
         )
         return False  # command did not run to completion and therefore should not be logged
 
@@ -850,7 +873,7 @@ def get_rack(dispatcher, site_key, rack_id):
         dispatcher.command_response_header(
             "nautobot",
             "get-rack",
-            [("Site", site.name, site_key), ("Rack", rack.name, str(rack_id))],
+            [("Location", location.name, location_key), ("Rack", rack.name, str(rack_id))],
             "rack overview",
             nautobot_logo(dispatcher),
         )
@@ -875,12 +898,18 @@ def get_circuits(dispatcher, filter_type, filter_value):
 
     if filter_type != "all" and menu_item_check(filter_value):
         if filter_type == "type":
-            choices = [(ctype.name, ctype.pk) for ctype in CircuitType.objects.all()]
+            choices = [(ctype.name, str(ctype.pk)) for ctype in CircuitType.objects.all()]
         elif filter_type == "provider":
-            choices = [(prov.name, prov.pk) for prov in Provider.objects.all()]
-        elif filter_type == "site":
-            location_type = LocationType.objects.filter(content_types=ContentType.objects.get_for_model(Circuit))
-            choices = [(site.name, site.pk) for site in Location.objects.filter(location_type=location_type)]
+            choices = [(prov.name, str(prov.pk)) for prov in Provider.objects.all()]
+        elif filter_type == "location":
+            location_types = LocationType.objects.filter(content_types=ContentType.objects.get_for_model(CircuitTermination))
+            choices = [
+                (
+                    f"{'>'.join([str(ancestor) for ancestor in location.ancestors()])}{'>' if location.ancestors() else ''}{location.name}",
+                    str(location.pk),
+                )
+                for location in Location.objects.filter(location_type__in=location_types)
+            ]
         else:
             dispatcher.send_error(f"I don't know how to filter by {filter_type}")
             return (CommandStatusChoices.STATUS_FAILED, f'Unknown filter type "{filter_type}"')
@@ -905,7 +934,7 @@ def get_circuits(dispatcher, filter_type, filter_value):
         except CircuitType.DoesNotExist:
             dispatcher.send_error(f"Circuit type {filter_value} not found")
             return (CommandStatusChoices.STATUS_FAILED, f'Circuit type "{filter_value}" not found')
-        circuits = Circuit.objects.filter(type=ctype)
+        circuits = Circuit.objects.filter(circuit_type=ctype)
     elif filter_type == "provider":
         try:
             prov = Provider.objects.get(pk=filter_value)
@@ -913,15 +942,15 @@ def get_circuits(dispatcher, filter_type, filter_value):
             dispatcher.send_error(f"Provider {filter_value} not found")
             return (CommandStatusChoices.STATUS_FAILED, f'Provider "{filter_value}" not found')
         circuits = Circuit.objects.filter(provider=prov)
-    elif filter_type == "site":
+    elif filter_type == "location":
         try:
-            site = Location.objects.get(pk=filter_value)
+            location = Location.objects.get(pk=filter_value)
         except Location.DoesNotExist:
-            dispatcher.send_error(f"Site (Location) {filter_value} not found")
-            return (CommandStatusChoices.STATUS_FAILED, f'Site (Location) "{filter_value}" not found')
+            dispatcher.send_error(f"Location {filter_value} not found")
+            return (CommandStatusChoices.STATUS_FAILED, f'Location "{filter_value}" not found')
         # TODO is there a cleaner way to do this?
-        terms = CircuitTermination.objects.filter(location=site)
-        circuits = Circuit.objects.filter(terminations__in=terms)
+        terms = CircuitTermination.objects.filter(location=location)
+        circuits = Circuit.objects.filter(circuit_terminations__in=terms)
     else:
         dispatcher.send_error(f"I don't know how to filter by {filter_type}")
         return (CommandStatusChoices.STATUS_FAILED, f'Unknown filter type "{filter_type}"')
@@ -949,11 +978,11 @@ def get_circuits(dispatcher, filter_type, filter_value):
         (
             circuit.cid,
             str(circuit.provider) if circuit.provider else "",
-            str(circuit.type),
+            str(circuit.circuit_type),
             circuit.status,
             str(circuit.tenant) if circuit.tenant else "",
-            str(circuit.termination_a.site) if circuit.termination_a else "",
-            str(circuit.termination_z.site) if circuit.termination_z else "",
+            str(circuit.circuit_termination_a.location) if circuit.circuit_termination_a else "",
+            str(circuit.circuit_termination_z.location) if circuit.circuit_termination_z else "",
             circuit.description,
         )
         for circuit in circuits
@@ -1019,7 +1048,7 @@ def get_manufacturer_summary(dispatcher):
         # Get quantity of each device type
         for dev_type in dev_types:
             # Add to the total_count the amount of the device type
-            total_count += len(dev_type.instances.all())
+            total_count += dev_type.devices.count()
 
         # This is the total quantity of devices for that manufacturer.
         # Make a dict entry in the rollup with the manufacturer:quantity (key:value)
@@ -1050,7 +1079,7 @@ def get_circuit_connections(dispatcher, provider_key, circuit_id):
     if menu_item_check(provider_key):
         # Only list circuit providers that have a nonzero amount of circuits.
         provider_options = [
-            (provider.name, provider.pk)
+            (provider.name, str(provider.pk))
             for provider in Provider.objects.annotate(Count("circuits")).filter(circuits__count__gt=0).order_by("name")
         ]
         if not provider_options:  # No providers with associated circuits exist
@@ -1079,9 +1108,7 @@ def get_circuit_connections(dispatcher, provider_key, circuit_id):
     # Check for the Slack menu item limit; if a circuit_id is not initially provided,
     # then menu_item_check will return True and circuit_options will be defined
     if menu_item_check(circuit_id):
-        circuit_options = [
-            (circuit.cid, circuit.cid) for circuit in Circuit.objects.filter(provider__pk=provider.pk)
-        ]
+        circuit_options = [(circuit.cid, circuit.cid) for circuit in Circuit.objects.filter(provider__pk=provider.pk)]
         if not circuit_options:
             no_circuits_found_error_msg = f"No circuits with provider name {provider.name} were found"
             dispatcher.send_error(no_circuits_found_error_msg)
@@ -1110,7 +1137,7 @@ def get_circuit_connections(dispatcher, provider_key, circuit_id):
         dispatcher.command_response_header(
             "nautobot",  # command
             "get-circuit-connections",  # sub_command
-            [("Provider PK", provider.pk), ("Circuit ID", circuit.cid)],  # args
+            [("Provider PK", str(provider.pk)), ("Circuit ID", circuit.cid)],  # args
             "circuit connection info",  # description
             nautobot_logo(dispatcher),  # image_element
         )

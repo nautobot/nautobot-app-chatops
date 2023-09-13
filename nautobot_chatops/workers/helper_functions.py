@@ -36,11 +36,9 @@ def add_asterisk(device, filter_type, value):
         return str(device)
     elif filter_type == "device":
         return str(device)
-    elif filter_type == "site" and device.site == value:
+    elif filter_type == "location" and device.location == value:
         return str(device)
-    elif filter_type == "role" and device.device_role == value:
-        return str(device)
-    elif filter_type == "region" and device.site.region == value:
+    elif filter_type == "role" and device.role == value:
         return str(device)
     elif filter_type == "model" and device.device_type == value:
         return str(device)
@@ -53,7 +51,7 @@ def prompt_for_device_filter_type(action_id, help_text, dispatcher):
     """Prompt the user to select a valid device filter type from a drop-down menu."""
     choices = [
         ("Name", "name"),
-        ("Site", "site"),
+        ("Location", "location"),
         ("Role", "role"),
         ("Model", "model"),
         ("Manufacturer", "manufacturer"),
@@ -66,9 +64,8 @@ def prompt_for_interface_filter_type(action_id, help_text, dispatcher):
     choices = [
         ("Device", "device"),
         ("Model", "model"),
-        ("Region", "region"),
         ("Role", "role"),
-        ("Site", "site"),
+        ("Location", "location"),
         ("All (no filter)", "all"),
     ]
     return dispatcher.prompt_from_menu(action_id, help_text, choices)
@@ -81,7 +78,7 @@ def prompt_for_vlan_filter_type(action_id, help_text, dispatcher):
         ("Group", "group"),
         ("Name", "name"),
         ("Role", "role"),
-        ("Site (Location)", "site"),
+        ("Location", "location"),
         ("Status", "status"),
         ("Tenant", "tenant"),
         ("All (no filter)", "all"),
@@ -93,7 +90,7 @@ def prompt_for_circuit_filter_type(action_id, help_text, dispatcher):
     """Prompt the user to select a valid device filter type from a drop-down menu."""
     choices = [
         ("Provider", "provider"),
-        ("Site", "site"),
+        ("Location", "location"),
         ("Type", "type"),
         ("All (no filter)", "all"),
     ]
