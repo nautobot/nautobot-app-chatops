@@ -2,7 +2,7 @@
 
 # from django.urls import path
 
-from nautobot.core.api import OrderedDefaultRouter
+from nautobot.apps.api import OrderedDefaultRouter
 from nautobot_chatops.integrations.grafana.api.views.generic import NautobotPluginChatopsGrafanaRootView
 
 

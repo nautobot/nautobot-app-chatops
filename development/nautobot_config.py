@@ -131,7 +131,7 @@ CACHEOPS_REDIS = parse_redis_connection(redis_database=1)
 
 # Enable installed plugins. Add the name of each plugin to the list.
 PLUGINS = [
-    "nautobot_capacity_metrics",
+    # "nautobot_capacity_metrics",
     "nautobot_chatops",
 ]
 
@@ -211,4 +211,4 @@ PLUGINS_CONFIG = {
     },
 }
 
-METRICS_ENABLED = is_truthy(os.getenv("NAUTOBOT_METRICS_ENABLED"))
+# METRICS_ENABLED = is_truthy(os.getenv("NAUTOBOT_METRICS_ENABLED"))

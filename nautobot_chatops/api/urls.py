@@ -5,8 +5,13 @@ from typing import Dict
 
 from django.conf import settings
 from django.urls import include, path
-from nautobot.core.api import OrderedDefaultRouter
-from nautobot_chatops.api.views.generic import AccessGrantViewSet, CommandTokenViewSet, NautobotChatopsRootView
+from nautobot.apps.api import OrderedDefaultRouter
+from nautobot_chatops.api.views.generic import (
+    AccessGrantViewSet,
+    CommandLogViewSet,
+    CommandTokenViewSet,
+    NautobotChatopsRootView,
+)
 from nautobot_chatops.api.views.lookup import AccessLookupView
 
 _APP_CONFIG: Dict = settings.PLUGINS_CONFIG["nautobot_chatops"]
@@ -49,6 +54,7 @@ router = OrderedDefaultRouter()
 router.APIRootView = NautobotChatopsRootView
 router.register("commandtoken", CommandTokenViewSet)
 router.register("accessgrant", AccessGrantViewSet)
+router.register("commandlog", CommandLogViewSet)
 
 app_name = "nautobot_chatops-api"
 

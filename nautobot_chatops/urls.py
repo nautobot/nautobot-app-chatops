@@ -11,7 +11,7 @@ from nautobot_chatops.views import (
     CommandTokenCreateView,
     CommandTokenListView,
     CommandTokenView,
-    NautobotHomeView,
+    CommandLogListView,
     AccessGrantListView,
     AccessGrantView,
     AccessGrantCreateView,
@@ -28,7 +28,7 @@ except Exception:
 
 
 urlpatterns = [
-    path("", NautobotHomeView.as_view(), name="home"),
+    path("", CommandLogListView.as_view(), name="commandlog_list"),
     path("access/", AccessGrantListView.as_view(), name="accessgrant_list"),
     path(
         "access/<uuid:pk>/changelog/",

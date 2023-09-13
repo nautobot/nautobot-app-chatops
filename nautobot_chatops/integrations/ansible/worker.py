@@ -5,7 +5,6 @@ from collections import namedtuple
 
 import yaml
 from django.conf import settings
-from django_rq import job
 from nautobot_chatops.workers import handle_subcommands, subcommand_of
 
 from .tower import Tower
@@ -37,7 +36,6 @@ def prompt_for_job_template(dispatcher, command):
     return False
 
 
-@job("default")
 def ansible(subcommand, **kwargs):
     """Interact with Ansible Tower."""
     return handle_subcommands("ansible", subcommand, **kwargs)

@@ -11,9 +11,7 @@ from django.forms import (
     MultipleHiddenInput,
 )
 from django.core.serializers.json import DjangoJSONEncoder
-from nautobot.utilities.forms import BootstrapMixin
-from nautobot.extras.forms import CustomFieldModelCSVForm
-from nautobot.utilities.forms import BulkEditForm
+from nautobot.core.forms import BootstrapMixin, BulkEditForm
 from nautobot_chatops.integrations.grafana.models import Dashboard, Panel, PanelVariable
 
 
@@ -48,16 +46,6 @@ class DashboardsFilterForm(BootstrapMixin, ModelForm):
         fields = ("q", "dashboard_slug", "dashboard_uid", "friendly_name")
 
         widgets = {}
-
-
-class DashboardCSVForm(CustomFieldModelCSVForm):
-    """Form for creating bulk dashboards."""
-
-    class Meta:
-        """Meta attributes."""
-
-        model = Dashboard
-        fields = Dashboard.csv_headers
 
 
 class DashboardBulkEditForm(BootstrapMixin, BulkEditForm):
@@ -124,24 +112,6 @@ class PanelsFilterForm(BootstrapMixin, ModelForm):
         widgets = {}
 
 
-class PanelsCSVForm(CustomFieldModelCSVForm):
-    """Form for creating bulk Panels."""
-
-    dashboard = ModelChoiceField(
-        required=True,
-        queryset=Dashboard.objects.all(),
-        to_field_name="dashboard_slug",
-        label="Dashboard Slug",
-    )
-    friendly_name = CharField(max_length=64, required=False)
-
-    class Meta:
-        """Meta attributes."""
-
-        model = Panel
-        fields = Panel.csv_headers
-
-
 class PanelsBulkEditForm(BootstrapMixin, BulkEditForm):
     """Panels bulk edit form."""
 
@@ -177,7 +147,19 @@ class PanelVariablesForm(BootstrapMixin, ModelForm):
 
         model = PanelVariable
 
-        fields = tuple(PanelVariable.csv_headers)
+        fields = [
+            "panel",
+            "name",
+            "friendly_name",
+            "query",
+            "modelattr",
+            "value",
+            "response",
+            "positional_order",
+            "includeincmd",
+            "includeinurl",
+            "filter",
+        ]
 
 
 class PanelVariablesFilterForm(BootstrapMixin, ModelForm):
@@ -203,36 +185,21 @@ class PanelVariablesFilterForm(BootstrapMixin, ModelForm):
 
         model = PanelVariable
 
-        fields = ("q",) + tuple(PanelVariable.csv_headers[:-1])
+        fields = [
+            "q",
+            "panel",
+            "name",
+            "friendly_name",
+            "query",
+            "modelattr",
+            "value",
+            "response",
+            "positional_order",
+            "includeincmd",
+            "includeinurl",
+        ]
 
         widgets = {}
-
-
-class PanelVariablesCSVForm(CustomFieldModelCSVForm):
-    """Form for creating bulk Panels."""
-
-    panel = ModelChoiceField(
-        required=True,
-        queryset=Panel.objects.all(),
-        to_field_name="command_name",
-        label="Panel Command Name",
-    )
-    name = CharField(max_length=32, required=True, label="Variable Name")
-    friendly_name = CharField(max_length=64, required=False, label="Friendly Name")
-    query = CharField(max_length=64, required=False, label="Nautobot Query Object (i.e. 'Device')")
-    modelattr = CharField(max_length=64, required=False, label="Attribute on the query object (i.e. 'name')")
-    value = CharField(max_length=64, required=False, label="Jinja2 object reference value. (i.e. '{{ device.name }}')")
-    response = CharField(max_length=255, required=False)
-    filter = JSONField(required=False)
-    includeincmd = BooleanField(required=False)
-    includeinurl = BooleanField(required=False)
-    positional_order = IntegerField(required=False)
-
-    class Meta:
-        """Meta attributes."""
-
-        model = PanelVariable
-        fields = PanelVariable.csv_headers
 
 
 class PanelVariablesBulkEditForm(BootstrapMixin, BulkEditForm):

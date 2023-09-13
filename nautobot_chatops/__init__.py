@@ -132,8 +132,6 @@ class NautobotChatOpsConfig(PluginConfig):
         "panorama_user": "",
     }
 
-    max_version = "1.999"
-    min_version = "1.5.4"
     caching_config = {}
 
     def ready(self):

@@ -3,7 +3,6 @@ import os
 import logging
 
 from django.conf import settings
-from django_rq import job
 from nautobot_chatops.workers import subcommand_of, handle_subcommands
 from nautobot_chatops.choices import CommandStatusChoices
 
@@ -90,7 +89,6 @@ def parse_device_list(dev_type, devs):
     return [dev["name"] for dev in devs]
 
 
-@job("default")
 def cisco_meraki(subcommand, **kwargs):
     """Interact with Meraki."""
     return handle_subcommands("meraki", subcommand, **kwargs)
