@@ -104,7 +104,7 @@ class CommandTokenCreateView(PermissionRequiredMixin, ObjectEditView):
     model = CommandToken
     queryset = CommandToken.objects.all()
     model_form = forms.CommandTokenForm
-    template_name = "nautobot/command_token_edit.html"
+    template_name = "nautobot_chatops/command_token_edit.html"
     default_return_url = "plugins:nautobot_chatops:commandtoken_list"
 
 
@@ -146,7 +146,7 @@ class ChatOpsAccountLinkView(ObjectView):
 class ChatOpsAccountLinkEditView(ObjectEditView):
     queryset = ChatOpsAccountLink.objects.all()
     model_form = forms.ChatOpsAccountLinkForm
-    template_name = "nautobot/chatops_account_link_edit.html"
+    template_name = "nautobot_chatops/chatops_account_link_edit.html"
 
     def alter_obj(self, obj, request, url_args, url_kwargs):
         obj.nautobot_user = request.user

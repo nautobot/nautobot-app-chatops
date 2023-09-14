@@ -1,6 +1,6 @@
 """Django table classes for Nautobot."""
 
-from django_tables2 import TemplateColumn
+from django_tables2 import TemplateColumn, LinkColumn
 
 from nautobot.core.tables import BaseTable, ButtonsColumn, ToggleColumn
 
@@ -116,9 +116,10 @@ class CommandTokenTable(BaseTable):
 
 class ChatOpsAccountLinkTable(BaseTable):
     pk = ToggleColumn()
+    user_id = LinkColumn()
     actions = ButtonsColumn(ChatOpsAccountLink)
 
     class Meta(BaseTable.Meta):
         model = ChatOpsAccountLink
-        fields = ("pk", "platform", "user_id", "nautobot_user", "actions")
-        default_columns = ("pk", "platform", "user_id", "nautobot_user", "actions")
+        fields = ("pk", "user_id", "platform", "nautobot_user", "email", "actions")
+        default_columns = ("pk", "user_id", "platform", "nautobot_user", "email", "actions")

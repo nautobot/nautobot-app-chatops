@@ -161,6 +161,7 @@ class ChatOpsAccountLink(PrimaryModel):
     )
     platform = models.CharField(max_length=32, choices=PlatformChoices)
     user_id = models.CharField(max_length=255, help_text=CHATOPS_USER_ID_HELP_TEXT, verbose_name="Chat User ID")
+    email = models.EmailField(blank=True)
 
     def __str__(self):
         """String representation of a ChatOps Account Link."""

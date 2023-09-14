@@ -13,3 +13,7 @@ If a 404 error is being returned while trying to use a slash command that allows
 Slack does not currently support using slash commands within a conversation thread.  Nautobot can be mentioned in a thread and will parse the text after the bot's name for a command.  
 
 For example, if you want to run the slash command `/nautobot get-devices site site-a`, the equivalent bot mention command would be (assuming your bot name is `@nautobot`) `@nautobot nautobot get-devices site site-a`.
+
+## The Chat Commands do not allow me to select locations/devices/interfaces/etc
+
+Nautobot ChatOps now uses your Nautobot user permissions in order to process commands. Please link your Chat Account with your Nautobot Account.

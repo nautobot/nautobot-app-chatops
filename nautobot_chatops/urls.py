@@ -16,6 +16,7 @@ from nautobot_chatops.views import (
     AccessGrantView,
     AccessGrantCreateView,
     AccessGrantBulkDeleteView,
+    ChatOpsAccountLinkView,
     ChatOpsAccountLinkEditView,
     ChatOpsAccountLinkListView,
     ChatOpsAccountLinkDeleteView,
@@ -54,6 +55,7 @@ urlpatterns = [
     path("tokens/delete/", CommandTokenBulkDeleteView.as_view(), name="commandtoken_bulk_delete"),
     path("account-link/add/", ChatOpsAccountLinkEditView.as_view(), name="chatopsaccountlink_add"),
     path("account-link/", ChatOpsAccountLinkListView.as_view(), name="chatopsaccountlink_list"),
+    path("account-link/<uuid:pk>/", ChatOpsAccountLinkView.as_view(), name="chatopsaccountlink"),
     path("account-link/<uuid:pk>/edit/", ChatOpsAccountLinkEditView.as_view(), name="chatopsaccountlink_edit"),
     path("account-link/<uuid:pk>/delete/", ChatOpsAccountLinkDeleteView.as_view(), name="chatopsaccountlink_delete"),
     path(
