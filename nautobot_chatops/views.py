@@ -12,7 +12,12 @@ from nautobot.core.utils.requests import normalize_querydict
 from nautobot.core.views.generic import BulkDeleteView, ObjectDeleteView, ObjectListView, ObjectEditView, ObjectView
 
 from nautobot_chatops.models import CommandLog, AccessGrant, CommandToken, ChatOpsAccountLink
-from nautobot_chatops.filters import CommandLogFilterSet, AccessGrantFilterSet, CommandTokenFilterSet, ChatOpsAccountLinkFilterSet
+from nautobot_chatops.filters import (
+    CommandLogFilterSet,
+    AccessGrantFilterSet,
+    CommandTokenFilterSet,
+    ChatOpsAccountLinkFilterSet,
+)
 from nautobot_chatops import forms
 from nautobot_chatops.tables import CommandLogTable, AccessGrantTable, CommandTokenTable, ChatOpsAccountLinkTable
 
@@ -173,6 +178,7 @@ class ChatOpsAccountLinkEditView(ObjectEditView):
                 **self.get_extra_context(request, obj),
             },
         )
+
 
 class ChatOpsAccountLinkDeleteView(ObjectDeleteView):
     queryset = ChatOpsAccountLink.objects.all()

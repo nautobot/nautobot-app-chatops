@@ -6,6 +6,7 @@ from django.views import View
 
 from nautobot_chatops.dispatchers import Dispatcher
 
+
 class AccessLookupView(View):
     """Look up a given access grant value by name."""
 
@@ -47,13 +48,11 @@ class UserEmailLookupView(View):
 
         value = None
         for dispatcher_class in Dispatcher.subclasses():
-            if dispatcher_class.platform_slug == request.GET['platform']:
+            if dispatcher_class.platform_slug == request.GET["platform"]:
                 with contextlib.suppress(NotImplementedError):
                     value = dispatcher_class.lookup_user_id_by_email(request.GET["email"])
         return (
             JsonResponse(data={"user_id": value})
             if value
-            else HttpResponseNotFound(
-                f"No user_id found for {request.GET['email']}"
-            )
+            else HttpResponseNotFound(f"No user_id found for {request.GET['email']}")
         )

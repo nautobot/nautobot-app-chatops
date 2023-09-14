@@ -403,7 +403,9 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
             # TODO Switch to utilizing Natural Key instead of PK.
             choices = [
                 (device_type.model, str(device_type.pk))
-                for device_type in DeviceType.objects.restrict(dispatcher.user, "view").order_by("manufacturer__name", "model")
+                for device_type in DeviceType.objects.restrict(dispatcher.user, "view").order_by(
+                    "manufacturer__name", "model"
+                )
             ]
         elif filter_type == "all":
             # 1 param slash command
@@ -734,14 +736,25 @@ def get_devices(dispatcher, filter_type, filter_value):
                     f"{location.name}",
                     str(location.pk),
                 )
-                for location in Location.objects.restrict(dispatcher.user, "view").filter(location_type__in=location_types)
+                for location in Location.objects.restrict(dispatcher.user, "view").filter(
+                    location_type__in=location_types
+                )
             ]
         elif filter_type == "role":
-            choices = [(role.name, str(role.pk)) for role in Role.objects.restrict(dispatcher.user, "view").filter(content_types=device_ct)]
+            choices = [
+                (role.name, str(role.pk))
+                for role in Role.objects.restrict(dispatcher.user, "view").filter(content_types=device_ct)
+            ]
         elif filter_type == "model":
-            choices = [(device_type.model, str(device_type.pk)) for device_type in DeviceType.objects.restrict(dispatcher.user, "view")]
+            choices = [
+                (device_type.model, str(device_type.pk))
+                for device_type in DeviceType.objects.restrict(dispatcher.user, "view")
+            ]
         elif filter_type == "manufacturer":
-            choices = [(manufacturer.name, str(manufacturer.pk)) for manufacturer in Manufacturer.objects.restrict(dispatcher.user, "view")]
+            choices = [
+                (manufacturer.name, str(manufacturer.pk))
+                for manufacturer in Manufacturer.objects.restrict(dispatcher.user, "view")
+            ]
         else:
             dispatcher.send_error(f"I don't know how to filter by {filter_type}")
             return (CommandStatusChoices.STATUS_FAILED, f'Unknown filter type "{filter_type}"')
@@ -922,7 +935,9 @@ def get_circuits(dispatcher, filter_type, filter_value):
                     f"{location.name}",
                     str(location.pk),
                 )
-                for location in Location.objects.restrict(dispatcher.user, "view").filter(location_type__in=location_types)
+                for location in Location.objects.restrict(dispatcher.user, "view").filter(
+                    location_type__in=location_types
+                )
             ]
         else:
             dispatcher.send_error(f"I don't know how to filter by {filter_type}")

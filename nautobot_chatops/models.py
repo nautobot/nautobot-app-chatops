@@ -153,6 +153,7 @@ class CommandToken(PrimaryModel):
 
 class ChatOpsAccountLink(PrimaryModel):
     """Connect ChatOps User with Nautobot User."""
+
     nautobot_user = models.ForeignKey(
         to=settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -165,18 +166,15 @@ class ChatOpsAccountLink(PrimaryModel):
 
     def __str__(self):
         """String representation of a ChatOps Account Link."""
-        return f'{self.nautobot_user.username} -> {self.platform} {self.user_id}'
+        return f"{self.nautobot_user.username} -> {self.platform} {self.user_id}"
 
     class Meta:
-        unique_together = [
-            ["user_id", "platform"]
-        ]
+        unique_together = [["user_id", "platform"]]
         verbose_name = "ChatOps Account Link"
 
 
 __all__ = (
-    "ChatOpsAccountLink"
-    "CommandLog",
+    "ChatOpsAccountLink" "CommandLog",
     "AccessGrant",
     "CommandToken",
     "GrafanaDashboard",

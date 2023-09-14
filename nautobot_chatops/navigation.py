@@ -17,7 +17,7 @@ items = [
             ),
         ),
     ),
-        NavMenuItem(
+    NavMenuItem(
         link="plugins:nautobot_chatops:chatopsaccountlink_list",
         name="Link ChatOps Account",
         permissions=["nautobot_chatops.view_chatopsaccountlink"],

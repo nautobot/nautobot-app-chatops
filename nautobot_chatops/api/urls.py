@@ -19,7 +19,7 @@ _APP_CONFIG: Dict = settings.PLUGINS_CONFIG["nautobot_chatops"]
 logger = logging.getLogger(__name__)
 urlpatterns = [
     path("lookup/", AccessLookupView.as_view(), name="access_lookup"),
-    path("email-lookup/", UserEmailLookupView.as_view(), name="email_lookup")
+    path("email-lookup/", UserEmailLookupView.as_view(), name="email_lookup"),
 ]
 
 if _APP_CONFIG.get("enable_slack"):

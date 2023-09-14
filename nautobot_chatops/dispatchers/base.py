@@ -46,14 +46,13 @@ class Dispatcher:
         if self.context.get("user_id"):
             try:
                 return ChatOpsAccountLink.objects.get(
-                    platform=self.platform_slug,
-                    user_id=self.context["user_id"]
+                    platform=self.platform_slug, user_id=self.context["user_id"]
                 ).nautobot_user
             except ObjectDoesNotExist:
                 logger.warning(
                     f"Could not find User matching {self.context['user_name']} - id: {self.context['user_id']}."
                     "Add a ChatOps User to link the accounts."
-                    )
+                )
         user_model = get_user_model()
         user, _ = user_model.objects.get_or_create(
             username=settings.PLUGINS_CONFIG["nautobot_chatops"]["fallback_chatops_user"]

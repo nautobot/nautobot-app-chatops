@@ -48,11 +48,13 @@ class AccessGrantForm(BootstrapMixin, forms.ModelForm):
 
 class ChatOpsAccountLinkForm(BootstrapMixin, forms.ModelForm):
     """Form for creating or editing a ChatOps Account Link instance."""
+
     email = forms.EmailField(required=False)
     platform = forms.ChoiceField(choices=PlatformChoices.CHOICES)
 
     class Meta:
         """Metaclass attributes of ChatOpsAccountLinkForm."""
+
         model = ChatOpsAccountLink
         fields = ("platform", "email", "user_id")
 

@@ -39,14 +39,13 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
         if self.context.get("user_ad_id"):
             try:
                 return ChatOpsAccountLink.objects.get(
-                    platform=self.platform_slug,
-                    user_id=self.context["user_ad_id"]
+                    platform=self.platform_slug, user_id=self.context["user_ad_id"]
                 ).nautobot_user
             except ObjectDoesNotExist:
                 logger.warning(
                     f"Could not find User matching {self.context['user_name']} - id: {self.context['user_ad_id']}."
                     "Add a ChatOps User to link the accounts."
-                    )
+                )
         user_model = get_user_model()
         user, _ = user_model.objects.get_or_create(
             username=settings.PLUGINS_CONFIG["nautobot_chatops"]["fallback_chatops_user"]
@@ -123,7 +122,6 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
                 return response.json()["value"][0]["id"]
             except (KeyError, IndexError):
                 return None
-
 
     def _send(self, content, content_type="message"):
         """Publish content back to Microsoft Teams."""

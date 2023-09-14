@@ -13,33 +13,58 @@ class Migration(migrations.Migration):
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('extras', '0098_rename_data_jobresult_result'),
-        ('nautobot_chatops', '0006_nautobot_2'),
+        ("extras", "0098_rename_data_jobresult_result"),
+        ("nautobot_chatops", "0006_nautobot_2"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='commandlog',
-            name='system_user',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='command_log', to=settings.AUTH_USER_MODEL),
+            model_name="commandlog",
+            name="system_user",
+            field=models.ForeignKey(
+                blank=True,
+                null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name="command_log",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.CreateModel(
-            name='ChatOpsAccountLink',
+            name="ChatOpsAccountLink",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, unique=True)),
-                ('created', models.DateTimeField(auto_now_add=True, null=True)),
-                ('last_updated', models.DateTimeField(auto_now=True, null=True)),
-                ('_custom_field_data', models.JSONField(blank=True, default=dict, encoder=django.core.serializers.json.DjangoJSONEncoder)),
-                ('platform', models.CharField(max_length=32)),
-                ('user_id', models.CharField(max_length=255)),
-                ('email', models.EmailField(blank=True, max_length=254)),
-                ('nautobot_user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='chatops_user', to=settings.AUTH_USER_MODEL)),
-                ('tags', nautobot.core.models.fields.TagsField(through='extras.TaggedItem', to='extras.Tag')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4, editable=False, primary_key=True, serialize=False, unique=True
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True, null=True)),
+                ("last_updated", models.DateTimeField(auto_now=True, null=True)),
+                (
+                    "_custom_field_data",
+                    models.JSONField(blank=True, default=dict, encoder=django.core.serializers.json.DjangoJSONEncoder),
+                ),
+                ("platform", models.CharField(max_length=32)),
+                ("user_id", models.CharField(max_length=255)),
+                ("email", models.EmailField(blank=True, max_length=254)),
+                (
+                    "nautobot_user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="chatops_user",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
+                ("tags", nautobot.core.models.fields.TagsField(through="extras.TaggedItem", to="extras.Tag")),
             ],
             options={
-                'verbose_name': 'ChatOps Account Link',
-                'unique_together': {('user_id', 'platform')},
+                "verbose_name": "ChatOps Account Link",
+                "unique_together": {("user_id", "platform")},
             },
-            bases=(models.Model, nautobot.extras.models.mixins.DynamicGroupMixin, nautobot.extras.models.mixins.NotesMixin),
+            bases=(
+                models.Model,
+                nautobot.extras.models.mixins.DynamicGroupMixin,
+                nautobot.extras.models.mixins.NotesMixin,
+            ),
         ),
     ]
