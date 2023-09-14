@@ -115,11 +115,15 @@ class CommandTokenTable(BaseTable):
 
 
 class ChatOpsAccountLinkTable(BaseTable):
+    """Table for listing the Account Links."""
+
     pk = ToggleColumn()
     user_id = LinkColumn()
     actions = ButtonsColumn(ChatOpsAccountLink)
 
     class Meta(BaseTable.Meta):
+        """Metaclass for attributes of ChatOps Account Links."""
+
         model = ChatOpsAccountLink
         fields = ("pk", "user_id", "platform", "nautobot_user", "email", "actions")
         default_columns = ("pk", "user_id", "platform", "nautobot_user", "email", "actions")

@@ -103,6 +103,14 @@ class SlackDispatcher(Dispatcher):
 
     @classmethod
     def lookup_user_id_by_email(cls, email) -> Optional[str]:
+        """Call out to Slack to look up a specific user ID by email.
+
+        Args:
+          email (str): Uniquely identifying email address of the user.
+
+        Returns:
+          (str, None)
+        """
         instance = cls(context=None)
         try:
             response = instance.slack_client.users_lookupByEmail(email=email)

@@ -38,6 +38,8 @@ class AccessGrantFilterSet(BaseFilterSet):
 
 
 class ChatOpsAccountLinkFilterSet(NautobotFilterSet):
+    """FilterSet for filtering the ChatOps Account Links."""
+
     q = SearchFilter(
         filter_predicates={
             "user_id": "icontains",
@@ -47,6 +49,8 @@ class ChatOpsAccountLinkFilterSet(NautobotFilterSet):
     platform = django_filters.MultipleChoiceFilter(choices=PlatformChoices)
 
     class Meta:
+        """Metaclass attributes of ChatOpsAccountLinkFilterSet."""
+
         model = ChatOpsAccountLink
         fields = "__all__"
 

@@ -36,6 +36,8 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
 
     @property
     def user(self):
+        """Dispatcher property containing the Nautobot User that is linked to the Chat User."""
+
         if self.context.get("user_ad_id"):
             try:
                 return ChatOpsAccountLink.objects.get(
@@ -101,6 +103,14 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
 
     @classmethod
     def lookup_user_id_by_email(cls, email) -> Optional[str]:
+        """Call out to Microsoft Teams to look up a specific user ID by email.
+
+        Args:
+          email (str): Uniquely identifying email address of the user.
+
+        Returns:
+          (str, None)
+        """
         service = settings.PLUGINS_CONFIG["nautobot_chatops"]["microsoft_tenant_id"]
         scope = "https://graph.microsoft.com/.default"
         try:

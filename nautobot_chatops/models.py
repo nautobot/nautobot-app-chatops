@@ -174,7 +174,8 @@ class ChatOpsAccountLink(PrimaryModel):
 
 
 __all__ = (
-    "ChatOpsAccountLink" "CommandLog",
+    "ChatOpsAccountLink",
+    "CommandLog",
     "AccessGrant",
     "CommandToken",
     "GrafanaDashboard",

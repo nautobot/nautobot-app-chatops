@@ -130,6 +130,8 @@ class CommandTokenBulkDeleteView(PermissionRequiredMixin, BulkDeleteView):
 
 
 class ChatOpsAccountLinkListView(ObjectListView):
+    """View for listing the ChatOps Account Link objects for the user browsing."""
+
     queryset = ChatOpsAccountLink.objects.all()
     action_buttons = ("add",)
     table = ChatOpsAccountLinkTable
@@ -137,6 +139,7 @@ class ChatOpsAccountLinkListView(ObjectListView):
     filterset_form = forms.ChatOpsAccountLinkFilterForm
 
     def extra_context(self):
+        """Restrict the Accounts Links that are shown to the user."""
         user = self.request.user
         table = self.table(self.queryset.filter(nautobot_user=user), user=user)
         return {
@@ -145,19 +148,25 @@ class ChatOpsAccountLinkListView(ObjectListView):
 
 
 class ChatOpsAccountLinkView(ObjectView):
+    """Detail view for Account Links."""
+
     queryset = ChatOpsAccountLink.objects.all()
 
 
 class ChatOpsAccountLinkEditView(ObjectEditView):
+    """Edit view for Account Links."""
+
     queryset = ChatOpsAccountLink.objects.all()
     model_form = forms.ChatOpsAccountLinkForm
     template_name = "nautobot_chatops/chatops_account_link_edit.html"
 
     def alter_obj(self, obj, request, url_args, url_kwargs):
+        """Store the request user on the object."""
         obj.nautobot_user = request.user
         return super().alter_obj(obj, request, url_args, url_kwargs)
 
     def get(self, request, *args, **kwargs):
+        """Add the users email to the form automatically, this can be overriden by the user."""
         obj = self.alter_obj(self.get_object(kwargs), request, args, kwargs)
 
         initial_data = normalize_querydict(request.GET)
@@ -181,4 +190,6 @@ class ChatOpsAccountLinkEditView(ObjectEditView):
 
 
 class ChatOpsAccountLinkDeleteView(ObjectDeleteView):
+    """Delete view for Account Links."""
+
     queryset = ChatOpsAccountLink.objects.all()
