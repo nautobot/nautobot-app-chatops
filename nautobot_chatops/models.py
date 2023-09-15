@@ -169,7 +169,7 @@ class ChatOpsAccountLink(PrimaryModel):
         return f"{self.nautobot_user.username} -> {self.platform} {self.user_id}"
 
     class Meta:
-        """Metadata for ChatOps Account Link"""
+        """Metadata for ChatOps Account Link."""
 
         unique_together = [["user_id", "platform"]]
         verbose_name = "ChatOps Account Link"
