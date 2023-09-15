@@ -11,4 +11,4 @@ A Nautobot user can have multiple Chat users connected, but the Chat User can on
 
 ## Configuring Account Link for many users
 
-Admins have the ability to access the Nautobot Admin page and can use `ChatOps Account Links` page to link multiple accounts, but you will need to know the Chat Platforms user ids for each user you are linking.
+Admins have the ability to access the Nautobot Admin page and can use `ChatOps Account Links` page to link multiple accounts, but you will need to know the Chat Platforms user IDs for each user you are linking.
