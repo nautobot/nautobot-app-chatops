@@ -17,7 +17,7 @@ class CommandLogAdmin(admin.ModelAdmin):
         "platform",
         "command",
         "subcommand",
-        "system_user",
+        "nautobot_user",
     )
 
 

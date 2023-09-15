@@ -56,7 +56,7 @@ class CommandLog(PrimaryModel):
         default=CommandStatusChoices.STATUS_SUCCEEDED,
     )
     details = models.CharField(max_length=255, default="")
-    system_user = models.ForeignKey(
+    nautobot_user = models.ForeignKey(
         to=settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
         blank=True,
@@ -169,6 +169,7 @@ class ChatOpsAccountLink(PrimaryModel):
         return f"{self.nautobot_user.username} -> {self.platform} {self.user_id}"
 
     class Meta:
+        """Metadata for ChatOps Account Link"""
         unique_together = [["user_id", "platform"]]
         verbose_name = "ChatOps Account Link"
 

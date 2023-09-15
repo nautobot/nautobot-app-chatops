@@ -44,7 +44,6 @@ class Dispatcher:
     @property
     def user(self):
         """Dispatcher property containing the Nautobot User that is linked to the Chat User."""
-
         if self.context.get("user_id"):
             try:
                 return ChatOpsAccountLink.objects.get(

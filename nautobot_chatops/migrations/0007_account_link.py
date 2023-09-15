@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
     operations = [
         migrations.AddField(
             model_name="commandlog",
-            name="system_user",
+            name="nautobot_user",
             field=models.ForeignKey(
                 blank=True,
                 null=True,
