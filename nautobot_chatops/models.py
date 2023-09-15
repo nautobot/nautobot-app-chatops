@@ -170,6 +170,7 @@ class ChatOpsAccountLink(PrimaryModel):
 
     class Meta:
         """Metadata for ChatOps Account Link"""
+
         unique_together = [["user_id", "platform"]]
         verbose_name = "ChatOps Account Link"
 

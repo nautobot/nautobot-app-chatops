@@ -5,7 +5,13 @@ import contextlib
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 
-from nautobot_chatops.models import AccessGrantTypeChoices, PlatformChoices, AccessGrant, CommandToken, ChatOpsAccountLink
+from nautobot_chatops.models import (
+    AccessGrantTypeChoices,
+    PlatformChoices,
+    AccessGrant,
+    CommandToken,
+    ChatOpsAccountLink,
+)
 
 
 User = get_user_model()
@@ -42,7 +48,7 @@ for command, token in _COMMAND_TOKENS.items():
 with contextlib.suppress(ObjectDoesNotExist):
     admin = User.objects.get(name="admin")
     ChatOpsAccountLink.objects.update_or_create(
-        user_id='jactwicuqb8bu8pau8mgjydzeo',
+        user_id="jactwicuqb8bu8pau8mgjydzeo",
         platform=PlatformChoices.MATTERMOST,
-        defaults={"nautobot_user": admin}, 
+        defaults={"nautobot_user": admin},
     )

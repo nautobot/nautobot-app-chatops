@@ -61,6 +61,7 @@ class ChatOpsAccountLinkForm(BootstrapMixin, forms.ModelForm):
 
 class ChatOpsAccountLinkFilterForm(NautobotFilterForm):
     """Form for filtering ChatOps Account Link Instances."""
+
     model = ChatOpsAccountLink
     field_order = [
         "q",
