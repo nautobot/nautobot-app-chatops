@@ -7,7 +7,7 @@ from django.urls import reverse
 
 from nautobot.core.models.fields import ColorField
 from nautobot.core.models.generics import PrimaryModel
-from .choices import AccessGrantTypeChoices, CommandStatusChoices, CommandTokenPlatformChoices, PlatformChoices
+from .choices import AccessGrantTypeChoices, CommandStatusChoices, PlatformChoices
 
 from .integrations.grafana.models import Dashboard as GrafanaDashboard
 from .integrations.grafana.models import Panel as GrafanaPanel
@@ -133,7 +133,7 @@ class CommandToken(PrimaryModel):
     """Record of a Token granted for the chat platform and chat command."""
 
     comment = models.CharField(max_length=255, help_text=COMMAND_TOKEN_COMMENT_HELP_TEXT, blank=True, default="")
-    platform = models.CharField(max_length=32, choices=CommandTokenPlatformChoices)
+    platform = models.CharField(max_length=32, choices=PlatformChoices)
     token = models.CharField(max_length=255, help_text=COMMAND_TOKEN_TOKEN_HELP_TEXT)
 
     def __str__(self):

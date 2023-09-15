@@ -6,7 +6,7 @@ from nautobot.core.forms import BootstrapMixin, StaticSelect2Multiple
 from nautobot.extras.forms import NautobotFilterForm
 
 from .models import AccessGrant, CommandLog, CommandToken, ChatOpsAccountLink
-from .choices import AccessGrantTypeChoices, CommandTokenPlatformChoices, PlatformChoices
+from .choices import AccessGrantTypeChoices, PlatformChoices
 from .constants import ACCESS_GRANT_COMMAND_HELP_TEXT, COMMAND_TOKEN_TOKEN_HELP_TEXT
 
 BLANK_CHOICE = (("", "--------"),)
@@ -93,7 +93,7 @@ class CommandLogFilterForm(BootstrapMixin, forms.ModelForm):
 class CommandTokenFilterForm(BootstrapMixin, forms.ModelForm):
     """Form for filtering ComandToken instances."""
 
-    platform = forms.ChoiceField(choices=CommandTokenPlatformChoices.CHOICES)
+    platform = forms.ChoiceField(choices=PlatformChoices.CHOICES)
     comment = forms.CharField(required=False)
 
     class Meta:
@@ -112,7 +112,7 @@ class CommandTokenForm(BootstrapMixin, forms.ModelForm):
         help_text=COMMAND_TOKEN_TOKEN_HELP_TEXT,
         widget=forms.TextInput(attrs={"autofocus": True}),
     )
-    platform = forms.ChoiceField(choices=CommandTokenPlatformChoices.CHOICES, required=True)
+    platform = forms.ChoiceField(choices=PlatformChoices.CHOICES, required=True)
 
     class Meta:
         """Metaclass attributes of CommandTokenForm."""

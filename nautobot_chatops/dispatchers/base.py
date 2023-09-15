@@ -55,9 +55,7 @@ class Dispatcher:
                     "Add a ChatOps User to link the accounts."
                 )
         user_model = get_user_model()
-        user, _ = user_model.objects.get_or_create(
-            username=settings.PLUGINS_CONFIG["nautobot_chatops"]["fallback_chatops_user"]
-        )
+        user, _ = user_model.objects.get_or_create(username=_APP_CONFIG["fallback_chatops_user"])
         return user
 
     def _get_cache_key(self) -> str:

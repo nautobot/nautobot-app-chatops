@@ -16,7 +16,7 @@ from nautobot_chatops.api.views.webex import (
     generate_signature as webex_generate_signature,
 )
 from nautobot_chatops.api.views.mattermost import verify_signature as mattermost_verify_signature
-from nautobot_chatops.choices import CommandTokenPlatformChoices
+from nautobot_chatops.choices import PlatformChoices
 from nautobot_chatops.models import CommandToken
 from nautobot_chatops.choices import CommandStatusChoices
 from nautobot_chatops.models import CommandLog
@@ -36,7 +36,7 @@ class TestSignatureVerification(TestCase):
         settings.PLUGINS_CONFIG["nautobot_chatops"]["enable_mattermost"] = True
         CommandToken.objects.create(
             comment="*",
-            platform=CommandTokenPlatformChoices.MATTERMOST,
+            platform=PlatformChoices.MATTERMOST,
             token="helloworld",
         )
 

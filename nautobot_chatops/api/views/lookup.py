@@ -42,8 +42,7 @@ class UserEmailLookupView(View):
 
     def get(self, request, *args, **kwargs):
         """Handle an inbound GET request for a specific access grant value."""
-        missing_params = set(["email", "platform"]) - set(request.GET.keys())
-        if missing_params:
+        if missing_params := {"email", "platform"} - set(request.GET.keys()):
             return HttpResponseBadRequest(f"Missing mandatory parameter(s) {missing_params}")
 
         value = None
