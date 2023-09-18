@@ -2,11 +2,15 @@
 
 from unittest.mock import patch
 
+from django.contrib.auth import get_user_model
 from django.test import TestCase
 
 from nautobot_chatops.choices import AccessGrantTypeChoices
 from nautobot_chatops.models import AccessGrant
 from nautobot_chatops.utils import check_and_enqueue_command
+
+
+User = get_user_model()
 
 
 class MockDispatcher:
@@ -47,6 +51,11 @@ class TestCheckAndEnqueue(TestCase):
         "y": {"function": nada, "subcommands": {}},
         "z": {"function": nada, "subcommands": {}},
     }
+
+    @classmethod
+    def setUpTestData(cls):
+        user = User.objects.create_user(username="testchatuser")
+        MockDispatcher.user = user
 
     def test_default_deny(self, mock_enqueue_task):
         """With no AccessGrants in the database, all requests are denied by default."""

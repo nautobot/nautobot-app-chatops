@@ -3,7 +3,6 @@ import os
 import logging
 from typing import Optional
 import requests
-from requests.exceptions import HTTPError
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
@@ -44,8 +43,9 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
                 ).nautobot_user
             except ObjectDoesNotExist:
                 logger.warning(
-                    f"Could not find User matching {self.context['user_name']} - id: {self.context['user_ad_id']}."
-                    "Add a ChatOps User to link the accounts."
+                    "Could not find User matching %s - id: %s." "Add a ChatOps User to link the accounts.",
+                    self.context["user_name"],
+                    self.context["user_ad_id"],
                 )
         user_model = get_user_model()
         user, _ = user_model.objects.get_or_create(

@@ -6,9 +6,10 @@ from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
+from texttable import Texttable
 
 from nautobot_chatops.models import ChatOpsAccountLink
-from texttable import Texttable
+
 
 logger = logging.getLogger(__name__)
 
@@ -51,8 +52,9 @@ class Dispatcher:
                 ).nautobot_user
             except ObjectDoesNotExist:
                 logger.warning(
-                    f"Could not find User matching {self.context['user_name']} - id: {self.context['user_id']}."
-                    "Add a ChatOps User to link the accounts."
+                    "Could not find User matching %s - id: %s." "Add a ChatOps User to link the accounts.",
+                    self.context["user_name"],
+                    self.context["user_id"],
                 )
         user_model = get_user_model()
         user, _ = user_model.objects.get_or_create(username=_APP_CONFIG["fallback_chatops_user"])

@@ -30,7 +30,7 @@ from .constants import (
 )
 
 
-class CommandLog(PrimaryModel):
+class CommandLog(PrimaryModel):  # pylint: disable=nb-string-field-blank-null
     """Record of a single fully-executed Nautobot command.
 
     Incomplete commands (those requiring additional user input) should not be recorded,
