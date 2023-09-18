@@ -108,6 +108,7 @@ def create_command_log(dispatcher, registry, command, subcommand, params=()):
         subcommand=subcommand,
         start_time=datetime.now(timezone.utc),
         params=params_list,
+        nautobot_user=dispatcher.user,
     )
 
 

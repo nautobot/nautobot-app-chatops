@@ -1,12 +1,13 @@
 """Django models for recording user interactions with Nautobot."""
 
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 
 from nautobot.core.models.fields import ColorField
 from nautobot.core.models.generics import PrimaryModel
-from .choices import AccessGrantTypeChoices, CommandStatusChoices, CommandTokenPlatformChoices
+from .choices import AccessGrantTypeChoices, CommandStatusChoices, PlatformChoices
 
 from .integrations.grafana.models import Dashboard as GrafanaDashboard
 from .integrations.grafana.models import Panel as GrafanaPanel
@@ -25,10 +26,11 @@ from .constants import (
     ACCESS_GRANT_VALUE_HELP_TEXT,
     COMMAND_TOKEN_COMMENT_HELP_TEXT,
     COMMAND_TOKEN_TOKEN_HELP_TEXT,
+    CHATOPS_USER_ID_HELP_TEXT,
 )
 
 
-class CommandLog(PrimaryModel):
+class CommandLog(PrimaryModel):  # pylint: disable=nb-string-field-blank-null
     """Record of a single fully-executed Nautobot command.
 
     Incomplete commands (those requiring additional user input) should not be recorded,
@@ -54,6 +56,13 @@ class CommandLog(PrimaryModel):
         default=CommandStatusChoices.STATUS_SUCCEEDED,
     )
     details = models.CharField(max_length=255, default="")
+    nautobot_user = models.ForeignKey(
+        to=settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name="command_log",
+    )
 
     @property
     def status_label_class(self):
@@ -124,7 +133,7 @@ class CommandToken(PrimaryModel):
     """Record of a Token granted for the chat platform and chat command."""
 
     comment = models.CharField(max_length=255, help_text=COMMAND_TOKEN_COMMENT_HELP_TEXT, blank=True, default="")
-    platform = models.CharField(max_length=32, choices=CommandTokenPlatformChoices)
+    platform = models.CharField(max_length=32, choices=PlatformChoices)
     token = models.CharField(max_length=255, help_text=COMMAND_TOKEN_TOKEN_HELP_TEXT)
 
     def __str__(self):
@@ -142,7 +151,32 @@ class CommandToken(PrimaryModel):
         unique_together = [["platform", "token"]]
 
 
+class ChatOpsAccountLink(PrimaryModel):
+    """Connect ChatOps User with Nautobot User."""
+
+    nautobot_user = models.ForeignKey(
+        to=settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="chatops_user",
+        verbose_name="User",
+    )
+    platform = models.CharField(max_length=32, choices=PlatformChoices)
+    user_id = models.CharField(max_length=255, help_text=CHATOPS_USER_ID_HELP_TEXT, verbose_name="Chat User ID")
+    email = models.EmailField(blank=True)
+
+    def __str__(self):
+        """String representation of a ChatOps Account Link."""
+        return f"{self.nautobot_user.username} -> {self.platform} {self.user_id}"
+
+    class Meta:
+        """Metadata for ChatOps Account Link."""
+
+        unique_together = [["user_id", "platform"]]
+        verbose_name = "ChatOps Account Link"
+
+
 __all__ = (
+    "ChatOpsAccountLink",
     "CommandLog",
     "AccessGrant",
     "CommandToken",

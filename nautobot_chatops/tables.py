@@ -1,10 +1,10 @@
 """Django table classes for Nautobot."""
 
-from django_tables2 import TemplateColumn
+from django_tables2 import TemplateColumn, LinkColumn
 
-from nautobot.core.tables import BaseTable, ToggleColumn
+from nautobot.core.tables import BaseTable, ButtonsColumn, ToggleColumn
 
-from .models import CommandLog, AccessGrant, CommandToken
+from .models import CommandLog, AccessGrant, CommandToken, ChatOpsAccountLink
 
 
 class CommandLogTable(BaseTable):
@@ -44,13 +44,14 @@ class CommandLogTable(BaseTable):
             "runtime",
             "platform",
             "user_name",
+            "nautobot_user",
             "command",
             "subcommand",
             "params",
             "status",
             "details",
         )
-        default_columns = ("start_time", "user_name", "command", "subcommand", "params", "status")
+        default_columns = ("start_time", "user_name", "nautobot_user", "command", "subcommand", "params", "status")
 
 
 class AccessGrantTable(BaseTable):
@@ -111,3 +112,18 @@ class CommandTokenTable(BaseTable):
         model = CommandToken
         fields = ("pk", "platform", "token", "comment", "actions")
         default_columns = ("pk", "platform", "comment", "actions")
+
+
+class ChatOpsAccountLinkTable(BaseTable):
+    """Table for listing the Account Links."""
+
+    pk = ToggleColumn()
+    user_id = LinkColumn()
+    actions = ButtonsColumn(ChatOpsAccountLink)
+
+    class Meta(BaseTable.Meta):
+        """Metaclass for attributes of ChatOps Account Links."""
+
+        model = ChatOpsAccountLink
+        fields = ("pk", "user_id", "platform", "nautobot_user", "email", "actions")
+        default_columns = ("pk", "user_id", "platform", "nautobot_user", "email", "actions")

@@ -18,6 +18,17 @@ items = [
         ),
     ),
     NavMenuItem(
+        link="plugins:nautobot_chatops:chatopsaccountlink_list",
+        name="Link ChatOps Account",
+        permissions=["nautobot_chatops.view_chatopsaccountlink"],
+        buttons=(
+            NavMenuAddButton(
+                link="plugins:nautobot_chatops:chatopsaccountlink_add",
+                permissions=["nautobot_chatops.add_chatopsaccountlink"],
+            ),
+        ),
+    ),
+    NavMenuItem(
         link="plugins:nautobot_chatops:commandtoken_list",
         name="Command Tokens",
         permissions=["nautobot_chatops.view_commandtoken"],

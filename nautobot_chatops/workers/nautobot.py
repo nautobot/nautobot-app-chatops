@@ -38,7 +38,7 @@ def prompt_for_device(action_id, help_text, dispatcher, devices=None, offset=0):
     # In the previous implementation, we grouped the devices into subgroups by location.
     # Unfortunately, while this is possible in Slack, the Adaptive Cards spec (MS Teams / Webex) can't do it.
     if devices is None:
-        devices = Device.objects.all().order_by("location", "name")
+        devices = Device.objects.restrict(dispatcher.user, "view").order_by("location", "name")
     if not devices:
         dispatcher.send_error("No devices were found")
         return (CommandStatusChoices.STATUS_FAILED, "No devices found")
@@ -57,7 +57,7 @@ def prompt_for_device(action_id, help_text, dispatcher, devices=None, offset=0):
 def prompt_for_vlan(action_id, help_text, dispatcher, filter_type, filter_value_1, vlans=None):
     """Prompt the user to select a valid vlan id from a drop-down menu."""
     if vlans is None:
-        vlans = VLAN.objects.all().order_by("vid", "name")
+        vlans = VLAN.objects.restrict(dispatcher.user, "view").order_by("vid", "name")
     if not vlans:
         dispatcher.send_error("No vlans were found")
         return (CommandStatusChoices.STATUS_FAILED, "No vlans found")
@@ -176,7 +176,7 @@ def get_vlans(dispatcher, filter_type, filter_value_1):
     if menu_item_check(filter_value_1):
         # One parameter Slash Command All
         if filter_type == "all":
-            vlans = VLAN.objects.all()
+            vlans = VLAN.objects.restrict(dispatcher.user, "view")
             dispatcher.send_blocks(
                 dispatcher.command_response_header(
                     "nautobot",
@@ -208,7 +208,7 @@ def get_vlans(dispatcher, filter_type, filter_value_1):
             )
             return False
         elif filter_type == "status":
-            vlans = VLAN.objects.all()
+            vlans = VLAN.objects.restrict(dispatcher.user, "view")
             choices = [(status.name, str(status.pk)) for status in Status.objects.get_for_model(VLAN)]
         elif filter_type == "location":
             location_types = LocationType.objects.filter(content_types=ContentType.objects.get_for_model(VLAN))
@@ -253,7 +253,7 @@ def get_vlans(dispatcher, filter_type, filter_value_1):
 
     if filter_type == "name":
         try:
-            vlans = VLAN.objects.get(name=filter_value_1)
+            vlans = VLAN.objects.restrict(dispatcher.user, "view").get(name=filter_value_1)
         except VLAN.DoesNotExist:
             dispatcher.send_error(f"VLAN {filter_value_1} not found")
             return (
@@ -262,7 +262,7 @@ def get_vlans(dispatcher, filter_type, filter_value_1):
             )
     elif filter_type == "id":
         try:
-            vlans = VLAN.objects.get(vid=filter_value_1)
+            vlans = VLAN.objects.restrict(dispatcher.user, "view").get(vid=filter_value_1)
         except VLAN.DoesNotExist:
             dispatcher.send_error(f"VLAN {filter_value_1} not found")
             return (
@@ -279,7 +279,7 @@ def get_vlans(dispatcher, filter_type, filter_value_1):
             )
     elif filter_type == "location":
         try:
-            location = Location.objects.get(pk=filter_value_1)
+            location = Location.objects.restrict(dispatcher.user, "view").get(pk=filter_value_1)
         except Location.DoesNotExist:
             dispatcher.send_error(f"Location {filter_value_1} not found")
             return (
@@ -295,7 +295,7 @@ def get_vlans(dispatcher, filter_type, filter_value_1):
             )
     elif filter_type == "group":
         try:
-            group = VLANGroup.objects.get(pk=filter_value_1)
+            group = VLANGroup.objects.restrict(dispatcher.user, "view").get(pk=filter_value_1)
         except VLANGroup.DoesNotExist:
             dispatcher.send_error(f"Group {filter_value_1} not found")
             return (
@@ -311,7 +311,7 @@ def get_vlans(dispatcher, filter_type, filter_value_1):
             )
     elif filter_type == "tenant":
         try:
-            tenant = Tenant.objects.get(pk=filter_value_1)
+            tenant = Tenant.objects.restrict(dispatcher.user, "view").get(pk=filter_value_1)
         except Tenant.DoesNotExist:
             dispatcher.send_error(f"Tenant {filter_value_1} not found")
             return (
@@ -327,7 +327,7 @@ def get_vlans(dispatcher, filter_type, filter_value_1):
             )
     elif filter_type == "role":
         try:
-            role = Role.objects.get(pk=filter_value_1, content_types=content_type)
+            role = Role.objects.restrict(dispatcher.user, "view").get(pk=filter_value_1, content_types=content_type)
         except Role.DoesNotExist:
             dispatcher.send_error(f"Role {filter_value_1} not found")
             return (
@@ -403,7 +403,9 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
             # TODO Switch to utilizing Natural Key instead of PK.
             choices = [
                 (device_type.model, str(device_type.pk))
-                for device_type in DeviceType.objects.all().order_by("manufacturer__name", "model")
+                for device_type in DeviceType.objects.restrict(dispatcher.user, "view").order_by(
+                    "manufacturer__name", "model"
+                )
             ]
         elif filter_type == "all":
             # 1 param slash command
@@ -463,7 +465,7 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
     # 3 param slash command
     if filter_type == "device" and menu_item_check(filter_value_2):
         try:
-            location = Location.objects.get(pk=filter_value_1)
+            location = Location.objects.restrict(dispatcher.user, "view").get(pk=filter_value_1)
         except Location.DoesNotExist:
             dispatcher.send_error(f"Location {filter_value_1} not found")
             return (
@@ -483,7 +485,7 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
     if filter_type == "device" and filter_value_1 and filter_value_2:
         device_key = filter_value_2
         try:
-            device = Device.objects.get(pk=device_key)
+            device = Device.objects.restrict(dispatcher.user, "view").get(pk=device_key)
         except Device.DoesNotExist:
             dispatcher.send_error(f"Device {device_key} not found")
             return (
@@ -518,7 +520,7 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
     devices = []
     if filter_type == "location":
         try:
-            value = Location.objects.get(pk=filter_value_1)
+            value = Location.objects.restrict(dispatcher.user, "view").get(pk=filter_value_1)
         except Location.DoesNotExist:
             dispatcher.send_error(f"Location {filter_value_1} not found")
             return (
@@ -528,17 +530,17 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
         devices = Device.objects.filter(location=value)
     elif filter_type == "role":
         try:
-            value = Role.objects.get(pk=filter_value_1, content_types=device_ct)
+            value = Role.objects.restrict(dispatcher.user, "view").get(pk=filter_value_1, content_types=device_ct)
         except Role.DoesNotExist:
             dispatcher.send_error(f"Role {filter_value_1} not found")
             return (
                 CommandStatusChoices.STATUS_FAILED,
                 f'Role "{filter_value_1}" not found',
             )  # command did not run to completion and therefore should not be logged
-        devices = Device.objects.filter(role=value)
+        devices = Device.objects.restrict(dispatcher.user, "view").filter(role=value)
     elif filter_type == "model":
         try:
-            value = DeviceType.objects.get(pk=filter_value_1)
+            value = DeviceType.objects.restrict(dispatcher.user, "view").get(pk=filter_value_1)
         except DeviceType.DoesNotExist:
             dispatcher.send_error(f"Device type {filter_value_1} not found")
             return (
@@ -587,7 +589,7 @@ def get_device_status(dispatcher, device_key):
         return False  # command did not run to completion and therefore should not be logged
 
     try:
-        device = Device.objects.get(pk=device_key)
+        device = Device.objects.restrict(dispatcher.user, "view").get(pk=device_key)
     except Device.DoesNotExist:
         dispatcher.send_error(f"I don't know device '{device_key}'")
         prompt_for_device("nautobot get-device-status", "Get Nautobot Device Status", dispatcher)
@@ -621,7 +623,7 @@ def change_device_status(dispatcher, device_key, status):
         return False  # command did not run to completion and therefore should not be logged
 
     try:
-        device = Device.objects.get(pk=device_key)
+        device = Device.objects.restrict(dispatcher.user, "edit").get(pk=device_key)
     except Device.DoesNotExist:
         dispatcher.send_error(f"I don't know device '{device_key}'")
         prompt_for_device("nautobot change-device-status", "Change Nautobot Device Status", dispatcher)
@@ -677,7 +679,7 @@ def get_device_facts(dispatcher, device_key):
         return False  # command did not run to completion and therefore should not be logged
 
     try:
-        device = Device.objects.get(pk=device_key)
+        device = Device.objects.restrict(dispatcher.user, "view").get(pk=device_key)
     except Device.DoesNotExist:
         dispatcher.send_error(f"I don't know device '{device_key}'")
         prompt_for_device("nautobot get-device-facts", "Get Nautobot Device Facts", dispatcher)
@@ -726,7 +728,7 @@ def get_devices(dispatcher, filter_type, filter_value):
             dispatcher.prompt_for_text(f"nautobot get-devices {filter_type}", "Enter device name", "Device name")
             return False  # command did not run to completion and therefore should not be logged
         elif filter_type == "location":
-            location_types = LocationType.objects.filter(content_types=device_ct)
+            location_types = LocationType.objects.restrict(dispatcher.user, "view").filter(content_types=device_ct)
             choices = [
                 (
                     f"{'>'.join([str(ancestor) for ancestor in location.ancestors()])}"
@@ -734,14 +736,25 @@ def get_devices(dispatcher, filter_type, filter_value):
                     f"{location.name}",
                     str(location.pk),
                 )
-                for location in Location.objects.filter(location_type__in=location_types)
+                for location in Location.objects.restrict(dispatcher.user, "view").filter(
+                    location_type__in=location_types
+                )
             ]
         elif filter_type == "role":
-            choices = [(role.name, str(role.pk)) for role in Role.objects.filter(content_types=device_ct)]
+            choices = [
+                (role.name, str(role.pk))
+                for role in Role.objects.restrict(dispatcher.user, "view").filter(content_types=device_ct)
+            ]
         elif filter_type == "model":
-            choices = [(device_type.model, str(device_type.pk)) for device_type in DeviceType.objects.all()]
+            choices = [
+                (device_type.model, str(device_type.pk))
+                for device_type in DeviceType.objects.restrict(dispatcher.user, "view")
+            ]
         elif filter_type == "manufacturer":
-            choices = [(manufacturer.name, str(manufacturer.pk)) for manufacturer in Manufacturer.objects.all()]
+            choices = [
+                (manufacturer.name, str(manufacturer.pk))
+                for manufacturer in Manufacturer.objects.restrict(dispatcher.user, "view")
+            ]
         else:
             dispatcher.send_error(f"I don't know how to filter by {filter_type}")
             return (CommandStatusChoices.STATUS_FAILED, f'Unknown filter type "{filter_type}"')
@@ -762,21 +775,21 @@ def get_devices(dispatcher, filter_type, filter_value):
         devices = Device.objects.filter(name=filter_value)
     elif filter_type == "location":
         try:
-            location = Location.objects.get(pk=filter_value)
+            location = Location.objects.restrict(dispatcher.user, "view").get(pk=filter_value)
         except Location.DoesNotExist:
             dispatcher.send_error(f"Location {filter_value} not found")
             return (CommandStatusChoices.STATUS_FAILED, f'Location "{filter_value}" not found')
-        devices = Device.objects.filter(location=location)
+        devices = Device.objects.restrict(dispatcher.user, "view").filter(location=location)
     elif filter_type == "role":
         try:
-            role = Role.objects.get(pk=filter_value, content_types=device_ct)
+            role = Role.objects.restrict(dispatcher.user, "view").get(pk=filter_value, content_types=device_ct)
         except Role.DoesNotExist:
             dispatcher.send_error(f"Role {filter_value} not found")
             return (CommandStatusChoices.STATUS_FAILED, f'Role "{filter_value}" not found')
-        devices = Device.objects.filter(role=role)
+        devices = Device.objects.restrict(dispatcher.user, "view").filter(role=role)
     elif filter_type == "model":
         try:
-            device_type = DeviceType.objects.get(pk=filter_value)
+            device_type = DeviceType.objects.restrict(dispatcher.user, "view").get(pk=filter_value)
         except DeviceType.DoesNotExist:
             dispatcher.send_error(f"Device type {filter_value} not found")
             return (CommandStatusChoices.STATUS_FAILED, f'Device type "{filter_value}" not found')
@@ -786,7 +799,7 @@ def get_devices(dispatcher, filter_type, filter_value):
         # but the previous implementation supported this filter, so here we go.
         # TODO: is there a better way?
         try:
-            manufacturer = Manufacturer.objects.get(pk=filter_value)
+            manufacturer = Manufacturer.objects.restrict(dispatcher.user, "view").get(pk=filter_value)
         except Manufacturer.DoesNotExist:
             dispatcher.send_error(f"Manufacturer {filter_value} not found")
             return (CommandStatusChoices.STATUS_FAILED, f'Manufacturer "{filter_value}" not found')
@@ -854,7 +867,7 @@ def get_rack(dispatcher, location_key, rack_id):
         return False  # command did not run to completion and therefore should not be logged
 
     try:
-        location = Location.objects.get(pk=location_key)
+        location = Location.objects.restrict(dispatcher.user, "view").get(pk=location_key)
     except Location.DoesNotExist:
         dispatcher.send_error(f"Location {location_key} not found")
         return (CommandStatusChoices.STATUS_FAILED, f'Location "{location_key}" not found')
@@ -870,7 +883,7 @@ def get_rack(dispatcher, location_key, rack_id):
         return False  # command did not run to completion and therefore should not be logged
 
     try:
-        rack = Rack.objects.get(pk=rack_id)
+        rack = Rack.objects.restrict(dispatcher.user, "view").get(pk=rack_id)
     except Rack.DoesNotExist:
         dispatcher.send_error(f"Rack {rack_id} not found")
         return (CommandStatusChoices.STATUS_FAILED, f'Rack "{rack_id}" not found')
@@ -908,11 +921,11 @@ def get_circuits(dispatcher, filter_type, filter_value):
 
     if filter_type != "all" and menu_item_check(filter_value):
         if filter_type == "type":
-            choices = [(ctype.name, str(ctype.pk)) for ctype in CircuitType.objects.all()]
+            choices = [(ctype.name, str(ctype.pk)) for ctype in CircuitType.objects.restrict(dispatcher.user, "view")]
         elif filter_type == "provider":
-            choices = [(prov.name, str(prov.pk)) for prov in Provider.objects.all()]
+            choices = [(prov.name, str(prov.pk)) for prov in Provider.objects.restrict(dispatcher.user, "view")]
         elif filter_type == "location":
-            location_types = LocationType.objects.filter(
+            location_types = LocationType.objects.restrict(dispatcher.user, "view").filter(
                 content_types=ContentType.objects.get_for_model(CircuitTermination)
             )
             choices = [
@@ -922,7 +935,9 @@ def get_circuits(dispatcher, filter_type, filter_value):
                     f"{location.name}",
                     str(location.pk),
                 )
-                for location in Location.objects.filter(location_type__in=location_types)
+                for location in Location.objects.restrict(dispatcher.user, "view").filter(
+                    location_type__in=location_types
+                )
             ]
         else:
             dispatcher.send_error(f"I don't know how to filter by {filter_type}")
@@ -941,24 +956,24 @@ def get_circuits(dispatcher, filter_type, filter_value):
         return False  # command did not run to completion and therefore should not be logged
 
     if filter_type == "all":
-        circuits = Circuit.objects.all()
+        circuits = Circuit.objects.restrict(dispatcher.user, "view")
     elif filter_type == "type":
         try:
-            ctype = CircuitType.objects.get(pk=filter_value)
+            ctype = CircuitType.objects.restrict(dispatcher.user, "view").get(pk=filter_value)
         except CircuitType.DoesNotExist:
             dispatcher.send_error(f"Circuit type {filter_value} not found")
             return (CommandStatusChoices.STATUS_FAILED, f'Circuit type "{filter_value}" not found')
         circuits = Circuit.objects.filter(circuit_type=ctype)
     elif filter_type == "provider":
         try:
-            prov = Provider.objects.get(pk=filter_value)
+            prov = Provider.objects.restrict(dispatcher.user, "view").get(pk=filter_value)
         except Provider.DoesNotExist:
             dispatcher.send_error(f"Provider {filter_value} not found")
             return (CommandStatusChoices.STATUS_FAILED, f'Provider "{filter_value}" not found')
         circuits = Circuit.objects.filter(provider=prov)
     elif filter_type == "location":
         try:
-            location = Location.objects.get(pk=filter_value)
+            location = Location.objects.restrict(dispatcher.user, "view").get(pk=filter_value)
         except Location.DoesNotExist:
             dispatcher.send_error(f"Location {filter_value} not found")
             return (CommandStatusChoices.STATUS_FAILED, f'Location "{filter_value}" not found')
@@ -1009,7 +1024,7 @@ def get_circuits(dispatcher, filter_type, filter_value):
 @subcommand_of("nautobot")
 def get_circuit_providers(dispatcher, *args):
     """Get a list of circuit providers."""
-    providers = Provider.objects.all()
+    providers = Provider.objects.restrict(dispatcher.user, "view")
 
     dispatcher.send_blocks(
         dispatcher.command_response_header(
@@ -1046,7 +1061,7 @@ def about(dispatcher, *args):
 def get_manufacturer_summary(dispatcher):
     """Provides summary of each manufacturer and how many devices have that manufacturer."""
     # Get manufacturers
-    manufacturers = Manufacturer.objects.all()
+    manufacturers = Manufacturer.objects.restrict(dispatcher.user, "view")
 
     # Dict to hold the summary result
     manufacturer_rollup = {}
@@ -1113,7 +1128,7 @@ def get_circuit_connections(dispatcher, provider_key, circuit_id):
     # Now that provider_key is defined, get the provider object from the provider_key;
     # return an error msg if provider does not exist for that provider_key
     try:
-        provider = Provider.objects.get(pk=provider_key)
+        provider = Provider.objects.restrict(dispatcher.user, "view").get(pk=provider_key)
     except Provider.DoesNotExist:  # If provider cannot be found, return STATUS_FAILED with msg
         provider_not_found_error_msg = f"Circuit provider with name {provider_key} does not exist"
         dispatcher.send_error(provider_not_found_error_msg)
@@ -1138,7 +1153,7 @@ def get_circuit_connections(dispatcher, provider_key, circuit_id):
     # Now that circuit_id is defined, get the circuit object for that circuit_id; if the
     # circuit_id does not match to a Circuit, return an error msg
     try:
-        circuit = Circuit.objects.get(cid=circuit_id)
+        circuit = Circuit.objects.restrict(dispatcher.user, "view").get(cid=circuit_id)
     except Circuit.DoesNotExist:
         cid_not_found_msg = f"Circuit with circuit ID {circuit_id} not found"
         dispatcher.send_error(cid_not_found_msg)

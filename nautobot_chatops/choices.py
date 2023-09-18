@@ -35,12 +35,17 @@ class CommandStatusChoices(ChoiceSet):
     )
 
 
-class CommandTokenPlatformChoices(ChoiceSet):
-    """Choices for the CommandToken platform field."""
+class PlatformChoices(ChoiceSet):
+    """Choices for the Platform field."""
 
     MATTERMOST = "mattermost"
     SLACK = "slack"
     MS_TEAMS = "microsoft_teams"
     WEBEX = "webex"
 
-    CHOICES = ((MATTERMOST, "Mattermost"),)
+    CHOICES = (
+        (MATTERMOST, "Mattermost"),
+        (MS_TEAMS, "Microsoft Teams"),
+        (SLACK, "Slack"),
+        (WEBEX, "Webex"),
+    )

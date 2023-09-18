@@ -288,6 +288,7 @@ While this method is still possible, we recommend using the App Manifest method 
      - `files:write`
      - `incoming-webhook`
      - `users:read`
+     - `users:read.email`
      - `app_mentions:read`
      - `groups:read`
      - `im:read`

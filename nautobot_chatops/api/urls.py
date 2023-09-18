@@ -12,12 +12,15 @@ from nautobot_chatops.api.views.generic import (
     CommandTokenViewSet,
     NautobotChatopsRootView,
 )
-from nautobot_chatops.api.views.lookup import AccessLookupView
+from nautobot_chatops.api.views.lookup import AccessLookupView, UserEmailLookupView
 
 _APP_CONFIG: Dict = settings.PLUGINS_CONFIG["nautobot_chatops"]
 
 logger = logging.getLogger(__name__)
-urlpatterns = [path("lookup/", AccessLookupView.as_view(), name="access_lookup")]
+urlpatterns = [
+    path("lookup/", AccessLookupView.as_view(), name="access_lookup"),
+    path("email-lookup/", UserEmailLookupView.as_view(), name="email_lookup"),
+]
 
 if _APP_CONFIG.get("enable_slack"):
     from nautobot_chatops.api.views.slack import SlackSlashCommandView, SlackInteractionView, SlackEventAPIView

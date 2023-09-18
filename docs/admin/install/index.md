@@ -9,6 +9,7 @@ This guide outlines the process of enabling Nautobot ChatOps, which includes:
   - [Installation Guide](#installation-guide)
   - [Configuration Guide](#configuration-guide)
   - [Granting Access to the Chat Platform](#granting-access-to-the-chat-platform)
+  - [Link Nautobot Account](#link-nautobot-account)
   - [Test Your Chatbot](#test-your-chatbot)
   - [Integrations Configuration](#integrations-configuration)
 
@@ -115,6 +116,7 @@ Adjust the App's behavior with the following settings:
 | `delete_input_on_submission` | Removes the input prompt from the chat history after user input | No | `False` |
 | `restrict_help` | Shows Help prompt only to users based on their Access Grants | No | `False` |
 | `send_all_messages_private` | Ensures only the person interacting with the bot sees the responses | No | `False` |
+| `fallback_chatops_user` | Nautobot User for Chat Commands to use if the user has not linked their account | Yes | `chatbot` |
 | `session_cache_timeout` | Controls session cache | No | `86400` |
 
 ## Granting Access to the Chat Platform
@@ -122,6 +124,14 @@ Adjust the App's behavior with the following settings:
 {%
     include-markdown '../../models/accessgrant.md'
     start='<!--access-grant-->'
+    heading-offset=1
+%}
+
+## Link Nautobot Account
+
+{%
+    include-markdown '../../models/chatopsaccountlink.md'
+    start='<!--account-link-->'
     heading-offset=1
 %}
 

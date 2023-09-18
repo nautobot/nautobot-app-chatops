@@ -88,6 +88,24 @@ class WebexDispatcher(AdaptiveCardsDispatcher):
 
         return None
 
+    @classmethod
+    def lookup_user_id_by_email(cls, email) -> Optional[str]:
+        """Call out to Webex to look up a specific user ID by email.
+
+        Args:
+          email (str): Uniquely identifying email address of the user.
+
+        Returns:
+          (str, None)
+        """
+        instance = cls(context=None)
+        try:
+            response = instance.client.people.list(email=email)
+            for person in response:
+                return person.id
+        except ApiError:
+            return None
+
     @BACKEND_ACTION_MARKDOWN.time()
     def send_markdown(self, message, ephemeral=None):
         """Send a markdown-formatted text message to the user/channel specified by the context."""

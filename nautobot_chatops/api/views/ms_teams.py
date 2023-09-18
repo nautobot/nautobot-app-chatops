@@ -139,6 +139,7 @@ class MSTeamsMessagesView(View):
             "user_id": body["from"]["id"],
             "user_name": body["from"]["name"],
             "user_role": body["from"].get("role"),
+            "user_ad_id": body["from"].get("aadObjectId"),
             "conversation_id": body["conversation"]["id"],
             "conversation_name": body["conversation"].get("name"),
             "bot_id": body["recipient"]["id"],

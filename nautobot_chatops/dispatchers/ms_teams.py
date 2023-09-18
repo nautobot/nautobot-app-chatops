@@ -5,8 +5,11 @@ from typing import Optional
 import requests
 
 from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.core.exceptions import ObjectDoesNotExist
 
 from nautobot_chatops.metrics import backend_action_sum
+from nautobot_chatops.models import ChatOpsAccountLink
 from .adaptive_cards import AdaptiveCardsDispatcher
 
 logger = logging.getLogger(__name__)
@@ -30,6 +33,26 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
         """Init a MSTeamsDispatcher."""
         super().__init__(*args, **kwargs)
 
+    @property
+    def user(self):
+        """Dispatcher property containing the Nautobot User that is linked to the Chat User."""
+        if self.context.get("user_ad_id"):
+            try:
+                return ChatOpsAccountLink.objects.get(
+                    platform=self.platform_slug, user_id=self.context["user_ad_id"]
+                ).nautobot_user
+            except ObjectDoesNotExist:
+                logger.warning(
+                    "Could not find User matching %s - id: %s." "Add a ChatOps User to link the accounts.",
+                    self.context["user_name"],
+                    self.context["user_ad_id"],
+                )
+        user_model = get_user_model()
+        user, _ = user_model.objects.get_or_create(
+            username=settings.PLUGINS_CONFIG["nautobot_chatops"]["fallback_chatops_user"]
+        )
+        return user
+
     @classmethod
     @BACKEND_ACTION_LOOKUP.time()
     def platform_lookup(cls, item_type, item_name) -> Optional[str]:
@@ -49,17 +72,17 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
         raise NotImplementedError
 
     @staticmethod
-    def get_token():
+    def get_token(service="botframework.com", scope="https://api.botframework.com/.default"):
         """Obtain the JWT token that's needed for the bot to publish messages back to MS Teams."""
         # TODO: for efficiency, cache the token and only refresh it when it expires
         # For now we just get a new token every time.
         response = requests.post(
-            "https://login.microsoftonline.com/botframework.com/oauth2/v2.0/token",
+            f"https://login.microsoftonline.com/{service}/oauth2/v2.0/token",
             data={
                 "grant_type": "client_credentials",
                 "client_id": settings.PLUGINS_CONFIG["nautobot_chatops"]["microsoft_app_id"],
                 "client_secret": settings.PLUGINS_CONFIG["nautobot_chatops"]["microsoft_app_password"],
-                "scope": "https://api.botframework.com/.default",
+                "scope": scope,
             },
             timeout=15,
         )
@@ -76,6 +99,38 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
                 "Check the app_id and app_secret."
             ) from exc
         return token
+
+    @classmethod
+    def lookup_user_id_by_email(cls, email) -> Optional[str]:
+        """Call out to Microsoft Teams to look up a specific user ID by email.
+
+        Args:
+          email (str): Uniquely identifying email address of the user.
+
+        Returns:
+          (str, None)
+        """
+        service = settings.PLUGINS_CONFIG["nautobot_chatops"]["microsoft_tenant_id"]
+        scope = "https://graph.microsoft.com/.default"
+        try:
+            # Try to use the email as the User Principal Name
+            response = requests.get(
+                f"https://graph.microsoft.com/v1.0/users/{email}?$select=id",
+                headers={"Authorization": f"Bearer {cls.get_token(service=service, scope=scope)}"},
+                timeout=15,
+            )
+            return response.json()["id"]
+        except KeyError:
+            try:
+                # Fall back to filtering by email address.
+                response = requests.get(
+                    f"https://graph.microsoft.com/v1.0/users?$select=id&$filter=mail eq '{email}'",
+                    headers={"Authorization": f"Bearer {cls.get_token(service=service, scope=scope)}"},
+                    timeout=15,
+                )
+                return response.json()["value"][0]["id"]
+            except (KeyError, IndexError):
+                return None
 
     def _send(self, content, content_type="message"):
         """Publish content back to Microsoft Teams."""
