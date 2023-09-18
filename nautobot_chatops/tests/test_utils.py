@@ -54,6 +54,7 @@ class TestCheckAndEnqueue(TestCase):
 
     @classmethod
     def setUpTestData(cls):
+        """Create the test user."""
         user = User.objects.create_user(username="testchatuser")
         MockDispatcher.user = user
 
