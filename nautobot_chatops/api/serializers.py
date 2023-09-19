@@ -16,7 +16,7 @@ class CommandTokenSerializer(NautobotModelSerializer):
         """Meta for CommandToken Serializer."""
 
         model = CommandToken
-        fields = ("id", "comment", "platform", "token", "url")
+        fields = "__all__"
 
 
 class AccessGrantSerializer(NautobotModelSerializer):
@@ -28,7 +28,7 @@ class AccessGrantSerializer(NautobotModelSerializer):
         """Meta for AccessGrant Serializer."""
 
         model = AccessGrant
-        fields = ("id", "command", "subcommand", "grant_type", "name", "value", "url")
+        fields = "__all__"
 
 
 class CommandLogSerializer(NautobotModelSerializer):
@@ -38,15 +38,4 @@ class CommandLogSerializer(NautobotModelSerializer):
         """Meta for CommandLog Serializer."""
 
         model = CommandLog
-        fields = (
-            "id",
-            "start_time",
-            "user_name",
-            "user_id",
-            "platform",
-            "command",
-            "subcommand",
-            "params",
-            "status",
-            "details",
-        )
+        fields = "__all__"

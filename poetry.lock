@@ -1309,6 +1309,20 @@ files = [
 Django = ">=2.2"
 
 [[package]]
+name = "emoji"
+version = "2.8.0"
+description = "Emoji for Python"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+files = [
+    {file = "emoji-2.8.0-py2.py3-none-any.whl", hash = "sha256:a8468fd836b7ecb6d1eac054c9a591701ce0ccd6c6f7779ad71b66f76664df90"},
+    {file = "emoji-2.8.0.tar.gz", hash = "sha256:8d8b5dec3c507444b58890e598fc895fcec022b3f5acb49497c6ccc5208b8b00"},
+]
+
+[package.extras]
+dev = ["coverage", "coveralls", "pytest"]
+
+[[package]]
 name = "exceptiongroup"
 version = "1.1.2"
 description = "Backport of PEP 654 (exception groups)"
@@ -1462,17 +1476,20 @@ smmap = ">=3.0.1,<6"
 
 [[package]]
 name = "gitpython"
-version = "3.1.32"
+version = "3.1.36"
 description = "GitPython is a Python library used to interact with Git repositories"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "GitPython-3.1.32-py3-none-any.whl", hash = "sha256:e3d59b1c2c6ebb9dfa7a184daf3b6dd4914237e7488a1730a6d8f6f5d0b4187f"},
-    {file = "GitPython-3.1.32.tar.gz", hash = "sha256:8d9b8cb1e80b9735e8717c9362079d3ce4c6e5ddeebedd0361b228c3a67a62f6"},
+    {file = "GitPython-3.1.36-py3-none-any.whl", hash = "sha256:8d22b5cfefd17c79914226982bb7851d6ade47545b1735a9d010a2a4c26d8388"},
+    {file = "GitPython-3.1.36.tar.gz", hash = "sha256:4bb0c2a6995e85064140d31a33289aa5dce80133a23d36fcd372d716c54d3ebf"},
 ]
 
 [package.dependencies]
 gitdb = ">=4.0.1,<5"
+
+[package.extras]
+test = ["black", "coverage[toml]", "ddt (>=1.1.1,!=1.4.3)", "mypy", "pre-commit", "pytest", "pytest-cov", "pytest-sugar", "virtualenv"]
 
 [[package]]
 name = "graphene"
@@ -2513,13 +2530,13 @@ files = [
 
 [[package]]
 name = "nautobot"
-version = "2.0.0rc2"
+version = "2.0.0rc3"
 description = "Source of truth and network automation platform."
 optional = false
 python-versions = ">=3.8,<3.12"
 files = [
-    {file = "nautobot-2.0.0rc2-py3-none-any.whl", hash = "sha256:0012663d52d4c12ae1327f8e8fef150654f67483ccc3c9c4fc7e3b039a05afb9"},
-    {file = "nautobot-2.0.0rc2.tar.gz", hash = "sha256:404a14977ba8e1097c3f6aaf34d21880ea66770e26ac2dc794a5310d8174a552"},
+    {file = "nautobot-2.0.0rc3-py3-none-any.whl", hash = "sha256:0fd9f843cba7920aa6fdb5533318b621b312d83565e2964592b80ac84c53ce63"},
+    {file = "nautobot-2.0.0rc3.tar.gz", hash = "sha256:9388c55318df0e58418810a56d50c5cdecb78fccb6971ec830e04563e5e3edb5"},
 ]
 
 [package.dependencies]
@@ -2545,7 +2562,8 @@ django-webserver = ">=1.2.0,<1.3.0"
 djangorestframework = ">=3.14.0,<3.15.0"
 drf-react-template-framework = ">=0.0.17,<0.0.18"
 drf-spectacular = {version = "0.26.3", extras = ["sidecar"]}
-GitPython = ">=3.1.32,<3.2.0"
+emoji = ">=2.8.0,<2.9.0"
+GitPython = ">=3.1.36,<3.2.0"
 graphene-django = ">=2.16.0,<2.17.0"
 graphene-django-optimizer = ">=0.8.0,<0.9.0"
 Jinja2 = ">=3.1.2,<3.2.0"
@@ -2558,6 +2576,7 @@ packaging = ">=23.1,<23.2"
 Pillow = ">=10.0.0,<10.1.0"
 prometheus-client = ">=0.17.1,<0.18.0"
 psycopg2-binary = ">=2.9.6,<2.10.0"
+python-slugify = ">=8.0.1,<8.1.0"
 pyuwsgi = ">=2.0.21,<2.1.0"
 PyYAML = ">=6.0,<6.1"
 social-auth-app-django = ">=5.2.0,<5.3.0"
@@ -3451,6 +3470,23 @@ files = [
 
 [package.extras]
 cli = ["click (>=5.0)"]
+
+[[package]]
+name = "python-slugify"
+version = "8.0.1"
+description = "A Python slugify application that also handles Unicode"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "python-slugify-8.0.1.tar.gz", hash = "sha256:ce0d46ddb668b3be82f4ed5e503dbc33dd815d83e2eb6824211310d3fb172a27"},
+    {file = "python_slugify-8.0.1-py2.py3-none-any.whl", hash = "sha256:70ca6ea68fe63ecc8fa4fcf00ae651fc8a5d02d93dcd12ae6d4fc7ca46c4d395"},
+]
+
+[package.dependencies]
+text-unidecode = ">=1.3"
+
+[package.extras]
+unidecode = ["Unidecode (>=1.1.1)"]
 
 [[package]]
 name = "python3-openid"
@@ -4584,4 +4620,4 @@ panorama = ["defusedxml", "ipaddr", "netmiko", "netutils", "pan-os-python"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.11"
-content-hash = "06a23d38741f182e70524328599eda06df17027c3eae267bd58ec709a9ea087a"
+content-hash = "09db4e22c35d3023ad37f466737b9033beac38f46095f4f6d71c174c138740a5"
