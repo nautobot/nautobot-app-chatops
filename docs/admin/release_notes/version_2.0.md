@@ -2,6 +2,19 @@
 # v2.0 Release Notes
 
 <!-- towncrier release notes start -->
+## [v2.0.3 (2023-09-22)](https://github.com/nautobot/nautobot-plugin-chatops/releases/tag/v2.0.3)
+
+### Added
+
+- [#227](https://github.com/nautobot/nautobot-plugin-chatops/issues/227) - Added some tests for VLAN chatops.
+
+### Fixed
+
+- [#227](https://github.com/nautobot/nautobot-plugin-chatops/issues/227) - Fixed parameters that should be set to None if they have not been defined yet by default.
+- [#239](https://github.com/nautobot/nautobot-plugin-chatops/issues/239) - Updated IP Fabric Logo.
+- [#241](https://github.com/nautobot/nautobot-plugin-chatops/issues/241) - Remove Grafana Navigation and urls if disabled.
+- [#253](https://github.com/nautobot/nautobot-plugin-chatops/issues/253) - Sorted the ICMP types from IP Fabric diagrams package.
+
 ## [v2.0.2 (2023-08-11)](https://github.com/nautobot/nautobot-plugin-chatops/releases/tag/v2.0.2)
 
 ### Changed
