@@ -4,7 +4,7 @@ A step-by-step tutorial on how to get the App going and how to use it.
 
 ## Install the App
 
-To install the App, please follow the instructions detailed in the [Administrator Guide](../admin/install/index.md).
+To install the App, please follow the instructions detailed in the [Administrator Guide](../admin/install.md).
 
 ## Link Nautobot Account
 
@@ -52,10 +52,10 @@ Interact with Nautobot by utilizing the following sub-commands:
 
 The `nautobot-chatops` package includes multiple integrations. Each integration adds chat commands described here:
 
-- [Cisco ACI](./aci_commands.md)
-- [AWX / Ansible Tower](./ansible_commands.md)
-- [Arista CloudVision](./aristacv_commands.md)
-- [Grafana](./grafana_commands.md)
-- [IPFabric](./ipfabric_commands.md)
-- [Cisco Meraki](./meraki_commands.md)
-- [Palo Alto Panorama](./panorama_commands.md)
+- [Cisco ACI](./integrations/aci.md)
+- [AWX / Ansible Tower](./integrations/ansible.md)
+- [Arista CloudVision](./integrations/aristacv.md)
+- [Grafana](./integrations/grafana.md)
+- [IPFabric](./integrations/ipfabric.md)
+- [Cisco Meraki](./integrations/meraki.md)
+- [Palo Alto Panorama](./integrations/panorama.md)

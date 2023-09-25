@@ -138,7 +138,7 @@ PLUGINS_CONFIG = {
 
 ![slack integration invite](../../images/add_nautobot.png)
 
-Once these steps are completed, you can proceed to the [Install Guide](index.md#Install-Guide) section.
+Once these steps are completed, you can proceed to the [Install Guide](../install.md#Install-Guide) section.
 
 ## Configuring Multiple Chatbots in a Workspace
 
@@ -186,7 +186,7 @@ PLUGINS_CONFIG = {
 
 ## General Chat Setup Instructions
 
-See [admin_install](index.md) instructions here for general plugin setup instructions.
+See [admin_install](../install.md) instructions here for general plugin setup instructions.
 
 ## Startup Slack Sockets (Socket Mode)
 

@@ -58,10 +58,10 @@ The `nautobot-chatops` package supports multiple chat platforms.
 
 Set up your chosen chat platform:
 
-- [Mattermost](./mattermost_setup.md)
-- [Microsoft Teams](./microsoft_teams_setup.md)
-- [Slack](./slack_setup.md)
-- [Cisco Webex](./webex_setup.md)
+- [Mattermost](./platforms/mattermost.md)
+- [Microsoft Teams](./platforms/microsoft_teams.md)
+- [Slack](./platforms/slack.md)
+- [Cisco Webex](./platforms/webex.md)
 
 ## Installation Guide
 
@@ -145,10 +145,10 @@ The `nautobot-chatops` package includes multiple integrations. Each requires ext
 
 Set up integrations using the specific guides:
 
-- [Cisco ACI](./aci_setup.md)
-- [AWX / Ansible Tower](./ansible_setup.md)
-- [Arista CloudVision](./aristacv_setup.md)
-- [Grafana](./grafana_setup.md)
-- [IPFabric](./ipfabric_setup.md)
-- [Cisco Meraki](./meraki_setup.md)
-- [Palo Alto Panorama](./panorama_setup.md)
+- [Cisco ACI](./integrations/aci.md)
+- [AWX / Ansible Tower](./integrations/ansible.md)
+- [Arista CloudVision](./integrations/aristacv.md)
+- [Grafana](./integrations/grafana.md)
+- [IPFabric](./integrations/ipfabric.md)
+- [Cisco Meraki](./integrations/meraki.md)
+- [Palo Alto Panorama](./integrations/panorama.md)

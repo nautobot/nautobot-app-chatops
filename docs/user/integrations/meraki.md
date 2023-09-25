@@ -27,15 +27,15 @@ Interact with Cisco Meraki by utilizing the following sub-commands:
 
 Running `/meraki get-organizations`.
 
-![Example output for get-organizations](../images/00-meraki-get-orgs.png)
+![Example output for get-organizations](../../images/00-meraki-get-orgs.png)
 
 Running `/meraki get-networks`.
 
-![Example output for get-networks](../images/00-meraki-get-networks.png)
+![Example output for get-networks](../../images/00-meraki-get-networks.png)
 
 Running `/meraki get-switchports-status`.
 
-![Example output for get-networks](../images/00-meraki-get-port-stats.png)
+![Example output for get-networks](../../images/00-meraki-get-port-stats.png)
 
 Since the output was cut off the output example is below:
 
@@ -62,12 +62,12 @@ To demonstrate a example of configuration updates.  There is a simple configurat
 
 Specify Org, Switch, and Port ID.
 
-![Example output for config-port0](../images/00-meraki-port-config.png)
+![Example output for config-port0](../../images/00-meraki-port-config.png)
 
 Fill out the Port Specific Configuration.
 
-![Example output for config-port1](../images/01-meraki-port-config.png)
+![Example output for config-port1](../../images/01-meraki-port-config.png)
 
 Result of the configuration.
 
-![Example output for config-port2](../images/02-meraki-port-config.png)
+![Example output for config-port2](../../images/02-meraki-port-config.png)
