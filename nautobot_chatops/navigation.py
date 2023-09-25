@@ -1,9 +1,13 @@
 """Plugin additions to the Nautobot navigation menu."""
 
+from django.conf import settings
 from nautobot.extras.plugins import PluginMenuItem, PluginMenuButton
 from nautobot.utilities.choices import ButtonColorChoices
 
-from .integrations.grafana.navigation import menu_items as grafana_menu_items
+if settings.PLUGINS_CONFIG["nautobot_chatops"]["enable_grafana"]:
+    from .integrations.grafana.navigation import menu_items as grafana_menu_items
+else:
+    grafana_menu_items = ()
 
 menu_items = (
     PluginMenuItem(

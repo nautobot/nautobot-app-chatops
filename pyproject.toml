@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "nautobot-chatops"
-version = "2.0.2"
+version = "2.0.3"
 description = "A plugin providing chatbot capabilities for Nautobot"
 authors = ["Network to Code, LLC <opensource@networktocode.com>"]
 readme = "README.md"
@@ -44,7 +44,7 @@ ipfabric-diagrams = { version = "~6.0.2", optional = true }
 isodate =  { version = "^0.6.1", optional = true }
 meraki = { version = "^1.7.2", optional = true }
 nautobot = "^1.5.4"
-nautobot-capacity-metrics = "*"
+nautobot-capacity-metrics = "^2.0.0"
 netmiko = { version = "^3.4.0", optional = true }
 netutils = { version = "^1.1.0", optional = true }
 pan-os-python = { version = "^1.3.0", optional = true }
