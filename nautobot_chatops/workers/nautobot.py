@@ -1024,17 +1024,21 @@ def get_circuit_providers(dispatcher, *args):
 
 
 @subcommand_of("nautobot")
-def get_jobs(dispatcher, job_filters: str = ""): # We can use a Literal["enabled", "installed", "runnable"] here instead
+def get_jobs(
+    dispatcher, job_filters: str = ""
+):  # We can use a Literal["enabled", "installed", "runnable"] here instead
     """Get jobs from Nautobot.
 
     Args:
-        job_filters (str): 
+        job_filters (str): Filter job results by literals enabled, installed or runnable.
     """
     # Check for filters in user supplied input
     filters = ["enabled", "installed", "runnable"]
     if any([key in job_filters for key in filters]):
         filter_args = {key: job_filters[key] for key in filters if key in job_filters}
-        jobs = Job.objects.restrict(dispatch.user, "view").filter(**filter_args)  # enabled=True, installed=True, runnable=True
+        jobs = Job.objects.restrict(dispatch.user, "view").filter(
+            **filter_args
+        )  # enabled=True, installed=True, runnable=True
     else:
         jobs = Job.objects.restrict(dispatch.user, "view").all()
 
@@ -1059,7 +1063,7 @@ def init_job(dispatcher, job_name):
     user = get_user_model()
     try:
         user_instance = user.objects.get(username=dispatch.user)
-    except user.DoesNotExist: # Unsure if we need to check this case?
+    except user.DoesNotExist:  # Unsure if we need to check this case?
         dispatcher.send_error(f"User {dispatch.user} not found")
         return (CommandStatusChoices.STATUS_FAILED, f'User "{dispatch.user}" not found')
 
