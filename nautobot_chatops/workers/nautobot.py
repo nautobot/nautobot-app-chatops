@@ -1024,23 +1024,44 @@ def get_circuit_providers(dispatcher, *args):
 
 
 @subcommand_of("nautobot")
-def get_jobs(
+def filter_jobs(
     dispatcher, job_filters: str = ""
 ):  # We can use a Literal["enabled", "installed", "runnable"] here instead
-    """Get jobs from Nautobot.
+    """Get a filtered list of jobs from Nautobot.
 
     Args:
-        job_filters (str): Filter job results by literals enabled, installed or runnable.
+        job_filters (str): Filter job results by literals in a comma-separated string.
+                           Available filters are: enabled, installed or runnable.
     """
     # Check for filters in user supplied input
+    job_filters_list = [item.strip() for item in job_filters.split(",")] if isinstance(job_filters, str) else ""
     filters = ["enabled", "installed", "runnable"]
     if any([key in job_filters for key in filters]):
-        filter_args = {key: job_filters[key] for key in filters if key in job_filters}
+        filter_args = {key: True for key in filters if key in job_filters_list}
         jobs = Job.objects.restrict(dispatch.user, "view").filter(
             **filter_args
         )  # enabled=True, installed=True, runnable=True
     else:
         jobs = Job.objects.restrict(dispatch.user, "view").all()
+
+    header = ["Name", "ID"]
+    rows = [
+        (
+            str(job.name),
+            str(job.id),
+        )
+        for job in jobs
+    ]
+
+    dispatcher.send_large_table(header, rows)
+
+    return CommandStatusChoices.STATUS_SUCCEEDED
+
+
+@subcommand_of("nautobot")
+def get_jobs(dispatcher):
+    """Get all jobs from Nautobot."""
+    jobs = Job.objects.restrict(dispatch.user, "view").all()
 
     header = ["Name", "ID"]
     rows = [
