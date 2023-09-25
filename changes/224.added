@@ -1,1 +1,2 @@
 Add init_job Nautobot subcommand, which starts a Nautobot job by job name.
+Add get_jobs Nautobot subcommand, which gets all Nautobot jobs or a filtered list of jobs.

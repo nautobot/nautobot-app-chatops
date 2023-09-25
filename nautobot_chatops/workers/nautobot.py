@@ -1024,17 +1024,52 @@ def get_circuit_providers(dispatcher, *args):
 
 
 @subcommand_of("nautobot")
+def get_jobs(dispatcher, job_filters: str = ""): # We can use a Literal["enabled", "installed", "runnable"] here instead
+    """Get jobs from Nautobot.
+
+    Args:
+        job_filters (str): 
+    """
+    # Check for filters in user supplied input
+    filters = ["enabled", "installed", "runnable"]
+    if any([key in job_filters for key in filters]):
+        filter_args = {key: job_filters[key] for key in filters if key in job_filters}
+        jobs = Job.objects.restrict(dispatch.user, "view").filter(**filter_args)  # enabled=True, installed=True, runnable=True
+    else:
+        jobs = Job.objects.restrict(dispatch.user, "view").all()
+
+    header = ["Name", "ID"]
+    rows = [
+        (
+            str(job.name),
+            str(job.id),
+        )
+        for job in jobs
+    ]
+
+    dispatcher.send_large_table(header, rows)
+
+    return CommandStatusChoices.STATUS_SUCCEEDED
+
+
+@subcommand_of("nautobot")
 def init_job(dispatcher, job_name):
     """Initiate a job in Nautobot by job name."""
-    # Replace this with user mapping
-    job_username = "meganerd"
-
     # Get instance of the user who will run the job
     user = get_user_model()
-    user_instance = user.objects.get(username=job_username)
+    try:
+        user_instance = user.objects.get(username=dispatch.user)
+    except user.DoesNotExist: # Unsure if we need to check this case?
+        dispatcher.send_error(f"User {dispatch.user} not found")
+        return (CommandStatusChoices.STATUS_FAILED, f'User "{dispatch.user}" not found')
 
     # Get the job model instance using job name
-    job_model = Job.objects.get(name=job_name)
+    try:
+        job_model = Job.objects.restrict(dispatch.user, "view").get(name=job_name)
+    except Job.DoesNotExist:
+        dispatcher.send_error(f"Job {job_name} not found")
+        return (CommandStatusChoices.STATUS_FAILED, f'Job "{job_name}" not found')
+
     job_class_path = job_model.class_path
 
     # Create an instance of job result
