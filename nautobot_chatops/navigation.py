@@ -4,9 +4,9 @@ from django.conf import settings
 from nautobot.apps.ui import NavMenuAddButton, NavMenuGroup, NavMenuItem, NavMenuTab
 
 if settings.PLUGINS_CONFIG["nautobot_chatops"]["enable_grafana"]:
-    from .integrations.grafana.navigation import menu_items as grafana_menu_items
+    from .integrations.grafana.navigation import items as grafana_items
 else:
-    grafana_menu_items = ()
+    grafana_items = ()
 
 
 items = [
