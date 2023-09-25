@@ -17,6 +17,7 @@ from django.conf import settings
 from django.db.models import Q
 
 from nautobot_chatops.choices import AccessGrantTypeChoices, CommandStatusChoices
+from nautobot_chatops.integrations.utils import ALL_INTEGRATIONS, DISABLED_INTEGRATIONS
 from nautobot_chatops.models import AccessGrant
 from nautobot_chatops.utils import create_command_log
 from nautobot_chatops.metrics import request_command_cntr, command_histogram
@@ -69,14 +70,25 @@ def get_commands_registry():
     # so don't treat the subcommand-before-command case as an error.
 
     for worker in pkg_resources.iter_entry_points("nautobot.workers"):
+        if worker.name in DISABLED_INTEGRATIONS:
+            logger.info("`%s` integration disabled, skipping.", worker.name)
+            continue
+
         # See above. However, we still should never have two command worker functions registered under the same name.
         try:
             command_func = worker.load()
         except ModuleNotFoundError as exc:
-            logger.warning(
-                "Unable to load worker %s, probably due to missing extra dependenies. Exception follows:", worker.name
-            )
+            logger.warning("Unable to load worker %s, skipping. Exception follows:", worker.name)
             logger.exception(exc)
+            if worker.name in ALL_INTEGRATIONS:
+                logger.warning(
+                    (
+                        "To disable an integration, set `NAUTOBOT_CHATOPS_ENABLE_%s='False'`. "
+                        "To install missing dependencies run `pip install nautobot-chatops[%s]`."
+                    ),
+                    worker.name.upper(),
+                    worker.name,
+                )
             continue
 
         if (

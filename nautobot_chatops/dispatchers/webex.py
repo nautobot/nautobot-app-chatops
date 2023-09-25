@@ -1,14 +1,14 @@
-"""Dispatcher implementation for sending content to WebEx."""
+"""Dispatcher implementation for sending content to Webex."""
 import logging
-import os
 
 from typing import Optional
 from webexteamssdk import WebexTeamsAPI
 from webexteamssdk.exceptions import ApiError
-from django.conf import settings
 from texttable import Texttable
 
 from nautobot_chatops.metrics import backend_action_sum
+from nautobot_chatops.utils import get_app_config_part
+
 from .adaptive_cards import AdaptiveCardsDispatcher
 
 logger = logging.getLogger(__name__)
@@ -18,38 +18,32 @@ BACKEND_ACTION_LOOKUP = backend_action_sum.labels("webex", "platform_lookup")
 BACKEND_ACTION_MARKDOWN = backend_action_sum.labels("webex", "send_markdown")
 BACKEND_ACTION_BLOCKS = backend_action_sum.labels("webex", "send_blocks")
 BACKEND_ACTION_SNIPPET = backend_action_sum.labels("webex", "send_snippet")
+WEBEX_CONFIG = get_app_config_part("webex")
 
 # pylint: disable=abstract-method
 
 
-class WebExDispatcher(AdaptiveCardsDispatcher):
-    """Dispatch cards and messages to WebEx."""
+class WebexDispatcher(AdaptiveCardsDispatcher):
+    """Dispatch cards and messages to Webex."""
 
-    platform_name = "WebEx"
+    platform_name = "Webex"
     platform_slug = "webex"
 
     platform_color = "6EBE4A"
 
     def __init__(self, *args, **kwargs):
-        """Init a WebExDispatcher."""
+        """Init a WebexDispatcher."""
         super().__init__(*args, **kwargs)
-        # v1.4.0 Deprecation warning
 
-        if settings.PLUGINS_CONFIG["nautobot_chatops"].get("webex_teams_token") and not settings.PLUGINS_CONFIG[
-            "nautobot_chatops"
-        ].get("webex_token"):
-            access_token = settings.PLUGINS_CONFIG["nautobot_chatops"]["webex_teams_token"]
-            logger.warning("The 'webex_teams_token' setting is deprecated, please use 'webex_token' instead.")
-        else:
-            try:
-                access_token = settings.PLUGINS_CONFIG["nautobot_chatops"]["webex_token"]
-            except KeyError as err:
-                error_msg = "The 'webex_token' setting must be configured"
-                logger.error(error_msg)
-                raise KeyError(error_msg) from err
+        try:
+            access_token = WEBEX_CONFIG["token"]
+        except KeyError as err:
+            error_msg = "The 'webex_token' setting must be configured"
+            logger.error(error_msg)
+            raise KeyError(error_msg) from err
 
         self.client = WebexTeamsAPI(access_token=access_token)
-        self.webex_msg_char_limit = int(os.getenv("WEBEX_MSG_CHAR_LIMIT", "7439"))
+        self.webex_msg_char_limit = WEBEX_CONFIG.get("msg_char_limit", 7439)
 
     @classmethod
     @BACKEND_ACTION_LOOKUP.time()
@@ -130,7 +124,7 @@ class WebExDispatcher(AdaptiveCardsDispatcher):
 
     def user_mention(self):
         """Markup for a mention of the username/userid specified in our context."""
-        # WebEx doesn't let you use @mentions inside a direct message session.
+        # Webex doesn't let you use @mentions inside a direct message session.
         # It also doesn't seem to let you use @mentions inside an adaptive card (block).
         # So for now we just use the user name throughout.
         return f"{self.context.get('user_name')}"

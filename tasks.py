@@ -45,7 +45,7 @@ namespace = Collection("nautobot_chatops")
 namespace.configure(
     {
         "nautobot_chatops": {
-            "nautobot_ver": "1.4.0",
+            "nautobot_ver": "1.5.4",
             "project_name": "nautobot-chatops",
             "python_ver": "3.8",
             "local": False,

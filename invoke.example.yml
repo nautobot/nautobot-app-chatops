@@ -1,7 +1,7 @@
 ---
 nautobot_chatops:
   project_name: "nautobot-chatops"
-  nautobot_ver: "1.4.0"
+  nautobot_ver: "1.5.4"
   local: false
   python_ver: "3.8"
   compose_dir: "development"

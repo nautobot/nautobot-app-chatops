@@ -90,3 +90,8 @@ a.autorefs-external::after {
 a.autorefs-external:hover::after {
     background-color: var(--md-accent-fg-color);
 }
+
+/* Do not wrap code blocks in markdown tables. */
+div.md-typeset__table>table>tbody>tr>td>code {
+    white-space: nowrap;
+}
