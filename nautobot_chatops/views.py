@@ -64,7 +64,7 @@ class AccessGrantCreateView(PermissionRequiredMixin, ObjectEditView):
     model = AccessGrant
     queryset = AccessGrant.objects.all()
     model_form = forms.AccessGrantForm
-    template_name = "nautobot/access_grant_edit.html"
+    template_name = "nautobot_chatops/access_grant_edit.html"
     default_return_url = "plugins:nautobot_chatops:accessgrant_list"
 
 
