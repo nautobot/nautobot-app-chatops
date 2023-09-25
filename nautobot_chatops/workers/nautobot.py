@@ -160,7 +160,7 @@ def examine_termination_endpoints(circuit):
 
 # pylint: disable=too-many-statements
 @subcommand_of("nautobot")
-def get_vlans(dispatcher, filter_type, filter_value_1):
+def get_vlans(dispatcher, filter_type=None, filter_value_1=None):
     """Return a filtered list of VLANs based on filter type and/or `filter_value_1`."""
     # pylint: disable=no-else-return
     if not filter_type:
