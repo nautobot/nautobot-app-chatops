@@ -1056,6 +1056,7 @@ def filter_jobs(
     dispatcher, job_filters: str = ""
 ):  # We can use a Literal["enabled", "installed", "runnable"] here instead
     """Get a filtered list of jobs from Nautobot that the request user have view permissions for.
+    
     Args:
         job_filters (str): Filter job results by literals in a comma-separated string.
                            Available filters are: enabled, installed.
@@ -1098,7 +1099,7 @@ def get_jobs(dispatcher, kwargs: str = ""):
     try:
         if kwargs:
             json_args = json.loads(kwargs)
-    except json.JSONDecodeError as exc:
+    except json.JSONDecodeError:
         dispatcher.send_error(f"Invalid JSON-string, cannot decode: {kwargs}")
         return (CommandStatusChoices.STATUS_FAILED, f"Invalid JSON-string, cannot decode: {kwargs}")
 
@@ -1134,12 +1135,12 @@ def init_job(dispatcher, job_name: str, kwargs: str = ""):
     try:
         if kwargs:
             json_args = json.loads(kwargs)
-    except json.JSONDecodeError as exc:
+    except json.JSONDecodeError:
         dispatcher.send_error(f"Invalid JSON-string, cannot decode: {kwargs}")
         return (CommandStatusChoices.STATUS_FAILED, f"Invalid JSON-string, cannot decode: {kwargs}")
 
     profile = False
-    if json_args.get("profile") and json_args["profile"] == True:
+    if json_args.get("profile") and json_args["profile"] is True:
         profile = True
 
     # Get instance of the user who will run the job
