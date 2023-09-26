@@ -1,6 +1,5 @@
 """Worker functions for interacting with Nautobot."""
 
-import uuid
 import json
 
 
@@ -15,7 +14,6 @@ from nautobot.circuits.models import Circuit, CircuitType, Provider, CircuitTerm
 from nautobot.dcim.models import Device, DeviceType, Location, LocationType, Manufacturer, Rack, Cable
 from nautobot.ipam.models import VLAN, Prefix, VLANGroup
 from nautobot.tenancy.models import Tenant
-from nautobot.extras.context_managers import web_request_context
 from nautobot.extras.models import Job, JobResult, Role, Status
 
 from nautobot_chatops.choices import CommandStatusChoices
@@ -1177,9 +1175,10 @@ def init_job(dispatcher, job_name: str, kwargs: str = ""):
         return (CommandStatusChoices.STATUS_FAILED, f'Job "{job_name}" failed to initiate. Result: {job_result.result}')
 
     # TODO: need base-domain, this yields: /extras/job-results/<job_id>/
+    job_url = job_result.get_absolute_url()
     blocks = [
         dispatcher.markdown_block(
-            f"The requested job {job_class_path} was initiated! [`click here`]({job_result.get_absolute_url()}) to open the job."
+            f"The requested job {job_class_path} was initiated! [`click here`]({job_url}) to open the job."
         ),
     ]
 
