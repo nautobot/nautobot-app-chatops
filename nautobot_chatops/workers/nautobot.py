@@ -1122,12 +1122,12 @@ def init_job(dispatcher, job_name: str, kwargs: str = ""):
             json_args = json.loads(kwargs)
     except json.JSONDecodeError as exc:
         dispatcher.send_error(f"Invalid JSON-string, cannot decode: {kwargs}")
-        return (CommandStatusChoices.STATUS_FAILED, f'Invalid JSON-string, cannot decode: {kwargs}')
-    
+        return (CommandStatusChoices.STATUS_FAILED, f"Invalid JSON-string, cannot decode: {kwargs}")
+
     profile = False
     if json_args.get("profile") and json_args["profile"] == True:
         profile = True
-    
+
     # Get instance of the user who will run the job
     user = get_user_model()
     try:

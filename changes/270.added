@@ -1,0 +1,4 @@
+Add init_jobs Nautobot subcommand.
+Add kwargs input to init_jobs as JSON-string to init_jobs.
+Add get_jobs Nautobot subcommand, which returns all Nautobot jobs viewable to user.
+Add filter_jobs Nautobot subcommand, which returns filtered set of Nautobot jobs viewable to user.
