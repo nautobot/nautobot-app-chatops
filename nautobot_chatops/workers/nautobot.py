@@ -1058,11 +1058,11 @@ def filter_jobs(
     """Get a filtered list of jobs from Nautobot that the request user have view permissions for.
     Args:
         job_filters (str): Filter job results by literals in a comma-separated string.
-                           Available filters are: enabled, installed or runnable.
+                           Available filters are: enabled, installed.
     """
     # Check for filters in user supplied input
     job_filters_list = [item.strip() for item in job_filters.split(",")] if isinstance(job_filters, str) else ""
-    filters = ["enabled", "installed", "runnable"]
+    filters = ["enabled", "installed"]  # Runnable is not valid
     if any([key in job_filters for key in filters]):
         filter_args = {key: True for key in filters if key in job_filters_list}
         jobs = Job.objects.restrict(dispatcher.user, "view").filter(
