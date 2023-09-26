@@ -1056,7 +1056,7 @@ def filter_jobs(
     dispatcher, job_filters: str = ""
 ):  # We can use a Literal["enabled", "installed", "runnable"] here instead
     """Get a filtered list of jobs from Nautobot that the request user have view permissions for.
-    
+
     Args:
         job_filters (str): Filter job results by literals in a comma-separated string.
                            Available filters are: enabled, installed.
