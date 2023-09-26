@@ -1,6 +1,7 @@
 """Worker functions for interacting with Nautobot."""
 
 import uuid
+import json
 
 
 from django.contrib.auth import get_user_model
@@ -15,9 +16,7 @@ from nautobot.dcim.models import Device, DeviceType, Location, LocationType, Man
 from nautobot.ipam.models import VLAN, Prefix, VLANGroup
 from nautobot.tenancy.models import Tenant
 from nautobot.extras.context_managers import web_request_context
-from nautobot.extras.jobs import run_job
 from nautobot.extras.models import Job, JobResult, Role, Status
-from nautobot.extras.utils import get_job_content_type
 
 from nautobot_chatops.choices import CommandStatusChoices
 from nautobot_chatops.workers import subcommand_of, handle_subcommands
@@ -1056,7 +1055,7 @@ def get_circuit_providers(dispatcher, *args):
 def filter_jobs(
     dispatcher, job_filters: str = ""
 ):  # We can use a Literal["enabled", "installed", "runnable"] here instead
-    """Get a filtered list of jobs from Nautobot.
+    """Get a filtered list of jobs from Nautobot that the request user have view permissions for.
     Args:
         job_filters (str): Filter job results by literals in a comma-separated string.
                            Available filters are: enabled, installed or runnable.
@@ -1066,17 +1065,18 @@ def filter_jobs(
     filters = ["enabled", "installed", "runnable"]
     if any([key in job_filters for key in filters]):
         filter_args = {key: True for key in filters if key in job_filters_list}
-        jobs = Job.objects.restrict(dispatch.user, "view").filter(
+        jobs = Job.objects.restrict(dispatcher.user, "view").filter(
             **filter_args
         )  # enabled=True, installed=True, runnable=True
     else:
-        jobs = Job.objects.restrict(dispatch.user, "view").all()
+        jobs = Job.objects.restrict(dispatcher.user, "view").all()
 
-    header = ["Name", "ID"]
+    header = ["Name", "ID", "Enabled"]
     rows = [
         (
             str(job.name),
             str(job.id),
+            str(job.enabled),
         )
         for job in jobs
     ]
@@ -1088,14 +1088,15 @@ def filter_jobs(
 
 @subcommand_of("nautobot")
 def get_jobs(dispatcher):
-    """Get all jobs from Nautobot."""
-    jobs = Job.objects.restrict(dispatch.user, "view").all()
+    """Get all jobs from Nautobot that the requesting user have view permissions for."""
+    jobs = Job.objects.restrict(dispatcher.user, "view").all()
 
-    header = ["Name", "ID"]
+    header = ["Name", "ID", "Enabled"]
     rows = [
         (
             str(job.name),
             str(job.id),
+            str(job.enabled),
         )
         for job in jobs
     ]
@@ -1106,38 +1107,55 @@ def get_jobs(dispatcher):
 
 
 @subcommand_of("nautobot")
-def init_job(dispatcher, job_name):
-    """Initiate a job in Nautobot by job name."""
+def init_job(dispatcher, job_name: str, kwargs: str = ""):
+    """Initiate a job in Nautobot by job name.
+
+    Args:
+        job_name (str): Name of Nautobot job to run.
+        kwargs (str): JSON-string dictionary for input keyword arguments for job run.
+        #profile (str): Whether to profile the job execution.
+    """
+    # Confirm kwargs is valid JSON
+    json_args = {}
+    try:
+        if kwargs:
+            json_args = json.loads(kwargs)
+    except json.JSONDecodeError as exc:
+        dispatcher.send_error(f"Invalid JSON-string, cannot decode: {kwargs}")
+        return (CommandStatusChoices.STATUS_FAILED, f'Invalid JSON-string, cannot decode: {kwargs}')
+    
+    profile = False
+    if json_args.get("profile") and json_args["profile"] == True:
+        profile = True
+    
     # Get instance of the user who will run the job
     user = get_user_model()
     try:
-        user_instance = user.objects.get(username=dispatch.user)
+        user_instance = user.objects.get(username=dispatcher.user)
     except user.DoesNotExist:  # Unsure if we need to check this case?
-        dispatcher.send_error(f"User {dispatch.user} not found")
-        return (CommandStatusChoices.STATUS_FAILED, f'User "{dispatch.user}" not found')
+        dispatcher.send_error(f"User {dispatcher.user} not found")
+        return (CommandStatusChoices.STATUS_FAILED, f'User "{dispatcher.user}" was not found')
 
     # Get the job model instance using job name
     try:
-        job_model = Job.objects.restrict(dispatch.user, "view").get(name=job_name)
+        job_model = Job.objects.restrict(dispatcher.user, "view").get(name=job_name)
     except Job.DoesNotExist:
         dispatcher.send_error(f"Job {job_name} not found")
-        return (CommandStatusChoices.STATUS_FAILED, f'Job "{job_name}" not found')
+        return (CommandStatusChoices.STATUS_FAILED, f'Job "{job_name}" was not found')
+
+    if not job_model.enabled:
+        dispatcher.send_error(f"The requested job {job_name} is not enabled")
+        return (CommandStatusChoices.STATUS_FAILED, f'Job "{job_name}" is not enabled')
 
     job_class_path = job_model.class_path
 
-    # Create an instance of job result
-    job_result = JobResult.objects.create(
-        name=job_model.class_path,
-        job_kwargs={"data": {}, "commit": True, "profile": False},
-        obj_type=get_job_content_type(),
-        user=user_instance,
+    # TODO: Check if json_args keys are valid for this job model
+    job_result = JobResult.execute_job(
         job_model=job_model,
-        job_id=uuid.uuid4(),
+        user=user_instance,
+        profile=profile,
+        **json_args,
     )
-
-    # Emulate HTTP context for the request as the user
-    with web_request_context(user=user_instance) as request:
-        run_job(data={}, request=request, commit=True, job_result_pk=job_result.pk)
 
     blocks = [
         dispatcher.markdown_block(f"The requested job {job_class_path} was initiated!"),
