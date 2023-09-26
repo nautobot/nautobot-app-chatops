@@ -1050,9 +1050,7 @@ def get_circuit_providers(dispatcher, *args):
 
 
 @subcommand_of("nautobot")
-def filter_jobs(
-    dispatcher, job_filters: str = ""
-):  # We can use a Literal["enabled", "installed", "runnable"] here instead
+def filter_jobs(dispatcher, job_filters: str = ""):  # We can use a Literal["enabled", "installed"] here instead
     """Get a filtered list of jobs from Nautobot that the request user have view permissions for.
 
     Args:
@@ -1061,12 +1059,10 @@ def filter_jobs(
     """
     # Check for filters in user supplied input
     job_filters_list = [item.strip() for item in job_filters.split(",")] if isinstance(job_filters, str) else ""
-    filters = ["enabled", "installed"]  # Runnable is not valid
+    filters = ["enabled", "installed"]
     if any([key in job_filters for key in filters]):
         filter_args = {key: True for key in filters if key in job_filters_list}
-        jobs = Job.objects.restrict(dispatcher.user, "view").filter(
-            **filter_args
-        )  # enabled=True, installed=True, runnable=True
+        jobs = Job.objects.restrict(dispatcher.user, "view").filter(**filter_args)  # enabled=True, installed=True
     else:
         jobs = Job.objects.restrict(dispatcher.user, "view").all()
 
