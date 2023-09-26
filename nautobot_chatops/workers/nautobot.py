@@ -1170,9 +1170,14 @@ def init_job(dispatcher, job_name: str, kwargs: str = ""):
         profile=profile,
         **json_args,
     )
+    
+    if job_result and job_result.status == "FAILURE":
+        dispatcher.send_error(f"The requested job {job_name} failed to initiate. Result: {job_result.result}")
+        return (CommandStatusChoices.STATUS_FAILED, f'Job "{job_name}" failed to initiate. Result: {job_result.result}')
 
+    # TODO: need base-domain, this yields: /extras/job-results/<job_id>/
     blocks = [
-        dispatcher.markdown_block(f"The requested job {job_class_path} was initiated!"),
+        dispatcher.markdown_block(f"The requested job {job_class_path} was initiated! [`click here`]({job_result.get_absolute_url()}) to open the job."),
     ]
 
     dispatcher.send_blocks(blocks)
