@@ -4619,5 +4619,5 @@ panorama = ["defusedxml", "ipaddr", "netmiko", "netutils", "pan-os-python"]
 
 [metadata]
 lock-version = "2.0"
-python-versions = ">=3.8,<3.11"
-content-hash = "09db4e22c35d3023ad37f466737b9033beac38f46095f4f6d71c174c138740a5"
+python-versions = ">=3.8,<3.12"
+content-hash = "4721191c6b0cdea95e184f37ea5f77752b4b3c92d866e698a18412c1f6ac0b94"
