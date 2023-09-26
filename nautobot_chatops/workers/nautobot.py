@@ -1,5 +1,9 @@
 """Worker functions for interacting with Nautobot."""
 
+import uuid
+
+
+from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db.models import Count
 from django.contrib.contenttypes.models import ContentType
@@ -10,7 +14,10 @@ from nautobot.circuits.models import Circuit, CircuitType, Provider, CircuitTerm
 from nautobot.dcim.models import Device, DeviceType, Location, LocationType, Manufacturer, Rack, Cable
 from nautobot.ipam.models import VLAN, Prefix, VLANGroup
 from nautobot.tenancy.models import Tenant
-from nautobot.extras.models import Role, Status
+from nautobot.extras.context_managers import web_request_context
+from nautobot.extras.jobs import run_job
+from nautobot.extras.models import Job, JobResult, Role, Status
+from nautobot.extras.utils import get_job_content_type
 
 from nautobot_chatops.choices import CommandStatusChoices
 from nautobot_chatops.workers import subcommand_of, handle_subcommands
@@ -1042,6 +1049,102 @@ def get_circuit_providers(dispatcher, *args):
     ]
 
     dispatcher.send_large_table(header, rows)
+    return CommandStatusChoices.STATUS_SUCCEEDED
+
+
+@subcommand_of("nautobot")
+def filter_jobs(
+    dispatcher, job_filters: str = ""
+):  # We can use a Literal["enabled", "installed", "runnable"] here instead
+    """Get a filtered list of jobs from Nautobot.
+    Args:
+        job_filters (str): Filter job results by literals in a comma-separated string.
+                           Available filters are: enabled, installed or runnable.
+    """
+    # Check for filters in user supplied input
+    job_filters_list = [item.strip() for item in job_filters.split(",")] if isinstance(job_filters, str) else ""
+    filters = ["enabled", "installed", "runnable"]
+    if any([key in job_filters for key in filters]):
+        filter_args = {key: True for key in filters if key in job_filters_list}
+        jobs = Job.objects.restrict(dispatch.user, "view").filter(
+            **filter_args
+        )  # enabled=True, installed=True, runnable=True
+    else:
+        jobs = Job.objects.restrict(dispatch.user, "view").all()
+
+    header = ["Name", "ID"]
+    rows = [
+        (
+            str(job.name),
+            str(job.id),
+        )
+        for job in jobs
+    ]
+
+    dispatcher.send_large_table(header, rows)
+
+    return CommandStatusChoices.STATUS_SUCCEEDED
+
+
+@subcommand_of("nautobot")
+def get_jobs(dispatcher):
+    """Get all jobs from Nautobot."""
+    jobs = Job.objects.restrict(dispatch.user, "view").all()
+
+    header = ["Name", "ID"]
+    rows = [
+        (
+            str(job.name),
+            str(job.id),
+        )
+        for job in jobs
+    ]
+
+    dispatcher.send_large_table(header, rows)
+
+    return CommandStatusChoices.STATUS_SUCCEEDED
+
+
+@subcommand_of("nautobot")
+def init_job(dispatcher, job_name):
+    """Initiate a job in Nautobot by job name."""
+    # Get instance of the user who will run the job
+    user = get_user_model()
+    try:
+        user_instance = user.objects.get(username=dispatch.user)
+    except user.DoesNotExist:  # Unsure if we need to check this case?
+        dispatcher.send_error(f"User {dispatch.user} not found")
+        return (CommandStatusChoices.STATUS_FAILED, f'User "{dispatch.user}" not found')
+
+    # Get the job model instance using job name
+    try:
+        job_model = Job.objects.restrict(dispatch.user, "view").get(name=job_name)
+    except Job.DoesNotExist:
+        dispatcher.send_error(f"Job {job_name} not found")
+        return (CommandStatusChoices.STATUS_FAILED, f'Job "{job_name}" not found')
+
+    job_class_path = job_model.class_path
+
+    # Create an instance of job result
+    job_result = JobResult.objects.create(
+        name=job_model.class_path,
+        job_kwargs={"data": {}, "commit": True, "profile": False},
+        obj_type=get_job_content_type(),
+        user=user_instance,
+        job_model=job_model,
+        job_id=uuid.uuid4(),
+    )
+
+    # Emulate HTTP context for the request as the user
+    with web_request_context(user=user_instance) as request:
+        run_job(data={}, request=request, commit=True, job_result_pk=job_result.pk)
+
+    blocks = [
+        dispatcher.markdown_block(f"The requested job {job_class_path} was initiated!"),
+    ]
+
+    dispatcher.send_blocks(blocks)
+
     return CommandStatusChoices.STATUS_SUCCEEDED
 
 
