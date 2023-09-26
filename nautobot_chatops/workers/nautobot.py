@@ -1087,19 +1087,33 @@ def filter_jobs(
 
 
 @subcommand_of("nautobot")
-def get_jobs(dispatcher):
-    """Get all jobs from Nautobot that the requesting user have view permissions for."""
+def get_jobs(dispatcher, kwargs: str = ""):
+    """Get all jobs from Nautobot that the requesting user have view permissions for.
+
+    Args:
+        kwargs (str): JSON-string array of header items to be exported.
+    """
+    # Confirm kwargs is valid JSON
+    json_args = ["Name", "Id", "Enabled"]
+    try:
+        if kwargs:
+            json_args = json.loads(kwargs)
+    except json.JSONDecodeError as exc:
+        dispatcher.send_error(f"Invalid JSON-string, cannot decode: {kwargs}")
+        return (CommandStatusChoices.STATUS_FAILED, f"Invalid JSON-string, cannot decode: {kwargs}")
+
     jobs = Job.objects.restrict(dispatcher.user, "view").all()
 
-    header = ["Name", "ID", "Enabled"]
-    rows = [
-        (
-            str(job.name),
-            str(job.id),
-            str(job.enabled),
-        )
-        for job in jobs
-    ]
+    # Check if all items in json_args are valid keys (assuming all keys of job object are valid)
+    valid_keys = [attr for attr in dir(Job) if not callable(getattr(Job, attr)) and not attr.startswith("_")]
+    for item in json_args:
+        if item not in valid_keys:
+            dispatcher.send_error(f"Invalid item provided: {item}")
+            return (CommandStatusChoices.STATUS_FAILED, f"Invalid item provided: {item}")
+
+    # TODO: Check json_args are all valid keys
+    header = [item.capitalize() for item in json_args]
+    rows = [(tuple(str(getattr(job, item, "")) for item in json_args)) for job in jobs]
 
     dispatcher.send_large_table(header, rows)
 
