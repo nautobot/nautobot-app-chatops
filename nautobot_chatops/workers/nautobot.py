@@ -1152,7 +1152,7 @@ def init_job(dispatcher, job_name: str, kwargs: str = ""):
     # TODO: Check if json_args keys are valid for this job model
     job_result = JobResult.execute_job(
         job_model=job_model,
-        user=dispatch.user,
+        user=dispatcher.user,
         profile=profile,
         **json_args,
     )
