@@ -3,7 +3,6 @@
 import json
 
 
-from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.db.models import Count
 from django.contrib.contenttypes.models import ContentType
@@ -1137,14 +1136,6 @@ def init_job(dispatcher, job_name: str, kwargs: str = ""):
     if json_args.get("profile") and json_args["profile"] is True:
         profile = True
 
-    # Get instance of the user who will run the job
-    user = get_user_model()
-    try:
-        user_instance = user.objects.get(username=dispatcher.user)
-    except user.DoesNotExist:  # Unsure if we need to check this case?
-        dispatcher.send_error(f"User {dispatcher.user} not found")
-        return (CommandStatusChoices.STATUS_FAILED, f'User "{dispatcher.user}" was not found')
-
     # Get the job model instance using job name
     try:
         job_model = Job.objects.restrict(dispatcher.user, "view").get(name=job_name)
@@ -1161,7 +1152,7 @@ def init_job(dispatcher, job_name: str, kwargs: str = ""):
     # TODO: Check if json_args keys are valid for this job model
     job_result = JobResult.execute_job(
         job_model=job_model,
-        user=user_instance,
+        user=dispatch.user,
         profile=profile,
         **json_args,
     )
