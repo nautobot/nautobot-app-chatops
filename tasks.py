@@ -752,6 +752,7 @@ def connect_awx_container(context, container_name="tools_awx_1"):
     }
 )
 def generate_release_notes(context, version=""):
+    """Generate Release Notes using Towncrier."""
     command = "env DJANGO_SETTINGS_MODULE=nautobot.core.settings towncrier build"
     if version:
         command += f" --version {version}"
