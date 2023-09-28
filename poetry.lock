@@ -2530,13 +2530,13 @@ files = [
 
 [[package]]
 name = "nautobot"
-version = "2.0.0rc3"
+version = "2.0.0rc4"
 description = "Source of truth and network automation platform."
 optional = false
 python-versions = ">=3.8,<3.12"
 files = [
-    {file = "nautobot-2.0.0rc3-py3-none-any.whl", hash = "sha256:0fd9f843cba7920aa6fdb5533318b621b312d83565e2964592b80ac84c53ce63"},
-    {file = "nautobot-2.0.0rc3.tar.gz", hash = "sha256:9388c55318df0e58418810a56d50c5cdecb78fccb6971ec830e04563e5e3edb5"},
+    {file = "nautobot-2.0.0rc4-py3-none-any.whl", hash = "sha256:08d9be0e10e8b0385d85b2e8fd24a498d4c97fcf9fb913a5b9df07116a1bf7cd"},
+    {file = "nautobot-2.0.0rc4.tar.gz", hash = "sha256:12402f07d7cf7eee6ab1bed2012cb242ccede59a960d3cb6b0f2cd4b1a16c94b"},
 ]
 
 [package.dependencies]
@@ -2571,7 +2571,7 @@ jsonschema = ">=4.7.0,<4.19.0"
 Markdown = ">=3.3.7,<3.4.0"
 MarkupSafe = ">=2.1.3,<2.2.0"
 netaddr = ">=0.8.0,<0.9.0"
-netutils = ">=1.5.0,<2.0.0"
+netutils = ">=1.6.0,<2.0.0"
 packaging = ">=23.1,<23.2"
 Pillow = ">=10.0.0,<10.1.0"
 prometheus-client = ">=0.17.1,<0.18.0"
@@ -2639,17 +2639,17 @@ test = ["pytest (>=5.1.2)", "pyyaml (>=5.1.2)"]
 
 [[package]]
 name = "netutils"
-version = "1.5.0"
+version = "1.6.0"
 description = "Common helper functions useful in network automation."
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "netutils-1.5.0-py3-none-any.whl", hash = "sha256:39654c367f291ed071477a2e5b4cda880eca9b8d5a1229ba3e39eec5f584cb67"},
-    {file = "netutils-1.5.0.tar.gz", hash = "sha256:c0d3a8836a030eca456a2e9291d02be1326e6d7fe4e88cb63b1155512001bb14"},
+    {file = "netutils-1.6.0-py3-none-any.whl", hash = "sha256:e755e6141d0968f1deeb61693a4023f4f5fe1f0dde25d94ac1008f8191d8d237"},
+    {file = "netutils-1.6.0.tar.gz", hash = "sha256:bd2fa691e172fe9d5c9e6fc5e2593316eb7fd2c36450454894ed13b274763d70"},
 ]
 
 [package.extras]
-optionals = ["napalm (>=4.0.0,<5.0.0)"]
+optionals = ["jsonschema (>=4.17.3,<5.0.0)", "napalm (>=4.0.0,<5.0.0)"]
 
 [[package]]
 name = "ntc-templates"
@@ -4620,4 +4620,4 @@ panorama = ["defusedxml", "ipaddr", "netmiko", "netutils", "pan-os-python"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.12"
-content-hash = "4721191c6b0cdea95e184f37ea5f77752b4b3c92d866e698a18412c1f6ac0b94"
+content-hash = "def889e87ad88e591b7b2672a018dcf264f68804191b400174058085bc5ddff3"
