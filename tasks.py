@@ -45,7 +45,7 @@ namespace = Collection("nautobot_chatops")
 namespace.configure(
     {
         "nautobot_chatops": {
-            "nautobot_ver": "1.5.4",
+            "nautobot_ver": "1.6.2",
             "project_name": "nautobot-chatops",
             "python_ver": "3.8",
             "local": False,
@@ -744,3 +744,14 @@ def connect_awx_container(context, container_name="tools_awx_1"):
     bridge_network = f"{context.nautobot_chatops.project_name}_awx"
     context.run(f"docker network connect --alias awx {bridge_network} {container_name}")
     print(f"Container {container_name} connected to {bridge_network} network")
+
+@task(
+    help={
+        "version": "Version of Nautobot ChatOps to generate the release notes for.",
+    }
+)
+def generate_release_notes(context, version=""):
+    command = "env DJANGO_SETTINGS_MODULE=nautobot.core.settings towncrier build"
+    if version:
+        command += f" --version {version}"
+    run_command(context, command)
