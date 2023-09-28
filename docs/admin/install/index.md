@@ -107,6 +107,10 @@ PLUGINS_CONFIG = {
 }
 ```
 
++++3.0.0
+
+Some configuration settings have now been added to the Nautobot Admin Config page. See [Nautobot Admin](https://docs.nautobot.com/projects/core/en/stable/configuration/optional-settings/?h=administr#administratively-configurable-settings)
+
 ## Configuration Guide
 
 Adjust the App's behavior with the following settings:

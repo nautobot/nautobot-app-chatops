@@ -1,9 +1,9 @@
 """Plugin additions to the Nautobot navigation menu."""
 
-from django.conf import settings
+from nautobot.apps.config import get_app_settings_or_config
 from nautobot.apps.ui import NavMenuAddButton, NavMenuGroup, NavMenuItem, NavMenuTab
 
-if settings.PLUGINS_CONFIG["nautobot_chatops"]["enable_grafana"]:
+if get_app_settings_or_config("nautobot_chatops", "enable_grafana"):
     from .integrations.grafana.navigation import items as grafana_items
 else:
     grafana_items = ()

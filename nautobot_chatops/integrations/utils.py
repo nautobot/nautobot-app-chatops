@@ -5,7 +5,7 @@ from pathlib import Path
 from types import ModuleType
 from typing import Generator
 
-from django.conf import settings
+from nautobot.apps.config import get_app_settings_or_config
 
 from nautobot_chatops.utils import logger
 
@@ -22,15 +22,8 @@ ALL_INTEGRATIONS = set(_each_integration())
 
 def _each_enabled_integration() -> Generator[str, None, None]:
     """Return all enabled integrations."""
-    if not isinstance(settings.PLUGINS_CONFIG, Mapping):
-        raise TypeError("Django `settings.PLUGINS_CONFIG` must be a Mapping")
-
-    config = settings.PLUGINS_CONFIG["nautobot_chatops"]
-    if not isinstance(config, Mapping):
-        raise TypeError("nautobot_chatops config must be a Mapping")
-
     for name in ALL_INTEGRATIONS:
-        if config.get(f"enable_{name}", False):
+        if get_app_settings_or_config("nautobot_chatops", f"enable_{name}"):
             yield name
 
 

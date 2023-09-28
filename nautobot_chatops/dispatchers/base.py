@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
+from nautobot.apps.config import get_app_settings_or_config
 from texttable import Texttable
 
 from nautobot_chatops.models import ChatOpsAccountLink
@@ -114,16 +115,16 @@ class Dispatcher:
         """Get a list of all subclasses of Dispatcher that are known to Nautobot."""
         # TODO: this should be dynamic using entry_points
         # pylint: disable=import-outside-toplevel, unused-import, cyclic-import
-        if _APP_CONFIG.get("enable_slack"):
+        if get_app_settings_or_config("nautobot_chatops", "enable_slack"):
             from .slack import SlackDispatcher
 
-        if _APP_CONFIG.get("enable_ms_teams"):
+        if get_app_settings_or_config("nautobot_chatops", "enable_ms_teams"):
             from .ms_teams import MSTeamsDispatcher
 
-        if _APP_CONFIG.get("enable_webex"):
+        if get_app_settings_or_config("nautobot_chatops", "enable_webex"):
             from .webex import WebexDispatcher
 
-        if _APP_CONFIG.get("enable_mattermost"):
+        if get_app_settings_or_config("nautobot_chatops", "enable_mattermost"):
             from .mattermost import MattermostDispatcher
 
         subclasses = set()

@@ -1,9 +1,9 @@
 """Django urlpatterns declaration for nautobot_chatops plugin."""
 import logging
 
-from django.conf import settings
 from django.urls import path
 
+from nautobot.apps.config import get_app_settings_or_config
 from nautobot.extras.views import ObjectChangeLogView, ObjectNotesView
 
 from nautobot_chatops.models import AccessGrant, ChatOpsAccountLink, CommandLog, CommandToken
@@ -23,7 +23,7 @@ from nautobot_chatops.views import (
     ChatOpsAccountLinkDeleteView,
 )
 
-if settings.PLUGINS_CONFIG["nautobot_chatops"]["enable_grafana"]:
+if get_app_settings_or_config("nautobot_chatops", "enable_grafana"):
     try:
         from nautobot_chatops.integrations.grafana.urls import urlpatterns as grafana_urlpatterns
     # pylint: disable-next=broad-except

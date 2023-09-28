@@ -1,13 +1,13 @@
 """Django urlpatterns declaration for nautobot_chatops.integrations.grafana plugin."""
 
-from django.conf import settings
-
 from nautobot.apps.api import OrderedDefaultRouter
+from nautobot.apps.config import get_app_settings_or_config
+
 from nautobot_chatops.integrations.grafana.api.views.generic import NautobotPluginChatopsGrafanaRootView
 
 
 urlpatterns = []
-if settings.PLUGINS_CONFIG["nautobot_chatops"]["enable_grafana"]:
+if get_app_settings_or_config("nautobot_chatops", "enable_grafana"):
     router = OrderedDefaultRouter()
     router.APIRootView = NautobotPluginChatopsGrafanaRootView
 
