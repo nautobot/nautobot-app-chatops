@@ -745,6 +745,7 @@ def connect_awx_container(context, container_name="tools_awx_1"):
     context.run(f"docker network connect --alias awx {bridge_network} {container_name}")
     print(f"Container {container_name} connected to {bridge_network} network")
 
+
 @task(
     help={
         "version": "Version of Nautobot ChatOps to generate the release notes for.",
