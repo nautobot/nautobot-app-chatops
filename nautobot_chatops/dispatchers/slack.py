@@ -101,6 +101,25 @@ class SlackDispatcher(Dispatcher):
 
         return None
 
+    @classmethod
+    def lookup_user_id_by_email(cls, email) -> Optional[str]:
+        """Call out to Slack to look up a specific user ID by email.
+
+        Args:
+          email (str): Uniquely identifying email address of the user.
+
+        Returns:
+          (str, None)
+        """
+        instance = cls(context=None)
+        try:
+            response = instance.slack_client.users_lookupByEmail(email=email)
+            return response["user"]["id"]
+        except SlackApiError as err:
+            if err.response["error"] == "users_not_found":
+                return None
+            raise err
+
     # More complex APIs for presenting structured data - these typically build on the more basic functions below
 
     def command_response_header(self, command, subcommand, args, description="information", image_element=None):

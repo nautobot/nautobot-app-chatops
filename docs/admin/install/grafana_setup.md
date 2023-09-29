@@ -23,17 +23,17 @@ Create a top-level command named `grafana` in your enabled chat platform. For de
 
 You must define the following values in your `nautobot_config.py` file:
 
-| Configuration Setting | Mandatory? | Default | Notes |
-| --------------------- | ---------- | ------- | ----- |
-| `enable_grafana` | **Yes** | False | Enable Grafana integration. |
-| `grafana_url` | **Yes** | | Base url that the Grafana application is hosted at. |
-| `grafana_api_key` | **Yes** | | Found in `<grafana_url>/org/apikeys`. |
-| `grafana_default_width` | | 0 | Grafana image width when rendered into the chat client. Default will render width dynamically. |
-| `grafana_default_height` | | 0 | Grafana image height when rendered into the chat client. Default will render height dynamically. |
-| `grafana_default_theme` | | dark | Theme color to use when generating rendered Grafana images. Options are [`dark`, `light`]. |
-| `grafana_default_timespan` | | 0 | Timespan that data is collected on a panel in Grafana. Default action is to use the defined timespan in Grafana. |
-| `grafana_org_id` | | 1 | Found in `<grafana_url>/admin/orgs`. |
-| `grafana_default_tz` | | | Timezone in which the renderer will render charts and graphs in. |
+| Configuration Setting | Mandatory? | Default | Notes | Available on Admin Config |
+| --------------------- | ---------- | ------- | ----- | ------------------------- |
+| `enable_grafana` | **Yes** | False | Enable Grafana integration. | Yes |
+| `grafana_url` | **Yes** | | Base url that the Grafana application is hosted at. | No |
+| `grafana_api_key` | **Yes** | | Found in `<grafana_url>/org/apikeys`. | No |
+| `grafana_default_width` | | 0 | Grafana image width when rendered into the chat client. Default will render width dynamically. | No |
+| `grafana_default_height` | | 0 | Grafana image height when rendered into the chat client. Default will render height dynamically. | No |
+| `grafana_default_theme` | | dark | Theme color to use when generating rendered Grafana images. Options are [`dark`, `light`]. | No |
+| `grafana_default_timespan` | | 0 | Timespan that data is collected on a panel in Grafana. Default action is to use the defined timespan in Grafana. | No |
+| `grafana_org_id` | | 1 | Found in `<grafana_url>/admin/orgs`. | No |
+| `grafana_default_tz` | | | Timezone in which the renderer will render charts and graphs in. | No |
 
 !!! note
    Grafana API key only needs to have `Viewer` permissions assigned!

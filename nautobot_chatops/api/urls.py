@@ -1,20 +1,26 @@
 """Django urlpatterns declaration for nautobot_chatops plugin."""
 
 import logging
-from typing import Dict
 
-from django.conf import settings
 from django.urls import include, path
-from nautobot.core.api import OrderedDefaultRouter
-from nautobot_chatops.api.views.generic import AccessGrantViewSet, CommandTokenViewSet, NautobotChatopsRootView
-from nautobot_chatops.api.views.lookup import AccessLookupView
+from nautobot.apps.api import OrderedDefaultRouter
+from nautobot.apps.config import get_app_settings_or_config
+from nautobot_chatops.api.views.generic import (
+    AccessGrantViewSet,
+    CommandLogViewSet,
+    CommandTokenViewSet,
+    NautobotChatopsRootView,
+)
+from nautobot_chatops.api.views.lookup import AccessLookupView, UserEmailLookupView
 
-_APP_CONFIG: Dict = settings.PLUGINS_CONFIG["nautobot_chatops"]
 
 logger = logging.getLogger(__name__)
-urlpatterns = [path("lookup/", AccessLookupView.as_view(), name="access_lookup")]
+urlpatterns = [
+    path("lookup/", AccessLookupView.as_view(), name="access_lookup"),
+    path("email-lookup/", UserEmailLookupView.as_view(), name="email_lookup"),
+]
 
-if _APP_CONFIG.get("enable_slack"):
+if get_app_settings_or_config("nautobot_chatops", "enable_slack"):
     from nautobot_chatops.api.views.slack import SlackSlashCommandView, SlackInteractionView, SlackEventAPIView
 
     urlpatterns += [
@@ -23,21 +29,21 @@ if _APP_CONFIG.get("enable_slack"):
         path("slack/event/", SlackEventAPIView.as_view(), name="slack_event"),
     ]
 
-if _APP_CONFIG.get("enable_ms_teams"):
+if get_app_settings_or_config("nautobot_chatops", "enable_ms_teams"):
     from nautobot_chatops.api.views.ms_teams import MSTeamsMessagesView
 
     urlpatterns += [
         path("ms_teams/messages/", MSTeamsMessagesView.as_view(), name="ms_teams_messages"),
     ]
 
-if _APP_CONFIG.get("enable_webex"):
+if get_app_settings_or_config("nautobot_chatops", "enable_webex"):
     from nautobot_chatops.api.views.webex import WebexView
 
     urlpatterns += [
         path("webex/", WebexView.as_view(), name="webex"),
     ]
 
-if _APP_CONFIG.get("enable_mattermost"):
+if get_app_settings_or_config("nautobot_chatops", "enable_mattermost"):
     from nautobot_chatops.api.views.mattermost import MattermostSlashCommandView, MattermostInteractionView
 
     urlpatterns += [
@@ -49,6 +55,7 @@ router = OrderedDefaultRouter()
 router.APIRootView = NautobotChatopsRootView
 router.register("commandtoken", CommandTokenViewSet)
 router.register("accessgrant", AccessGrantViewSet)
+router.register("commandlog", CommandLogViewSet)
 
 app_name = "nautobot_chatops-api"
 

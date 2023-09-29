@@ -2,14 +2,14 @@
 
 These are the distinct configuration values you will need to configure in `nautobot_config.py`.
 
-| Configuration Setting        | Mandatory? | Default |
-| ---------------------------- | ---------- | ------- |
-| `enable_slack`               | **Yes**    | False   |
-| `slack_api_token`            | **Yes**    | --      |
-| `slack_app_token`            | Socket Mode| --      |
-| `slack_signing_secret`       | **Yes**    | --      |
-| `slack_slash_command_prefix` | No         | `"/"`   |
-| `slack_socket_static_host`   | No         | --      |
+| Configuration Setting        | Mandatory? | Default | Available on Admin Config |
+| ---------------------------- | ---------- | ------- | ------------------------- |
+| `enable_slack`               | **Yes**    | False   | Yes                       |
+| `slack_api_token`            | **Yes**    | --      | No                        |
+| `slack_app_token`            | Socket Mode| --      | No                        |
+| `slack_signing_secret`       | **Yes**    | --      | No                        |
+| `slack_slash_command_prefix` | No         | `"/"`   | No                        |
+| `slack_socket_static_host`   | No         | --      | No                        |
 
 These values will be used in the `nautobot_config.py` file, once we get to the section where we cover server configuration.
 For now, take a mental note that in this section where we are configuring the Slack application, we will need to explicitly note the
@@ -288,6 +288,7 @@ While this method is still possible, we recommend using the App Manifest method 
      - `files:write`
      - `incoming-webhook`
      - `users:read`
+     - `users:read.email`
      - `app_mentions:read`
      - `groups:read`
      - `im:read`

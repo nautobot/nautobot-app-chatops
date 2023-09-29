@@ -20,16 +20,16 @@ Create a top-level command named `aristacv` in your enabled chat platform. For d
 
 You must define the following values in your `nautobot_config.py` file:
 
-| Configuration Setting  | Mandatory? | Default               |
-| ---------------------- | ---------- | --------------------- |
-| `enable_aristacv`      | **Yes**    | False                 |
-| `aristacv_cvaas_url`   | No         | "www.arista.io:443"   |
-| `aristacv_cvaas_token` | No         | None                  |
-| `aristacv_cvp_host`    | No         | None                  |
-| `aristacv_cvp_insecure`| No         | False                 |
-| `aristacv_cvp_password`| No         | None                  |
-| `aristacv_cvp_username`| No         | None                  |
-| `aristacv_on_prem`     | No         | False                 |
+| Configuration Setting  | Mandatory? | Default               | Available on Admin Config |
+| ---------------------- | ---------- | --------------------- | ------------------------- |
+| `enable_aristacv`      | **Yes**    | False                 | Yes                       |
+| `aristacv_cvaas_url`   | No         | "www.arista.io:443"   | No                        |
+| `aristacv_cvaas_token` | No         | None                  | No                        |
+| `aristacv_cvp_host`    | No         | None                  | No                        |
+| `aristacv_cvp_insecure`| No         | False                 | No                        |
+| `aristacv_cvp_password`| No         | None                  | No                        |
+| `aristacv_cvp_username`| No         | None                  | No                        |
+| `aristacv_on_prem`     | No         | False                 | No                        |
 
 Below is an example snippet from `development/nautobot_config.py` that demonstrates how to enable and configure Arista CloudVision integration:
 

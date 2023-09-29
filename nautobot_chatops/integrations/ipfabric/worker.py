@@ -5,7 +5,6 @@ import os
 from datetime import datetime
 
 from django.conf import settings
-from django_rq import job
 from ipfabric_diagrams import Unicast, icmp
 from netutils.ip import is_ip
 from netutils.mac import is_valid_mac
@@ -51,7 +50,6 @@ def ipfabric_logo(dispatcher):
     return dispatcher.image_element(dispatcher.static_url(IPFABRIC_LOGO_PATH), alt_text=IPFABRIC_LOGO_ALT)
 
 
-@job("default")
 def ipfabric(subcommand, **kwargs):
     """Interact with ipfabric plugin."""
     return handle_subcommands("ipfabric", subcommand, **kwargs)

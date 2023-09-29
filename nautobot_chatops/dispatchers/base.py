@@ -2,10 +2,15 @@
 import logging
 from typing import Dict, Optional
 from django.templatetags.static import static
+from django.contrib.auth import get_user_model
 from django.core.cache import cache
+from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
-
+from nautobot.apps.config import get_app_settings_or_config
 from texttable import Texttable
+
+from nautobot_chatops.models import ChatOpsAccountLink
+
 
 logger = logging.getLogger(__name__)
 
@@ -37,6 +42,26 @@ class Dispatcher:
     def __init__(self, context=None):
         """Init this Dispatcher with the provided dict of contextual information (which will vary by app)."""
         self.context = context or {}
+
+    @property
+    def user(self):
+        """Dispatcher property containing the Nautobot User that is linked to the Chat User."""
+        if self.context.get("user_id"):
+            try:
+                return ChatOpsAccountLink.objects.get(
+                    platform=self.platform_slug, user_id=self.context["user_id"]
+                ).nautobot_user
+            except ObjectDoesNotExist:
+                logger.warning(
+                    "Could not find User matching %s - id: %s." "Add a ChatOps User to link the accounts.",
+                    self.context["user_name"],
+                    self.context["user_id"],
+                )
+        user_model = get_user_model()
+        user, _ = user_model.objects.get_or_create(
+            username=get_app_settings_or_config("nautobot_chatops", "fallback_chatops_user")
+        )
+        return user
 
     def _get_cache_key(self) -> str:
         """Key generator for the cache, adding the plugin prefix name."""
@@ -92,16 +117,16 @@ class Dispatcher:
         """Get a list of all subclasses of Dispatcher that are known to Nautobot."""
         # TODO: this should be dynamic using entry_points
         # pylint: disable=import-outside-toplevel, unused-import, cyclic-import
-        if _APP_CONFIG.get("enable_slack"):
+        if get_app_settings_or_config("nautobot_chatops", "enable_slack"):
             from .slack import SlackDispatcher
 
-        if _APP_CONFIG.get("enable_ms_teams"):
+        if get_app_settings_or_config("nautobot_chatops", "enable_ms_teams"):
             from .ms_teams import MSTeamsDispatcher
 
-        if _APP_CONFIG.get("enable_webex"):
+        if get_app_settings_or_config("nautobot_chatops", "enable_webex"):
             from .webex import WebexDispatcher
 
-        if _APP_CONFIG.get("enable_mattermost"):
+        if get_app_settings_or_config("nautobot_chatops", "enable_mattermost"):
             from .mattermost import MattermostDispatcher
 
         subclasses = set()
@@ -121,6 +146,18 @@ class Dispatcher:
         Args:
           item_type (str): One of "organization", "channel", "user"
           item_name (str): Uniquely identifying name of the given item.
+
+        Returns:
+          (str, None)
+        """
+        raise NotImplementedError
+
+    @classmethod
+    def lookup_user_id_by_email(cls, email) -> Optional[str]:
+        """Call out to the chat platform to look up a specific user ID by email.
+
+        Args:
+          email (str): Uniquely identifying email address of the user.
 
         Returns:
           (str, None)

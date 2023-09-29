@@ -54,11 +54,9 @@ the `handle_subcommands` helper function provided:
 ```python
 # nautobot_chatops/workers/mycommand.py
 
-from django_rq import job
-
 from nautobot_chatops.workers import handle_subcommands, subcommand_of
 
-@job("default")
+
 def mycommand(subcommand, **kwargs)
     """Perform mycommand and its subcommands."""
     return handle_subcommands("mycommand", subcommand, **kwargs)
@@ -110,11 +108,12 @@ and so the function needs to prompt the user for additional inputs, for example:
 
 ```python
 @subcommand_of("nautobot")
-def get_rack(dispatcher, site_slug, rack_id):
+def get_rack(dispatcher, site_key, rack_id):
     """Get information about a specific rack from Nautobot."""
-    if not site_slug:
-        site_options = [(site.name, site.slug) for site in Site.objects.all()]
-        dispatcher.prompt_from_menu("nautobot get-rack", "Select a site", site_options)
+    site_lt = LocationType.objects.get(name="Site")
+    if not site_key:
+        site_options = [(site.name, site.composite_key) for site in Location.objects.filter(location_type=site_lt)]
+        dispatcher.prompt_from_menu("nautobot get-rack", "Select a site (location)", site_options)
         return False  # command did not run to completion and therefore should not be logged
     ...
 ```

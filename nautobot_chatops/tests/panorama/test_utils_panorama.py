@@ -1,6 +1,6 @@
 """Unit tests for Panorama utility functions."""
 from unittest.mock import MagicMock
-from nautobot.utilities.testing import TestCase
+from nautobot.core.testing import TestCase
 from nautobot_chatops.integrations.panorama.utils import get_from_pano
 
 

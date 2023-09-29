@@ -8,7 +8,7 @@ except ImportError:
 __version__ = metadata.version(__name__)
 
 from django.conf import settings
-from nautobot.extras.plugins import PluginConfig
+from nautobot.apps import ConstanceConfigItem, NautobotAppConfig
 
 
 _CONFLICTING_APP_NAMES = [
@@ -34,7 +34,7 @@ def _check_for_conflicting_apps():
 _check_for_conflicting_apps()
 
 
-class NautobotChatOpsConfig(PluginConfig):
+class NautobotChatOpsConfig(NautobotAppConfig):
     """Plugin configuration for the nautobot_chatops plugin."""
 
     name = "nautobot_chatops"
@@ -62,15 +62,12 @@ class NautobotChatOpsConfig(PluginConfig):
         "session_cache_timeout": 86400,
         # = Chat Platforms ===================
         # - Mattermost -----------------------
-        "enable_mattermost": False,
         "mattermost_api_token": "",
         "mattermost_url": "",
         # - Microsoft Teams ------------------
-        "enable_ms_teams": False,
         "microsoft_app_id": "",
         "microsoft_app_password": "",
         # - Slack ----------------------------
-        "enable_slack": False,
         "slack_api_token": "",  # for example, "xoxb-123456"
         "slack_signing_secret": "",
         "slack_ephemeral_message_size_limit": 3000,
@@ -83,22 +80,18 @@ class NautobotChatOpsConfig(PluginConfig):
         # If neither option is provided, then no static images (like Nautobot Logo) will be shown.
         "slack_socket_static_host": "",
         # - Cisco Webex ----------------------
-        "enable_webex": False,
         "webex_token": "",
         "webex_signing_secret": "",
         "webex_msg_char_limit": 7439,
         # = Integrations =====================
         # - Cisco ACI ------------------------
-        "enable_aci": False,
         "aci_creds": "",
         # - AWX / Ansible Tower --------------
-        "enable_ansible": False,
         "tower_password": "",
         "tower_uri": "",
         "tower_username": "",
         "tower_verify_ssl": True,
         # - Arista CloudVision ---------------
-        "enable_aristacv": False,
         "aristacv_cvaas_url": "www.arista.io:443",
         "aristacv_cvaas_token": "",
         "aristacv_cvp_host": "",
@@ -107,7 +100,6 @@ class NautobotChatOpsConfig(PluginConfig):
         "aristacv_cvp_username": "",
         "aristacv_on_prem": False,
         # - Grafana --------------------------
-        "enable_grafana": False,
         "grafana_url": "",
         "grafana_api_key": "",
         "grafana_default_width": 0,
@@ -117,23 +109,44 @@ class NautobotChatOpsConfig(PluginConfig):
         "grafana_org_id": 1,
         "grafana_default_tz": "",
         # - IPFabric ---------------------
-        "enable_ipfabric": False,
         "ipfabric_api_token": "",
         "ipfabric_host": "",
         "ipfabric_timeout": "",
         "ipfabric_verify": False,
         # - Cisco Meraki ---------------------
-        "enable_meraki": False,
         "meraki_dashboard_api_key": "",
         # - Palo Alto Panorama ---------------
-        "enable_panorama": False,
         "panorama_host": "",
         "panorama_password": "",
         "panorama_user": "",
     }
+    constance_config = {
+        "fallback_chatops_user": ConstanceConfigItem(default="chatbot", help_text="Enable Mattermost Chat Platform."),
+        "enable_mattermost": ConstanceConfigItem(
+            default=False, help_text="Enable Mattermost Chat Platform.", field_type=bool
+        ),
+        "enable_ms_teams": ConstanceConfigItem(
+            default=False, help_text="Enable Microsoft Teams Chat Platform.", field_type=bool
+        ),
+        "enable_slack": ConstanceConfigItem(default=False, help_text="Enable Slack Chat Platform.", field_type=bool),
+        "enable_webex": ConstanceConfigItem(default=False, help_text="Enable Webex Chat Platform.", field_type=bool),
+        "enable_aci": ConstanceConfigItem(default=False, help_text="Enable Cisco ACI Integration.", field_type=bool),
+        "enable_ansible": ConstanceConfigItem(default=False, help_text="Enable Ansible Integration.", field_type=bool),
+        "enable_aristacv": ConstanceConfigItem(
+            default=False, help_text="Enable Arista CloudVision Integration.", field_type=bool
+        ),
+        "enable_grafana": ConstanceConfigItem(default=False, help_text="Enable Grafana Integration.", field_type=bool),
+        "enable_ipfabric": ConstanceConfigItem(
+            default=False, help_text="Enable IP Fabric Integration.", field_type=bool
+        ),
+        "enable_meraki": ConstanceConfigItem(
+            default=False, help_text="Enable Cisco Meraki Integration.", field_type=bool
+        ),
+        "enable_panorama": ConstanceConfigItem(
+            default=False, help_text="Enable Panorama Integration.", field_type=bool
+        ),
+    }
 
-    max_version = "1.999"
-    min_version = "1.5.4"
     caching_config = {}
 
     def ready(self):
