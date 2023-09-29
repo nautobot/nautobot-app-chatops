@@ -31,13 +31,13 @@ Create a top-level command named `ipfabric` in your enabled chat platform. For d
 
 You must define the following values in your `nautobot_config.py` file:
 
-| Configuration Setting | Mandatory? | Default |
-| ---------------------- | ---------- | ------- |
-| `enable_ipfabric` | **Yes** | False |
-| `ipfabric_api_token` | **Yes** | |
-| `ipfabric_host` | **Yes** | |
-| `ipfabric_timeout` | | |
-| `ipfabric_verify` | | True |
+| Configuration Setting | Mandatory? | Default | Available on Admin Config |
+| --------------------- | ---------- | ------- | ------------------------- |
+| `enable_ipfabric` | **Yes** | False | Yes |
+| `ipfabric_api_token` | **Yes** | | No |
+| `ipfabric_host` | **Yes** | | No |
+| `ipfabric_timeout` | | | No |
+| `ipfabric_verify` | | True | No |
 
 Below is an example snippet from `development/nautobot_config.py` that demonstrates how to enable and configure IPFabric integration:
 

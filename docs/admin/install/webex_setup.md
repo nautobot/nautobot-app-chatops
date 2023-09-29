@@ -1,11 +1,11 @@
 # Cisco Webex Setup
 
-| Configuration Setting        | Mandatory? | Default |
-| ---------------------------- | ---------- | ------- |
-| `enable_webex`               | **Yes**    | False   |
-| `webex_msg_char_limit`       | **No**     | 7439    |
-| `webex_signing_secret`       | **Yes**    | --      |
-| `webex_token`                | **Yes**    | --      |
+| Configuration Setting        | Mandatory? | Default | Available on Admin Config |
+| ---------------------------- | ---------- | ------- | ------------------------- |
+| `enable_webex`               | **Yes**    | False   | Yes                       |
+| `webex_msg_char_limit`       | **No**     | 7439    | No                        |
+| `webex_signing_secret`       | **Yes**    | --      | No                        |
+| `webex_token`                | **Yes**    | --      | No                        |
 
 1. Login to [https://developer.webex.com](https://developer.webex.com) and select "Start building apps", then "Create a New App", then "Create a Bot".
    - Enter the bot name, username, icon (you can use `nautobot_logo.png` from this directory), and description,
