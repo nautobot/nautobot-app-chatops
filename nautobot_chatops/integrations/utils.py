@@ -1,5 +1,4 @@
 """Utility functions for nautobot_chatops integrations."""
-from collections.abc import Mapping
 from importlib import import_module
 from pathlib import Path
 from types import ModuleType

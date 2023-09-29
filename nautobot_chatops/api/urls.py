@@ -1,7 +1,6 @@
 """Django urlpatterns declaration for nautobot_chatops plugin."""
 
 import logging
-from typing import Dict
 
 from django.urls import include, path
 from nautobot.apps.api import OrderedDefaultRouter
