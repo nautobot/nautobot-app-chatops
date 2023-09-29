@@ -1,10 +1,10 @@
 # Microsoft Teams Setup
 
-| Configuration Setting        | Mandatory? | Default |
-| ---------------------------- | ---------- | ------- |
-| `enable_ms_teams`            | **Yes**    | False   |
-| `microsoft_app_id`           | **Yes**    | --      |
-| `microsoft_app_password`     | **Yes**    | --      |
+| Configuration Setting        | Mandatory? | Default | Available on Admin Config |
+| ---------------------------- | ---------- | ------- | --------------------------|
+| `enable_ms_teams`            | **Yes**    | False   | Yes                       |
+| `microsoft_app_id`           | **Yes**    | --      | No                        |
+| `microsoft_app_password`     | **Yes**    | --      | No                        |
 
 ## Azure
 

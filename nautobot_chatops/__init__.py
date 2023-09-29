@@ -54,7 +54,6 @@ class NautobotChatOpsConfig(NautobotAppConfig):
         # Should menus, text input fields, etc. be deleted from the chat history after the user makes a selection?
         "delete_input_on_submission": False,
         "restrict_help": False,
-        "fallback_chatops_user": "chatbot",
         # As requested on https://github.com/nautobot/nautobot-plugin-chatops/issues/114 this setting is used for
         # sending all messages as an ephemeral message, meaning only the person interacting with the bot will see the
         # responses.
@@ -122,6 +121,9 @@ class NautobotChatOpsConfig(NautobotAppConfig):
         "panorama_user": "",
     }
     constance_config = {
+        "fallback_chatops_user": ConstanceConfigItem(
+            default="chatbot", help_text="Enable Mattermost Chat Platform."
+        ),
         "enable_mattermost": ConstanceConfigItem(
             default=False, help_text="Enable Mattermost Chat Platform.", field_type=bool
         ),

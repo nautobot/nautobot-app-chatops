@@ -115,13 +115,13 @@ Some configuration settings have now been added to the Nautobot Admin Config pag
 
 Adjust the App's behavior with the following settings:
 
-| Configuration Setting | Description | Mandatory? | Default |
-| - | - | - | - |
-| `delete_input_on_submission` | Removes the input prompt from the chat history after user input | No | `False` |
-| `restrict_help` | Shows Help prompt only to users based on their Access Grants | No | `False` |
-| `send_all_messages_private` | Ensures only the person interacting with the bot sees the responses | No | `False` |
-| `fallback_chatops_user` | Nautobot User for Chat Commands to use if the user has not linked their account | Yes | `chatbot` |
-| `session_cache_timeout` | Controls session cache | No | `86400` |
+| Configuration Setting | Description | Mandatory? | Default | Available on Admin Config |
+| - | - | - | - | - |
+| `delete_input_on_submission` | Removes the input prompt from the chat history after user input | No | `False` | No |
+| `restrict_help` | Shows Help prompt only to users based on their Access Grants | No | `False` | No |
+| `send_all_messages_private` | Ensures only the person interacting with the bot sees the responses | No | `False` | No |
+| `fallback_chatops_user` | Nautobot User for Chat Commands to use if the user has not linked their account | Yes | `chatbot` | Yes |
+| `session_cache_timeout` | Controls session cache | No | `86400` | No |
 
 ## Granting Access to the Chat Platform
 
