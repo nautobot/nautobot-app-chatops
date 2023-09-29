@@ -6,6 +6,14 @@ A step-by-step tutorial on how to get the App going and how to use it.
 
 To install the App, please follow the instructions detailed in the [Administrator Guide](../admin/install/index.md).
 
+## Link Nautobot Account
+
++++3.0.0
+
+Nautobot ChatOps now uses the built-in Nautobot permissions for Nautobot Objects (Devices, Locations, Racks, etc.). Each user will need to link their Nautobot Account with their Chat Platform User Account. Login to Nautobot then access the Link ChatOps Account within the Plugins menu. Here you can provide your email address and select the ChatOps Platform you are using, then click the Look up User ID from Email to get your Chat User ID.
+
+![Link Accounts](../images/account_link.png)
+
 ## Built-in Commands
 
 Each command can be invoked with `help` sub-command to display all sub-commands with the description.
@@ -35,6 +43,10 @@ Interact with Nautobot by utilizing the following sub-commands:
 
 !!! note
     All sub-commands are intended to be used with the `nautobot` prefix. For example, to retrieve a filtered list of VLANs, use the command `/nautobot get-vlans`.
+
++/- 3.0.0
+    Due to the removal of slug in Nautobot 2.0, the command shortcuts will use the PK value of an object. This will be
+    changed to the Natural Key or PK in an upcoming release.
 
 ### Integrations Commands
 

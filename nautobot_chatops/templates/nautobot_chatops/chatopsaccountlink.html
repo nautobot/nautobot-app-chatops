@@ -1,0 +1,28 @@
+{% extends 'generic/object_detail.html' %}
+{% load helpers %}
+
+{% block content_left_page %}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <strong>Account Link</strong>
+            </div>
+            <table class="table table-hover panel-body attr-table">
+                <tr>
+                    <td>ChatOps User</td>
+                    <td>{{ object.user_id }}</td>
+                </tr>
+                <tr>
+                    <td>Email</td>
+                    <td>{{ object.email }}</td>
+                </tr>
+                <tr>
+                    <td>Nautobot User</td>
+                    <td>{{ object.nautobot_user }}</td>
+                </tr>
+                <tr>
+                    <td>Platform</td>
+                    <td>{{ object.platform }}</td>
+                </tr>
+            </table>
+        </div>
+{% endblock content_left_page %}

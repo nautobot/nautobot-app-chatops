@@ -1,7 +1,7 @@
 """Django table classes for Nautobot."""
 
 from django_tables2 import TemplateColumn, Column, BooleanColumn
-from nautobot.utilities.tables import BaseTable, ToggleColumn, ButtonsColumn
+from nautobot.core.tables import BaseTable, ToggleColumn, ButtonsColumn
 from nautobot_chatops.integrations.grafana.models import Panel, Dashboard, PanelVariable
 
 
@@ -58,4 +58,18 @@ class PanelVariableViewTable(BaseTable):
         """Meta for class PanelVariableViewTable."""
 
         model = PanelVariable
-        fields = tuple(["pk"] + PanelVariable.csv_headers + ["actions"])
+        fields = [
+            "pk",
+            "panel",
+            "name",
+            "friendly_name",
+            "query",
+            "modelattr",
+            "value",
+            "response",
+            "positional_order",
+            "includeincmd",
+            "includeinurl",
+            "filter",
+            "actions",
+        ]

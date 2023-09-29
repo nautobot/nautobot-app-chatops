@@ -2,7 +2,6 @@
 import logging
 from datetime import datetime, timedelta
 import os
-from django_rq import job
 from nautobot_chatops.workers import subcommand_of, handle_subcommands  # pylint: disable=import-error
 from nautobot_chatops.choices import CommandStatusChoices  # pylint: disable=import-error
 from .cvpgrpcutils import get_device_tags
@@ -64,7 +63,6 @@ def check_credentials(dispatcher):
     return True
 
 
-@job("default")
 def cloudvision(subcommand, **kwargs):
     """Interact with cloudvision."""
     return handle_subcommands("cloudvision", subcommand, **kwargs)

@@ -10,7 +10,7 @@ services:
   worker:
     <<: *nautobot
   mattermost:
-    image: "mattermost/mattermost-preview"
+    image: "mattermost/mattermost-preview:7.8.9"
     hostname: "mattermost"
     environment:
       MM_LOGSETTINGS_SENDCRASHREPORTS: "false"

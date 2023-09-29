@@ -1,8 +1,9 @@
 """Tests for the /nautobot chatops commands."""
 from unittest.mock import MagicMock
 
+from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
-from nautobot.dcim.models import Site
+from nautobot.dcim.models import Location, LocationType
 from nautobot.ipam.models import VLAN
 from nautobot.extras.models import Status
 from nautobot_chatops.choices import CommandStatusChoices
@@ -17,8 +18,13 @@ class IpamTestCase(TestCase):
     def setUp(self):
         """Per-test-case setup function."""
         self.active_status = Status.objects.get(name="Active")
-        self.site = Site.objects.create(name="site-1", status=self.active_status)
-        self.vlans, _ = VLAN.objects.get_or_create(vid=1, name="vlan-1", status=self.active_status, site=self.site)
+        location_type, _ = LocationType.objects.get_or_create(name="Site")
+        location_type.content_types.add(ContentType.objects.get_for_model(VLAN))
+
+        self.location = Location.objects.create(location_type=location_type, name="site-1", status=self.active_status)
+        self.vlans, _ = VLAN.objects.get_or_create(
+            vid=1, name="vlan-1", status=self.active_status, location=self.location
+        )
 
         # Mock the dispatcher
         self.dispatcher = MagicMock(Dispatcher)
@@ -35,7 +41,7 @@ class IpamTestCase(TestCase):
                 ("Group", "group"),
                 ("Name", "name"),
                 ("Role", "role"),
-                ("Site", "site"),
+                ("Location", "location"),
                 ("Status", "status"),
                 ("Tenant", "tenant"),
                 ("All (no filter)", "all"),

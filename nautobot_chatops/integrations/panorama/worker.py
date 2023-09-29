@@ -5,7 +5,6 @@ import re
 from ipaddress import ip_network
 from typing import List, Tuple, Union
 
-from django_rq import job
 from nautobot.dcim.models import Interface
 from netmiko import NetMikoTimeoutException
 from netutils.protocol_mapper import PROTO_NAME_TO_NUM
@@ -108,7 +107,6 @@ def capture_packet_str_validation(
         return notify_user_of_error(dispatcher, f"{variable_description} is invalid."), False
 
 
-@job("default")
 def panorama(subcommand, **kwargs):
     """Perform panorama and its subcommands."""
     return handle_subcommands("panorama", subcommand, **kwargs)

@@ -1,6 +1,20 @@
 """Bootstrap script for Nautobot to allow Mattermost integration."""
 
-from nautobot_chatops.models import AccessGrantTypeChoices, CommandTokenPlatformChoices, AccessGrant, CommandToken
+
+import contextlib
+from django.contrib.auth import get_user_model
+from django.core.exceptions import ObjectDoesNotExist
+
+from nautobot_chatops.models import (
+    AccessGrantTypeChoices,
+    PlatformChoices,
+    AccessGrant,
+    CommandToken,
+    ChatOpsAccountLink,
+)
+
+
+User = get_user_model()
 
 for grant_type in AccessGrantTypeChoices.values():
     AccessGrant.objects.update_or_create(
@@ -26,7 +40,15 @@ _COMMAND_TOKENS = {
 
 for command, token in _COMMAND_TOKENS.items():
     CommandToken.objects.update_or_create(
-        platform=CommandTokenPlatformChoices.MATTERMOST,
+        platform=PlatformChoices.MATTERMOST,
         comment=command,
         token=token,
+    )
+
+with contextlib.suppress(ObjectDoesNotExist):
+    admin = User.objects.get(name="admin")
+    ChatOpsAccountLink.objects.update_or_create(
+        user_id="jactwicuqb8bu8pau8mgjydzeo",
+        platform=PlatformChoices.MATTERMOST,
+        defaults={"nautobot_user": admin},
     )

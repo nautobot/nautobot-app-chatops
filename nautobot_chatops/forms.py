@@ -2,10 +2,11 @@
 
 from django import forms
 
-from nautobot.utilities.forms import BootstrapMixin
+from nautobot.core.forms import BootstrapMixin, StaticSelect2Multiple
+from nautobot.extras.forms import NautobotFilterForm
 
-from .models import AccessGrant, CommandToken
-from .choices import AccessGrantTypeChoices, CommandTokenPlatformChoices
+from .models import AccessGrant, CommandLog, CommandToken, ChatOpsAccountLink
+from .choices import AccessGrantTypeChoices, PlatformChoices
 from .constants import ACCESS_GRANT_COMMAND_HELP_TEXT, COMMAND_TOKEN_TOKEN_HELP_TEXT
 
 BLANK_CHOICE = (("", "--------"),)
@@ -45,10 +46,55 @@ class AccessGrantForm(BootstrapMixin, forms.ModelForm):
         fields = ("command", "subcommand", "grant_type", "name", "value")
 
 
+class ChatOpsAccountLinkForm(BootstrapMixin, forms.ModelForm):
+    """Form for creating or editing a ChatOps Account Link instance."""
+
+    email = forms.EmailField(required=False)
+    platform = forms.ChoiceField(choices=PlatformChoices.CHOICES)
+
+    class Meta:
+        """Metaclass attributes of ChatOpsAccountLinkForm."""
+
+        model = ChatOpsAccountLink
+        fields = ("platform", "email", "user_id")
+
+
+class ChatOpsAccountLinkFilterForm(NautobotFilterForm):
+    """Form for filtering ChatOps Account Link Instances."""
+
+    model = ChatOpsAccountLink
+    field_order = [
+        "q",
+        "platform",
+    ]
+    q = forms.CharField(required=False, label="Search")
+    platform = forms.MultipleChoiceField(choices=PlatformChoices, required=False, widget=StaticSelect2Multiple())
+
+
+class CommandLogFilterForm(BootstrapMixin, forms.ModelForm):
+    """Form for filtering Command Logs."""
+
+    command = forms.CharField(required=False)
+    subcommand = forms.CharField(required=False)
+
+    class Meta:
+        """Metaclass attributes of AccessGrantFilterForm."""
+
+        model = CommandLog
+
+        fields = [
+            "platform",
+            "command",
+            "subcommand",
+            "status",
+            "details",
+        ]
+
+
 class CommandTokenFilterForm(BootstrapMixin, forms.ModelForm):
     """Form for filtering ComandToken instances."""
 
-    platform = forms.ChoiceField(choices=CommandTokenPlatformChoices.CHOICES)
+    platform = forms.ChoiceField(choices=PlatformChoices.CHOICES)
     comment = forms.CharField(required=False)
 
     class Meta:
@@ -67,7 +113,7 @@ class CommandTokenForm(BootstrapMixin, forms.ModelForm):
         help_text=COMMAND_TOKEN_TOKEN_HELP_TEXT,
         widget=forms.TextInput(attrs={"autofocus": True}),
     )
-    platform = forms.ChoiceField(choices=CommandTokenPlatformChoices.CHOICES, required=True)
+    platform = forms.ChoiceField(choices=PlatformChoices.CHOICES, required=True)
 
     class Meta:
         """Metaclass attributes of CommandTokenForm."""

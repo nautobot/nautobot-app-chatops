@@ -141,6 +141,7 @@ PLUGINS_CONFIG = {
     "nautobot_chatops": {
         # = Common Settings ==================
         "restrict_help": is_truthy(os.getenv("NAUTOBOT_CHATOPS_RESTRICT_HELP")),
+        "fallback_chatops_user": os.environ.get("NAUTOBOT_CHATOPS_FALLBACK_CHATOPS_USER"),
         # TODO: Add following settings
         # | `delete_input_on_submission` | Removes the input prompt from the chat history after user input | No | `False` |
         # | `send_all_messages_private` | Ensures only the person interacting with the bot sees the responses | No | `False` |
