@@ -58,7 +58,7 @@ class Dispatcher:
                     self.context["user_id"],
                 )
         user_model = get_user_model()
-        user, _ = user_model.objects.get_or_create(username=_APP_CONFIG["fallback_chatops_user"])
+        user, _ = user_model.objects.get_or_create(username=get_app_settings_or_config("nautobot_chatops", "fallback_chatops_user"))
         return user
 
     def _get_cache_key(self) -> str:
