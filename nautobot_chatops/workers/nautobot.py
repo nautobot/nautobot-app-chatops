@@ -1059,7 +1059,7 @@ def filter_jobs(dispatcher, job_filters: str = ""):  # We can use a Literal["ena
     # Check for filters in user supplied input
     job_filters_list = [item.strip() for item in job_filters.split(",")] if isinstance(job_filters, str) else ""
     filters = ["enabled", "installed"]
-    if any([key in job_filters for key in filters]):
+    if any(key in job_filters for key in filters):
         filter_args = {key: True for key in filters if key in job_filters_list}
         jobs = Job.objects.restrict(dispatcher.user, "view").filter(**filter_args)  # enabled=True, installed=True
     else:
