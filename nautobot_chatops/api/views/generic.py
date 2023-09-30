@@ -3,7 +3,7 @@ from rest_framework.routers import APIRootView
 from nautobot.apps.api import NautobotModelViewSet
 
 from nautobot_chatops.api.serializers import AccessGrantSerializer, CommandLogSerializer, CommandTokenSerializer
-from nautobot_chatops.models import AccessGrant, CommandToken, CommandLog
+from nautobot_chatops.models import AccessGrant, CommandLog, CommandToken
 from nautobot_chatops.filters import AccessGrantFilterSet, CommandLogFilterSet, CommandTokenFilterSet
 
 
