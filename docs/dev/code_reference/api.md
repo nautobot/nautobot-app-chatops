@@ -1,5 +1,5 @@
-# Nautobot Plugin ChatOps API Package
+# Nautobot ChatOps App API Package
 
-::: nautobot_chatops.api
+::: nautobot_ssot.api
     options:
         show_submodules: True
