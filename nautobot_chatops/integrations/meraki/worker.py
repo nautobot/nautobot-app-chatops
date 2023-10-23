@@ -28,6 +28,7 @@ try:
 except KeyError as err:
     MERAKI_DASHBOARD_API_KEY = os.getenv("MERAKI_DASHBOARD_API_KEY")
     if not MERAKI_DASHBOARD_API_KEY:
+        # pylint: disable-next=broad-exception-raised
         raise Exception("Unable to find the Meraki API key.") from err
 
 
@@ -570,6 +571,7 @@ def configure_basic_access_port(  # pylint: disable=too-many-arguments
             dialog_list=dialog_list,
         )
         return False
+    # pylint: disable-next=use-dict-literal
     port_params = dict(name=port_desc, enabled=bool(enabled), type="access", vlan=vlan)
     LOGGER.info("PORT PARMS: %s", port_params)
     client = MerakiClient(api_key=MERAKI_DASHBOARD_API_KEY)

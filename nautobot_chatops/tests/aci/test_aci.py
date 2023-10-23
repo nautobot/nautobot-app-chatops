@@ -1,5 +1,5 @@
 """Tests for integrations.aci.aci."""
-# pylint: disable=no-self-use, import-outside-toplevel, invalid-name
+# pylint: disable=invalid-name
 import unittest
 from unittest.mock import patch, Mock
 from nautobot_chatops.integrations.aci.aci import NautobotPluginChatopsAci, RequestHTTPError

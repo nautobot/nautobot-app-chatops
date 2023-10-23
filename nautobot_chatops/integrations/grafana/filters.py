@@ -18,7 +18,7 @@ class DashboardFilter(FilterSet):
 
         fields = ("dashboard_slug", "dashboard_uid", "friendly_name")
 
-    def search(self, queryset, name, value):  # pylint: disable=unused-argument,no-self-use
+    def search(self, queryset, name, value):  # pylint: disable=unused-argument
         """Perform the filtered search."""
         if not value.strip():
             return queryset
@@ -40,7 +40,7 @@ class PanelFilter(FilterSet):
 
         fields = ("dashboard", "command_name", "friendly_name", "panel_id")
 
-    def search(self, queryset, name, value):  # pylint: disable=unused-argument,no-self-use
+    def search(self, queryset, name, value):  # pylint: disable=unused-argument
         """Perform the filtered search."""
         if not value.strip():
             return queryset
@@ -66,7 +66,7 @@ class VariableFilter(FilterSet):
 
         fields = ("panel", "name", "friendly_name", "query", "modelattr", "value", "response")
 
-    def search(self, queryset, name, value):  # pylint: disable=unused-argument,no-self-use
+    def search(self, queryset, name, value):  # pylint: disable=unused-argument
         """Perform the filtered search."""
         if not value.strip():
             return queryset

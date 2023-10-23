@@ -3,16 +3,26 @@ name = "nautobot-chatops"
 version = "3.0.1"
 description = "A plugin providing chatbot capabilities for Nautobot"
 authors = ["Network to Code, LLC <opensource@networktocode.com>"]
+license = "Apache-2.0"
 readme = "README.md"
-homepage = "https://github.com/nautobot/nautobot-plugin-chatops"
-repository = "https://github.com/nautobot/nautobot-plugin-chatops"
-documentation = "https://docs.nautobot.com/projects/chatops/en/stable/"
+homepage = "https://github.com/nautobot/nautobot-plugin-chatops/"
+repository = "https://github.com/nautobot/nautobot-plugin-chatops/"
 keywords = ["nautobot", "nautobot-plugin"]
+classifiers = [
+    "Intended Audience :: Developers",
+    "Development Status :: 5 - Production/Stable",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
 include = [
     "LICENSE",
     "README.md",
-    # Poetry by default will exclude files that are in .gitignore
-    "nautobot_chatops/static/nautobot_chatops/docs/**/*",
+]
+packages = [
+    { include = "nautobot_chatops" },
 ]
 
 [tool.poetry.plugins."nautobot.workers"]
@@ -59,34 +69,28 @@ termcolor = { version = "1.1.0", optional = true }
 texttable = "^1.6.2"
 webexteamssdk = "^1.3"
 
-[tool.poetry.dev-dependencies]
-black = "*"
-yamllint = "*"
+[tool.poetry.group.dev.dependencies]
 bandit = "*"
-# Pinning older pylint due to https://github.com/pylint-dev/pylint/issues/7381
-pylint = "2.13.9"
-pylint-django = "*"
-pydocstyle = "*"
-prybar = "*"
-invoke = "*"
-flake8 = "^3.9.2"
-griffe = "0.30.1"
-# Rendering docs to HTML
-mkdocs = "1.3.1"
-# Material for mkdocs theme
-mkdocs-material = "8.4.2"
-# Automatic documentation from sources, for MkDocs
-mkdocstrings = "0.22.0"
-mkdocstrings-python = "1.1.2"
-# Render custom markdown for version added/changed/remove notes
-mkdocs-version-annotations = "~1.0.0"
-# Allow Markdown files to include other files
-mkdocs-include-markdown-plugin = "~3.6.1"
-python-dotenv = "^0.21.1"
-# Change log management and generation
-towncrier = "~22.8.0"
+black = "*"
 coverage = "~5.4"
+django-debug-toolbar = "*"
+flake8 = "*"
+invoke = "*"
+ipython = "*"
+mkdocs = "1.5.2"
+mkdocs-material = "9.1.15"
+mkdocs-version-annotations = "1.0.0"
+mkdocstrings = "0.22.0"
+mkdocstrings-python = "1.5.2"
+prybar = "*"
+pydocstyle = "*"
+pylint = "*"
+pylint-django = "*"
+pylint-nautobot = "^0.2.0"
 requests-mock = "^1.9.3"
+toml = "*"
+towncrier = "~22.8.0"
+yamllint = "*"
 
 [tool.poetry.extras]
 all = [
@@ -146,12 +150,9 @@ panorama = [
 ]
 nautobot = ["nautobot"]
 
-[tool.poetry.group.dev.dependencies]
-pylint-nautobot = "^0.2.0"
-
 [tool.black]
 line-length = 120
-target-version = ['py36']
+target-version = ['py38', 'py39', 'py310', 'py311']
 include = '\.pyi?$'
 exclude = '''
 (
@@ -173,53 +174,54 @@ exclude = '''
 '''
 
 [tool.pylint.master]
-# Including the pylint_django plugin
-load-plugins=["pylint_nautobot", "pylint_django"]
+# Include the pylint_django plugin to avoid spurious warnings about Django patterns
+load-plugins="pylint_django, pylint_nautobot"
+ignore=".venv"
 
-[tool.pylint.message_control]
-disable=""",
-    django-not-configured,
-    too-few-public-methods,
-    too-many-lines,
-    too-many-ancestors,
-    nb-incorrect-base-class,
-    """
+[tool.pylint.basic]
+# No docstrings required for private methods (Pylint default), or for test_ functions, or for inner Meta classes.
+no-docstring-rgx="^(_|test_|Meta$)"
+
+[tool.pylint.messages_control]
+# Line length is enforced by Black, so pylint doesn't need to check it.
+# Pylint and Black disagree about how to format multi-line arrays; Black wins.
+disable = [
+    "line-too-long",
+    "nb-incorrect-base-class",
+    "too-few-public-methods",
+    "too-many-ancestors",
+    "too-many-arguments",
+    "too-many-lines",
+]
 
 [tool.pylint.miscellaneous]
-notes=""",
+# Don't flag TODO as a failure, let us commit with things that still need to be done in the code
+notes = """,
     FIXME,
     XXX,
     """
 
-[tool.pylint.design]
-max-args=6
-max-public-methods=22
-
 [tool.pylint.similarities]
-ignore-imports= true
-min-similarity-lines=0
-
-[tool.pylint.format]
-max-line-length=120
+ignore-imports = true
+min-similarity-lines = 0
 
 [tool.pylint-nautobot]
-supported_nautobot_versions = ["2",]
+supported_nautobot_versions = [
+    "2.0.0"
+]
+
+[tool.pydocstyle]
+convention = "google"
+inherit = false
+match = "(?!__init__).*\\.py"
+match-dir = "(?!tests|migrations|development)[^\\.].*"
+# D212 is enabled by default in google convention, and complains if we have a docstring like:
+# """
+# My docstring is on the line after the opening quotes instead of on the same line as them.
+# """
+# We've discussed and concluded that we consider this to be a valid style choice.
+add_ignore = "D212"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry_core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
-
-[tool.towncrier]
-package = "nautobot_chatops"
-directory = "changes"
-filename = "docs/admin/release_notes/version_3.0.md"
-template = "development/towncrier_template.j2"
-start_string = "<!-- towncrier release notes start -->"
-issue_format = "[#{issue}](https://github.com/nautobot/nautobot-plugin-chatops/issues/{issue})"
-
-[tool.towncrier.fragment.added]
-[tool.towncrier.fragment.changed]
-[tool.towncrier.fragment.deprecated]
-[tool.towncrier.fragment.fixed]
-[tool.towncrier.fragment.removed]
-[tool.towncrier.fragment.security]
