@@ -1,157 +1,63 @@
 [tool.poetry]
 name = "nautobot-chatops"
-version = "3.0.1"
-description = "A plugin providing chatbot capabilities for Nautobot"
+version = "0.1.0"
+description = "Nautobot ChatOps App"
 authors = ["Network to Code, LLC <opensource@networktocode.com>"]
+license = "Apache-2.0"
 readme = "README.md"
-homepage = "https://github.com/nautobot/nautobot-plugin-chatops"
-repository = "https://github.com/nautobot/nautobot-plugin-chatops"
-documentation = "https://docs.nautobot.com/projects/chatops/en/stable/"
+homepage = "https://github.com/nautobot/nautobot-plugin-chatops/"
+repository = "https://github.com/nautobot/nautobot-plugin-chatops/"
 keywords = ["nautobot", "nautobot-plugin"]
+classifiers = [
+    "Intended Audience :: Developers",
+    "Development Status :: 5 - Production/Stable",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+]
 include = [
     "LICENSE",
     "README.md",
-    # Poetry by default will exclude files that are in .gitignore
-    "nautobot_chatops/static/nautobot_chatops/docs/**/*",
 ]
-
-[tool.poetry.plugins."nautobot.workers"]
-"aci" = "nautobot_chatops.integrations.aci.worker:aci"
-"ansible" = "nautobot_chatops.integrations.ansible.worker:ansible"
-"clear" = "nautobot_chatops.workers.clear:clear"
-"cloudvision" = "nautobot_chatops.integrations.aristacv.worker:cloudvision"
-"grafana" = "nautobot_chatops.integrations.grafana.worker:grafana"
-"ipfabric" = "nautobot_chatops.integrations.ipfabric.worker:ipfabric"
-"meraki" = "nautobot_chatops.integrations.meraki.worker:cisco_meraki"
-"nautobot" = "nautobot_chatops.workers.nautobot:nautobot"
-"panorama" = "nautobot_chatops.integrations.panorama.worker:panorama"
+packages = [
+    { include = "nautobot_chatops" },
+]
 
 [tool.poetry.dependencies]
-Markdown = "!=3.3.5"
-PyJWT = "^2.1.0"
-PyYAML = { version = "^6.0", optional = true }
-aiodns = "^1.0"
-aiohttp = "^3.7.3"
-asgiref = "^3.4.1"
-certifi = { version = ">=2021.5.30", optional = true }
-cloudvision = { version = "^1.1", optional = true }
-cvprac = { version = "^1.0.6", optional = true }
-defusedxml = { version = "^0.7.1", optional = true }
-diffsync = { version = "^1.3.0", optional = true }
-ipaddr = { version = "^2.2.0", optional = true }
-ipfabric = { version = "~6.0.9", optional = true }
-ipfabric-diagrams = { version = "~6.0.2", optional = true }
-isodate =  { version = "^0.6.1", optional = true }
-meraki = { version = "^1.7.2", optional = true }
-nautobot = "^2.0.0"
-nautobot-capacity-metrics = "^3.0.0"
-netmiko = { version = "^4.0.0", optional = true }
-netutils = { version = "^1.1.0", optional = true }
-pan-os-python = { version = "^1.3.0", optional = true }
-prettytable = { version = "^2.1.0", optional = true }
-protobuf = { version = "^3.17", optional = true }
-pydantic = { version = "^1.8.2", optional = true }
 python = ">=3.8,<3.12"
-requests = ">=2.25.1"
-schema-enforcer = { version = "^1.2.1", optional = true }
-slack-sdk = "^3.4.2"
-termcolor = { version = "1.1.0", optional = true }
-texttable = "^1.6.2"
-webexteamssdk = "^1.3"
-
-[tool.poetry.dev-dependencies]
-black = "*"
-yamllint = "*"
-bandit = "*"
-# Pinning older pylint due to https://github.com/pylint-dev/pylint/issues/7381
-pylint = "2.13.9"
-pylint-django = "*"
-pydocstyle = "*"
-prybar = "*"
-invoke = "*"
-flake8 = "^3.9.2"
-griffe = "0.30.1"
-# Rendering docs to HTML
-mkdocs = "1.3.1"
-# Material for mkdocs theme
-mkdocs-material = "8.4.2"
-# Automatic documentation from sources, for MkDocs
-mkdocstrings = "0.22.0"
-mkdocstrings-python = "1.1.2"
-# Render custom markdown for version added/changed/remove notes
-mkdocs-version-annotations = "~1.0.0"
-# Allow Markdown files to include other files
-mkdocs-include-markdown-plugin = "~3.6.1"
-python-dotenv = "^0.21.1"
-# Change log management and generation
-towncrier = "~22.8.0"
-coverage = "~5.4"
-requests-mock = "^1.9.3"
-
-[tool.poetry.extras]
-all = [
-    "PyYAML",
-    "certifi",
-    "cloudvision",
-    "cvprac",
-    "defusedxml",
-    "diffsync",
-    "ipaddr",
-    "ipfabric",
-    "ipfabric-diagrams",
-    "isodate",
-    "meraki",
-    "netmiko",
-    "netutils",
-    "pan-os-python",
-    "prettytable",
-    "protobuf",
-    "pydantic",
-    "schema-enforcer",
-    "termcolor",
-]
-aci = [
-    "prettytable",
-]
-aristacv = [
-    "certifi",
-    "cloudvision",
-    "cvprac",
-    "protobuf"
-]
-ansible = [
-    "PyYAML",
-]
-grafana = [
-    "diffsync",
-    "isodate",
-    "pydantic",
-    "schema-enforcer",
-    "termcolor",
-]
-ipfabric = [
-    "ipfabric",
-    "ipfabric-diagrams",
-    "netutils",
-]
-meraki = [
-    "meraki",
-]
-panorama = [
-    "defusedxml",
-    "ipaddr",
-    "netmiko",
-    "netutils",
-    "pan-os-python",
-]
-nautobot = ["nautobot"]
+# Used for local development
+nautobot = "^2.0.0"
 
 [tool.poetry.group.dev.dependencies]
-pylint-nautobot = "^0.2.0"
+bandit = "*"
+black = "*"
+coverage = "*"
+django-debug-toolbar = "*"
+flake8 = "*"
+invoke = "*"
+ipython = "*"
+pydocstyle = "*"
+pylint = "*"
+pylint-django = "*"
+pylint-nautobot = "*"
+yamllint = "*"
+toml = "*"
+Markdown = "*"
+# Rendering docs to HTML
+mkdocs = "1.5.2"
+# Material for MkDocs theme
+mkdocs-material = "9.1.15"
+# Render custom markdown for version added/changed/remove notes
+mkdocs-version-annotations = "1.0.0"
+# Automatic documentation from sources, for MkDocs
+mkdocstrings = "0.22.0"
+mkdocstrings-python = "1.5.2"
 
 [tool.black]
 line-length = 120
-target-version = ['py36']
+target-version = ['py38', 'py39', 'py310', 'py311']
 include = '\.pyi?$'
 exclude = '''
 (
@@ -173,53 +79,45 @@ exclude = '''
 '''
 
 [tool.pylint.master]
-# Including the pylint_django plugin
-load-plugins=["pylint_nautobot", "pylint_django"]
+# Include the pylint_django plugin to avoid spurious warnings about Django patterns
+load-plugins="pylint_django, pylint_nautobot"
+ignore=".venv"
 
-[tool.pylint.message_control]
-disable=""",
-    django-not-configured,
-    too-few-public-methods,
-    too-many-lines,
-    too-many-ancestors,
-    nb-incorrect-base-class,
+[tool.pylint.basic]
+# No docstrings required for private methods (Pylint default), or for test_ functions, or for inner Meta classes.
+no-docstring-rgx="^(_|test_|Meta$)"
+
+[tool.pylint.messages_control]
+# Line length is enforced by Black, so pylint doesn't need to check it.
+# Pylint and Black disagree about how to format multi-line arrays; Black wins.
+disable = """,
+    line-too-long
     """
 
 [tool.pylint.miscellaneous]
-notes=""",
+# Don't flag TODO as a failure, let us commit with things that still need to be done in the code
+notes = """,
     FIXME,
     XXX,
     """
 
-[tool.pylint.design]
-max-args=6
-max-public-methods=22
-
-[tool.pylint.similarities]
-ignore-imports= true
-min-similarity-lines=0
-
-[tool.pylint.format]
-max-line-length=120
-
 [tool.pylint-nautobot]
-supported_nautobot_versions = ["2",]
+supported_nautobot_versions = [
+    "2.0.0"
+]
+
+[tool.pydocstyle]
+convention = "google"
+inherit = false
+match = "(?!__init__).*\\.py"
+match-dir = "(?!tests|migrations|development)[^\\.].*"
+# D212 is enabled by default in google convention, and complains if we have a docstring like:
+# """
+# My docstring is on the line after the opening quotes instead of on the same line as them.
+# """
+# We've discussed and concluded that we consider this to be a valid style choice.
+add_ignore = "D212"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry_core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
-
-[tool.towncrier]
-package = "nautobot_chatops"
-directory = "changes"
-filename = "docs/admin/release_notes/version_3.0.md"
-template = "development/towncrier_template.j2"
-start_string = "<!-- towncrier release notes start -->"
-issue_format = "[#{issue}](https://github.com/nautobot/nautobot-plugin-chatops/issues/{issue})"
-
-[tool.towncrier.fragment.added]
-[tool.towncrier.fragment.changed]
-[tool.towncrier.fragment.deprecated]
-[tool.towncrier.fragment.fixed]
-[tool.towncrier.fragment.removed]
-[tool.towncrier.fragment.security]
