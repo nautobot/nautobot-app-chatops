@@ -44,7 +44,7 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
                 ).nautobot_user
             except ObjectDoesNotExist:
                 logger.warning(
-                    "Could not find User matching %s - id: %s." "Add a ChatOps User to link the accounts.",
+                    "Could not find User matching %s - id: %s. Add a ChatOps User to link the accounts.",
                     self.context["user_name"],
                     self.context["user_ad_id"],
                 )

@@ -10,6 +10,8 @@ logger = logging.getLogger("rq.worker")
 
 _CONFIG = settings.PLUGINS_CONFIG["nautobot_chatops"]
 
+DEFAULT_TIMEOUT = 20
+
 
 def _get_uri(uri):
     """Validate URI schema and no trailing slash.
@@ -79,6 +81,7 @@ class Tower:  # pylint: disable=too-many-function-args
             headers=self.headers,
             data=json.dumps({"extra_vars": extra_vars}),
             verify=self.tower_verify_ssl,  # nosec
+            timeout=DEFAULT_TIMEOUT,
         )
         response.raise_for_status()
         logger.info("Job submission to Ansible Tower:")
@@ -100,6 +103,7 @@ class Tower:  # pylint: disable=too-many-function-args
             auth=(self.username, self.password),
             **kwargs,
             verify=self.tower_verify_ssl,  # nosec
+            timeout=DEFAULT_TIMEOUT,
         )
         return response.json()
 

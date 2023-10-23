@@ -144,7 +144,6 @@ class TestCheckAndEnqueue(TestCase):
         self.assertIsNone(MockDispatcher.error)
         mock_enqueue_task.assert_called_once()
 
-    # pylint: disable=no-self-use
     def setup_db(self):
         """Per-testcase database population for most test cases."""
         # Create some globally applicable access grants:

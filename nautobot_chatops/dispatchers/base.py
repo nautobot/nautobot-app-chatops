@@ -53,7 +53,7 @@ class Dispatcher:
                 ).nautobot_user
             except ObjectDoesNotExist:
                 logger.warning(
-                    "Could not find User matching %s - id: %s." "Add a ChatOps User to link the accounts.",
+                    "Could not find User matching %s - id: %s. Add a ChatOps User to link the accounts.",
                     self.context["user_name"],
                     self.context["user_id"],
                 )
@@ -240,7 +240,6 @@ class Dispatcher:
         """
         raise NotImplementedError
 
-    # pylint: disable=no-self-use
     def needs_permission_to_send_image(self):
         """Return True if this bot needs to ask the user for permission to post an image."""
         return False
@@ -326,17 +325,14 @@ class Dispatcher:
         """Markup for a mention of the username/userid specified in our context."""
         raise NotImplementedError
 
-    # pylint: disable=no-self-use
     def bold(self, text):
         """Mark text as bold."""
         return f"**{text}**"
 
-    # pylint: disable=no-self-use
     def hyperlink(self, text, url):
         """Create Hyperlinks."""
         return f"[{text}]({url})"
 
-    # pylint: disable=no-self-use
     def monospace(self, text):
         """Mark text as monospace."""
         return f"`{text}`"

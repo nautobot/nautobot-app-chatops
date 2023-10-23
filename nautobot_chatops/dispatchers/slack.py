@@ -315,7 +315,6 @@ class SlackDispatcher(Dispatcher):
             text=f"Sorry @{self.context.get('user_name')}, an error occurred :sob:\n```{exception}```",
         )
 
-    # pylint: disable=no-self-use
     def delete_message(self, response_url):
         """Delete a message that was previously sent."""
         WebhookClient(response_url).send_dict({"delete_original": "true"})
