@@ -506,7 +506,7 @@ class SlackDispatcher(Dispatcher):
         Args:
           action_id (str): Identifying string to associate with this element
           choices (list): List of (display, value) tuples
-          default (tuple: Default (display, value) to preselect
+          default (tuple): Default (display, value) to preselect
           confirm (bool): If true (and the platform supports it), prompt the user to confirm their selection
         """
         data = {
