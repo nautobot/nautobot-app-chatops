@@ -1,5 +1,7 @@
 [flake8]
 ignore =
+  F401,  # Module imported but unused
+  F811,  # Redefinition of unused name from line N
   E501,  # Line length is enforced by Black, so flake8 doesn't need to check it
   W503   # Black disagrees with this rule, as does PEP 8; Black wins
 exclude = 

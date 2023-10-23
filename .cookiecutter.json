@@ -1,6 +1,6 @@
 {
     "cookiecutter": {
-        "codeowner_github_usernames": "@nautobot/plugin-chatops",
+        "codeowner_github_usernames": "@glennmatthews @jvanderaa @smk4664 @whitej6",
         "full_name": "Network to Code, LLC",
         "email": "opensource@networktocode.com",
         "github_org": "nautobot",

@@ -55,6 +55,8 @@ namespace.configure(
                 "docker-compose.base.yml",
                 "docker-compose.redis.yml",
                 "docker-compose.postgres.yml",
+                "mattermost/docker-compose.yml",
+                "ansible/docker-compose.yml",
                 "docker-compose.dev.yml",
             ],
             "compose_http_timeout": "86400",
@@ -698,3 +700,90 @@ def tests(context, failfast=False, keepdb=False, lint_only=False):
         unittest(context, failfast=failfast, keepdb=keepdb)
         unittest_coverage(context)
     print("All tests have passed!")
+
+
+# ------------------------------------------------------------------------------
+# APP CUSTOM
+# ------------------------------------------------------------------------------
+@task
+def bootstrap_mattermost(context):
+    """Bootstrap Nautobot data to be used with Mattermost."""
+    nbshell(context, file="development/mattermost/nautobot_bootstrap.py")
+
+
+@task
+def backup_mattermost(context):
+    """Export Mattermost data to the SQL file. Certain tables are ignored."""
+    output = "./development/mattermost/dump.sql"
+
+    ignore_tables = [
+        "Audits",
+        "ChannelMemberHistory",
+        "CommandWebhooks",
+        "Posts",
+        "PostsPriority",
+        "Sessions",
+        "UploadSessions",
+    ]
+
+    base_command = [
+        "exec",
+        "--env MYSQL_PWD=mostest",
+        "--",
+        "mattermost",
+        "mysqldump",
+        "--databases mattermost_test",
+        "--compact",
+        "-u root",
+    ]
+
+    # Dump schema first
+    command = [
+        *base_command,
+        "--add-drop-database",
+        "--no-data",
+        f"> {output}",
+    ]
+    docker_compose(context, " ".join(command))
+
+    # Dump data for all tables except ignored
+    command = [
+        *base_command,
+        *(f"--ignore-table mattermost_test.{table}" for table in ignore_tables),
+        "--no-create-info",
+        "--skip-extended-insert",
+        f">> {output}",
+    ]
+    docker_compose(context, " ".join(command))
+
+
+@task
+def connect_awx_container(context, container_name="tools_awx_1"):
+    """Connect nautobot and celery containers to awx container.
+
+    Bridge network is defined in `development/ansible/docker-compose.yaml`.
+
+    To run testing awx instance, follow [instructions]
+    (https://github.com/ansible/awx/tree/devel/tools/docker-compose#getting-started)
+
+    Before running `make docker-compose` comment out `- 8080:8080` port mapping in file
+    `tools/docker-compose/ansible/roles/sources/templates/docker-compose.yml.j2` to avoid port conflict with nautobot.
+
+    After setting up awx, cd back to chatops repo and run `invoke connect-awx-container`.
+    """
+    bridge_network = f"{context.nautobot_chatops.project_name}_awx"
+    context.run(f"docker network connect --alias awx {bridge_network} {container_name}")
+    print(f"Container {container_name} connected to {bridge_network} network")
+
+
+@task(
+    help={
+        "version": "Version of Nautobot ChatOps to generate the release notes for.",
+    }
+)
+def generate_release_notes(context, version=""):
+    """Generate Release Notes using Towncrier."""
+    command = "env DJANGO_SETTINGS_MODULE=nautobot.core.settings towncrier build"
+    if version:
+        command += f" --version {version}"
+    run_command(context, command)

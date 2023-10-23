@@ -9,4 +9,6 @@ nautobot_chatops:
     - "docker-compose.base.yml"
     - "docker-compose.redis.yml"
     - "docker-compose.postgres.yml"
+    - "mattermost/docker-compose.yml"
+    - "ansible/docker-compose.yml"
     - "docker-compose.dev.yml"

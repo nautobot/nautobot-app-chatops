@@ -129,13 +129,86 @@ if not _TESTING:
 #
 
 # Enable installed Apps. Add the name of each App to the list.
-PLUGINS = ["nautobot_chatops"]
+PLUGINS = [
+    "nautobot_capacity_metrics",
+    "nautobot_chatops",
+]
 
 # Apps configuration settings. These settings are used by various Apps that the user may have installed.
 # Each key in the dictionary is the name of an installed App and its value is a dictionary of settings.
-# PLUGINS_CONFIG = {
-#     'nautobot_chatops': {
-#         'foo': 'bar',
-#         'buzz': 'bazz'
-#     }
-# }
+PLUGINS_CONFIG = {
+    "nautobot_chatops": {
+        # = Common Settings ==================
+        "restrict_help": is_truthy(os.getenv("NAUTOBOT_CHATOPS_RESTRICT_HELP")),
+        "fallback_chatops_user": os.environ.get("NAUTOBOT_CHATOPS_FALLBACK_CHATOPS_USER"),
+        # TODO: Add following settings
+        # | `delete_input_on_submission` | Removes the input prompt from the chat history after user input | No | `False` |
+        # | `send_all_messages_private` | Ensures only the person interacting with the bot sees the responses | No | `False` |
+        # | `session_cache_timeout` | Controls session cache | No | `86400` |
+        # = Chat Platforms ===================
+        # - Mattermost -----------------------
+        "enable_mattermost": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_MATTERMOST")),
+        "mattermost_api_token": os.environ.get("MATTERMOST_API_TOKEN"),
+        "mattermost_url": os.environ.get("MATTERMOST_URL"),
+        # - Microsoft Teams ------------------
+        "enable_ms_teams": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_MS_TEAMS")),
+        "microsoft_app_id": os.environ.get("MICROSOFT_APP_ID"),
+        "microsoft_app_password": os.environ.get("MICROSOFT_APP_PASSWORD"),
+        # - Slack ----------------------------
+        "enable_slack": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_SLACK")),
+        "slack_api_token": os.environ.get("SLACK_API_TOKEN"),
+        "slack_app_token": os.environ.get("SLACK_APP_TOKEN"),
+        "slack_signing_secret": os.environ.get("SLACK_SIGNING_SECRET"),
+        "slack_slash_command_prefix": os.environ.get("SLACK_SLASH_COMMAND_PREFIX", "/"),
+        # - Cisco Webex ----------------------
+        "enable_webex": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_WEBEX")),
+        "webex_msg_char_limit": int(os.getenv("WEBEX_MSG_CHAR_LIMIT", "7439")),
+        "webex_signing_secret": os.environ.get("WEBEX_SIGNING_SECRET"),
+        "webex_token": os.environ.get("WEBEX_ACCESS_TOKEN"),
+        # = Integrations =====================
+        # - Cisco ACI ------------------------
+        "enable_aci": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_ACI")),
+        "aci_creds": {x: os.environ[x] for x in os.environ if "APIC" in x},
+        # - AWX / Ansible Tower --------------
+        "enable_ansible": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_ANSIBLE")),
+        "tower_password": os.getenv("NAUTOBOT_TOWER_PASSWORD"),
+        "tower_uri": os.getenv("NAUTOBOT_TOWER_URI"),
+        "tower_username": os.getenv("NAUTOBOT_TOWER_USERNAME"),
+        "tower_verify_ssl": is_truthy(os.getenv("NAUTOBOT_TOWER_VERIFY_SSL", True)),
+        # - Arista CloudVision ---------------
+        "enable_aristacv": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_ARISTACV")),
+        "aristacv_cvaas_url": os.environ.get("ARISTACV_CVAAS_URL"),
+        "aristacv_cvaas_token": os.environ.get("ARISTACV_CVAAS_TOKEN"),
+        "aristacv_cvp_host": os.environ.get("ARISTACV_CVP_HOST"),
+        "aristacv_cvp_insecure": is_truthy(os.environ.get("ARISTACV_CVP_INSECURE")),
+        "aristacv_cvp_password": os.environ.get("ARISTACV_CVP_PASSWORD"),
+        "aristacv_cvp_username": os.environ.get("ARISTACV_CVP_USERNAME"),
+        "aristacv_on_prem": is_truthy(os.environ.get("ARISTACV_ON_PREM")),
+        # - Grafana --------------------------
+        "enable_grafana": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_GRAFANA")),
+        "grafana_url": os.environ.get("GRAFANA_URL", ""),
+        "grafana_api_key": os.environ.get("GRAFANA_API_KEY", ""),
+        "grafana_default_width": 0,
+        "grafana_default_height": 0,
+        "grafana_default_theme": "dark",
+        "grafana_default_timespan": "0",
+        "grafana_org_id": 1,
+        "grafana_default_tz": "America/Denver",
+        # - IPFabric --------------------------
+        "enable_ipfabric": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_IPFABRIC")),
+        "ipfabric_api_token": os.environ.get("IPFABRIC_API_TOKEN"),
+        "ipfabric_host": os.environ.get("IPFABRIC_HOST"),
+        "ipfabric_timeout": os.environ.get("IPFABRIC_TIMEOUT", 15),
+        "ipfabric_verify": is_truthy(os.environ.get("IPFABRIC_VERIFY", True)),
+        # - Cisco Meraki ---------------------
+        "enable_meraki": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_MERAKI")),
+        "meraki_dashboard_api_key": os.environ.get("MERAKI_API_KEY"),
+        # - Palo Alto Panorama ---------------
+        "enable_panorama": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_PANORAMA")),
+        "panorama_host": os.environ.get("PANORAMA_HOST"),
+        "panorama_password": os.environ.get("PANORAMA_PASSWORD"),
+        "panorama_user": os.environ.get("PANORAMA_USER"),
+    },
+}
+
+METRICS_ENABLED = is_truthy(os.getenv("NAUTOBOT_METRICS_ENABLED"))

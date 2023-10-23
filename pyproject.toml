@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "nautobot-chatops"
-version = "0.1.0"
-description = "Nautobot ChatOps App"
+version = "3.0.1"
+description = "A plugin providing chatbot capabilities for Nautobot"
 authors = ["Network to Code, LLC <opensource@networktocode.com>"]
 license = "Apache-2.0"
 readme = "README.md"
@@ -25,35 +25,130 @@ packages = [
     { include = "nautobot_chatops" },
 ]
 
+[tool.poetry.plugins."nautobot.workers"]
+"aci" = "nautobot_chatops.integrations.aci.worker:aci"
+"ansible" = "nautobot_chatops.integrations.ansible.worker:ansible"
+"clear" = "nautobot_chatops.workers.clear:clear"
+"cloudvision" = "nautobot_chatops.integrations.aristacv.worker:cloudvision"
+"grafana" = "nautobot_chatops.integrations.grafana.worker:grafana"
+"ipfabric" = "nautobot_chatops.integrations.ipfabric.worker:ipfabric"
+"meraki" = "nautobot_chatops.integrations.meraki.worker:cisco_meraki"
+"nautobot" = "nautobot_chatops.workers.nautobot:nautobot"
+"panorama" = "nautobot_chatops.integrations.panorama.worker:panorama"
+
 [tool.poetry.dependencies]
-python = ">=3.8,<3.12"
-# Used for local development
+Markdown = "!=3.3.5"
+PyJWT = "^2.1.0"
+PyYAML = { version = "^6.0", optional = true }
+aiodns = "^1.0"
+aiohttp = "^3.7.3"
+asgiref = "^3.4.1"
+certifi = { version = ">=2021.5.30", optional = true }
+cloudvision = { version = "^1.1", optional = true }
+cvprac = { version = "^1.0.6", optional = true }
+defusedxml = { version = "^0.7.1", optional = true }
+diffsync = { version = "^1.3.0", optional = true }
+ipaddr = { version = "^2.2.0", optional = true }
+ipfabric = { version = "~6.0.9", optional = true }
+ipfabric-diagrams = { version = "~6.0.2", optional = true }
+isodate =  { version = "^0.6.1", optional = true }
+meraki = { version = "^1.7.2", optional = true }
 nautobot = "^2.0.0"
+nautobot-capacity-metrics = "^3.0.0"
+netmiko = { version = "^4.0.0", optional = true }
+netutils = { version = "^1.1.0", optional = true }
+pan-os-python = { version = "^1.3.0", optional = true }
+prettytable = { version = "^2.1.0", optional = true }
+protobuf = { version = "^3.17", optional = true }
+pydantic = { version = "^1.8.2", optional = true }
+python = ">=3.8,<3.12"
+requests = ">=2.25.1"
+schema-enforcer = { version = "^1.2.1", optional = true }
+slack-sdk = "^3.4.2"
+termcolor = { version = "1.1.0", optional = true }
+texttable = "^1.6.2"
+webexteamssdk = "^1.3"
 
 [tool.poetry.group.dev.dependencies]
 bandit = "*"
 black = "*"
-coverage = "*"
+coverage = "~5.4"
 django-debug-toolbar = "*"
 flake8 = "*"
 invoke = "*"
 ipython = "*"
+mkdocs = "1.5.2"
+mkdocs-material = "9.1.15"
+mkdocs-version-annotations = "1.0.0"
+mkdocstrings = "0.22.0"
+mkdocstrings-python = "1.5.2"
+prybar = "*"
 pydocstyle = "*"
 pylint = "*"
 pylint-django = "*"
-pylint-nautobot = "*"
-yamllint = "*"
+pylint-nautobot = "^0.2.0"
+requests-mock = "^1.9.3"
 toml = "*"
-Markdown = "*"
-# Rendering docs to HTML
-mkdocs = "1.5.2"
-# Material for MkDocs theme
-mkdocs-material = "9.1.15"
-# Render custom markdown for version added/changed/remove notes
-mkdocs-version-annotations = "1.0.0"
-# Automatic documentation from sources, for MkDocs
-mkdocstrings = "0.22.0"
-mkdocstrings-python = "1.5.2"
+towncrier = "~22.8.0"
+yamllint = "*"
+
+[tool.poetry.extras]
+all = [
+    "PyYAML",
+    "certifi",
+    "cloudvision",
+    "cvprac",
+    "defusedxml",
+    "diffsync",
+    "ipaddr",
+    "ipfabric",
+    "ipfabric-diagrams",
+    "isodate",
+    "meraki",
+    "netmiko",
+    "netutils",
+    "pan-os-python",
+    "prettytable",
+    "protobuf",
+    "pydantic",
+    "schema-enforcer",
+    "termcolor",
+]
+aci = [
+    "prettytable",
+]
+aristacv = [
+    "certifi",
+    "cloudvision",
+    "cvprac",
+    "protobuf"
+]
+ansible = [
+    "PyYAML",
+]
+grafana = [
+    "diffsync",
+    "isodate",
+    "pydantic",
+    "schema-enforcer",
+    "termcolor",
+]
+ipfabric = [
+    "ipfabric",
+    "ipfabric-diagrams",
+    "netutils",
+]
+meraki = [
+    "meraki",
+]
+panorama = [
+    "defusedxml",
+    "ipaddr",
+    "netmiko",
+    "netutils",
+    "pan-os-python",
+]
+nautobot = ["nautobot"]
 
 [tool.black]
 line-length = 120
@@ -91,7 +186,11 @@ no-docstring-rgx="^(_|test_|Meta$)"
 # Line length is enforced by Black, so pylint doesn't need to check it.
 # Pylint and Black disagree about how to format multi-line arrays; Black wins.
 disable = """,
-    line-too-long
+    line-too-long,
+    too-few-public-methods,
+    too-many-lines,
+    too-many-ancestors,
+    nb-incorrect-base-class,
     """
 
 [tool.pylint.miscellaneous]
@@ -100,6 +199,10 @@ notes = """,
     FIXME,
     XXX,
     """
+
+[tool.pylint.similarities]
+ignore-imports = true
+min-similarity-lines = 0
 
 [tool.pylint-nautobot]
 supported_nautobot_versions = [
