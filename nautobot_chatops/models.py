@@ -13,6 +13,8 @@ from .integrations.grafana.models import Dashboard as GrafanaDashboard
 from .integrations.grafana.models import Panel as GrafanaPanel
 from .integrations.grafana.models import PanelVariable as GrafanaPanelVariable
 
+from .integrations.nso.models import CommandFilter as NSOCommandFilter
+
 from .constants import (
     COMMAND_LOG_USER_NAME_HELP_TEXT,
     COMMAND_LOG_USER_ID_HELP_TEXT,
@@ -183,4 +185,5 @@ __all__ = (
     "GrafanaDashboard",
     "GrafanaPanel",
     "GrafanaPanelVariable",
+    "NSOCommandFilter",
 )

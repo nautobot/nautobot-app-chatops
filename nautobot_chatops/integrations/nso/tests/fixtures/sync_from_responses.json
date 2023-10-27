@@ -1,0 +1,23 @@
+[
+  {
+    "url": "https://nso.test/restconf/data/tailf-ncs:devices/device=good_device/sync-from",
+    "method": "POST",
+    "status": 200,
+    "response_json": {
+      "tailf-ncs:output": {
+        "result": true
+      }
+    }
+  },
+  {
+    "url": "https://nso.test/restconf/data/tailf-ncs:devices/device=offline_device/sync-from",
+    "method": "POST",
+    "status": 200,
+    "response_json": {
+      "tailf-ncs:output": {
+        "result": false,
+        "info": "Device c3 is southbound locked"
+      }
+    }
+  }
+]
