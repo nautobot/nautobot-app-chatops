@@ -1276,7 +1276,7 @@ def init_job_form(dispatcher, job_name: str = ""):
     for field_name, field in form_items.items():
         try:
             field_type = field.widget.input_type
-        except:
+        except AttributeError:
             # Some widgets (eg: textarea) do have the `input_type` attribute
             field_type = field.widget.template_name.split("/")[-1].split(".")[0]
 
