@@ -1390,11 +1390,7 @@ def init_job_form(dispatcher, job_name: str = ""):
     #    ),
     # ]
 
-    blocks = [
-        dispatcher.markdown_block("demo ran, fin"),
-    ]
-
-    dispatcher.send_blocks(blocks)
+    # dispatcher.send_blocks(blocks)
 
     return CommandStatusChoices.STATUS_SUCCEEDED
 
