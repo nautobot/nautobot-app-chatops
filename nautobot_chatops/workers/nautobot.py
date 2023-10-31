@@ -1121,7 +1121,7 @@ def get_jobs(dispatcher, kwargs: str = ""):
 
 
 @subcommand_of("nautobot")
-def init_job(dispatcher, job_name: str, json_string_kwargs: str = "", *args):
+def init_job(dispatcher, job_name: str = "", json_string_kwargs: str = "", *args):
     """Initiate a job in Nautobot by job name.
 
     Args:
@@ -1130,6 +1130,10 @@ def init_job(dispatcher, job_name: str, json_string_kwargs: str = "", *args):
         *args (tuple): Dispatcher form will pass job args as tuple.
         #profile (str): Whether to profile the job execution.
     """
+    # Prompt the user to pick a job if they did not specify one
+    if not job_name:
+        return prompt_for_job(dispatcher, "nautobot init-job")
+
     if args:
         json_string_kwargs = "{}"
 
@@ -1163,13 +1167,13 @@ def init_job(dispatcher, job_name: str, json_string_kwargs: str = "", *args):
 
     # Parse base form fields from job class
     form_fields = []
-    for field_name, field in form_class.base_fields.items():
+    for field_name, _ in form_class.base_fields.items():  # pylint: disable=unused-variable
         if field_name.startswith("_"):
             continue
         form_fields.append(f"{field_name}")
 
     # Basic logic check with what we know, we should expect init-job-form vs init-job to parse the same base fields
-    if not len(form_fields) == len(args):
+    if len(form_fields) != len(args):
         dispatcher.send_error(
             "The form class fields and the passed init-jobs args do no match. Something went wrong parsing the base field items."
         )
@@ -1183,7 +1187,7 @@ def init_job(dispatcher, job_name: str, json_string_kwargs: str = "", *args):
     #       ideal I would prefer something similar to multi_input_dialog that passes kwargs back
     #       but ultimately we follow the same logic used to get them in both subcommands, so it is the same ordered result at runtime
     form_item_kwargs = {}
-    for index, value in enumerate(form_fields):
+    for index, _ in enumerate(form_fields):  # pylint: disable=unused-variable
         # Check if json dictionary as string. We could probably check the input types and know instead of checking if valid json string
         if args[index][0] == "{":
             try:
@@ -1303,10 +1307,6 @@ def init_job_form(dispatcher, job_name: str = ""):
                 dispatcher.send_blocks(blocks)
                 return CommandStatusChoices.STATUS_SUCCEEDED
 
-            # TODO: If results are large we need to paginate by some means?
-            elif len(query_result_items) > 30:
-                pass
-
             form_item_dialogs.append(
                 {
                     "type": field_type,
@@ -1367,30 +1367,13 @@ def init_job_form(dispatcher, job_name: str = ""):
                 }
             )
 
-    # BUG: any job with a single form item is failing? its not calling multi_input_dialog at all. But no exception either. tested multiple form types.
-    #      It seems to be a bug with multi_input_dialog somehow? This one had me stumped for a bit
+    # TODO: BUG: Single inputs will present but not submit properly with multi_input_dialog
     dispatcher.multi_input_dialog(
         command="nautobot",
         sub_command=f"init-job {job_name} {{}}",
         dialog_title=f"job {job_name} form input",
         dialog_list=form_item_dialogs,
     )
-
-    # Testing
-    # blocks = [
-    #    *dispatcher.command_response_header(
-    #        "nautobot",
-    #        "init-job",
-    #        [
-    #            ("Job Name", job_name),
-    #            ("Job Kwargs", "{}")
-    #        ],
-    #        "test..",
-    #        nautobot_logo(dispatcher),
-    #    ),
-    # ]
-
-    # dispatcher.send_blocks(blocks)
 
     return CommandStatusChoices.STATUS_SUCCEEDED
 
