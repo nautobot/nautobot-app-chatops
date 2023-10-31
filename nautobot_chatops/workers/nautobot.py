@@ -14,6 +14,7 @@ from nautobot.dcim.models import Device, DeviceType, Location, LocationType, Man
 from nautobot.ipam.models import VLAN, Prefix, VLANGroup
 from nautobot.tenancy.models import Tenant
 from nautobot.extras.models import Job, JobResult, Role, Status
+from nautobot.extras.jobs import get_job
 
 from nautobot_chatops.choices import CommandStatusChoices
 from nautobot_chatops.workers import subcommand_of, handle_subcommands
@@ -1085,10 +1086,10 @@ def get_jobs(dispatcher, kwargs: str = ""):
     """Get all jobs from Nautobot that the requesting user have view permissions for.
 
     Args:
-        kwargs (str): JSON-string array of header items to be exported.
+        kwargs (str): JSON-string array of header items to be exported. (Optional, default export is: name, id, enabled)
     """
     # Confirm kwargs is valid JSON
-    json_args = ["Name", "Id", "Enabled"]
+    json_args = ["name", "id", "enabled"]
     try:
         if kwargs:
             json_args = json.loads(kwargs)
@@ -1096,14 +1097,19 @@ def get_jobs(dispatcher, kwargs: str = ""):
         dispatcher.send_error(f"Invalid JSON-string, cannot decode: {kwargs}")
         return (CommandStatusChoices.STATUS_FAILED, f"Invalid JSON-string, cannot decode: {kwargs}")
 
+    # confirm `name` is always present in export
+    name_key = json_args.get("name") or json_args.get("Name")
+    if not name_key:
+        json_args.append("name")
+
     jobs = Job.objects.restrict(dispatcher.user, "view").all()
 
     # Check if all items in json_args are valid keys (assuming all keys of job object are valid)
     valid_keys = [attr for attr in dir(Job) if not callable(getattr(Job, attr)) and not attr.startswith("_")]
     for item in json_args:
-        if item not in valid_keys:
-            dispatcher.send_error(f"Invalid item provided: {item}")
-            return (CommandStatusChoices.STATUS_FAILED, f"Invalid item provided: {item}")
+        if item.lower() not in valid_keys:
+            dispatcher.send_error(f"Invalid item provided: {item.lower()}")
+            return (CommandStatusChoices.STATUS_FAILED, f"Invalid item provided: {item.lower()}")
 
     # TODO: Check json_args are all valid keys
     header = [item.capitalize() for item in json_args]
@@ -1115,22 +1121,26 @@ def get_jobs(dispatcher, kwargs: str = ""):
 
 
 @subcommand_of("nautobot")
-def init_job(dispatcher, job_name: str, kwargs: str = ""):
+def init_job(dispatcher, job_name: str, json_string_kwargs: str = "", *args):
     """Initiate a job in Nautobot by job name.
 
     Args:
         job_name (str): Name of Nautobot job to run.
-        kwargs (str): JSON-string dictionary for input keyword arguments for job run.
+        json_string_kwargs (str): JSON-string dictionary for input keyword arguments for job run.
+        *args (tuple): Dispatcher form will pass job args as tuple.
         #profile (str): Whether to profile the job execution.
     """
+    if args:
+        json_string_kwargs = "{}"
+
     # Confirm kwargs is valid JSON
     json_args = {}
     try:
-        if kwargs:
-            json_args = json.loads(kwargs)
+        if json_string_kwargs:
+            json_args = json.loads(json_string_kwargs)
     except json.JSONDecodeError:
-        dispatcher.send_error(f"Invalid JSON-string, cannot decode: {kwargs}")
-        return (CommandStatusChoices.STATUS_FAILED, f"Invalid JSON-string, cannot decode: {kwargs}")
+        dispatcher.send_error(f"Invalid JSON-string, cannot decode: {json_string_kwargs}")
+        return (CommandStatusChoices.STATUS_FAILED, f"Invalid JSON-string, cannot decode: {json_string_kwargs}")
 
     profile = False
     if json_args.get("profile") and json_args["profile"] is True:
@@ -1148,20 +1158,61 @@ def init_job(dispatcher, job_name: str, kwargs: str = ""):
         return (CommandStatusChoices.STATUS_FAILED, f'Job "{job_name}" is not enabled')
 
     job_class_path = job_model.class_path
+    job_class = get_job(job_model.class_path)
+    form_class = job_class.as_form()
 
-    # TODO: Check if json_args keys are valid for this job model
+    # Parse base form fields from job class
+    form_fields = []
+    for field_name, field in form_class.base_fields.items():
+        if field_name.startswith("_"):
+            continue
+        form_fields.append(f"{field_name}")
+
+    # Basic logic check with what we know, we should expect init-job-form vs init-job to parse the same base fields
+    if not len(form_fields) == len(args):
+        dispatcher.send_error(
+            "The form class fields and the passed init-jobs args do no match. Something went wrong parsing the base field items."
+        )
+        return (
+            CommandStatusChoices.STATUS_FAILED,
+            "The form class fields and the passed init-jobs args do no match. Something went wrong parsing the base field items.",
+        )
+
+    # Convert positional args to kwargs
+    # TODO: we might just pass the job the positional args we already have
+    #       ideal I would prefer something similar to multi_input_dialog that passes kwargs back
+    #       but ultimately we follow the same logic used to get them in both subcommands, so it is the same ordered result at runtime
+    form_item_kwargs = {}
+    for index, value in enumerate(form_fields):
+        # Check if json dictionary as string. We could probably check the input types and know instead of checking if valid json string
+        if args[index][0] == "{":
+            try:
+                json_arg = json.loads(args[index])
+                if not json_arg.get("id"):
+                    dispatcher.send_error("Form field arg is JSON dictionary, and has no `id` key.")
+                    return (
+                        CommandStatusChoices.STATUS_FAILED,
+                        "Form field arg is JSON dictionary, and has no `id` key.",
+                    )
+                form_item_kwargs[form_fields[index]] = json_arg.get("id")
+                continue
+            except json.JSONDecodeError:
+                form_item_kwargs[form_fields[index]] = args[index]
+                continue
+        form_item_kwargs[form_fields[index]] = args[index]
+
     job_result = JobResult.execute_job(
         job_model=job_model,
         user=dispatcher.user,
         profile=profile,
-        **json_args,
+        **form_item_kwargs,
     )
 
     if job_result and job_result.status == "FAILURE":
         dispatcher.send_error(f"The requested job {job_name} failed to initiate. Result: {job_result.result}")
         return (CommandStatusChoices.STATUS_FAILED, f'Job "{job_name}" failed to initiate. Result: {job_result.result}')
 
-    # TODO: need base-domain, this yields: /extras/job-results/<job_id>/
+    # TODO: Need base-domain, this yields: /extras/job-results/<job_id>/
     job_url = job_result.get_absolute_url()
     blocks = [
         dispatcher.markdown_block(
@@ -1172,6 +1223,187 @@ def init_job(dispatcher, job_name: str, kwargs: str = ""):
     dispatcher.send_blocks(blocks)
 
     return CommandStatusChoices.STATUS_SUCCEEDED
+
+
+@subcommand_of("nautobot")
+def init_job_form(dispatcher, job_name: str = ""):
+    """Send job form as a multi-input dialog. On form submit it initiates the job with the form arguments.
+
+    Args:
+        job_name (str): Name of Nautobot job to run.
+    """
+    # Prompt the user to pick a job if they did not specify one
+    if not job_name:
+        return prompt_for_job(dispatcher, "nautobot init-job-form")
+
+    # Get jobs available to user
+    try:
+        job = Job.objects.restrict(dispatcher.user, "view").get(name=job_name)
+    except Job.DoesNotExist:
+        blocks = [
+            dispatcher.markdown_block(
+                f"Job {job_name} does not exist or requesting user {dispatcher.user} does not have permissions to run job."
+            ),
+        ]
+        dispatcher.send_blocks(blocks)
+        return CommandStatusChoices.STATUS_SUCCEEDED
+
+    except Job.MultipleObjectsReturned:
+        blocks = [
+            dispatcher.markdown_block(f"Multiple jobs found by name {job_name}."),
+        ]
+        dispatcher.send_blocks(blocks)
+        return CommandStatusChoices.STATUS_SUCCEEDED
+
+    if not job.enabled:
+        blocks = [
+            dispatcher.markdown_block(f"Job {job_name} is not enabled. The job must be enabled to be ran."),
+        ]
+        dispatcher.send_blocks(blocks)
+        return CommandStatusChoices.STATUS_SUCCEEDED
+
+    job_class = get_job(job.class_path)
+    form_class = job_class.as_form()
+
+    # Parse base form fields from job class
+    form_items = {}
+    for field_name, field in form_class.base_fields.items():
+        if field_name.startswith("_"):
+            continue
+        form_items[field_name] = field
+
+    form_item_dialogs = []
+    for field_name, field in form_items.items():
+        try:
+            field_type = field.widget.input_type
+        except:
+            # Some widgets (eg: textarea) do have the `input_type` attribute
+            field_type = field.widget.template_name.split("/")[-1].split(".")[0]
+
+        if field_type == "select":
+            if not hasattr(field, "choices"):
+                blocks = [
+                    dispatcher.markdown_block(f"Job {job_name} field {field} has no attribute `choices`."),
+                ]
+                dispatcher.send_blocks(blocks)
+                return CommandStatusChoices.STATUS_SUCCEEDED
+
+            query_result_items = []
+            for choice, value in field.choices:
+                query_result_items.append(
+                    (value, f'{{"field_name": "{field_name}", "value": "{value}", "id": "{str(choice)}"}}')
+                )
+
+            if len(query_result_items) == 0 and field.required:
+                blocks = [
+                    dispatcher.markdown_block(
+                        f"Job {job_name} for {field_name} is required, however no choices populated for dialog choices."
+                    ),
+                ]
+                dispatcher.send_blocks(blocks)
+                return CommandStatusChoices.STATUS_SUCCEEDED
+
+            # TODO: If results are large we need to paginate by some means?
+            elif len(query_result_items) > 30:
+                pass
+
+            form_item_dialogs.append(
+                {
+                    "type": field_type,
+                    "label": f"{field_name}: {field.help_text}",
+                    "choices": query_result_items,
+                    "default": query_result_items[0] if query_result_items else ("", ""),
+                    "confirm": False,
+                }
+            )
+
+        elif field_type == "text":
+            default_value = field.initial
+            form_item_dialogs.append(
+                {
+                    "type": field_type,
+                    "label": f"{field_name}: {field.help_text}",
+                    "default": default_value,
+                    "confirm": False,
+                }
+            )
+
+        elif field_type == "number":
+            # TODO: Can we enforce numeric-character mask for widget input?
+            default_value = field.initial
+            form_item_dialogs.append(
+                {
+                    "type": "text",
+                    "label": f"{field_name}: {field.help_text} *integer values only*",
+                    "default": default_value,
+                    "confirm": False,
+                }
+            )
+
+        elif field_type == "checkbox":
+            # TODO: Is there a checkbox widget?
+            default_value = ("False", "false")
+            if field.initial:
+                default_value = ("True", "true")
+            form_item_dialogs.append(
+                {
+                    "type": "select",
+                    "label": f"{field_name}: {field.help_text}",
+                    "choices": [("True", "true"), ("False", "false")],
+                    "default": default_value,
+                    "confirm": False,
+                }
+            )
+
+        elif field_type == "textarea":
+            # TODO: Is there a multi-line text input widget
+            default_value = field.initial
+            form_item_dialogs.append(
+                {
+                    "type": "text",
+                    "label": f"{field_name}: {field.help_text}",
+                    "default": default_value,
+                    "confirm": False,
+                }
+            )
+
+    # BUG: any job with a single form item is failing? its not calling multi_input_dialog at all. But no exception either. tested multiple form types.
+    #      It seems to be a bug with multi_input_dialog somehow? This one had me stumped for a bit
+    dispatcher.multi_input_dialog(
+        command="nautobot",
+        sub_command=f"init-job {job_name} {{}}",
+        dialog_title=f"job {job_name} form input",
+        dialog_list=form_item_dialogs,
+    )
+
+    # Testing
+    # blocks = [
+    #    *dispatcher.command_response_header(
+    #        "nautobot",
+    #        "init-job",
+    #        [
+    #            ("Job Name", job_name),
+    #            ("Job Kwargs", "{}")
+    #        ],
+    #        "test..",
+    #        nautobot_logo(dispatcher),
+    #    ),
+    # ]
+
+    blocks = [
+        dispatcher.markdown_block("demo ran, fin"),
+    ]
+
+    dispatcher.send_blocks(blocks)
+
+    return CommandStatusChoices.STATUS_SUCCEEDED
+
+
+def prompt_for_job(dispatcher, command):
+    """Prompt the user to select a Nautobot Job."""
+    jobs = Job.objects.restrict(dispatcher.user, "view").all()
+    dispatcher.prompt_from_menu(command, "Select a Nautobot Job", [(job.name, job.name) for job in jobs])
+    return False
 
 
 @subcommand_of("nautobot")
