@@ -93,6 +93,7 @@ plugins:
           paths: ["."]
           options:
             show_root_heading: true
+  - "include-markdown"
 watch:
   - "README.md"
 
