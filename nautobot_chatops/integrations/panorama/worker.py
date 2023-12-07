@@ -1,4 +1,4 @@
-"""Example rq worker to handle /panorama chat commands with 1 subcommand addition."""
+"""Example worker to handle /panorama chat commands with 1 subcommand addition."""
 import logging
 import os
 import re

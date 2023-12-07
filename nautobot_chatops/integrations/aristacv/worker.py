@@ -33,7 +33,7 @@ from .utils import (
 )
 
 
-logger = logging.getLogger("rq.worker")
+logger = logging.getLogger(__name__)
 dir_path = os.path.dirname(os.path.realpath(__file__))
 CLOUDVISION_LOGO_PATH = "nautobot_cloudvision/cloudvision_logo.png"
 CLOUDVISION_LOGO_ALT = "CloudVision Logo"

@@ -14,7 +14,7 @@ Before configuring the integration, please ensure the following:
 
 ## Command Setup
 
-Create a top-level command named `aristacv` in your enabled chat platform. For detailed instructions related to your specific chat platform, refer to the [platform specific set up](./index.md#chat-platforms-configuration).
+Create a top-level command named `cloudvision` in your enabled chat platform. For detailed instructions related to your specific chat platform, refer to the [platform specific set up](./index.md#chat-platforms-configuration).
 
 ## Configuration
 
@@ -22,7 +22,7 @@ You must define the following values in your `nautobot_config.py` file:
 
 | Configuration Setting  | Mandatory? | Default               | Available on Admin Config |
 | ---------------------- | ---------- | --------------------- | ------------------------- |
-| `enable_aristacv`      | **Yes**    | False                 | Yes                       |
+| `enable_cloudvision`   | **Yes**    | False                 | Yes                       |
 | `aristacv_cvaas_url`   | No         | "www.arista.io:443"   | No                        |
 | `aristacv_cvaas_token` | No         | None                  | No                        |
 | `aristacv_cvp_host`    | No         | None                  | No                        |
@@ -39,7 +39,7 @@ PLUGINS = ["nautobot_chatops"]
 PLUGINS_CONFIG = {
     "nautobot_chatops": {
         ...
-        "enable_aristacv": True,
+        "enable_cloudvision": True,
         "aristacv_cvaas_url": os.environ.get("ARISTACV_CVAAS_URL"),
         "aristacv_cvaas_token": os.environ.get("ARISTACV_CVAAS_TOKEN"),
         "aristacv_cvp_host": os.environ.get("ARISTACV_CVP_HOST"),
@@ -98,7 +98,7 @@ Once you have updated your environment file, restart both nautobot and nautobot-
         # }
         "nautobot_chatops": {
             # Enable Arista CloudVision integration
-            "enable_aristacv": True,
+            "enable_cloudvision": True,
             "aristacv_cvaas_url": os.environ.get("ARISTACV_CVAAS_URL"),
             "aristacv_cvaas_token": os.environ.get("ARISTACV_CVAAS_TOKEN"),
             "aristacv_cvp_host": os.environ.get("ARISTACV_CVP_HOST"),
