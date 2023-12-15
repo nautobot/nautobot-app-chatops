@@ -6,7 +6,7 @@ from urllib.parse import urlparse
 from django.conf import settings
 import requests
 
-logger = logging.getLogger("rq.worker")
+logger = logging.getLogger(__name__)
 
 _CONFIG = settings.PLUGINS_CONFIG["nautobot_chatops"]
 

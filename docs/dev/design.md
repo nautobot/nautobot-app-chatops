@@ -90,7 +90,7 @@ The design goal of this plugin is to be able to write chatbot commands once and 
  |-- User input ->|               |
  |                |-- HTTP POST ->|
  |                |               | nautobot_chatops/views/*
- |                |               |-- Enqueue job,dispatcher to RQ --> <queue>
+ |                |               |-- Enqueue job,dispatcher to Celery --> <queue>
  |                |<---- 200 OK --|
  |<- "Received" --|
 ```

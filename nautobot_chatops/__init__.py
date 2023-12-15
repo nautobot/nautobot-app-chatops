@@ -129,7 +129,7 @@ class NautobotChatOpsConfig(NautobotAppConfig):
         "enable_webex": ConstanceConfigItem(default=False, help_text="Enable Webex Chat Platform.", field_type=bool),
         "enable_aci": ConstanceConfigItem(default=False, help_text="Enable Cisco ACI Integration.", field_type=bool),
         "enable_ansible": ConstanceConfigItem(default=False, help_text="Enable Ansible Integration.", field_type=bool),
-        "enable_aristacv": ConstanceConfigItem(
+        "enable_cloudvision": ConstanceConfigItem(
             default=False, help_text="Enable Arista CloudVision Integration.", field_type=bool
         ),
         "enable_grafana": ConstanceConfigItem(default=False, help_text="Enable Grafana Integration.", field_type=bool),
