@@ -169,7 +169,9 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
             json=content,
             timeout=15,
         )
-        logger.debug("DEBUG: _send() response %s", response.json())
+        logger.debug("DEBUG: _send() response %s", response.status_code)
+        logger.debug("DEBUG: _send() reason %s", response.reason)
+        response.raise_for_status()
         return response
 
     def send_large_table(self, header, rows, title=None):
