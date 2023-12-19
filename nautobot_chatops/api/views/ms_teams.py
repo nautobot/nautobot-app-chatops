@@ -2,6 +2,7 @@
 
 import json
 import re
+import logging
 
 import requests
 import jwt
@@ -16,6 +17,8 @@ from nautobot_chatops.workers import get_commands_registry, commands_help, parse
 from nautobot_chatops.dispatchers.ms_teams import MSTeamsDispatcher
 from nautobot_chatops.utils import check_and_enqueue_command
 
+
+logger = logging.getLogger(__name__)
 
 APP_ID = settings.PLUGINS_CONFIG["nautobot_chatops"]["microsoft_app_id"]
 
@@ -150,6 +153,8 @@ class MSTeamsMessagesView(View):
             "tenant_id": body["channelData"]["tenant"]["id"],
             "is_group": body["conversation"].get("isGroup", False),
         }
+
+        logger.debug("DEBUG: post context %s", context)
 
         if context["org_id"]:
             # Get the organization name as well
