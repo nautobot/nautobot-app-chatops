@@ -149,13 +149,10 @@ class MSTeamsMessagesView(View):
             "bot_name": body["recipient"]["name"],
             "bot_role": body["recipient"].get("role"),
             "message_id": body["id"],
-            "service_url": body["serviceUrl"],
+            "service_url": body["serviceUrl"].rstrip("/"),
             "tenant_id": body["channelData"]["tenant"]["id"],
             "is_group": body["conversation"].get("isGroup", False),
         }
-
-        # Update service_url if ending with a slash
-        context["service_url"] = context["service_url"].strip("/")
 
         logger.debug("DEBUG: post context %s", context)
 
