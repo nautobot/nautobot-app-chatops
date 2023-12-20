@@ -154,6 +154,10 @@ class MSTeamsMessagesView(View):
             "is_group": body["conversation"].get("isGroup", False),
         }
 
+        # Update service_url if ending with a slash due to failures with requests
+        if context["service_url"].endswith("/"):
+            context["service_url"] = context["service_url"].strip("/")
+
         logger.debug("DEBUG: post context %s", context)
 
         if context["org_id"]:
