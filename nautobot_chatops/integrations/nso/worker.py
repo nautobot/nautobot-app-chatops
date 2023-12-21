@@ -13,9 +13,7 @@ from nautobot_chatops.integrations.nso.models import CommandFilter
 
 def nso_logo(dispatcher):
     """Construct an image_element containing the locally hosted Cisco NSO logo."""
-    return dispatcher.image_element(
-        dispatcher.static_url("nso/nso-logo.png"), alt_text="Cisco NSO Logo"
-    )
+    return dispatcher.image_element(dispatcher.static_url("nso/nso-logo.png"), alt_text="Cisco NSO Logo")
 
 
 def nso(subcommand, **kwargs):

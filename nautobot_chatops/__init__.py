@@ -147,9 +147,7 @@ class NautobotChatOpsConfig(NautobotAppConfig):
         "enable_panorama": ConstanceConfigItem(
             default=False, help_text="Enable Panorama Integration.", field_type=bool
         ),
-        "enable_nso": ConstanceConfigItem(
-            default=False, help_text="Enable NSO Integration.", field_type=bool
-        ),
+        "enable_nso": ConstanceConfigItem(default=False, help_text="Enable NSO Integration.", field_type=bool),
     }
 
     caching_config = {}

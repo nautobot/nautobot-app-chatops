@@ -5,7 +5,12 @@ import requests
 from django.conf import settings
 from rest_framework import status
 
-from nautobot_chatops.integrations.nso.exceptions import CommunicationError, DeviceNotFound, DeviceNotSupported, DeviceLocked
+from nautobot_chatops.integrations.nso.exceptions import (
+    CommunicationError,
+    DeviceNotFound,
+    DeviceNotSupported,
+    DeviceLocked,
+)
 
 
 logger = logging.getLogger("nautobot.plugin.nso")
