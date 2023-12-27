@@ -35,7 +35,7 @@ This project is managed by [Python Poetry](https://python-poetry.org/) and has a
 Once you have Poetry and Docker installed you can run the following commands (in the root of the repository) to install all other development dependencies in an isolated Python virtual environment:
 
 ```shell
-git clone git@github.com:nautobot/nautobot-plugin-chatops.git
+git clone git@github.com:nautobot/nautobot-app-chatops.git
 cd nautobot-plugin-chatops
 poetry shell
 poetry install
@@ -135,8 +135,8 @@ Each command can be executed with `invoke <command>`. All commands support the a
   flake8           Run flake8 to check that Python files adhere to its style standards.
   pydocstyle       Run pydocstyle to validate docstring formatting adheres to NTC defined standards.
   pylint           Run pylint code analysis.
-  tests            Run all tests for this plugin.
-  unittest         Run Django unit tests for the plugin.
+  tests            Run all tests for this app.
+  unittest         Run Django unit tests for the app.
 ```
 
 ## Project Overview
@@ -298,9 +298,9 @@ This will safely shut down all of your running Docker containers for this projec
 
 Your environment should now be fully setup, all necessary Docker containers are created and running, and you're logged into Nautobot in your web browser. Now what?
 
-Now you can start developing your plugin in the project folder!
+Now you can start developing your app in the project folder!
 
-The magic here is the root directory is mounted inside your Docker containers when built and ran, so **any** changes made to the files in here are directly updated to the Nautobot plugin code running in Docker. This means that as you modify the code in your plugin folder, the changes will be instantly updated in Nautobot.
+The magic here is the root directory is mounted inside your Docker containers when built and ran, so **any** changes made to the files in here are directly updated to the Nautobot app code running in Docker. This means that as you modify the code in your app folder, the changes will be instantly updated in Nautobot.
 
 !!! warning
 	There are a few exceptions to this, as outlined in the section [To Rebuild or Not To Rebuild](#to-rebuild-or-not-to-rebuild).
@@ -350,7 +350,7 @@ Once completed, the new/updated environment variables should now be live.
 
 ### Installing Additional Python Packages
 
-If you want your plugin to leverage another available Nautobot plugin or another Python package, you can easily add them into your Docker environment.
+If you want your app to leverage another available Nautobot app or another Python package, you can easily add them into your Docker environment.
 
 ```bash
 ➜ poetry shell
@@ -365,18 +365,18 @@ Once the dependencies are resolved, stop the existing containers, rebuild the Do
 ➜ invoke start
 ```
 
-### Installing Additional Nautobot Plugins
+### Installing Additional Nautobot Apps
 
-Let's say for example you want the new plugin you're creating to integrate into Nautobot ChatOps. To do this, you will want to integrate into the existing Nautobot ChatOps Plugin.
+Let's say for example you want the new app you're creating to integrate into Nautobot ChatOps. To do this, you will want to integrate into the existing Nautobot ChatOps App.
 
 ```bash
 ➜ poetry shell
 ➜ poetry add nautobot-chatops
 ```
 
-Once you activate the virtual environment via Poetry, you then tell Poetry to install the new plugin.
+Once you activate the virtual environment via Poetry, you then tell Poetry to install the new app.
 
-Before you continue, you'll need to update the file `development/nautobot_config.py` accordingly with the name of the new plugin under `PLUGINS` and any relevant settings as necessary for the plugin under `PLUGINS_CONFIG`. Since you're modifying the underlying OS (not just Django files), you need to rebuild the image. This is a similar process to updating environment variables, which was explained earlier.
+Before you continue, you'll need to update the file `development/nautobot_config.py` accordingly with the name of the new app under `PLUGINS` and any relevant settings as necessary for the app under `PLUGINS_CONFIG`. Since you're modifying the underlying OS (not just Django files), you need to rebuild the image. This is a similar process to updating environment variables, which was explained earlier.
 
 ```bash
 ➜ invoke stop
@@ -384,7 +384,7 @@ Before you continue, you'll need to update the file `development/nautobot_config
 ➜ invoke start
 ```
 
-Once the containers are up and running, you should now see the new plugin installed in your Nautobot instance.
+Once the containers are up and running, you should now see the new app installed in your Nautobot instance.
 
 !!! note
     You can even launch `ngrok` service locally on your laptop, pointing to port 8080 (such as for ChatOps development), and it will point traffic directly to your Docker images.

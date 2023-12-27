@@ -1,4 +1,4 @@
-"""Django urlpatterns declaration for nautobot_chatops.integrations.grafana plugin."""
+"""Django urlpatterns declaration for nautobot_chatops.integrations.grafana app."""
 
 from nautobot.apps.api import OrderedDefaultRouter
 from nautobot.apps.config import get_app_settings_or_config

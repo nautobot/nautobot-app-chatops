@@ -1,4 +1,4 @@
-"""Static variables used in plugin."""
+"""Static variables used in app."""
 
 COMMAND_LOG_USER_NAME_HELP_TEXT = "Invoking username"
 COMMAND_LOG_USER_ID_HELP_TEXT = "Invoking user ID"

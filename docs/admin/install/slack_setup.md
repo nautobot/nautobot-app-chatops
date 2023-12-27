@@ -18,7 +18,7 @@ For now, take a mental note that in this section where we are configuring the Sl
 Example config snippet from `nautobot_config.py` for configuring ChatOps with Slack:
 
 ```python
-# Enable installed plugins. Add the name of each plugin to the list.
+# Enable installed apps. Add the name of each app to the list.
 PLUGINS = ["nautobot_chatops"]
 
 PLUGINS_CONFIG = {
@@ -32,13 +32,13 @@ PLUGINS_CONFIG = {
 
 !!! info
     Optional: Logos rely on Slack being able to access the Static URL provided by Nautobot. If you are running
-    Slack in Socket Mode, Nautobot ChatOps Plugin will need you to specify where the static files are hosted.
+    Slack in Socket Mode, Nautobot ChatOps App will need you to specify where the static files are hosted.
     This is helpful for giving Slack access to only the server hosting Nautobot Static Files. To configure the
     static files host, use `slack_socket_static_host` ex. `slack_socket_static_host: 'https://example.com/static/'`.
 
 ## Connecting to Slack
 
-The Nautobot ChatOps plugin supports two methods of communicating with Slack.
+The Nautobot ChatOps app supports two methods of communicating with Slack.
 
 1. Incoming Webhooks
 2. Socket Mode
@@ -48,7 +48,7 @@ The Nautobot ChatOps plugin supports two methods of communicating with Slack.
 
 ### Webhooks vs. Socket Mode
 
-With incoming webhooks, whenever a user sends a message to the bot via the client application (phone or desktop app), (1) the connection is initiated from the client, and the message gets sent to Slack's cloud. The Slack servers then initiate a connection to the ChatOps plugin running on the Nautobot server (2). Since this is a new, incoming connection, it must be port forwarded and allowed through any firewalls in your network between the internet and your Nautobot server (3). Nautobot then replies to the existing connection to Slack, which in turn forwards the response to the client.
+With incoming webhooks, whenever a user sends a message to the bot via the client application (phone or desktop app), (1) the connection is initiated from the client, and the message gets sent to Slack's cloud. The Slack servers then initiate a connection to the ChatOps app running on the Nautobot server (2). Since this is a new, incoming connection, it must be port forwarded and allowed through any firewalls in your network between the internet and your Nautobot server (3). Nautobot then replies to the existing connection to Slack, which in turn forwards the response to the client.
 
 ![Chatops Slack Webhooks Mode](../../images/chatops-slack-webhooks-mode.png)
 
@@ -64,7 +64,7 @@ While there are sufficient ways of securing inbound API requests from the public
 
 1. Log in to [https://api.slack.com/apps](https://api.slack.com/apps) and select "Create New App". Select "From an app manifest."
 2. Select your preferred Slack workspace for your app.
-3. In the window titled "Enter app manifest below," select the "YAML" formatting tab and copy/paste the contents of file [nautobot_slack_manifest.yml](https://github.com/nautobot/nautobot-plugin-chatops/blob/develop/setup_files/nautobot_slack_manifest.yml) from this repo. Update the below settings, then click Next.
+3. In the window titled "Enter app manifest below," select the "YAML" formatting tab and copy/paste the contents of file [nautobot_slack_manifest.yml](https://github.com/nautobot/nautobot-app-chatops/blob/develop/setup_files/nautobot_slack_manifest.yml) from this repo. Update the below settings, then click Next.
    - On line 5, you can change the name of the Chatbot here. By default it is set to `Nautobot`
    - If using Socket mode:
       - On line 34, update `socket_mode_enabled` to `true`
@@ -85,7 +85,7 @@ While there are sufficient ways of securing inbound API requests from the public
 8. Under Settings --> Install App, copy the `Bot User OAuth Token` here. This will be needed later for setting `SLACK_API_TOKEN`.
 9. Continue with below section "Post App-Creation Steps"
 
-> **Optional:** You can configure the App Icon on the General --> Basic Information page. Under `App Icon`, select "Choose File." You can use the supplied icon [nautobot_chatops_icon.png](https://github.com/nautobot/nautobot-plugin-chatops/blob/develop/setup_files/nautobot_chatops_icon.png).
+> **Optional:** You can configure the App Icon on the General --> Basic Information page. Under `App Icon`, select "Choose File." You can use the supplied icon [nautobot_chatops_icon.png](https://github.com/nautobot/nautobot-app-chatops/blob/develop/setup_files/nautobot_chatops_icon.png).
 
 ## Post App-Creation Steps
 
@@ -149,7 +149,7 @@ They will be differentiated in the workspace using the `slack_slash_command_pref
 Here is an example `nautobot_config.py` for the first Nautobot chatbot implementation in the workspace. This chatbot will be called in the workspace using `/nautobot`.
 
 ```python
-# Enable installed plugins. Add the name of each plugin to the list.
+# Enable installed apps. Add the name of each app to the list.
 PLUGINS = ["nautobot_chatops"]
 
 PLUGINS_CONFIG = {
@@ -166,7 +166,7 @@ This configuration explicitly configures the `slack_slash_command_prefix` key/va
 This chatbot will be called in the workspace using `/network2-nautobot`.
 
 ```python
-# Enable installed plugins. Add the name of each plugin to the list.
+# Enable installed apps. Add the name of each app to the list.
 PLUGINS = ["nautobot_chatops"]
 
 PLUGINS_CONFIG = {
@@ -186,7 +186,7 @@ PLUGINS_CONFIG = {
 
 ## General Chat Setup Instructions
 
-See [admin_install](index.md) instructions here for general plugin setup instructions.
+See [admin_install](index.md) instructions here for general app setup instructions.
 
 ## Startup Slack Sockets (Socket Mode)
 
@@ -277,7 +277,7 @@ While this method is still possible, we recommend using the App Manifest method 
 > `/network2-nautobot` command would have a `slack_slash_command_prefix` of `/network2-`
 
 4. On the "Basic Information" page for your app, under "App Credentials", find the "Signing Secret" and click "Show".
-   You will need to configure this value for the plugin as the `slack_signing_secret` value, such as through an
+   You will need to configure this value for the app as the `slack_signing_secret` value, such as through an
    `.env` file. If this value is not correctly configured, the bot will be unable to validate that inbound
    notifications it receives have been properly signed by the Slack server.
 5. In the sidebar to the left, select "OAuth & Permissions".
@@ -295,7 +295,7 @@ While this method is still possible, we recommend using the App Manifest method 
      - `mpim:read`
    - At the top of this page, select "Install App to Workspace" and confirm it.
    - There should now be a "Bot User OAuth Access Token" displayed, typically a string starting with `xoxb-`.
-     You will need to configure this value for the plugin as the `slack_api_token` value, either directly or through an
+     You will need to configure this value for the app as the `slack_api_token` value, either directly or through an
      `.env` file. If this value is not properly configured, the bot will be unable to send content to the user.
 6. Returning to the "Basic Information" page for your app, under "Display Information", you can specify the name,
    description, icon, and accent/background color for the app. You can use the `nautobot_logo.png` from this

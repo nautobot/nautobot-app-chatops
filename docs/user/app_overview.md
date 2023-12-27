@@ -7,7 +7,7 @@ This document provides an overview of the App including critical information and
 
 ## Description
 
-The ChatOps framework provides Network Engineers power to query Nautobot or their Network (through ChatOps plugins) while staying within their preferred Chat application. The goal of ChatOps is to bring people, processes and Automation together.
+The ChatOps framework provides Network Engineers power to query Nautobot or their Network (through ChatOps apps) while staying within their preferred Chat application. The goal of ChatOps is to bring people, processes and Automation together.
 
 {%
     include-markdown '../glossary.md'

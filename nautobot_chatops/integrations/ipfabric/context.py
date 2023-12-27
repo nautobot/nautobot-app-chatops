@@ -5,7 +5,7 @@ from nautobot_chatops import NautobotChatOpsConfig
 
 
 def _get_cache_key(user: str) -> str:
-    """Key generator for the cache, adding the plugin prefix name."""
+    """Key generator for the cache, adding the app prefix name."""
     key_string = "-".join([NautobotChatOpsConfig.name, user])
     return hashlib.md5(key_string.encode("utf-8")).hexdigest()  # nosec
 

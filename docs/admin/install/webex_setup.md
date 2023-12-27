@@ -32,7 +32,7 @@
 
 ## Deprecation Warning
 
-As of Nautobot ChatOps Plugin v2.0.0, there are the following changes:
+As of Nautobot ChatOps App v2.0.0, there are the following changes:
 
 - The deprecated URL API path `webex_teams` has been removed. Please use `webex` as a substitute.
 - The use and deprecation warnings for the obsolete `webex_teams` App configuration entries have been removed. These entries include:
@@ -50,7 +50,7 @@ As of Nautobot ChatOps Plugin v2.0.0, there are the following changes:
     }
     ```
 
-As of Nautobot ChatOps Plugin v1.4.0, the PLUGIN_CONFIG settings for Webex has changed to align with the official renaming of `Webex Teams` to `Webex`:
+As of Nautobot ChatOps App v1.4.0, the PLUGIN_CONFIG settings for Webex has changed to align with the official renaming of `Webex Teams` to `Webex`:
 
 - `enable_webex_teams` is deprecated. Use `enable_webex` instead.
 - `webex_teams_token` is deprecated. Use `webex_token` instead.
@@ -60,4 +60,4 @@ Both settings will currently work, however support for `enable_webex_teams`, `we
 
 ## General Chat Setup Instructions
 
-See [admin_install](index.md) instructions here for general plugin setup instructions.
+See [admin_install](index.md) instructions here for general app setup instructions.
