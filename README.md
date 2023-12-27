@@ -65,13 +65,13 @@ Sign up [here](https://slack.networktocode.com/)
 
 This project includes code originally written in separate apps, which have been merged into this project:
 
-- [nautobot-plugin-chatops-aci](https://github.com/nautobot/nautobot-app-chatops-aci):
+- [nautobot-plugin-chatops-aci](https://github.com/nautobot/nautobot-plugin-chatops-aci):
     Thanks
     [@mamullen13316](https://github.com/mamullen13316),
     [@smk4664](https://github.com/smk4664),
     [@ubajze](https://github.com/ubajze),
     [@whitej6](https://github.com/whitej6),
-- [nautobot-plugin-chatops-ansible](https://github.com/nautobot/nautobot-app-chatops-ansible):
+- [nautobot-plugin-chatops-ansible](https://github.com/nautobot/nautobot-plugin-chatops-ansible):
     Thanks
     [@chipn](https://github.com/chipn),
     [@dgjustice](https://github.com/dgjustice),
@@ -81,12 +81,12 @@ This project includes code originally written in separate apps, which have been 
     [@smk4664](https://github.com/smk4664),
     [@ubajze](https://github.com/ubajze),
     [@whitej6](https://github.com/whitej6),
-- [nautobot-plugin-chatops-arista-cloudvision](https://github.com/nautobot/nautobot-app-chatops-arista-cloudvision):
+- [nautobot-plugin-chatops-arista-cloudvision](https://github.com/nautobot/nautobot-plugin-chatops-arista-cloudvision):
     Thanks
     [@qduk](https://github.com/qduk),
     [@ubajze](https://github.com/ubajze),
     [@whitej6](https://github.com/whitej6),
-- [nautobot-plugin-chatops-grafana](https://github.com/nautobot/nautobot-app-chatops-grafana):
+- [nautobot-plugin-chatops-grafana](https://github.com/nautobot/nautobot-plugin-chatops-grafana):
     Thanks
     [@jedelman8](https://github.com/jedelman8),
     [@josh-silvas](https://github.com/josh-silvas),
@@ -94,7 +94,7 @@ This project includes code originally written in separate apps, which have been 
     [@tim-fiola](https://github.com/tim-fiola),
     [@ubajze](https://github.com/ubajze),
     [@whitej6](https://github.com/whitej6),
-- [nautobot-plugin-chatops-ipfabric](https://github.com/nautobot/nautobot-app-chatops-ipfabric):
+- [nautobot-plugin-chatops-ipfabric](https://github.com/nautobot/nautobot-plugin-chatops-ipfabric):
     Thanks
     [@alhogan](https://github.com/alhogan),
     [@chadell](https://github.com/chadell),
@@ -106,7 +106,7 @@ This project includes code originally written in separate apps, which have been 
     [@smk4664](https://github.com/smk4664),
     [@ubajze](https://github.com/ubajze),
     [@whitej6](https://github.com/whitej6),
-- [nautobot-plugin-chatops-meraki](https://github.com/nautobot/nautobot-app-chatops-meraki):
+- [nautobot-plugin-chatops-meraki](https://github.com/nautobot/nautobot-plugin-chatops-meraki):
     Thanks
     [@jedelman8](https://github.com/jedelman8),
     [@jeffkala](https://github.com/jeffkala),
@@ -114,7 +114,7 @@ This project includes code originally written in separate apps, which have been 
     [@tim-fiola](https://github.com/tim-fiola),
     [@ubajze](https://github.com/ubajze),
     [@whitej6](https://github.com/whitej6),
-- [nautobot-plugin-chatops-panorama](https://github.com/nautobot/nautobot-app-chatops-panorama):
+- [nautobot-plugin-chatops-panorama](https://github.com/nautobot/nautobot-plugin-chatops-panorama):
     Thanks
     [@FragmentedPacket](https://github.com/FragmentedPacket),
     [@PhillSimonds](https://github.com/PhillSimonds),

@@ -8,7 +8,7 @@ create a separate `token` for every slash command.  Keeping the records for Matt
 `.creds.env` file would not be sustainable.  
 
 To solve this issue, the app has the option to store Command Tokens to the Nautobot Database.
-In Nautobot, open Nautobot and go to the Apps and select Command Tokens. Below is an example to
+In Nautobot, open Nautobot and go to the Plugins and select Command Tokens. Below is an example to
 get you started.
 
 ## Example: Adding tokens for Mattermost
