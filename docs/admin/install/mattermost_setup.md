@@ -39,4 +39,4 @@
 
 ## General Chat Setup Instructions
 
-See [admin_install](index.md) instructions here for general plugin setup instructions.
+See [admin_install](index.md) instructions here for general app setup instructions.

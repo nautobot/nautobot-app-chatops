@@ -64,7 +64,7 @@ class Dispatcher:
         return user
 
     def _get_cache_key(self) -> str:
-        """Key generator for the cache, adding the plugin prefix name."""
+        """Key generator for the cache, adding the app prefix name."""
         # Using __file__ as a key customization within the cache
         return "-".join([__file__, self.context.get("user_id", "generic")])
 

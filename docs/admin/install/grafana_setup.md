@@ -13,7 +13,7 @@ Before configuring the integration, please ensure the following:
 - `nautobot-chatops` App is set up with at least one [enabled chat platform](./index.md#chat-platforms-configuration) and [tested](./index.md#test-your-chatbot).
 - [Grafana](https://grafana.com/docs/grafana/latest/installation/) application installed and configured with dashboards and panels.
 - [Grafana Image Rendering Service](https://grafana.com/docs/grafana/latest/administration/image_rendering/) installed.
-- [Grafana Image Rending Plugin for Grafana](https://grafana.com/grafana/plugins/grafana-image-renderer/) installed in your Grafana application.
+- [Grafana Image Rending App for Grafana](https://grafana.com/grafana/plugins/grafana-image-renderer/) installed in your Grafana application.
 
 ## Command Setup
 

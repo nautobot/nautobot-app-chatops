@@ -1,9 +1,9 @@
 # Nautobot ChatOps
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/nautobot/nautobot-plugin-chatops/develop/docs/assets/icon-ChatOps.png" alt="ChatOps Logo" class="logo" height="200px">
+  <img src="https://raw.githubusercontent.com/nautobot/nautobot-app-chatops/develop/docs/assets/icon-ChatOps.png" alt="ChatOps Logo" class="logo" height="200px">
   <br>
-  <a href="https://github.com/nautobot/nautobot-plugin-chatops/actions"><img src="https://github.com/nautobot/nautobot-plugin-chatops/actions/workflows/ci.yml/badge.svg?branch=main"></a>
+  <a href="https://github.com/nautobot/nautobot-app-chatops/actions"><img src="https://github.com/nautobot/nautobot-app-chatops/actions/workflows/ci.yml/badge.svg?branch=main"></a>
   <a href="https://docs.nautobot.com/projects/chatops/en/latest"><img src="https://readthedocs.org/projects/nautobot-plugin-chatops/badge/"></a>
   <a href="https://pypi.org/project/nautobot-chatops/"><img src="https://img.shields.io/pypi/v/nautobot-chatops"></a>
   <a href="https://pypi.org/project/nautobot-chatops/"><img src="https://img.shields.io/pypi/dm/nautobot-chatops"></a>
@@ -25,9 +25,9 @@
     - Cisco Meraki
     - Palo Alto Panorama
 - Write a command once and run it on every supported platform, including rich content formatting.
-- Extensible - other Nautobot plugins can provide additional commands which will be dynamically discovered.
+- Extensible - other Nautobot apps can provide additional commands which will be dynamically discovered.
 - Automatic generation of basic help menus (accessed via `help`, `/command help`, or `/command sub-command help`).
-- Metrics of command usage via the `nautobot_capacity_metrics` plugin.
+- Metrics of command usage via the `nautobot_capacity_metrics` app.
 
 ## Documentation
 
@@ -63,15 +63,15 @@ Sign up [here](https://slack.networktocode.com/)
 
 ## Acknowledgements
 
-This project includes code originally written in separate plugins, which have been merged into this project:
+This project includes code originally written in separate apps, which have been merged into this project:
 
-- [nautobot-plugin-chatops-aci](https://github.com/nautobot/nautobot-plugin-chatops-aci):
+- [nautobot-plugin-chatops-aci](https://github.com/nautobot/nautobot-app-chatops-aci):
     Thanks
     [@mamullen13316](https://github.com/mamullen13316),
     [@smk4664](https://github.com/smk4664),
     [@ubajze](https://github.com/ubajze),
     [@whitej6](https://github.com/whitej6),
-- [nautobot-plugin-chatops-ansible](https://github.com/nautobot/nautobot-plugin-chatops-ansible):
+- [nautobot-plugin-chatops-ansible](https://github.com/nautobot/nautobot-app-chatops-ansible):
     Thanks
     [@chipn](https://github.com/chipn),
     [@dgjustice](https://github.com/dgjustice),
@@ -81,12 +81,12 @@ This project includes code originally written in separate plugins, which have be
     [@smk4664](https://github.com/smk4664),
     [@ubajze](https://github.com/ubajze),
     [@whitej6](https://github.com/whitej6),
-- [nautobot-plugin-chatops-arista-cloudvision](https://github.com/nautobot/nautobot-plugin-chatops-arista-cloudvision):
+- [nautobot-plugin-chatops-arista-cloudvision](https://github.com/nautobot/nautobot-app-chatops-arista-cloudvision):
     Thanks
     [@qduk](https://github.com/qduk),
     [@ubajze](https://github.com/ubajze),
     [@whitej6](https://github.com/whitej6),
-- [nautobot-plugin-chatops-grafana](https://github.com/nautobot/nautobot-plugin-chatops-grafana):
+- [nautobot-plugin-chatops-grafana](https://github.com/nautobot/nautobot-app-chatops-grafana):
     Thanks
     [@jedelman8](https://github.com/jedelman8),
     [@josh-silvas](https://github.com/josh-silvas),
@@ -94,7 +94,7 @@ This project includes code originally written in separate plugins, which have be
     [@tim-fiola](https://github.com/tim-fiola),
     [@ubajze](https://github.com/ubajze),
     [@whitej6](https://github.com/whitej6),
-- [nautobot-plugin-chatops-ipfabric](https://github.com/nautobot/nautobot-plugin-chatops-ipfabric):
+- [nautobot-plugin-chatops-ipfabric](https://github.com/nautobot/nautobot-app-chatops-ipfabric):
     Thanks
     [@alhogan](https://github.com/alhogan),
     [@chadell](https://github.com/chadell),
@@ -106,7 +106,7 @@ This project includes code originally written in separate plugins, which have be
     [@smk4664](https://github.com/smk4664),
     [@ubajze](https://github.com/ubajze),
     [@whitej6](https://github.com/whitej6),
-- [nautobot-plugin-chatops-meraki](https://github.com/nautobot/nautobot-plugin-chatops-meraki):
+- [nautobot-plugin-chatops-meraki](https://github.com/nautobot/nautobot-app-chatops-meraki):
     Thanks
     [@jedelman8](https://github.com/jedelman8),
     [@jeffkala](https://github.com/jeffkala),
@@ -114,7 +114,7 @@ This project includes code originally written in separate plugins, which have be
     [@tim-fiola](https://github.com/tim-fiola),
     [@ubajze](https://github.com/ubajze),
     [@whitej6](https://github.com/whitej6),
-- [nautobot-plugin-chatops-panorama](https://github.com/nautobot/nautobot-plugin-chatops-panorama):
+- [nautobot-plugin-chatops-panorama](https://github.com/nautobot/nautobot-app-chatops-panorama):
     Thanks
     [@FragmentedPacket](https://github.com/FragmentedPacket),
     [@PhillSimonds](https://github.com/PhillSimonds),

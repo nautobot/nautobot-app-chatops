@@ -6,7 +6,7 @@ from nautobot_chatops.integrations.grafana.models import Panel, Dashboard, Panel
 
 
 class DashboardViewTable(BaseTable):
-    """Table for rendering panels for dashboards in the grafana plugin."""
+    """Table for rendering panels for dashboards in the grafana app."""
 
     pk = ToggleColumn()
 
@@ -20,7 +20,7 @@ class DashboardViewTable(BaseTable):
 
 
 class PanelViewTable(BaseTable):
-    """Table for rendering panels for dashboards in the grafana plugin."""
+    """Table for rendering panels for dashboards in the grafana app."""
 
     pk = ToggleColumn()
 
@@ -40,7 +40,7 @@ class PanelViewTable(BaseTable):
 
 
 class PanelVariableViewTable(BaseTable):
-    """Table for rendering panel variables for dashboards in the grafana plugin."""
+    """Table for rendering panel variables for dashboards in the grafana app."""
 
     pk = ToggleColumn()
 

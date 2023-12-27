@@ -60,7 +60,7 @@ class Tower:  # pylint: disable=too-many-function-args
         self.extra_vars = {}
         if not self.uri or not self.username or not self.password:
             raise ValueError(
-                "Missing required parameters for Tower access - check environment and plugin configuration"
+                "Missing required parameters for Tower access - check environment and app configuration"
             )
 
     def _launch_job(self, template_name, extra_vars):

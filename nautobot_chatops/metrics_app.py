@@ -1,4 +1,4 @@
-"""Nautobot plugin application level metrics exposed through nautobot_metrics_ext."""
+"""Nautobot app application level metrics exposed through nautobot_metrics_ext."""
 
 from prometheus_client.core import CounterMetricFamily
 

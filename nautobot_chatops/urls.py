@@ -1,4 +1,4 @@
-"""Django urlpatterns declaration for nautobot_chatops plugin."""
+"""Django urlpatterns declaration for nautobot_chatops app."""
 import logging
 
 from django.urls import path

@@ -1,1 +1,1 @@
-"""REST API module for nautobot_chatops plugin."""
+"""REST API module for nautobot_chatops app."""

@@ -7,8 +7,8 @@ Some platforms this `signing_secret` is valid for all commands, other platforms,
 create a separate `token` for every slash command.  Keeping the records for Mattermost tokens in the
 `.creds.env` file would not be sustainable.  
 
-To solve this issue, the plugin has the option to store Command Tokens to the Nautobot Database.
-In Nautobot, open Nautobot and go to the Plugins and select Command Tokens. Below is an example to
+To solve this issue, the app has the option to store Command Tokens to the Nautobot Database.
+In Nautobot, open Nautobot and go to the Apps and select Command Tokens. Below is an example to
 get you started.
 
 ## Example: Adding tokens for Mattermost

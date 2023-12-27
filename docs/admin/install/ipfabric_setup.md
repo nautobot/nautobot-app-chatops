@@ -14,7 +14,7 @@ Before configuring the integration, please ensure the following:
 
 ## Version Matrix
 
-Here is a compatibility matrix and the minimum versions required to run this plugin:
+Here is a compatibility matrix and the minimum versions required to run this app:
 
 | IP Fabric | Python | Nautobot | chatops | chatops-ipfabric | [python-ipfabric](https://github.com/community-fabric/python-ipfabric) | [python-ipfabric-diagrams](https://github.com/community-fabric/python-ipfabric-diagrams) |
 |-----------|--------|----------|---------|------------------|------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
@@ -96,6 +96,6 @@ PLUGINS_CONFIG = {
     ```
 
 !!! warning
-    Configuration keys for IPFabric integration are now lowercased, compared to the old plugin.
+    Configuration keys for IPFabric integration are now lowercased, compared to the old app.
 
 Environment variables for this integration are the same for both, old and new configuration.
