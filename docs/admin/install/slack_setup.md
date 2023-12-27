@@ -295,7 +295,7 @@ While this method is still possible, we recommend using the App Manifest method 
      - `mpim:read`
    - At the top of this page, select "Install App to Workspace" and confirm it.
    - There should now be a "Bot User OAuth Access Token" displayed, typically a string starting with `xoxb-`.
-     You will need to configure this value for the plugin as the `slack_api_token` value, either directly or through an
+     You will need to configure this value for the app as the `slack_api_token` value, either directly or through an
      `.env` file. If this value is not properly configured, the bot will be unable to send content to the user.
 6. Returning to the "Basic Information" page for your app, under "Display Information", you can specify the name,
    description, icon, and accent/background color for the app. You can use the `nautobot_logo.png` from this
