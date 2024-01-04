@@ -6,8 +6,8 @@ import json
 import responses
 from django.test import SimpleTestCase
 
-from nautobot_plugin_chatops_nso.nso import NSOClient as nso
-from nautobot_plugin_chatops_nso.exceptions import CommunicationError, DeviceNotFound, DeviceNotSupported, DeviceLocked
+from nautobot_chatops.integrations.nso.nso import NSOClient as nso
+from nautobot_chatops.integrations.nso.exceptions import CommunicationError, DeviceNotFound, DeviceNotSupported, DeviceLocked
 
 
 HERE = path.abspath(path.dirname(__file__))
