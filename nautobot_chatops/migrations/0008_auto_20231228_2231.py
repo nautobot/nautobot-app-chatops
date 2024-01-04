@@ -9,33 +9,44 @@ import uuid
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('dcim', '0049_remove_slugs_and_change_device_primary_ip_fields'),
-        ('extras', '0098_rename_data_jobresult_result'),
-        ('nautobot_chatops', '0007_account_link'),
+        ("dcim", "0049_remove_slugs_and_change_device_primary_ip_fields"),
+        ("extras", "0098_rename_data_jobresult_result"),
+        ("nautobot_chatops", "0007_account_link"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='CommandFilter',
+            name="CommandFilter",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False, unique=True)),
-                ('created', models.DateTimeField(auto_now_add=True, null=True)),
-                ('last_updated', models.DateTimeField(auto_now=True, null=True)),
-                ('_custom_field_data', models.JSONField(blank=True, default=dict, encoder=django.core.serializers.json.DjangoJSONEncoder)),
-                ('command', models.CharField(max_length=200)),
-                ('platform', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='dcim.platform')),
-                ('role', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='extras.role')),
-                ('tags', nautobot.core.models.fields.TagsField(through='extras.TaggedItem', to='extras.Tag')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4, editable=False, primary_key=True, serialize=False, unique=True
+                    ),
+                ),
+                ("created", models.DateTimeField(auto_now_add=True, null=True)),
+                ("last_updated", models.DateTimeField(auto_now=True, null=True)),
+                (
+                    "_custom_field_data",
+                    models.JSONField(blank=True, default=dict, encoder=django.core.serializers.json.DjangoJSONEncoder),
+                ),
+                ("command", models.CharField(max_length=200)),
+                ("platform", models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="dcim.platform")),
+                ("role", models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to="extras.role")),
+                ("tags", nautobot.core.models.fields.TagsField(through="extras.TaggedItem", to="extras.Tag")),
             ],
             options={
-                'ordering': ['command', 'role', 'platform'],
+                "ordering": ["command", "role", "platform"],
             },
-            bases=(models.Model, nautobot.extras.models.mixins.DynamicGroupMixin, nautobot.extras.models.mixins.NotesMixin),
+            bases=(
+                models.Model,
+                nautobot.extras.models.mixins.DynamicGroupMixin,
+                nautobot.extras.models.mixins.NotesMixin,
+            ),
         ),
         migrations.AddConstraint(
-            model_name='commandfilter',
-            constraint=models.UniqueConstraint(fields=('command', 'role', 'platform'), name='unique command filter'),
+            model_name="commandfilter",
+            constraint=models.UniqueConstraint(fields=("command", "role", "platform"), name="unique command filter"),
         ),
     ]
