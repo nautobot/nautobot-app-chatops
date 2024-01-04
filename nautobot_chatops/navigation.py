@@ -8,6 +8,11 @@ if get_app_settings_or_config("nautobot_chatops", "enable_grafana"):
 else:
     grafana_items = ()
 
+if get_app_settings_or_config("nautobot_chatops", "enable_nso"):
+    from .integrations.nso.navigation import items as nso_items
+else:
+    nso_items = ()
+
 
 items = [
     NavMenuItem(
@@ -49,6 +54,7 @@ items = [
         permissions=["nautobot_chatops.view_commandlog"],
     ),
     *grafana_items,
+    *nso_items,
 ]
 
 menu_items = (
