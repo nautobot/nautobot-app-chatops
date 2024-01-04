@@ -1,4 +1,4 @@
-"""Custom Exceptions for the nautobot_plugin_chatops_nso plugin."""
+"""Custom Exceptions for the nautobot_chatops.integrations.nso plugin."""
 
 
 class CommunicationError(Exception):

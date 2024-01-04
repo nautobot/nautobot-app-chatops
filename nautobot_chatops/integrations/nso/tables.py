@@ -1,23 +1,23 @@
 """Django table classes for Nautobot."""
 import django_tables2 as tables
 from django_tables2 import TemplateColumn
-from nautobot.utilities.tables import BaseTable, ColoredLabelColumn
-from nautobot_plugin_chatops_nso.models import CommandFilter
+from nautobot.core.tables import BaseTable, ColoredLabelColumn
+from nautobot_chatops.integrations.nso.models import CommandFilter
 
 
 def _action_template(view: str) -> str:
     return f"""
-<a  href="{{% url 'plugins:nautobot_plugin_chatops_nso:{view}_changelog' pk=record.pk %}}"
+<a  href="{{% url 'plugins:nautobot_chatops:{view}_changelog' pk=record.pk %}}"
     class="btn btn-default btn-xs" title="Change log">
         <span class="mdi mdi-history"></span>
 </a>
 
-<a  href="{{% url 'plugins:nautobot_plugin_chatops_nso:{view}_update' pk=record.pk %}}"
+<a  href="{{% url 'plugins:nautobot_chatops:{view}_update' pk=record.pk %}}"
     class="btn btn-xs btn-warning">
         <span class="glyphicon glyphicon-pencil" aria-hidden="true"></span>
 </a>
 
-<a  href="{{% url 'plugins:nautobot_plugin_chatops_nso:{view}_delete' pk=record.pk %}}"
+<a  href="{{% url 'plugins:nautobot_chatops:{view}_delete' pk=record.pk %}}"
     class="btn btn-xs btn-danger">
         <i class="mdi mdi-trash-can-outline" aria-hidden="true"></i>
 </a>"""
@@ -32,7 +32,7 @@ class CommandFilterTable(BaseTable):
         verbose_name="Command Regex",
     )
 
-    device_role = ColoredLabelColumn(linkify=True, verbose_name="Role")
+    role = ColoredLabelColumn(linkify=True, verbose_name="Role")
 
     platform = tables.Column(linkify=True, verbose_name="Platform")
 
@@ -46,4 +46,4 @@ class CommandFilterTable(BaseTable):
         """Meta for class PanelViewTable."""
 
         model = CommandFilter
-        fields = ("command", "device_role", "platform")
+        fields = ("command", "role", "platform")

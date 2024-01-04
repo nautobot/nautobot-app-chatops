@@ -1,6 +1,6 @@
-"""Custom filters for nautobot_plugin_chatops_nso."""
+"""Custom filters for nautobot_chatops.integrations.nso."""
 from django_jinja import library
-from nautobot_plugin_chatops_nso.nso import NSOClient
+from nautobot_chatops.integrations.nso.nso import NSOClient
 
 
 @library.filter
