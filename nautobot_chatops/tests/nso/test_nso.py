@@ -18,15 +18,15 @@ from nautobot_chatops.integrations.nso.exceptions import (
 HERE = path.abspath(path.dirname(__file__))
 
 
-def load_api_calls(responses, fixture):
+def load_api_calls(_responses, fixture):
     """Load the API calls into memory for mocking."""
     with open(f"{HERE}/fixtures/{fixture}.json", "r", encoding="utf-8") as file_:
         api_calls = json.load(file_)
 
         for api_call in api_calls:
             if api_call["method"] == "GET":
-                responses.add(
-                    responses.GET,
+                _responses.add(
+                    _responses.GET,
                     api_call["url"],
                     json=api_call["response_json"],
                     status=api_call["status"],
@@ -35,11 +35,11 @@ def load_api_calls(responses, fixture):
                 continue
 
             if api_call["method"] == "POST":
-                responses.add(
-                    responses.POST,
+                _responses.add(
+                    _responses.POST,
                     api_call["url"],
                     json=api_call["response_json"],
-                    match=[responses.matchers.json_params_matcher(api_call["body"])] if "body" in api_call else [],
+                    match=[_responses.matchers.json_params_matcher(api_call["body"])] if "body" in api_call else [],
                     status=api_call["status"],
                     headers={"Content-Type": "application/yang-data+xml"},
                 )
