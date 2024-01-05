@@ -94,6 +94,7 @@ ruff = "*"
 toml = "*"
 towncrier = "~23.6.0"
 yamllint = "*"
+responses = "^0.24.0"
 
 [tool.poetry.extras]
 all = [
