@@ -6,6 +6,7 @@ from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
+from nautobot.apps.config import get_app_settings_or_config
 from texttable import Texttable
 
 from nautobot_chatops.models import ChatOpsAccountLink
@@ -52,16 +53,18 @@ class Dispatcher:
                 ).nautobot_user
             except ObjectDoesNotExist:
                 logger.warning(
-                    "Could not find User matching %s - id: %s." "Add a ChatOps User to link the accounts.",
+                    "Could not find User matching %s - id: %s. Add a ChatOps User to link the accounts.",
                     self.context["user_name"],
                     self.context["user_id"],
                 )
         user_model = get_user_model()
-        user, _ = user_model.objects.get_or_create(username=_APP_CONFIG["fallback_chatops_user"])
+        user, _ = user_model.objects.get_or_create(
+            username=get_app_settings_or_config("nautobot_chatops", "fallback_chatops_user")
+        )
         return user
 
     def _get_cache_key(self) -> str:
-        """Key generator for the cache, adding the plugin prefix name."""
+        """Key generator for the cache, adding the app prefix name."""
         # Using __file__ as a key customization within the cache
         return "-".join([__file__, self.context.get("user_id", "generic")])
 
@@ -114,16 +117,16 @@ class Dispatcher:
         """Get a list of all subclasses of Dispatcher that are known to Nautobot."""
         # TODO: this should be dynamic using entry_points
         # pylint: disable=import-outside-toplevel, unused-import, cyclic-import
-        if _APP_CONFIG.get("enable_slack"):
+        if get_app_settings_or_config("nautobot_chatops", "enable_slack"):
             from .slack import SlackDispatcher
 
-        if _APP_CONFIG.get("enable_ms_teams"):
+        if get_app_settings_or_config("nautobot_chatops", "enable_ms_teams"):
             from .ms_teams import MSTeamsDispatcher
 
-        if _APP_CONFIG.get("enable_webex"):
+        if get_app_settings_or_config("nautobot_chatops", "enable_webex"):
             from .webex import WebexDispatcher
 
-        if _APP_CONFIG.get("enable_mattermost"):
+        if get_app_settings_or_config("nautobot_chatops", "enable_mattermost"):
             from .mattermost import MattermostDispatcher
 
         subclasses = set()
@@ -237,7 +240,6 @@ class Dispatcher:
         """
         raise NotImplementedError
 
-    # pylint: disable=no-self-use
     def needs_permission_to_send_image(self):
         """Return True if this bot needs to ask the user for permission to post an image."""
         return False
@@ -323,17 +325,14 @@ class Dispatcher:
         """Markup for a mention of the username/userid specified in our context."""
         raise NotImplementedError
 
-    # pylint: disable=no-self-use
     def bold(self, text):
         """Mark text as bold."""
         return f"**{text}**"
 
-    # pylint: disable=no-self-use
     def hyperlink(self, text, url):
         """Create Hyperlinks."""
         return f"[{text}]({url})"
 
-    # pylint: disable=no-self-use
     def monospace(self, text):
         """Mark text as monospace."""
         return f"`{text}`"
@@ -364,7 +363,7 @@ class Dispatcher:
         Args:
           action_id (str): Identifying string to associate with this element
           choices (list): List of (display, value) tuples
-          default (tuple: Default (display, value) to preselect
+          default (tuple): Default (display, value) to preselect
           confirm (bool): If true (and the platform supports it), prompt the user to confirm their selection
         """
         raise NotImplementedError

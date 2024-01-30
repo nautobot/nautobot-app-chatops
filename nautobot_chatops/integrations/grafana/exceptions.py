@@ -1,4 +1,4 @@
-"""Nautobot Plugin ChatOps Grafana Exceptions."""
+"""Nautobot App ChatOps Grafana Exceptions."""
 from pydantic import ValidationError
 from isodate import ISO8601Error
 

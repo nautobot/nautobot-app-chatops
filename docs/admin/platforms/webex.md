@@ -1,11 +1,11 @@
 # Cisco Webex Setup
 
-| Configuration Setting        | Mandatory? | Default |
-| ---------------------------- | ---------- | ------- |
-| `enable_webex`               | **Yes**    | False   |
-| `webex_msg_char_limit`       | **No**     | 7439    |
-| `webex_signing_secret`       | **Yes**    | --      |
-| `webex_token`                | **Yes**    | --      |
+| Configuration Setting        | Mandatory? | Default | Available on Admin Config |
+| ---------------------------- | ---------- | ------- | ------------------------- |
+| `enable_webex`               | **Yes**    | False   | Yes                       |
+| `webex_msg_char_limit`       | **No**     | 7439    | No                        |
+| `webex_signing_secret`       | **Yes**    | --      | No                        |
+| `webex_token`                | **Yes**    | --      | No                        |
 
 1. Login to [https://developer.webex.com](https://developer.webex.com) and select "Start building apps", then "Create a New App", then "Create a Bot".
    - Enter the bot name, username, icon (you can use `nautobot_logo.png` from this directory), and description,
@@ -32,7 +32,7 @@
 
 ## Deprecation Warning
 
-As of Nautobot ChatOps Plugin v2.0.0, there are the following changes:
+As of Nautobot ChatOps App v2.0.0, there are the following changes:
 
 - The deprecated URL API path `webex_teams` has been removed. Please use `webex` as a substitute.
 - The use and deprecation warnings for the obsolete `webex_teams` App configuration entries have been removed. These entries include:
@@ -50,7 +50,7 @@ As of Nautobot ChatOps Plugin v2.0.0, there are the following changes:
     }
     ```
 
-As of Nautobot ChatOps Plugin v1.4.0, the PLUGIN_CONFIG settings for Webex has changed to align with the official renaming of `Webex Teams` to `Webex`:
+As of Nautobot ChatOps App v1.4.0, the PLUGIN_CONFIG settings for Webex has changed to align with the official renaming of `Webex Teams` to `Webex`:
 
 - `enable_webex_teams` is deprecated. Use `enable_webex` instead.
 - `webex_teams_token` is deprecated. Use `webex_token` instead.
@@ -60,4 +60,4 @@ Both settings will currently work, however support for `enable_webex_teams`, `we
 
 ## General Chat Setup Instructions
 
-See [admin_install](../install.md) instructions here for general plugin setup instructions.
+See [admin_install](../install.md) instructions here for general app setup instructions.

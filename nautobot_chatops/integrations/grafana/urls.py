@@ -1,4 +1,4 @@
-"""Django urlpatterns declaration for nautobot_chatops.integrations.grafana plugin."""
+"""Django urlpatterns declaration for nautobot_chatops.integrations.grafana app."""
 from django.urls import path
 from nautobot.extras.views import ObjectChangeLogView
 from nautobot_chatops.integrations.grafana.models import Dashboard, PanelVariable, Panel

@@ -14,7 +14,7 @@ Before configuring the integration, please ensure the following:
 
 ## Version Matrix
 
-Here is a compatibility matrix and the minimum versions required to run this plugin:
+Here is a compatibility matrix and the minimum versions required to run this app:
 
 | IP Fabric | Python | Nautobot | chatops | chatops-ipfabric | [python-ipfabric](https://github.com/community-fabric/python-ipfabric) | [python-ipfabric-diagrams](https://github.com/community-fabric/python-ipfabric-diagrams) |
 |-----------|--------|----------|---------|------------------|------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
@@ -31,13 +31,13 @@ Create a top-level command named `ipfabric` in your enabled chat platform. For d
 
 You must define the following values in your `nautobot_config.py` file:
 
-| Configuration Setting | Mandatory? | Default |
-| ---------------------- | ---------- | ------- |
-| `enable_ipfabric` | **Yes** | False |
-| `ipfabric_api_token` | **Yes** | |
-| `ipfabric_host` | **Yes** | |
-| `ipfabric_timeout` | | |
-| `ipfabric_verify` | | True |
+| Configuration Setting | Mandatory? | Default | Available on Admin Config |
+| --------------------- | ---------- | ------- | ------------------------- |
+| `enable_ipfabric` | **Yes** | False | Yes |
+| `ipfabric_api_token` | **Yes** | | No |
+| `ipfabric_host` | **Yes** | | No |
+| `ipfabric_timeout` | | | No |
+| `ipfabric_verify` | | True | No |
 
 Below is an example snippet from `development/nautobot_config.py` that demonstrates how to enable and configure IPFabric integration:
 
@@ -96,6 +96,6 @@ PLUGINS_CONFIG = {
     ```
 
 !!! warning
-    Configuration keys for IPFabric integration are now lowercased, compared to the old plugin.
+    Configuration keys for IPFabric integration are now lowercased, compared to the old app.
 
 Environment variables for this integration are the same for both, old and new configuration.

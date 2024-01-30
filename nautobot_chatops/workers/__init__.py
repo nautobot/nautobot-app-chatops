@@ -1,4 +1,4 @@
-"""Workers module for the nautobot_chatops Nautobot plugin.
+"""Workers module for the nautobot_chatops Nautobot App.
 
 The functions in this module provide back-end worker logic that is totally ignorant
 of the differences between various chat platforms. They receive generic data from
@@ -103,7 +103,7 @@ def get_commands_registry():
             if _commands_registry[worker.name]["function"] == command_func:
                 logger.warning("Command worker function '%s' was processed twice. This should not happen", worker.name)
             else:
-                logger.error("Duplicate worker name '%s' detected! Check for redundant plugins", worker.name)
+                logger.error("Duplicate worker name '%s' detected! Check for redundant apps", worker.name)
             continue
 
         if worker.name not in _commands_registry:

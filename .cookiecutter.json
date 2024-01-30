@@ -1,0 +1,35 @@
+{
+    "cookiecutter": {
+        "codeowner_github_usernames": "@glennmatthews @jvanderaa @smk4664 @whitej6",
+        "full_name": "Network to Code, LLC",
+        "email": "opensource@networktocode.com",
+        "github_org": "nautobot",
+        "plugin_name": "nautobot_chatops",
+        "verbose_name": "Nautobot ChatOps App",
+        "plugin_slug": "nautobot-chatops",
+        "project_slug": "nautobot-plugin-chatops",
+        "repo_url": "https://github.com/nautobot/nautobot-plugin-chatops/",
+        "base_url": "chatops",
+        "min_nautobot_version": "2.0.0",
+        "max_nautobot_version": "2.9999",
+        "camel_name": "NautobotChatOpsPlugin",
+        "project_short_description": "Nautobot ChatOps App",
+        "model_class_name": "None",
+        "open_source_license": "Apache-2.0",
+        "docs_base_url": "https://docs.nautobot.com",
+        "docs_app_url": "https://docs.nautobot.com/projects/chatops/en/latest",
+        "_drift_manager": {
+            "template": "https://github.com/nautobot/cookiecutter-nautobot-app.git",
+            "template_dir": "nautobot-app",
+            "template_ref": "develop",
+            "cookie_dir": "",
+            "branch_prefix": "drift-manager",
+            "pull_request_strategy": "create",
+            "post_actions": [
+                "black"
+            ],
+            "draft": true,
+            "baked_commit_ref": "f7199da166a77ef00af4347535a1e09f939a711a"
+        }
+    }
+}

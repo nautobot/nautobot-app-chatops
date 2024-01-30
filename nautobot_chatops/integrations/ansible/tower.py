@@ -6,9 +6,11 @@ from urllib.parse import urlparse
 from django.conf import settings
 import requests
 
-logger = logging.getLogger("rq.worker")
+logger = logging.getLogger(__name__)
 
 _CONFIG = settings.PLUGINS_CONFIG["nautobot_chatops"]
+
+DEFAULT_TIMEOUT = 20
 
 
 def _get_uri(uri):
@@ -57,9 +59,7 @@ class Tower:  # pylint: disable=too-many-function-args
         self.origin = origin
         self.extra_vars = {}
         if not self.uri or not self.username or not self.password:
-            raise ValueError(
-                "Missing required parameters for Tower access - check environment and plugin configuration"
-            )
+            raise ValueError("Missing required parameters for Tower access - check environment and app configuration")
 
     def _launch_job(self, template_name, extra_vars):
         """Launch a playbook in Ansible Tower.
@@ -79,6 +79,7 @@ class Tower:  # pylint: disable=too-many-function-args
             headers=self.headers,
             data=json.dumps({"extra_vars": extra_vars}),
             verify=self.tower_verify_ssl,  # nosec
+            timeout=DEFAULT_TIMEOUT,
         )
         response.raise_for_status()
         logger.info("Job submission to Ansible Tower:")
@@ -100,6 +101,7 @@ class Tower:  # pylint: disable=too-many-function-args
             auth=(self.username, self.password),
             **kwargs,
             verify=self.tower_verify_ssl,  # nosec
+            timeout=DEFAULT_TIMEOUT,
         )
         return response.json()
 

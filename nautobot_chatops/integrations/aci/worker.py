@@ -36,7 +36,7 @@ aci_creds, apic_choices = _read_settings()
 
 @nautobot_task
 def aci(subcommand, **kwargs):
-    """Interact with aci plugin."""
+    """Interact with aci app."""
     return handle_subcommands("aci", subcommand, **kwargs)
 
 

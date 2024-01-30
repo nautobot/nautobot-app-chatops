@@ -1,4 +1,4 @@
-"""Example rq worker to handle /panorama chat commands with 1 subcommand addition."""
+"""Example worker to handle /panorama chat commands with 1 subcommand addition."""
 import logging
 import os
 import re
@@ -565,7 +565,7 @@ def capture_traffic(
     """Capture IP traffic on PANOS Device.
 
     Args:
-        dispatcher (object): Chatops plugin dispatcher object
+        dispatcher (object): Chatops app dispatcher object
         device (str): Device name
         snet (str): Source IP/network in IPv4 CIDR notation
         dnet (str): Destination IP/network in IPv4 CIDR notation

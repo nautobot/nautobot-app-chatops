@@ -560,6 +560,7 @@ def get_token_crt():
             f"https://{CVP_HOST}/cvpservice/login/authenticate.do",
             auth=(CVP_USERNAME, CVP_PASSWORD),
             verify=False,  # nosec
+            timeout=DEFAULT_TIMEOUT,
         )
     else:
         request = requests.post(

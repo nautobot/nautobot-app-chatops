@@ -21,7 +21,7 @@ Interact with IPFabric by utilizing the following sub-commands:
 !!! note
     All sub-commands are intended to be used with the `/ipfabric` prefix.
 
-IP Fabric uses a concept of snapshots which can include different devices and data. The plugin supports querying specific snapshots via the `/ipfabric set-snapshot` command. The snapshot is set per user and cached for all future commands. If a snapshot is not set, the commands will default to `$last` unless a specific snapshot id is required.
+IP Fabric uses a concept of snapshots which can include different devices and data. The app supports querying specific snapshots via the `/ipfabric set-snapshot` command. The snapshot is set per user and cached for all future commands. If a snapshot is not set, the commands will default to `$last` unless a specific snapshot id is required.
 
 ## Screenshots
 

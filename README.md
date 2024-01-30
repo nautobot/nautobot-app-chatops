@@ -1,9 +1,9 @@
 # Nautobot ChatOps
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/nautobot/nautobot-plugin-chatops/develop/docs/assets/icon-ChatOps.png" alt="ChatOps Logo" class="logo" height="200px">
+  <img src="https://raw.githubusercontent.com/nautobot/nautobot-app-chatops/develop/docs/assets/icon-ChatOps.png" alt="ChatOps Logo" class="logo" height="200px">
   <br>
-  <a href="https://github.com/nautobot/nautobot-plugin-chatops/actions"><img src="https://github.com/nautobot/nautobot-plugin-chatops/actions/workflows/ci.yml/badge.svg?branch=main"></a>
+  <a href="https://github.com/nautobot/nautobot-app-chatops/actions"><img src="https://github.com/nautobot/nautobot-app-chatops/actions/workflows/ci.yml/badge.svg?branch=main"></a>
   <a href="https://docs.nautobot.com/projects/chatops/en/latest"><img src="https://readthedocs.org/projects/nautobot-plugin-chatops/badge/"></a>
   <a href="https://pypi.org/project/nautobot-chatops/"><img src="https://img.shields.io/pypi/v/nautobot-chatops"></a>
   <a href="https://pypi.org/project/nautobot-chatops/"><img src="https://img.shields.io/pypi/dm/nautobot-chatops"></a>
@@ -25,9 +25,9 @@
     - Cisco Meraki
     - Palo Alto Panorama
 - Write a command once and run it on every supported platform, including rich content formatting.
-- Extensible - other Nautobot plugins can provide additional commands which will be dynamically discovered.
+- Extensible - other Nautobot apps can provide additional commands which will be dynamically discovered.
 - Automatic generation of basic help menus (accessed via `help`, `/command help`, or `/command sub-command help`).
-- Metrics of command usage via the `nautobot_capacity_metrics` plugin.
+- Metrics of command usage via the `nautobot_capacity_metrics` app.
 
 ## Documentation
 
@@ -63,7 +63,7 @@ Sign up [here](https://slack.networktocode.com/)
 
 ## Acknowledgements
 
-This project includes code originally written in separate plugins, which have been merged into this project:
+This project includes code originally written in separate apps, which have been merged into this project:
 
 - [nautobot-plugin-chatops-aci](https://github.com/nautobot/nautobot-plugin-chatops-aci):
     Thanks

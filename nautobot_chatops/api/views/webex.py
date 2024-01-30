@@ -42,7 +42,7 @@ if WEBEX_CONFIG.get("enabled"):
         API = None
         BOT_ID = None
 
-# TODO: the plugin should verify that the webhooks are correctly set up, or else make API calls to create them
+# TODO: the app should verify that the webhooks are correctly set up, or else make API calls to create them
 
 
 def generate_signature(request):

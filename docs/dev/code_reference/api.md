@@ -1,4 +1,4 @@
-# Nautobot Plugin ChatOps API Package
+# Nautobot ChatOps App API Package
 
 ::: nautobot_chatops.api
     options:

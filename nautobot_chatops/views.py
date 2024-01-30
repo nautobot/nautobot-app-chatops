@@ -1,4 +1,4 @@
-"""Views module for the nautobot_chatops Nautobot plugin.
+"""Views module for the nautobot_chatops Nautobot App.
 
 The views implemented in this module act as endpoints for various chat platforms
 to send requests and notifications to.
@@ -23,10 +23,10 @@ from nautobot_chatops.tables import CommandLogTable, AccessGrantTable, CommandTo
 
 
 class CommandLogListView(PermissionRequiredMixin, ObjectListView):
-    """View for listing all extant AccessGrants."""
+    """View for listing all extant Command Logs."""
 
     action_buttons = ("export",)
-    permission_required = "nautobot_chatops.view_accessgrant"
+    permission_required = "nautobot_chatops.view_commandlog"
     queryset = CommandLog.objects.all().order_by("-start_time")
     filterset = CommandLogFilterSet
     filterset_form = forms.CommandLogFilterForm
@@ -44,7 +44,7 @@ class AccessGrantListView(PermissionRequiredMixin, ObjectListView):
 
     # Set the action buttons to correspond to what there are views. If import/export are added, this should be updated
     action_buttons = ("add",)
-    permission_required = "nautobot_chatops.view_commandlog"
+    permission_required = "nautobot_chatops.view_accessgrant"
     queryset = AccessGrant.objects.all().order_by("command")
     filterset = AccessGrantFilterSet
     filterset_form = forms.AccessGrantFilterForm
@@ -64,7 +64,7 @@ class AccessGrantCreateView(PermissionRequiredMixin, ObjectEditView):
     model = AccessGrant
     queryset = AccessGrant.objects.all()
     model_form = forms.AccessGrantForm
-    template_name = "nautobot/access_grant_edit.html"
+    template_name = "nautobot_chatops/access_grant_edit.html"
     default_return_url = "plugins:nautobot_chatops:accessgrant_list"
 
 

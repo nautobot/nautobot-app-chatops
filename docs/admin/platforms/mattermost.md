@@ -1,10 +1,10 @@
 # Mattermost Setup
 
-| Configuration Setting        | Mandatory? | Default |
-| ---------------------------- | ---------- | ------- |
-| `enable_mattermost`          | **Yes**    | False   |
-| `mattermost_api_token`       | **Yes**    | --      |
-| `mattermost_url`             | **Yes**    | --      |
+| Configuration Setting        | Mandatory? | Default | Available on Admin Config |
+| ---------------------------- | ---------- | ------- | ------------------------- |
+| `enable_mattermost`          | **Yes**    | False   | Yes                       |
+| `mattermost_api_token`       | **Yes**    | --      | No                        |
+| `mattermost_url`             | **Yes**    | --      | No                        |
 
 1. Login to your instance of Mattermost and select Integrations, then click Bot Accounts.
    - Enter the bot username, icon, Display name and Description.
@@ -39,4 +39,4 @@
 
 ## General Chat Setup Instructions
 
-See [admin_install](../install.md) instructions here for general plugin setup instructions.
+See [admin_install](../install.md) instructions here for general app setup instructions.

@@ -21,13 +21,13 @@ Create a top-level command named `ansible` in your enabled chat platform. For de
 You must define the following values in your `nautobot_config.py` file:
 
 ```
-| Configuration Setting | Mandatory? | Default     |
-| --------------------- | ---------- | ----------- |
-| `enable_ansible`      | Yes        | False       |
-| `tower_password`      | No         |             |
-| `tower_uri`           | No         |             |
-| `tower_username`      | No         |             |
-| `tower_verify_ssl`    | No         | True        |
+| Configuration Setting | Mandatory? | Default     | Available on Admin Config |
+| --------------------- | ---------- | ----------- | ------------------------- |
+| `enable_ansible`      | Yes        | False       | Yes                       |
+| `tower_password`      | No         |             | No                        |
+| `tower_uri`           | No         |             | No                        |
+| `tower_username`      | No         |             | No                        |
+| `tower_verify_ssl`    | No         | True        | No                        |
 ```
 
 R: Convert each configuration item to a table row with the setting name, whether it is mandatory or not, and the default value if available.

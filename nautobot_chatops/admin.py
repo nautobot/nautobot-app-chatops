@@ -1,7 +1,7 @@
-"""Administrative capabilities for nautobot_chatops plugin."""
+"""Administrative capabilities for nautobot_chatops app."""
 
 from django.contrib import admin
-from .models import CommandLog, ChatOpsAccountLink
+from .models import ChatOpsAccountLink, CommandLog
 
 
 @admin.register(CommandLog)

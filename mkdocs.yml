@@ -1,11 +1,11 @@
 ---
 dev_addr: "127.0.0.1:8001"
-edit_uri: "edit/develop/docs"
+edit_uri: "edit/main/nautobot-app-chatops/docs"
 site_dir: "nautobot_chatops/static/nautobot_chatops/docs"
-site_name: "Nautobot ChatOps Documentation"
-site_url: "https://docs.nautobot.com/projects/chatops/en/stable/"
-repo_url: "https://github.com/nautobot/nautobot-plugin-chatops"
-copyright: "Copyright &copy; 2020 Network to Code"
+site_name: "Nautobot ChatOps App Documentation"
+site_url: "https://docs.nautobot.com/projects/chatops/en/latest/"
+repo_url: "https://github.com/nautobot/nautobot-app-chatops/"
+copyright: "Copyright &copy; The Authors"
 theme:
   name: "material"
   navigation_depth: 4
@@ -14,16 +14,17 @@ theme:
     - "django"
     - "yaml"
   features:
-    - "navigation.tracking"
-    - "navigation.tabs"
-    - "navigation.tabs.sticky"
-    - "navigation.footer"
-    - "search.suggest"
-    - "search.highlight"
-    - "search.share"
-    - "navigation.indexes"
     - "content.action.edit"
     - "content.action.view"
+    - "content.code.copy"
+    - "navigation.footer"
+    - "navigation.indexes"
+    - "navigation.tabs"
+    - "navigation.tabs.sticky"
+    - "navigation.tracking"
+    - "search.highlight"
+    - "search.share"
+    - "search.suggest"
   favicon: "assets/favicon.ico"
   logo: "assets/nautobot_logo.svg"
   palette:
@@ -84,7 +85,6 @@ markdown_extensions:
   - "footnotes"
 plugins:
   - "search"
-  - "include-markdown"
   - "mkdocs-version-annotations"
   - "mkdocstrings":
       default_handler: "python"
@@ -93,6 +93,7 @@ plugins:
           paths: ["."]
           options:
             show_root_heading: true
+  - "include-markdown"
 watch:
   - "README.md"
 
@@ -101,6 +102,7 @@ nav:
   - User Guide:
       - App Overview: "user/app_overview.md"
       - Getting Started: "user/app_getting_started.md"
+      - Frequently Asked Questions: "user/faq.md"
       - Integrations:
           - "user/integrations/aci.md"
           - "user/integrations/ansible.md"
@@ -109,7 +111,6 @@ nav:
           - "user/integrations/ipfabric.md"
           - "user/integrations/meraki.md"
           - "user/integrations/panorama.md"
-      - Frequently Asked Questions: "user/app_faq.md"
   - Administrator Guide:
       - Install and Configure: "admin/install.md"
       - Platforms:
@@ -130,6 +131,8 @@ nav:
       - Compatibility Matrix: "admin/compatibility_matrix.md"
       - Release Notes:
           - "admin/release_notes/index.md"
+          - v3.0: "admin/release_notes/version_3.0.md"
+          - v2.1: "admin/release_notes/version_2.1.md"
           - v2.0: "admin/release_notes/version_2.0.md"
           - v1.11: "admin/release_notes/version_1.11.md"
           - v1.10: "admin/release_notes/version_1.10.md"
@@ -150,6 +153,7 @@ nav:
       - Glossary: "glossary.md"
       - Code Reference:
           - "dev/code_reference/index.md"
+          - Package: "dev/code_reference/package.md"
           - Models: "dev/code_reference/models.md"
           - API: "dev/code_reference/api.md"
           - Dispatchers:
@@ -160,4 +164,5 @@ nav:
               - "dev/code_reference/mattermost.md"
           - "models/accessgrant.md"
           - "models/commandtoken.md"
+          - "models/chatopsaccountlink.md"
   - Nautobot Docs Home ↗︎: "https://docs.nautobot.com"

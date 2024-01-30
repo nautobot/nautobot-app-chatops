@@ -20,12 +20,12 @@ Create a top-level command named `panorama` in your enabled chat platform. For d
 
 You must define the following values in your `nautobot_config.py` file:
 
-| Configuration Setting | Mandatory? | Default |
-| ---------------------- | ---------- | ------- |
-| `enable_panorama` | **Yes** | False |
-| `panorama_host` | **Yes** | |
-| `panorama_password` | **Yes** | |
-| `panorama_user` | **Yes** | |
+| Configuration Setting | Mandatory? | Default | Available on Admin Config |
+| --------------------- | ---------- | ------- | ------------------------- |
+| `enable_panorama`     | **Yes**    | False   | Yes                       |
+| `panorama_host`       | **Yes**    |         | No                        |
+| `panorama_password`   | **Yes**    |         | No                        |
+| `panorama_user`       | **Yes**    |         | No                        |
 
 Below is an example snippet from `development/nautobot_config.py` that demonstrates how to enable and configure Palo Alto Panorama integration:
 

@@ -20,10 +20,10 @@ Create a top-level command named `meraki` in your enabled chat platform. For det
 
 You must define the following values in your `nautobot_config.py` file:
 
-| Configuration Setting | Mandatory? | Default |
-| --------------------- | ---------- | ------- |
-| `enable_meraki` | **Yes** | False |
-| `meraki_dashboard_api_key` | **Yes** | |
+| Configuration Setting | Mandatory? | Default | Available on Admin Config |
+| --------------------- | ---------- | ------- | ------------------------- |
+| `enable_meraki` | **Yes** | False | Yes |
+| `meraki_dashboard_api_key` | **Yes** | | No |
 
 Below is an example snippet from `development/nautobot_config.py` that demonstrates how to enable and configure Cisco Meraki integration:
 

@@ -7,6 +7,7 @@ import requests
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
+from nautobot.apps.config import get_app_settings_or_config
 
 from nautobot_chatops.metrics import backend_action_sum
 from nautobot_chatops.models import ChatOpsAccountLink
@@ -43,13 +44,13 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
                 ).nautobot_user
             except ObjectDoesNotExist:
                 logger.warning(
-                    "Could not find User matching %s - id: %s." "Add a ChatOps User to link the accounts.",
+                    "Could not find User matching %s - id: %s. Add a ChatOps User to link the accounts.",
                     self.context["user_name"],
                     self.context["user_ad_id"],
                 )
         user_model = get_user_model()
         user, _ = user_model.objects.get_or_create(
-            username=settings.PLUGINS_CONFIG["nautobot_chatops"]["fallback_chatops_user"]
+            username=get_app_settings_or_config("nautobot_chatops", "fallback_chatops_user")
         )
         return user
 

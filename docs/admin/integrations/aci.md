@@ -20,10 +20,10 @@ Create a top-level command named `aci` in your enabled chat platform. For detail
 
 You must define the following values in your `nautobot_config.py` file:
 
-| Configuration Setting | Mandatory? | Default |
-| --------------------- | ---------- | ------- |
-| `enable_aci`          | **Yes**    | False   |
-| `aci_creds`           | **Yes**    | {}      |
+| Configuration Setting | Mandatory? | Default | Available on Admin Config |
+| --------------------- | ---------- | ------- | ------------------------- |
+| `enable_aci`          | **Yes**    | False   | Yes                       |
+| `aci_creds`           | **Yes**    | {}      | No                        |
 
 Below is an example snippet from `development/nautobot_config.py` that demonstrates how to enable and configure Cisco ACI integration:
 

@@ -122,6 +122,10 @@ Create a release branch off of `develop` (`git checkout -b release-1.4.3 develop
 
 Generate release notes with `towncrier build --version 1.4.3` and answer `yes` to the prompt `Is it okay if I remove those files? [Y/n]:`. This will update the release notes in `docs/admin/release_notes/version_1.4.md`, stage that file in git, and `git rm` all the fragments that have now been incorporated into the release notes.
 
+!!! note
+    There is now an invoke task to generate release notes
+    `invoke generate-release-notes --version 2.1.0`
+
 Run `invoke markdownlint` to make sure the generated release notes pass the linter checks.
 
 Check the git diff to verify the changes are correct (`git diff --cached`).
@@ -139,7 +143,7 @@ Once CI has completed on the PR, merge it.
 
 ### Create a New Release
 
-Draft a [new release](https://github.com/nautobot/nautobot-plugin-chatops/releases/new) with the following parameters.
+Draft a [new release](https://github.com/nautobot/nautobot-app-chatops/releases/new) with the following parameters.
 
 * **Tag:** Current version (e.g. `v1.0.0`)
 * **Target:** `main`
