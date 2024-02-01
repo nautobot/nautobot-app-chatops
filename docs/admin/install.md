@@ -13,7 +13,7 @@ This guide outlines the process of enabling Nautobot ChatOps, which includes:
   - [Test Your Chatbot](#test-your-chatbot)
   - [Integrations Configuration](#integrations-configuration)
 
-{% include-markdown '../../glossary.md' heading-offset=1 %}
+{% include-markdown '../glossary.md' heading-offset=1 %}
 
 ## Prerequisites
 
@@ -126,7 +126,7 @@ Adjust the App's behavior with the following settings:
 ## Granting Access to the Chat Platform
 
 {%
-    include-markdown '../../models/accessgrant.md'
+    include-markdown '../models/accessgrant.md'
     start='<!--access-grant-->'
     heading-offset=1
 %}
@@ -134,7 +134,7 @@ Adjust the App's behavior with the following settings:
 ## Link Nautobot Account
 
 {%
-    include-markdown '../../models/chatopsaccountlink.md'
+    include-markdown '../models/chatopsaccountlink.md'
     start='<!--account-link-->'
     heading-offset=1
 %}
