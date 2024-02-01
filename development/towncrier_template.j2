@@ -1,5 +1,6 @@
+
 {% if render_title %}
-## [v{{ versiondata.version }} ({{ versiondata.date }})](https://github.com/nautobot/nautobot-app-chatops/releases/tag/v{{ versiondata.version}})
+## v{{ versiondata.version }} ({{ versiondata.date }})
 
 {% endif %}
 {% for section, _ in sections.items() %}
@@ -26,3 +27,4 @@ No significant changes.
 
 {% endif %}
 {% endfor %}
+

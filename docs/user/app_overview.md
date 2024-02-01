@@ -23,7 +23,16 @@ The ChatOps framework provides Network Engineers power to query Nautobot or thei
 
 ## Authors and Maintainers
 
-- Glenn Matthews (@glennmatthews)
-- Josh VanDeraa (@jvanderaa)
-- Jeremy White (@whitej6)
-- Stephen Kiely (@smk4664)
+!!! warning "Developer Note - Remove Me!"
+    Add the team and/or the main individuals maintaining this project. Include historical maintainers as well.
+
+## Nautobot Features Used
+
+!!! warning "Developer Note - Remove Me!"
+    What is shown today in the Installed Apps page in Nautobot. What parts of Nautobot does it interact with, what does it add etc. ?
+
+### Extras
+
+!!! warning "Developer Note - Remove Me!"
+    Custom Fields - things like which CFs are created by this app?
+    Jobs - are jobs, if so, which ones, installed by this app?

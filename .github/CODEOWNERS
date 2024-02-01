@@ -1,9 +1,2 @@
-# Default owners for all files in this repository
-* @glennmatthews @jvanderaa @smk4664 @whitej6 @romanukes
-/nautobot_chatops/integrations/aci/ @pato23arg
-/nautobot_chatops/integrations/ansible/ @smk4664
-/nautobot_chatops/integrations/aristacv/ @qduk
-/nautobot_chatops/integrations/grafana/ @davidban77
-/nautobot_chatops/integrations/meraki/ @jeffkala
-/nautobot_chatops/integrations/ipfabric/ @alhogan @pke11y
-/nautobot_chatops/integrations/panorama/ @jdrew82
+# Default owner(s) of all files in this repository
+* @glennmatthews @jvanderaa @smk4664 @whitej6

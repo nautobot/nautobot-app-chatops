@@ -7,7 +7,8 @@ from nautobot.core.testing import APITestCase, APIViewTestCases
 from nautobot_chatops.models import AccessGrant, CommandToken
 
 
-nautobot_version = metadata.version("nautobot")
+class PlaceholderAPITest(TestCase):
+    """Test the NautobotChatOpsApp API."""
 
 
 class AppTest(APITestCase):  # pylint: disable=too-many-ancestors
