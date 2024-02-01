@@ -23,8 +23,7 @@ from invoke.tasks import task as invoke_task
 def is_truthy(arg):
     """Convert "truthy" strings into Booleans.
 
-    Examples
-    --------
+    Examples:
         >>> is_truthy('yes')
         True
     Args:
@@ -114,7 +113,6 @@ def docker_compose(context, command, **kwargs):
     """Helper function for running a specific docker compose command with all appropriate parameters and environment.
 
     Args:
-    ----
         context (obj): Used to run specific commands
         command (str): Command string to append to the "docker compose ..." command, such as "build", "up", etc.
         **kwargs: Passed through to the context.run() call.
@@ -712,7 +710,6 @@ def yamllint(context):
     """Run yamllint to validate formatting adheres to NTC defined YAML standards.
 
     Args:
-    ----
         context (obj): Used to run specific commands
     """
     command = "yamllint . --format standard"
@@ -859,16 +856,3 @@ def connect_awx_container(context, container_name="tools_awx_1"):
     bridge_network = f"{context.nautobot_chatops.project_name}_awx"
     context.run(f"docker network connect --alias awx {bridge_network} {container_name}")
     print(f"Container {container_name} connected to {bridge_network} network")
-
-
-@task(
-    help={
-        "version": "Version of Nautobot ChatOps to generate the release notes for.",
-    }
-)
-def generate_release_notes(context, version=""):
-    """Generate Release Notes using Towncrier."""
-    command = "env DJANGO_SETTINGS_MODULE=nautobot.core.settings towncrier build"
-    if version:
-        command += f" --version {version}"
-    run_command(context, command)

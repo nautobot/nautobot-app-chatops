@@ -70,6 +70,7 @@ texttable = "^1.6.2"
 webexteamssdk = "^1.3"
 
 [tool.poetry.group.dev.dependencies]
+Markdown = "*"
 bandit = "*"
 black = "*"
 coverage = "~5.4"
@@ -77,27 +78,79 @@ django-debug-toolbar = "*"
 flake8 = "*"
 invoke = "*"
 ipython = "*"
+mkdocs = "1.5.2"
+mkdocs-include-markdown-plugin = "6.0.3"
+mkdocs-material = "9.1.15"
+mkdocs-version-annotations = "1.0.0"
+mkdocstrings = "0.22.0"
+mkdocstrings-python = "1.5.2"
+prybar = "*"
 pylint = "*"
 pylint-django = "*"
 pylint-nautobot = "*"
+requests-mock = "^1.9.3"
 ruff = "*"
-yamllint = "*"
 toml = "*"
-Markdown = "*"
-# Rendering docs to HTML
-mkdocs = "1.5.2"
-# Material for MkDocs theme
-mkdocs-material = "9.1.15"
-# Render custom markdown for version added/changed/remove notes
-mkdocs-version-annotations = "1.0.0"
-# Automatic documentation from sources, for MkDocs
-mkdocstrings = "0.22.0"
-mkdocstrings-python = "1.5.2"
 towncrier = "~23.6.0"
+yamllint = "*"
 
 [tool.poetry.extras]
 all = [
+    "PyYAML",
+    "certifi",
+    "cloudvision",
+    "cvprac",
+    "defusedxml",
+    "diffsync",
+    "ipaddr",
+    "ipfabric",
+    "ipfabric-diagrams",
+    "isodate",
+    "meraki",
+    "netmiko",
+    "netutils",
+    "pan-os-python",
+    "prettytable",
+    "protobuf",
+    "pydantic",
+    "schema-enforcer",
+    "termcolor",
 ]
+aci = [
+    "prettytable",
+]
+aristacv = [
+    "certifi",
+    "cloudvision",
+    "cvprac",
+    "protobuf"
+]
+ansible = [
+    "PyYAML",
+]
+grafana = [
+    "diffsync",
+    "isodate",
+    "pydantic",
+    "schema-enforcer",
+    "termcolor",
+]
+ipfabric = [
+    "ipfabric",
+    "ipfabric-diagrams",
+    "netutils",
+]
+meraki = [
+    "meraki",
+]
+panorama = [
+    "defusedxml",
+    "ipaddr",
+    "netmiko",
+    "netutils",
+    "pan-os-python",
+]
+nautobot = ["nautobot"]
 
 [tool.black]
 line-length = 120
@@ -183,6 +236,9 @@ ignore = [
     "D401",  # First line of docstring should be in imperative mood
     "D407",  # Missing dashed underline after section
     "D416",  # Section name ends in colon
+
+    # Package specific
+    "D417",  # Missing argument descriptions in Docstrings
 ]
 
 [tool.ruff.lint.pydocstyle]

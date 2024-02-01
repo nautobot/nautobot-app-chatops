@@ -368,7 +368,7 @@ Once the dependencies are resolved, stop the existing containers, rebuild the Do
 
 ### Installing Additional Nautobot Apps
 
-Let's say for example you want the new app you're creating to integrate into Slack. To do this, you will want to integrate into the existing Nautobot ChatOps App.
+Let's say for example you want the new app you're creating to integrate into Nautobot ChatOps. To do this, you will want to integrate into the existing Nautobot ChatOps App.
 
 ```bash
 ➜ poetry shell

@@ -2,12 +2,36 @@
 # Metadata is inherited from Nautobot. If not including Nautobot in the environment, this should be added
 from importlib import metadata
 
-from nautobot.apps import NautobotAppConfig
+from django.conf import settings
+from nautobot.apps import ConstanceConfigItem, NautobotAppConfig
 
 __version__ = metadata.version(__name__)
 
 
-class NautobotChatOpsAppConfig(NautobotAppConfig):
+_CONFLICTING_APP_NAMES = [
+    # App names that conflict with nautobot_chatops
+    "nautobot_plugin_chatops_aci",
+    "nautobot_plugin_chatops_ansible",
+    "nautobot_plugin_chatops_aristacv",
+    "nautobot_plugin_chatops_grafana",
+    "nautobot_plugin_chatops_ipfabric",
+    "nautobot_plugin_chatops_meraki",
+    "nautobot_plugin_chatops_panorama",
+]
+
+
+def _check_for_conflicting_apps():
+    intersection = set(_CONFLICTING_APP_NAMES).intersection(set(settings.PLUGINS))
+    if intersection:
+        raise RuntimeError(
+            f"The following apps are installed and conflict with `nautobot-chatops`: {', '.join(intersection)}."
+        )
+
+
+_check_for_conflicting_apps()
+
+
+class NautobotChatOpsConfig(NautobotAppConfig):
     """App configuration for the nautobot_chatops app."""
 
     name = "nautobot_chatops"
@@ -129,4 +153,7 @@ class NautobotChatOpsAppConfig(NautobotAppConfig):
         from nautobot_capacity_metrics import register_metric_func
         from .metrics_app import metric_commands
 
-config = NautobotChatOpsAppConfig  # pylint:disable=invalid-name
+        register_metric_func(metric_commands)
+
+
+config = NautobotChatOpsConfig  # pylint:disable=invalid-name

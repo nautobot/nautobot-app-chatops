@@ -1,37 +1,33 @@
 # Nautobot ChatOps
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/nautobot/nautobot-app-chatops/develop/docs/images/icon-nautobot-chatops.png" class="logo" height="200px">
+  <img src="https://raw.githubusercontent.com/nautobot/nautobot-app-chatops/develop/docs/assets/icon-ChatOps.png" alt="ChatOps Logo" class="logo" height="200px">
   <br>
-  <a href="https://github.com/nautobot/nautobot-app-chatops//actions"><img src="https://github.com/nautobot/nautobot-app-chatops//actions/workflows/ci.yml/badge.svg?branch=main"></a>
-  <a href="https://docs.nautobot.com/projects/chatops/en/latest"><img src="https://readthedocs.org/projects/nautobot-app-chatops/badge/"></a>
+  <a href="https://github.com/nautobot/nautobot-app-chatops/actions"><img src="https://github.com/nautobot/nautobot-app-chatops/actions/workflows/ci.yml/badge.svg?branch=main"></a>
+  <a href="https://docs.nautobot.com/projects/chatops/en/latest"><img src="https://readthedocs.org/projects/nautobot-plugin-chatops/badge/"></a>
   <a href="https://pypi.org/project/nautobot-chatops/"><img src="https://img.shields.io/pypi/v/nautobot-chatops"></a>
   <a href="https://pypi.org/project/nautobot-chatops/"><img src="https://img.shields.io/pypi/dm/nautobot-chatops"></a>
   <br>
   A multi-platform ChatOps bot App for <a href="https://github.com/nautobot/nautobot">Nautobot</a>.
 </p>
 
-## Overview
-
-> Developer Note: Add a long (2-3 paragraphs) description of what the App does, what problems it solves, what functionality it adds to Nautobot, what external systems it works with etc.
-
-### Screenshots
-
-> Developer Note: Add any representative screenshots of the App in action. These images should also be added to the `docs/user/app_use_cases.md` section.
-
-> Developer Note: Place the files in the `docs/images/` folder and link them using only full URLs from GitHub, for example: `![Overview](https://raw.githubusercontent.com/nautobot/nautobot-app-chatops/develop/docs/images/app-overview.png)`. This absolute static linking is required to ensure the README renders properly in GitHub, the docs site, and any other external sites like PyPI.
-
-More screenshots can be found in the [Using the App](https://docs.nautobot.com/projects/chatops/en/latest/user/app_use_cases/) page in the documentation. Here's a quick overview of some of the app's added functionality:
-
-![](https://raw.githubusercontent.com/nautobot/nautobot-app-chatops/develop/docs/images/placeholder.png)
-
-## Try it out!
-
-> Developer Note: Only keep this section if appropriate. Update link to correct sandbox.
-
-This App is installed in the Nautobot Community Sandbox found over at [demo.nautobot.com](https://demo.nautobot.com/)!
-
-> For a full list of all the available always-on sandbox environments, head over to the main page on [networktocode.com](https://www.networktocode.com/nautobot/sandbox-environments/).
+- Support for multiple chat platforms:
+    - Mattermost
+    - Microsoft Teams
+    - Slack
+    - Cisco Webex
+- Support for multiple integrations:
+    - Cisco ACI
+    - AWX / Ansible Tower
+    - Arista CloudVision
+    - Grafana
+    - IPFabric
+    - Cisco Meraki
+    - Palo Alto Panorama
+- Write a command once and run it on every supported platform, including rich content formatting.
+- Extensible - other Nautobot apps can provide additional commands which will be dynamically discovered.
+- Automatic generation of basic help menus (accessed via `help`, `/command help`, or `/command sub-command help`).
+- Metrics of command usage via the `nautobot_capacity_metrics` app.
 
 ## Documentation
 
@@ -46,7 +42,7 @@ Full web-based HTML documentation for this app can be found over on the [Nautobo
 
 ## Try it Out
 
-You can find all the Markdown source for the App documentation under the [`docs`](https://github.com/nautobot/nautobot-app-chatops//tree/develop/docs) folder in this repository. For simple edits, a Markdown capable editor is sufficient: clone the repository and edit away.
+Interested to see Nautobot ChatOps in action?  It's currently setup on the [Demo Instance](https://demo.nautobot.com/) and integrated into [NTC Slack](https://slack.networktocode.com).  You can sign up for that Slack workspace and join the `#nautobot-chat` channel to understand what this bot can do and try it for yourself.  You can try these exact chat commands and many more:
 
 ### Command: `/nautobot`
 
