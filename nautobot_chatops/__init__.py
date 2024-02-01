@@ -1,14 +1,14 @@
-"""Plugin declaration for nautobot_chatops."""
+"""App declaration for nautobot_chatops."""
 # Metadata is inherited from Nautobot. If not including Nautobot in the environment, this should be added
 from importlib import metadata
 
+from nautobot.apps import NautobotAppConfig
+
 __version__ = metadata.version(__name__)
 
-from nautobot.extras.plugins import NautobotAppConfig
 
-
-class NautobotChatOpsPluginConfig(NautobotAppConfig):
-    """Plugin configuration for the nautobot_chatops plugin."""
+class NautobotChatOpsAppConfig(NautobotAppConfig):
+    """App configuration for the nautobot_chatops app."""
 
     name = "nautobot_chatops"
     verbose_name = "Nautobot ChatOps App"
@@ -23,4 +23,4 @@ class NautobotChatOpsPluginConfig(NautobotAppConfig):
     caching_config = {}
 
 
-config = NautobotChatOpsPluginConfig  # pylint:disable=invalid-name
+config = NautobotChatOpsAppConfig  # pylint:disable=invalid-name

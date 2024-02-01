@@ -11,7 +11,7 @@ User = get_user_model()
 
 
 class PlaceholderAPITest(TestCase):
-    """Test the NautobotChatOpsPlugin API."""
+    """Test the NautobotChatOpsApp API."""
 
     def setUp(self):
         """Create a superuser and token for API calls."""
