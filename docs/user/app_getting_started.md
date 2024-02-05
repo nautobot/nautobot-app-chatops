@@ -8,7 +8,7 @@ To install the App, please follow the instructions detailed in the [Administrato
 
 ## Link Nautobot Account
 
-+++3.0.0
++++ 3.0.0
 
 Nautobot ChatOps now uses the built-in Nautobot permissions for Nautobot Objects (Devices, Locations, Racks, etc.). Each user will need to link their Nautobot Account with their Chat Platform User Account. Login to Nautobot then access the Link ChatOps Account within the Plugins menu. Here you can provide your email address and select the ChatOps Platform you are using, then click the Look up User ID from Email to get your Chat User ID.
 
