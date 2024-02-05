@@ -1329,7 +1329,7 @@ def init_job_form(dispatcher, job_name: str = ""):
             )
 
         elif field_type == "number":
-            # TODO: Can we enforce numeric-character mask for widget input?
+            # TODO: Can we enforce numeric-character mask for widget input without JavaScript?
             default_value = field.initial
             form_item_dialogs.append(
                 {
