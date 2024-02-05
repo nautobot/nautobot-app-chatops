@@ -1097,7 +1097,7 @@ def get_jobs(dispatcher, kwargs: str = ""):
         dispatcher.send_error(f"Invalid JSON-string, cannot decode: {kwargs}")
         return (CommandStatusChoices.STATUS_FAILED, f"Invalid JSON-string, cannot decode: {kwargs}")
 
-    # confirm `name` is always present in export
+    # Confirm `name` is always present in export
     name_key = json_args.get("name") or json_args.get("Name")
     if not name_key:
         json_args.append("name")
@@ -1121,14 +1121,13 @@ def get_jobs(dispatcher, kwargs: str = ""):
 
 
 @subcommand_of("nautobot")
-def init_job(dispatcher, job_name: str = "", json_string_kwargs: str = "", *args):
+def init_job(dispatcher, *args, job_name: str = "", json_string_kwargs: str = ""):
     """Initiate a job in Nautobot by job name.
 
     Args:
         job_name (str): Name of Nautobot job to run.
         json_string_kwargs (str): JSON-string dictionary for input keyword arguments for job run.
         *args (tuple): Dispatcher form will pass job args as tuple.
-        #profile (str): Whether to profile the job execution.
     """
     # Prompt the user to pick a job if they did not specify one
     if not job_name:
@@ -1161,9 +1160,7 @@ def init_job(dispatcher, job_name: str = "", json_string_kwargs: str = "", *args
         dispatcher.send_error(f"The requested job {job_name} is not enabled")
         return (CommandStatusChoices.STATUS_FAILED, f'Job "{job_name}" is not enabled')
 
-    job_class_path = job_model.class_path
-    job_class = get_job(job_model.class_path)
-    form_class = job_class.as_form()
+    form_class = get_job(job_model.class_path).as_form()
 
     # Parse base form fields from job class
     form_fields = []
@@ -1175,20 +1172,16 @@ def init_job(dispatcher, job_name: str = "", json_string_kwargs: str = "", *args
     # Basic logic check with what we know, we should expect init-job-form vs init-job to parse the same base fields
     if len(form_fields) != len(args):
         dispatcher.send_error(
-            "The form class fields and the passed init-jobs args do no match. Something went wrong parsing the base field items."
+            "The form class fields and the passed init-jobs args do not match."
         )
         return (
             CommandStatusChoices.STATUS_FAILED,
-            "The form class fields and the passed init-jobs args do no match. Something went wrong parsing the base field items.",
+            "The form class fields and the passed init-jobs args do not match.",
         )
 
-    # Convert positional args to kwargs
-    # TODO: we might just pass the job the positional args we already have
-    #       ideal I would prefer something similar to multi_input_dialog that passes kwargs back
-    #       but ultimately we follow the same logic used to get them in both subcommands, so it is the same ordered result at runtime
     form_item_kwargs = {}
     for index, _ in enumerate(form_fields):  # pylint: disable=unused-variable
-        # Check if json dictionary as string. We could probably check the input types and know instead of checking if valid json string
+        # Check request input (string-type) is also valid JSON
         if args[index][0] == "{":
             try:
                 json_arg = json.loads(args[index])
@@ -1220,7 +1213,7 @@ def init_job(dispatcher, job_name: str = "", json_string_kwargs: str = "", *args
     job_url = job_result.get_absolute_url()
     blocks = [
         dispatcher.markdown_block(
-            f"The requested job {job_class_path} was initiated! [`click here`]({job_url}) to open the job."
+            f"The requested job {job_model.class_path} was initiated! [`click here`]({job_url}) to open the job."
         ),
     ]
 
@@ -1246,7 +1239,7 @@ def init_job_form(dispatcher, job_name: str = ""):
     except Job.DoesNotExist:
         blocks = [
             dispatcher.markdown_block(
-                f"Job {job_name} does not exist or requesting user {dispatcher.user} does not have permissions to run job."
+                f"Job {job_name} does not exist or {dispatcher.user} does not have permissions to run job." # pylint: disable=line-too-long
             ),
         ]
         dispatcher.send_blocks(blocks)
@@ -1266,8 +1259,7 @@ def init_job_form(dispatcher, job_name: str = ""):
         dispatcher.send_blocks(blocks)
         return CommandStatusChoices.STATUS_SUCCEEDED
 
-    job_class = get_job(job.class_path)
-    form_class = job_class.as_form()
+    form_class = get_job(job.class_path).as_form()
 
     # Parse base form fields from job class
     form_items = {}
