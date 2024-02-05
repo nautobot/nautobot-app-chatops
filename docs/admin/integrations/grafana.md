@@ -6,18 +6,18 @@ This guide will walk you through steps to set up Grafana integration with the `n
 
 Before configuring the integration, please ensure the following:
 
-- `nautobot-chatops` App was [installed with integration extra dependencies](./index.md#installation-guide).
+- `nautobot-chatops` App was [installed with integration extra dependencies](../install.md#installation-guide).
     ```shell
     pip install nautobot-chatops[grafana]
     ```
-- `nautobot-chatops` App is set up with at least one [enabled chat platform](./index.md#chat-platforms-configuration) and [tested](./index.md#test-your-chatbot).
+- `nautobot-chatops` App is set up with at least one [enabled chat platform](../install.md#chat-platforms-configuration) and [tested](./../install.md#test-your-chatbot).
 - [Grafana](https://grafana.com/docs/grafana/latest/installation/) application installed and configured with dashboards and panels.
 - [Grafana Image Rendering Service](https://grafana.com/docs/grafana/latest/administration/image_rendering/) installed.
 - [Grafana Image Rending App for Grafana](https://grafana.com/grafana/plugins/grafana-image-renderer/) installed in your Grafana application.
 
 ## Command Setup
 
-Create a top-level command named `grafana` in your enabled chat platform. For detailed instructions related to your specific chat platform, refer to the [platform specific set up](./index.md#chat-platforms-configuration).
+Create a top-level command named `grafana` in your enabled chat platform. For detailed instructions related to your specific chat platform, refer to the [platform specific set up](../install.md#chat-platforms-configuration).
 
 ## Configuration
 
@@ -62,7 +62,7 @@ PLUGINS_CONFIG = {
 ## Upgrading from `nautobot-plugin-chatops-grafana` App
 
 !!! warning
-    When upgrading from `nautobot-plugin-chatops-grafana` App, it's necessary to [avoid conflicts](index.md#potential-apps-conflicts).
+    When upgrading from `nautobot-plugin-chatops-grafana` App, it's necessary to [avoid conflicts](../install.md#potential-apps-conflicts).
 
 - Uninstall the old App:
     ```shell

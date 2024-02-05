@@ -20,8 +20,8 @@ Interact with Arista CloudVision by utilizing the following sub-commands:
 
 ## Screenshots
 
-![image](../images/aristacv-get-device-cve.png)
+![image](../../images/aristacv-get-device-cve.png)
 
-![image](../images/aristacv-get-configlet.png)
+![image](../../images/aristacv-get-configlet.png)
 
-![image](../images/aristacv-get-device-cve.png)
+![image](../../images/aristacv-get-device-cve.png)

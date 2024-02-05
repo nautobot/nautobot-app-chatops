@@ -13,7 +13,7 @@ This guide outlines the process of enabling Nautobot ChatOps, which includes:
   - [Test Your Chatbot](#test-your-chatbot)
   - [Integrations Configuration](#integrations-configuration)
 
-{% include-markdown '../../glossary.md' heading-offset=1 %}
+{% include-markdown '../glossary.md' heading-offset=1 %}
 
 ## Prerequisites
 
@@ -58,10 +58,10 @@ The `nautobot-chatops` package supports multiple chat platforms.
 
 Set up your chosen chat platform:
 
-- [Mattermost](./mattermost_setup.md)
-- [Microsoft Teams](./microsoft_teams_setup.md)
-- [Slack](./slack_setup.md)
-- [Cisco Webex](./webex_setup.md)
+- [Mattermost](./platforms/mattermost.md)
+- [Microsoft Teams](./platforms/microsoft_teams.md)
+- [Slack](./platforms/slack.md)
+- [Cisco Webex](./platforms/webex.md)
 
 ## Installation Guide
 
@@ -107,9 +107,8 @@ PLUGINS_CONFIG = {
 }
 ```
 
-+++3.0.0
-
-Some configuration settings have now been added to the Nautobot Admin Config page. See [Nautobot Admin](https://docs.nautobot.com/projects/core/en/stable/configuration/optional-settings/?h=administr#administratively-configurable-settings)
++++ 3.0.0
+    Some configuration settings have now been added to the Nautobot Admin Config page. See [Nautobot Admin](https://docs.nautobot.com/projects/core/en/stable/configuration/optional-settings/?h=administr#administratively-configurable-settings)
 
 ## Configuration Guide
 
@@ -126,7 +125,7 @@ Adjust the App's behavior with the following settings:
 ## Granting Access to the Chat Platform
 
 {%
-    include-markdown '../../models/accessgrant.md'
+    include-markdown '../models/accessgrant.md'
     start='<!--access-grant-->'
     heading-offset=1
 %}
@@ -134,7 +133,7 @@ Adjust the App's behavior with the following settings:
 ## Link Nautobot Account
 
 {%
-    include-markdown '../../models/chatopsaccountlink.md'
+    include-markdown '../models/chatopsaccountlink.md'
     start='<!--account-link-->'
     heading-offset=1
 %}
@@ -149,10 +148,10 @@ The `nautobot-chatops` package includes multiple integrations. Each requires ext
 
 Set up integrations using the specific guides:
 
-- [Cisco ACI](./aci_setup.md)
-- [AWX / Ansible Tower](./ansible_setup.md)
-- [Arista CloudVision](./aristacv_setup.md)
-- [Grafana](./grafana_setup.md)
-- [IPFabric](./ipfabric_setup.md)
-- [Cisco Meraki](./meraki_setup.md)
-- [Palo Alto Panorama](./panorama_setup.md)
+- [Cisco ACI](./integrations/aci.md)
+- [AWX / Ansible Tower](./integrations/ansible.md)
+- [Arista CloudVision](./integrations/aristacv.md)
+- [Grafana](./integrations/grafana.md)
+- [IPFabric](./integrations/ipfabric.md)
+- [Cisco Meraki](./integrations/meraki.md)
+- [Palo Alto Panorama](./integrations/panorama.md)

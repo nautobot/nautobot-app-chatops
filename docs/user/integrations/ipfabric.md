@@ -25,16 +25,16 @@ IP Fabric uses a concept of snapshots which can include different devices and da
 
 ## Screenshots
 
-![image](../images/ipfabric-1.png)
+![image](../../images/ipfabric-1.png)
 
-![image](../images/ipfabric-2.png)
+![image](../../images/ipfabric-2.png)
 
-![image](../images/ipfabric-3.png)
+![image](../../images/ipfabric-3.png)
 
-![image](../images/ipfabric-4.png)
+![image](../../images/ipfabric-4.png)
 
-![image](../images/ipfabric-5.png)
+![image](../../images/ipfabric-5.png)
 
-![image](../images/ipfabric-6.png)
+![image](../../images/ipfabric-6.png)
 
-![image](../images/ipfabric-7.png)
+![image](../../images/ipfabric-7.png)

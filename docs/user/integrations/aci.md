@@ -25,16 +25,16 @@ Interact with Cisco ACI by utilizing the following sub-commands:
 
 ### Slack
 
-![image](../images/aci-slack-get-tenants.png)
+![image](../../images/aci-slack-get-tenants.png)
 
-![image](../images/aci-slack-get-epg-details.png)
+![image](../../images/aci-slack-get-epg-details.png)
   
-![image](../images/aci-slack-get-bds.png)
+![image](../../images/aci-slack-get-bds.png)
 
 ### Cisco Webex
 
-![image](../images/aci-slack-get-tenants.png)
+![image](../../images/aci-slack-get-tenants.png)
 
-![image](../images/aci-slack-get-epg-details.png)
+![image](../../images/aci-slack-get-epg-details.png)
   
-![image](../images/aci-slack-get-bds.png)
+![image](../../images/aci-slack-get-bds.png)
