@@ -1122,15 +1122,14 @@ def get_jobs(dispatcher, kwargs: str = ""):
     return CommandStatusChoices.STATUS_SUCCEEDED
 
 
-# pylint: disable=too-many-locals
 @subcommand_of("nautobot")
-def init_job(dispatcher, *args, job_name: str = "", json_string_kwargs: str = ""):
+def init_job(dispatcher, *args, job_name: str = "", json_string_kwargs: str = ""):  # pylint: disable=too-many-locals
     """Initiate a job in Nautobot by job name.
 
     Args:
+        *args (tuple): Dispatcher form will pass job args as tuple.
         job_name (str): Name of Nautobot job to run.
         json_string_kwargs (str): JSON-string dictionary for input keyword arguments for job run.
-        *args (tuple): Dispatcher form will pass job args as tuple.
     """
     # Prompt the user to pick a job if they did not specify one
     if not job_name:
