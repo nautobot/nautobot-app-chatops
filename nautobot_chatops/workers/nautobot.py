@@ -1171,9 +1171,7 @@ def init_job(dispatcher, *args, job_name: str = "", json_string_kwargs: str = ""
 
     # Basic logic check with what we know, we should expect init-job-form vs init-job to parse the same base fields
     if len(form_fields) != len(args):
-        dispatcher.send_error(
-            "The form class fields and the passed init-jobs args do not match."
-        )
+        dispatcher.send_error("The form class fields and the passed init-jobs args do not match.")
         return (
             CommandStatusChoices.STATUS_FAILED,
             "The form class fields and the passed init-jobs args do not match.",
@@ -1239,7 +1237,7 @@ def init_job_form(dispatcher, job_name: str = ""):
     except Job.DoesNotExist:
         blocks = [
             dispatcher.markdown_block(
-                f"Job {job_name} does not exist or {dispatcher.user} does not have permissions to run job." # pylint: disable=line-too-long
+                f"Job {job_name} does not exist or {dispatcher.user} does not have permissions to run job."  # pylint: disable=line-too-long
             ),
         ]
         dispatcher.send_blocks(blocks)
