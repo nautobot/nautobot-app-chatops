@@ -1206,7 +1206,12 @@ def init_job(dispatcher, *args, job_name: str = "", json_string_kwargs: str = ""
     )
 
     # Wait on the job to finish
+    max_wait_iterations = 60
     while job_result.status not in JobResultStatusChoices.READY_STATES:
+        max_wait_iterations -= 1
+        if not max_wait_iterations:
+            dispatcher.send_error(f"The requested job {job_name} failed to reach ready state.")
+            return (CommandStatusChoices.STATUS_FAILED, f'Job "{job_name}" failed to reach ready state.')
         time.sleep(1)
         job_result.refresh_from_db()
 
