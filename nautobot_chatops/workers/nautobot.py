@@ -1220,7 +1220,7 @@ def init_job(dispatcher, *args, job_name: str = "", json_string_kwargs: str = ""
     )
     blocks = [
         dispatcher.markdown_block(
-            f"The requested job {job_class_path} was initiated! [`click here`]({job_url}) to open the job."
+            f"The requested job {job_model.class_path} was initiated! [`click here`]({job_url}) to open the job."
         ),
     ]
 
