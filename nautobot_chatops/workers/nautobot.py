@@ -1123,7 +1123,7 @@ def get_jobs(dispatcher, kwargs: str = ""):
 
 
 @subcommand_of("nautobot")
-def init_job(dispatcher, *args, job_name: str = "", json_string_kwargs: str = ""):  # pylint: disable=too-many-locals
+def run_job(dispatcher, *args, job_name: str = "", json_string_kwargs: str = ""):  # pylint: disable=too-many-locals
     """Initiate a job in Nautobot by job name.
 
     Args:
@@ -1133,7 +1133,7 @@ def init_job(dispatcher, *args, job_name: str = "", json_string_kwargs: str = ""
     """
     # Prompt the user to pick a job if they did not specify one
     if not job_name:
-        return prompt_for_job(dispatcher, "nautobot init-job")
+        return prompt_for_job(dispatcher, "nautobot run-job")
 
     if args:
         json_string_kwargs = "{}"
@@ -1171,12 +1171,12 @@ def init_job(dispatcher, *args, job_name: str = "", json_string_kwargs: str = ""
             continue
         form_fields.append(f"{field_name}")
 
-    # Basic logic check with what we know, we should expect init-job-form vs init-job to parse the same base fields
+    # Basic logic check with what we know, we should expect run-job-form vs run-job to parse the same base fields
     if len(form_fields) != len(args):
-        dispatcher.send_error("The form class fields and the passed init-jobs args do not match.")
+        dispatcher.send_error("The form class fields and the passed run-job args do not match.")
         return (
             CommandStatusChoices.STATUS_FAILED,
-            "The form class fields and the passed init-jobs args do not match.",
+            "The form class fields and the passed run-job args do not match.",
         )
 
     form_item_kwargs = {}
@@ -1234,7 +1234,7 @@ def init_job(dispatcher, *args, job_name: str = "", json_string_kwargs: str = ""
 
 
 @subcommand_of("nautobot")
-def init_job_form(dispatcher, job_name: str = ""):
+def run_job_form(dispatcher, job_name: str = ""):
     """Send job form as a multi-input dialog. On form submit it initiates the job with the form arguments.
 
     Args:
@@ -1242,7 +1242,7 @@ def init_job_form(dispatcher, job_name: str = ""):
     """
     # Prompt the user to pick a job if they did not specify one
     if not job_name:
-        return prompt_for_job(dispatcher, "nautobot init-job-form")
+        return prompt_for_job(dispatcher, "nautobot run-job-form")
 
     # Get jobs available to user
     try:
@@ -1373,7 +1373,7 @@ def init_job_form(dispatcher, job_name: str = ""):
     # TODO: BUG: Single inputs will present but not submit properly with multi_input_dialog
     dispatcher.multi_input_dialog(
         command="nautobot",
-        sub_command=f"init-job {job_name} {{}}",
+        sub_command=f"run-job {job_name} {{}}",
         dialog_title=f"job {job_name} form input",
         dialog_list=form_item_dialogs,
     )
