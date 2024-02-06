@@ -1,6 +1,7 @@
 """Worker functions for interacting with Nautobot."""
 
 import json
+import time
 
 
 from django.core.exceptions import ValidationError
@@ -13,6 +14,7 @@ from nautobot.circuits.models import Circuit, CircuitType, Provider, CircuitTerm
 from nautobot.dcim.models import Device, DeviceType, Location, LocationType, Manufacturer, Rack, Cable
 from nautobot.ipam.models import VLAN, Prefix, VLANGroup
 from nautobot.tenancy.models import Tenant
+from nautobot.extras.choices import JobResultStatusChoices
 from nautobot.extras.models import Job, JobResult, Role, Status
 from nautobot.extras.jobs import get_job
 
@@ -1197,22 +1199,28 @@ def init_job(dispatcher, *args, job_name: str = "", json_string_kwargs: str = ""
                 continue
         form_item_kwargs[form_fields[index]] = args[index]
 
-    job_result = JobResult.execute_job(
+    job_result = JobResult.enqueue_job(
         job_model=job_model,
         user=dispatcher.user,
         profile=profile,
         **form_item_kwargs,
     )
 
+    # Wait on the job to finish
+    while job_result.status not in JobResultStatusChoices.READY_STATES:
+        time.sleep(1)
+        job_result.refresh_from_db()
+
     if job_result and job_result.status == "FAILURE":
         dispatcher.send_error(f"The requested job {job_name} failed to initiate. Result: {job_result.result}")
         return (CommandStatusChoices.STATUS_FAILED, f'Job "{job_name}" failed to initiate. Result: {job_result.result}')
 
-    # TODO: Need base-domain, this yields: /extras/job-results/<job_id>/
-    job_url = job_result.get_absolute_url()
+    job_url = (
+        f"{dispatcher.context['request_scheme']}://{dispatcher.context['request_host']}{job_result.get_absolute_url()}"
+    )
     blocks = [
         dispatcher.markdown_block(
-            f"The requested job {job_model.class_path} was initiated! [`click here`]({job_url}) to open the job."
+            f"The requested job {job_class_path} was initiated! [`click here`]({job_url}) to open the job."
         ),
     ]
 
