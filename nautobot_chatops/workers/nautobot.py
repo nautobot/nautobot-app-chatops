@@ -1120,6 +1120,7 @@ def get_jobs(dispatcher, kwargs: str = ""):
     return CommandStatusChoices.STATUS_SUCCEEDED
 
 
+# pylint: disable=too-many-locals
 @subcommand_of("nautobot")
 def init_job(dispatcher, *args, job_name: str = "", json_string_kwargs: str = ""):
     """Initiate a job in Nautobot by job name.
