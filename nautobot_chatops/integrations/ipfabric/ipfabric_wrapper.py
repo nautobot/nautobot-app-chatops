@@ -442,7 +442,7 @@ class IpFabric:
         """
         self.client = IPFClient(
             base_url=base_url,
-            token=token,
+            auth=token,
             verify=verify,
             timeout=timeout,
         )
