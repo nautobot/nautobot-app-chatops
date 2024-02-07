@@ -1,4 +1,5 @@
 """Functions for caching per-user context."""
+
 import hashlib
 from django.core.cache import cache
 from nautobot_chatops import NautobotChatOpsConfig

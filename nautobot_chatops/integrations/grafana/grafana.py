@@ -35,13 +35,19 @@ class GrafanaConfigSettings(BaseModel):  # pylint: disable=too-few-public-method
 
 
 def _get_settings_from_chatops(config: dict) -> GrafanaConfigSettings:
+    try:
+        # See: https://docs.pydantic.dev/2.6/api/standard_library_types/#datetimetimedelta
+        default_timespan = int(config["grafana_default_timespan"])
+    except ValueError:
+        default_timespan = config["grafana_default_timespan"]
+
     return GrafanaConfigSettings(
         grafana_url=config["grafana_url"],
         grafana_api_key=config["grafana_api_key"],
         default_width=config["grafana_default_width"],
         default_height=config["grafana_default_height"],
         default_theme=config["grafana_default_theme"],
-        default_timespan=config["grafana_default_timespan"],
+        default_timespan=default_timespan,
         grafana_org_id=config["grafana_org_id"],
         default_tz=config["grafana_default_tz"],
     )
