@@ -1217,7 +1217,10 @@ def run_job(dispatcher, *args, job_name: str = "", json_string_kwargs: str = "")
 
     if job_result and job_result.status == "FAILURE":
         dispatcher.send_error(f"The requested job {job_name} was initiated but failed. Result: {job_result.result}")
-        return (CommandStatusChoices.STATUS_FAILED, f'Job "{job_name}" was initiated but failed. Result: {job_result.result}')  # pylint: disable=line-too-long
+        return (
+            CommandStatusChoices.STATUS_FAILED,
+            f'Job "{job_name}" was initiated but failed. Result: {job_result.result}',
+        )  # pylint: disable=line-too-long
 
     job_url = (
         f"{dispatcher.context['request_scheme']}://{dispatcher.context['request_host']}{job_result.get_absolute_url()}"
