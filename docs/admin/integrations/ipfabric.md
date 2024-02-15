@@ -6,11 +6,11 @@ This guide will walk you through steps to set up IPFabric integration with the `
 
 Before configuring the integration, please ensure the following:
 
-- `nautobot-chatops` App was [installed with integration extra dependencies](./index.md#installation-guide).
+- `nautobot-chatops` App was [installed with integration extra dependencies](../install.md#installation-guide).
     ```shell
     pip install nautobot-chatops[ipfabric]
     ```
-- `nautobot-chatops` App is set up with at least one [enabled chat platform](./index.md#chat-platforms-configuration) and [tested](./index.md#test-your-chatbot).
+- `nautobot-chatops` App is set up with at least one [enabled chat platform](../install.md#chat-platforms-configuration) and [tested](./../install.md#test-your-chatbot).
 
 ## Version Matrix
 
@@ -25,7 +25,7 @@ Here is a compatibility matrix and the minimum versions required to run this app
 
 ## Command Setup
 
-Create a top-level command named `ipfabric` in your enabled chat platform. For detailed instructions related to your specific chat platform, refer to the [platform specific set up](./index.md#chat-platforms-configuration).
+Create a top-level command named `ipfabric` in your enabled chat platform. For detailed instructions related to your specific chat platform, refer to the [platform specific set up](../install.md#chat-platforms-configuration).
 
 ## Configuration
 
@@ -59,7 +59,7 @@ PLUGINS_CONFIG = {
 ## Upgrading from `nautobot-plugin-chatops-ipfabric` App
 
 !!! warning
-    When upgrading from `nautobot-plugin-chatops-ipfabric` App, it's necessary to [avoid conflicts](index.md#potential-apps-conflicts).
+    When upgrading from `nautobot-plugin-chatops-ipfabric` App, it's necessary to [avoid conflicts](../install.md#potential-apps-conflicts).
 
 - Uninstall the old App:
     ```shell
