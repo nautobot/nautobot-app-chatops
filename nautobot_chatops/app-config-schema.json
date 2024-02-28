@@ -1,0 +1,156 @@
+{
+    "type": "object",
+    "properties": {
+        "enable_slack": {
+            "type": "boolean",
+            "default": false
+        },
+        "enable_ms_teams": {
+            "type": "boolean",
+            "default": false
+        },
+        "enable_mattermost": {
+            "type": "boolean",
+            "default": false
+        },
+        "enable_webex": {
+            "type": "boolean",
+            "default": false
+        },
+        "slack_api_token": {
+            "$ref": "#/definitions/secret"
+        },
+        "slack_signing_secret": {
+            "$ref": "#/definitions/secret"
+        },
+        "microsoft_app_id": {
+            "type": "string"
+        },
+        "microsoft_app_password": {
+            "$ref": "#/definitions/secret"
+        },
+        "mattermost_api_token": {
+            "$ref": "#/definitions/secret"
+        },
+        "mattermost_url": {
+            "type": "string"
+        },
+        "webex_token": {
+            "$ref": "#/definitions/secret"
+        },
+        "webex_signing_secret": {
+            "$ref": "#/definitions/secret"
+        },
+        "primary": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "name": {
+                        "type": "string"
+                    },
+                    "label": {
+                        "type": "string"
+                    }
+                }
+            },
+            "default": [
+                {
+                    "name": "enable_slack",
+                    "label": "Enable Slack"
+                },
+                {
+                    "name": "enable_ms_teams",
+                    "label": "Enable MsTeams"
+                },
+                {
+                    "name": "enable_mattermost",
+                    "label": "Enable Mattermost"
+                },
+                {
+                    "name": "enable_webex",
+                    "label": "Enable Webex"
+                },
+                {
+                    "name": "slack_api_token",
+                    "label": "Slack API Token"
+                },
+                {
+                    "name": "slack_signing_secret",
+                    "label": "Slack Signing Secret"
+                },
+                {
+                    "name": "microsoft_app_id",
+                    "label": "Microsoft App Id"
+                },
+                {
+                    "name": "microsoft_app_password",
+                    "label": "Microsoft App Password"
+                },
+                {
+                    "name": "mattermost_api_token",
+                    "label": "Mattermost API Token"
+                },
+                {
+                    "name": "mattermost_url",
+                    "label": "Mattermost Url"
+                },
+                {
+                    "name": "webex_token",
+                    "label": "Webex Token"
+                },
+                {
+                    "name": "webex_signing_secret",
+                    "label": "Webex Signing Secret"
+                }
+            ]
+        }
+    },
+    "allOf": [
+        {
+            "if": {
+                "properties": {
+                    "enable_slack": { "const": true }
+                },
+                "required": ["enable_slack"]
+            },
+            "then": {
+                "required": ["slack_api_token", "slack_signing_secret"]
+            }
+        },
+        {
+            "if": {
+                "properties": {
+                    "enable_ms_teams": { "const": true }
+                },
+                "required": ["enable_ms_teams"]
+            },
+            "then": {
+                "required": ["microsoft_app_id", "microsoft_app_password"]
+            }
+        },
+        {
+            "if": {
+                "properties": {
+                    "enable_mattermost": { "const": true }
+                },
+                "required": ["enable_mattermost"]
+            },
+            "then": {
+                "required": ["mattermost_api_token", "mattermost_url"]
+            }
+        },
+        {
+            "if": {
+                "properties": {
+                    "enable_webex": { "const": true }
+                },
+                "required": ["enable_webex"]
+            },
+            "then": {
+                "required": ["webex_token", "webex_signing_secret"]
+            }
+        }
+    ],
+    "additionalProperties": false
+}
