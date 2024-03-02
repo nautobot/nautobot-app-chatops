@@ -14,18 +14,8 @@ nautobot-server migrate nautobot_chatops zero
 
 Remove the configuration you added in `nautobot_config.py` from `PLUGINS` & `PLUGINS_CONFIG`.
 
-## Post Upgrade
-
-Run Nautobot-server post_upgrade:
+## Uninstall the package
 
 ```bash
-nautobot-server post_ugprade
-```
-
-## Restart Services
-
-Restart Nautobot Services:
-
-```
-invoke restart
+$ pip3 uninstall nautobot-chatops
 ```

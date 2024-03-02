@@ -2,10 +2,10 @@
 # Metadata is inherited from Nautobot. If not including Nautobot in the environment, this should be added
 from importlib import metadata
 
-__version__ = metadata.version(__name__)
-
 from django.conf import settings
 from nautobot.apps import ConstanceConfigItem, NautobotAppConfig
+
+__version__ = metadata.version(__name__)
 
 
 _CONFLICTING_APP_NAMES = [
