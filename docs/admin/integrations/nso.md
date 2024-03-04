@@ -10,12 +10,12 @@ Before configuring the integration, please ensure the following:
     ```shell
     pip install nautobot-chatops
     ```
-- `nautobot-chatops` App is set up with at least one [enabled chat platform](./index.md#chat-platforms-configuration) and [tested](./index.md#test-your-chatbot).
+- `nautobot-chatops` App is set up with at least one [enabled chat platform](../install.md#chat-platforms-configuration) and [tested](./../install.md#test-your-chatbot).
 - [Cisco NSO](https://developer.cisco.com/docs/nso-guides-6.2/#!installation/installation) application installed and configured.
 
 ## Command Setup
 
-Create a top-level command named `nso` in your enabled chat platform. For detailed instructions related to your specific chat platform, refer to the [platform specific set up](./index.md#chat-platforms-configuration).
+Create a top-level command named `nso` in your enabled chat platform. For detailed instructions related to your specific chat platform, refer to the [platform specific set up](../install.md#chat-platforms-configuration).
 
 ## Configuration
 
