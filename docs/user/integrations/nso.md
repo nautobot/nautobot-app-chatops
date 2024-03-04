@@ -17,15 +17,15 @@ Interact with Cisco NSO by utilizing the following sub-commands:
 
 ## Screenshots
 
-![Commands list](../images/nso-01.png)
+![Commands list](../../images/nso-01.png)
 
-![Ping command](../images/nso-02.png)
+![Ping command](../../images/nso-02.png)
 
-![Check-sync command](../images/nso-03.png)
+![Check-sync command](../../images/nso-03.png)
 
-![Check-sync command, compare config](../images/nso-04.png)
+![Check-sync command, compare config](../../images/nso-04.png)
 
-![Run remote commands](../images/nso-05.png)
+![Run remote commands](../../images/nso-05.png)
 
-![Run remote commands result](../images/nso-06.png)
+![Run remote commands result](../../images/nso-06.png)
 
