@@ -6,44 +6,44 @@ to send requests and notifications to.
 
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from nautobot.core.views.generic import ObjectListView, ObjectEditView, ObjectDeleteView, ObjectView
-from nautobot_chatops.integrations.nso.tables import CommandFilterTable
-from nautobot_chatops.integrations.nso.models import CommandFilter
-from nautobot_chatops.integrations.nso.forms import CommandFilterForm
+from nautobot_chatops.integrations.nso.tables import NSOCommandFilterTable
+from nautobot_chatops.integrations.nso.models import NSOCommandFilter
+from nautobot_chatops.integrations.nso.forms import NSOCommandFilterForm
 
 
-class CommandFilterListView(ObjectListView):
+class NSOCommandFilterListView(ObjectListView):
     """View for command filters list."""
 
-    queryset = CommandFilter.objects.all()
-    table = CommandFilterTable
+    queryset = NSOCommandFilter.objects.all()
+    table = NSOCommandFilterTable
     action_buttons = ("add", "export")
 
 
-class CommandFilterView(ObjectView):
+class NSOCommandFilterView(ObjectView):
     """View for command filter details."""
 
-    queryset = CommandFilter.objects.all()
-    template_name = "nautobot_chatops_nso/commandfilter.html"
+    queryset = NSOCommandFilter.objects.all()
+    template_name = "nautobot_chatops_nso/nsocommandfilter.html"
 
 
-class CommandFiltersCreateView(PermissionRequiredMixin, ObjectEditView):
+class NSOCommandFiltersCreateView(PermissionRequiredMixin, ObjectEditView):
     """View for creating a new command filter."""
 
-    permission_required = "nautobot_chatops.add_commandfilter"
-    model = CommandFilter
-    queryset = CommandFilter.objects.all()
-    model_form = CommandFilterForm
+    permission_required = "nautobot_chatops.add_nsocommandfilter"
+    model = NSOCommandFilter
+    queryset = NSOCommandFilter.objects.all()
+    model_form = NSOCommandFilterForm
 
 
-class CommandFiltersUpdateView(CommandFiltersCreateView):
+class NSOCommandFiltersUpdateView(NSOCommandFiltersCreateView):
     """View for editing an existing command filter."""
 
-    permission_required = "nautobot_chatops.change_commandfilter"
+    permission_required = "nautobot_chatops.change_nsocommandfilter"
 
 
-class CommandFiltersDeleteView(PermissionRequiredMixin, ObjectDeleteView):
+class NSOCommandFiltersDeleteView(PermissionRequiredMixin, ObjectDeleteView):
     """View for deleting a single command filter record."""
 
-    queryset = CommandFilter.objects.all()
-    permission_required = "nautobot_chatops.delete_commandfilter"
-    default_return_url = "plugins:nautobot_chatops:commandfilter_list"
+    queryset = NSOCommandFilter.objects.all()
+    permission_required = "nautobot_chatops.delete_nsocommandfilter"
+    default_return_url = "plugins:nautobot_chatops:nsocommandfilter_list"

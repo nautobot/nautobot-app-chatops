@@ -8,7 +8,7 @@ from nautobot.core.settings_funcs import is_truthy
 from nautobot_chatops.choices import CommandStatusChoices
 from nautobot_chatops.workers import handle_subcommands, subcommand_of
 from nautobot_chatops.integrations.nso.nso import NSOClient, REQUEST_TIMEOUT_SEC, SLASH_COMMAND
-from nautobot_chatops.integrations.nso.models import CommandFilter
+from nautobot_chatops.integrations.nso.models import NSOCommandFilter
 
 
 def nso_logo(dispatcher):
@@ -134,7 +134,7 @@ def _allowed_command(device: Device, command: str):
         raise ValueError(
             f"{device.name} NSO Command Filter can not be determined! Be sure to assign a role and platform to the device."
         )
-    filters = CommandFilter.objects.filter(device_role=device.device_role, platform=device.platform)
+    filters = NSOCommandFilter.objects.filter(device_role=device.device_role, platform=device.platform)
     if not filters:
         raise ValueError(
             f"No filters defined for {device.device_role.slug}:{device.platform.slug}!\nGo to Nautobot->NSO->Command Filters to define one."

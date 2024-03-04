@@ -4,10 +4,10 @@ from django.forms import ModelForm, CharField
 from nautobot.core.forms import BootstrapMixin, DynamicModelChoiceField
 from nautobot.dcim.models.devices import Platform
 from nautobot.extras.models import Role
-from nautobot_chatops.integrations.nso.models import CommandFilter
+from nautobot_chatops.integrations.nso.models import NSOCommandFilter
 
 
-class CommandFilterForm(BootstrapMixin, ModelForm):
+class NSOCommandFilterForm(BootstrapMixin, ModelForm):
     """Form for editing command filters."""
 
     command = CharField(
@@ -21,6 +21,6 @@ class CommandFilterForm(BootstrapMixin, ModelForm):
     class Meta:
         """Metaclass attributes of the command filters form."""
 
-        model = CommandFilter
+        model = NSOCommandFilter
 
         fields = ("command", "role", "platform")

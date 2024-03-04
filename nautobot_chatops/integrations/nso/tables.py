@@ -2,7 +2,7 @@
 import django_tables2 as tables
 from django_tables2 import TemplateColumn
 from nautobot.core.tables import BaseTable, ColoredLabelColumn
-from nautobot_chatops.integrations.nso.models import CommandFilter
+from nautobot_chatops.integrations.nso.models import NSOCommandFilter
 
 
 def _action_template(view: str) -> str:
@@ -23,7 +23,7 @@ def _action_template(view: str) -> str:
 </a>"""
 
 
-class CommandFilterTable(BaseTable):
+class NSOCommandFilterTable(BaseTable):
     """Table for rendering filter commands."""
 
     command = TemplateColumn(
@@ -37,7 +37,7 @@ class CommandFilterTable(BaseTable):
     platform = tables.Column(linkify=True, verbose_name="Platform")
 
     actions = TemplateColumn(
-        template_code=_action_template("commandfilter"),
+        template_code=_action_template("nsocommandfilter"),
         attrs={"td": {"class": "text-right noprint"}},
         verbose_name="",
     )
@@ -45,5 +45,5 @@ class CommandFilterTable(BaseTable):
     class Meta(BaseTable.Meta):  # pylint: disable=too-few-public-methods
         """Meta for class PanelViewTable."""
 
-        model = CommandFilter
+        model = NSOCommandFilter
         fields = ("command", "role", "platform")
