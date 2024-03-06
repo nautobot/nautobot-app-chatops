@@ -151,15 +151,27 @@ def docker_compose(context, command, **kwargs):
 def run_command(context, command, **kwargs):
     """Wrapper to run a command locally or inside the nautobot container."""
     if is_truthy(context.nautobot_chatops.local):
+        if "command_env" in kwargs:
+            kwargs["env"] = {
+                **kwargs.get("env", {}),
+                **kwargs.pop("command_env"),
+            }
         context.run(command, **kwargs)
     else:
         # Check if nautobot is running, no need to start another nautobot container to run a command
         docker_compose_status = "ps --services --filter status=running"
         results = docker_compose(context, docker_compose_status, hide="out")
         if "nautobot" in results.stdout:
-            compose_command = f"exec nautobot {command}"
+            compose_command = "exec"
         else:
-            compose_command = f"run --rm --entrypoint '{command}' nautobot"
+            compose_command = "run --rm --entrypoint=''"
+
+        if "command_env" in kwargs:
+            command_env = kwargs.pop("command_env")
+            for key, value in command_env.items():
+                compose_command += f' --env="{key}={value}"'
+
+        compose_command += f" -- nautobot {command}"
 
         pty = kwargs.pop("pty", True)
 
@@ -329,15 +341,22 @@ def logs(context, service="", follow=False, tail=0):
 # ------------------------------------------------------------------------------
 # ACTIONS
 # ------------------------------------------------------------------------------
-@task(help={"file": "Python file to execute"})
-def nbshell(context, file=""):
+@task(
+    help={
+        "file": "Python file to execute",
+        "env": "Environment variables to pass to the command",
+        "plain": "Flag to run nbshell in plain mode (default: False)",
+    },
+)
+def nbshell(context, file="", env={}, plain=False):
     """Launch an interactive nbshell session."""
     command = [
         "nautobot-server",
         "nbshell",
+        "--plain" if plain else "",
         f"< '{file}'" if file else "",
     ]
-    run_command(context, " ".join(command), pty=not bool(file))
+    run_command(context, " ".join(command), pty=not bool(file), command_env=env)
 
 
 @task
@@ -672,7 +691,7 @@ def pylint(context):
 def autoformat(context):
     """Run code autoformatting."""
     black(context, autoformat=True)
-    ruff(context, action="both", fix=True)
+    ruff(context, fix=True)
 
 
 @task(
@@ -800,6 +819,8 @@ def tests(context, failfast=False, keepdb=False, lint_only=False):
     pylint(context)
     print("Running mkdocs...")
     build_and_check_docs(context)
+    print("Checking app config schema...")
+    validate_app_config(context)
     if not lint_only:
         print("Running unit tests...")
         unittest(context, failfast=failfast, keepdb=keepdb)
@@ -807,52 +828,24 @@ def tests(context, failfast=False, keepdb=False, lint_only=False):
     print("All tests have passed!")
 
 
-# ------------------------------------------------------------------------------
-# APP CUSTOM
-# ------------------------------------------------------------------------------
 @task
-def bootstrap_mattermost(context):
-    """Bootstrap Nautobot data to be used with Mattermost."""
-    nbshell(context, file="development/mattermost/nautobot_bootstrap.py")
+def generate_app_config_schema(context):
+    """Generate the app config schema from the current app config.
 
+    WARNING: Review and edit the generated file before committing.
 
-@task
-def backup_mattermost(context):
-    """Export Mattermost data to the SQL file. Certain tables are ignored."""
-    output = "./development/mattermost/dump.sql"
+    Its content is inferred from:
 
-    command = [
-        "exec",
-        "--",
-        "mattermost",
-        "bash",
-        "-c",
-        "'",
-        "pg_dump",
-        "--inserts",
-        "--user=$POSTGRES_USER",
-        "--dbname=$POSTGRES_DB",
-        "'",
-        f"> {output}",
-    ]
-
-    docker_compose(context, " ".join(command))
-
-
-@task
-def connect_awx_container(context, container_name="tools_awx_1"):
-    """Connect nautobot and celery containers to awx container.
-
-    Bridge network is defined in `development/ansible/docker-compose.yaml`.
-
-    To run testing awx instance, follow [instructions]
-    (https://github.com/ansible/awx/tree/devel/tools/docker-compose#getting-started)
-
-    Before running `make docker-compose` comment out `- 8080:8080` port mapping in file
-    `tools/docker-compose/ansible/roles/sources/templates/docker-compose.yml.j2` to avoid port conflict with nautobot.
-
-    After setting up awx, cd back to chatops repo and run `invoke connect-awx-container`.
+    - The current configuration in `PLUGINS_CONFIG`
+    - `NautobotAppConfig.default_settings`
+    - `NautobotAppConfig.required_settings`
     """
-    bridge_network = f"{context.nautobot_chatops.project_name}_awx"
-    context.run(f"docker network connect --alias awx {bridge_network} {container_name}")
-    print(f"Container {container_name} connected to {bridge_network} network")
+    start(context, service="nautobot")
+    nbshell(context, file="development/app_config_schema.py", env={"APP_CONFIG_SCHEMA_COMMAND": "generate"})
+
+
+@task
+def validate_app_config(context):
+    """Validate the app config based on the app config schema."""
+    start(context, service="nautobot")
+    nbshell(context, plain=True, file="development/app_config_schema.py", env={"APP_CONFIG_SCHEMA_COMMAND": "validate"})
