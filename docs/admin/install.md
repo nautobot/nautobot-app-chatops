@@ -71,9 +71,6 @@ Set up your chosen chat platform:
 !!! warning
     Follow the [Nautobot App Installation Instructions](https://nautobot.readthedocs.io/en/stable/plugins/#installing-plugins) for complete and most recent guidelines.
 
-!!! warning "Developer Note - Remove Me!"
-    What external systems (if any) it needs access to in order to work.
-
 ## Install Guide
 
 !!! note

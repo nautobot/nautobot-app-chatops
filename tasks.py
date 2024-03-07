@@ -849,3 +849,54 @@ def validate_app_config(context):
     """Validate the app config based on the app config schema."""
     start(context, service="nautobot")
     nbshell(context, plain=True, file="development/app_config_schema.py", env={"APP_CONFIG_SCHEMA_COMMAND": "validate"})
+
+
+# ------------------------------------------------------------------------------
+# APP CUSTOM
+# ------------------------------------------------------------------------------
+@task
+def bootstrap_mattermost(context):
+    """Bootstrap Nautobot data to be used with Mattermost."""
+    nbshell(context, file="development/mattermost/nautobot_bootstrap.py")
+
+
+@task
+def backup_mattermost(context):
+    """Export Mattermost data to the SQL file. Certain tables are ignored."""
+    output = "./development/mattermost/dump.sql"
+
+    command = [
+        "exec",
+        "--",
+        "mattermost",
+        "bash",
+        "-c",
+        "'",
+        "pg_dump",
+        "--inserts",
+        "--user=$POSTGRES_USER",
+        "--dbname=$POSTGRES_DB",
+        "'",
+        f"> {output}",
+    ]
+
+    docker_compose(context, " ".join(command))
+
+
+@task
+def connect_awx_container(context, container_name="tools_awx_1"):
+    """Connect nautobot and celery containers to awx container.
+
+    Bridge network is defined in `development/ansible/docker-compose.yaml`.
+
+    To run testing awx instance, follow [instructions]
+    (https://github.com/ansible/awx/tree/devel/tools/docker-compose#getting-started)
+
+    Before running `make docker-compose` comment out `- 8080:8080` port mapping in file
+    `tools/docker-compose/ansible/roles/sources/templates/docker-compose.yml.j2` to avoid port conflict with nautobot.
+
+    After setting up awx, cd back to chatops repo and run `invoke connect-awx-container`.
+    """
+    bridge_network = f"{context.nautobot_chatops.project_name}_awx"
+    context.run(f"docker network connect --alias awx {bridge_network} {container_name}")
+    print(f"Container {container_name} connected to {bridge_network} network")
