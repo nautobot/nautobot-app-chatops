@@ -8,7 +8,7 @@
         "verbose_name": "Nautobot ChatOps App",
         "app_slug": "nautobot-chatops",
         "project_slug": "nautobot-app-chatops",
-        "repo_url": "https://github.com/nautobot/nautobot-app-chatops/",
+        "repo_url": "https://github.com/nautobot/nautobot-app-chatops",
         "base_url": "chatops",
         "min_nautobot_version": "2.0.0",
         "max_nautobot_version": "2.9999",
