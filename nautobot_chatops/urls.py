@@ -36,19 +36,6 @@ else:
     logger = logging.getLogger(__name__)
     logger.warning("Grafana ChatOps integration is not available.", exc_info=True)
 
-if get_app_settings_or_config("nautobot_chatops", "enable_nso"):
-    try:
-        from nautobot_chatops.integrations.nso.urls import urlpatterns as nso_urlpatterns
-    # pylint: disable-next=broad-except
-    except Exception:
-        nso_urlpatterns = []
-        logger = logging.getLogger(__name__)
-        logger.warning("NSO ChatOps integration is not available.", exc_info=True)
-else:
-    nso_urlpatterns = []
-    logger = logging.getLogger(__name__)
-    logger.warning("NSO ChatOps integration is not enabled.", exc_info=True)
-
 urlpatterns = [
     path("", CommandLogListView.as_view(), name="commandlog_list"),
     path(
@@ -113,5 +100,4 @@ urlpatterns = [
         kwargs={"model": ChatOpsAccountLink},
     ),
     *grafana_urlpatterns,
-    *nso_urlpatterns,
 ]

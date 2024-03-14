@@ -1,6 +1,4 @@
 """Worker functions implementing Nautobot "nso" command and subcommands."""
-import re
-
 from django.core.exceptions import ObjectDoesNotExist
 from nautobot.dcim.models import Device
 from nautobot.core.settings_funcs import is_truthy
@@ -8,7 +6,6 @@ from nautobot.core.settings_funcs import is_truthy
 from nautobot_chatops.choices import CommandStatusChoices
 from nautobot_chatops.workers import handle_subcommands, subcommand_of
 from nautobot_chatops.integrations.nso.nso import NSOClient, REQUEST_TIMEOUT_SEC, SLASH_COMMAND
-from nautobot_chatops.integrations.nso.models import NSOCommandFilter
 
 
 def nso_logo(dispatcher):
@@ -128,25 +125,6 @@ def check_sync(dispatcher, device_name=None, compare_config=None):
     return CommandStatusChoices.STATUS_SUCCEEDED
 
 
-def _allowed_command(device: Device, command: str):
-    """Validation function to check if a command is allowed on a particular device."""
-    if not device.device_role.slug or not device.platform.slug:
-        raise ValueError(
-            f"{device.name} NSO Command Filter can not be determined! Be sure to assign a role and platform to the device."
-        )
-    filters = NSOCommandFilter.objects.filter(device_role=device.device_role, platform=device.platform)
-    if not filters:
-        raise ValueError(
-            f"No filters defined for {device.device_role.slug}:{device.platform.slug}!\nGo to Nautobot->NSO->Command Filters to define one."
-        )
-
-    for cmd_filter in filters:
-        if re.compile(cmd_filter.command).match(command):
-            return
-
-    raise ValueError(f"Sorry, command '{command}' not allowed on {device.device_role.slug}:{device.platform.slug}.")
-
-
 def _run_command_helper(dispatcher, device_name, device_commands, sub_command):
     """Helper function for run-commands and run-command-set NSO commands."""
     # Create a dialog prompt for any missing parameters in the command.
@@ -219,16 +197,6 @@ def _run_command_helper(dispatcher, device_name, device_commands, sub_command):
 
     # Split and strip device_commands, exclude empty results
     stripped_device_commands = [cmd.strip() for cmd in device_commands.split(",") if cmd.strip() != ""]
-    valid_device_commands = []
-
-    for cmd in stripped_device_commands:
-        try:
-            _allowed_command(nautobot_device, cmd)
-        except ValueError as exc:
-            dispatcher.send_error(f"{exc}‼️")
-            return False
-
-        valid_device_commands.append(cmd)
 
     # Send a Markdown-formatted text message.
     dispatcher.send_markdown(
@@ -245,7 +213,7 @@ def _run_command_helper(dispatcher, device_name, device_commands, sub_command):
     # Response we're going to send to the chat client. This will get built as commands
     # are run through NSO.
     response = ""
-    for cmd in valid_device_commands:
+    for cmd in stripped_device_commands:
         # Pull data from NSO using the live_status operand.
         data = nso_client.live_status(device_name, cmd)
         response += f"\n! {'-' * 30}\n! Command '{cmd}' results:\n! {'-' * 30}\n{data}"
@@ -270,12 +238,6 @@ def _run_command_helper(dispatcher, device_name, device_commands, sub_command):
 
     dispatcher.send_snippet(response)
     return True
-
-
-@subcommand_of("nso")
-def run_commands(dispatcher, device_name, device_commands):
-    """Run a device commands using Cisco NSO. Separate multiple commands with comma."""
-    return _run_command_helper(dispatcher, device_name, device_commands, "run-commands")
 
 
 @subcommand_of("nso")
