@@ -7,6 +7,7 @@ license = "Apache-2.0"
 readme = "README.md"
 homepage = "https://github.com/nautobot/nautobot-app-chatops/"
 repository = "https://github.com/nautobot/nautobot-app-chatops/"
+documentation = "https://docs.nautobot.com/projects/chatops/en/latest/"
 keywords = ["nautobot", "nautobot-app", "nautobot-plugin"]
 classifiers = [
     "Intended Audience :: Developers",
@@ -35,7 +36,6 @@ include = [
 "meraki" = "nautobot_chatops.integrations.meraki.worker:cisco_meraki"
 "nautobot" = "nautobot_chatops.workers.nautobot:nautobot"
 "panorama" = "nautobot_chatops.integrations.panorama.worker:panorama"
-"nso" = "nautobot_chatops.integrations.nso.worker:nso"
 
 [tool.poetry.dependencies]
 Markdown = "!=3.3.5"
@@ -93,8 +93,8 @@ requests-mock = "^1.9.3"
 ruff = "*"
 toml = "*"
 towncrier = "~23.6.0"
-yamllint = "*"
-responses = "^0.24.0"
+to-json-schema = "*"
+jsonschema = "*"
 
 [tool.poetry.extras]
 all = [
@@ -259,7 +259,7 @@ requires = ["poetry_core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.towncrier]
-package = "nautobot"
+package = "nautobot_chatops"
 directory = "changes"
 filename = "docs/admin/release_notes/version_X.Y.md"
 template = "development/towncrier_template.j2"
