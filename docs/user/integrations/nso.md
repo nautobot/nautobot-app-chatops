@@ -9,7 +9,6 @@ Interact with Cisco NSO by utilizing the following sub-commands:
 | `ping`            | `[device-name]`                    | Ping a device.                                              |
 | `connect`         | `[device-name]`                    | Check device connection with NSO.                           |
 | `check-sync`      | `[device-name]` `[compare-config]` | Check sync between current device config and stored in NSO. |
-| `run-commands`    | `[device-name]` `[commands]`       | Run commands on a device.                                   |
 | `run-command-set` | `[device-name]` `[commands]`       | Run predefined set of commands on a device.                 |
 
 !!! note

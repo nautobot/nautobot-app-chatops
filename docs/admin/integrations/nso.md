@@ -46,18 +46,11 @@ PLUGINS_CONFIG = {
 }
 ```
 
-## Command Filters
-
-To use the remote command capabilities of NSO Plugin, a command filter needs to be defined. Command filter consist of command regex, device role, and device platform.
-
-![Add a new command filter](../../images/nso-07.png)
-![Command Filters list](../../images/nso-08.png)
-
 ## Computed Fields
 
 Optionally, a computed field might be created to display NSO status on a device details page. Please note, that it might delay the page load depending on NSO response time.
 
-![Add a new computed field](../../images/nso-09.png)
-![Computed fields list](../../images/nso-10.png)
-![Device details 1](../../images/nso-11.png)
-![Device details 2](../../images/nso-12.png)
+![Add a new computed field](../../images/nso-07.png)
+![Computed fields list](../../images/nso-08.png)
+![Device details 1](../../images/nso-09.png)
+![Device details 2](../../images/nso-10.png)
