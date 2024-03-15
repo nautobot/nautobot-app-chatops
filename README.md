@@ -42,7 +42,7 @@ Full web-based HTML documentation for this app can be found over on the [Nautobo
 
 ## Try it Out
 
-Interested to see Nautobot ChatOps in action?  It's currently setup on the [Demo Instance](https://demo.nautobot.com/) and integrated into [NTC Slack](https://slack.networktocode.com).  You can sign up for that Slack workspace and join the `#nautobot-chat` channel to understand what this bot can do and try it for yourself.  You can try these exact chat commands and many more:
+You can find all the Markdown source for the App documentation under the [`docs`](https://github.com/nautobot/nautobot-app-chatops/tree/develop/docs) folder in this repository. For simple edits, a Markdown capable editor is sufficient: clone the repository and edit away.
 
 ### Command: `/nautobot`
 
