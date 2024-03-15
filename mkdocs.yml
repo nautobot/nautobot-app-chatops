@@ -4,7 +4,7 @@ edit_uri: "edit/main/nautobot-app-chatops/docs"
 site_dir: "nautobot_chatops/static/nautobot_chatops/docs"
 site_name: "Nautobot ChatOps App Documentation"
 site_url: "https://docs.nautobot.com/projects/chatops/en/latest/"
-repo_url: "https://github.com/nautobot/nautobot-app-chatops/"
+repo_url: "https://github.com/nautobot/nautobot-app-chatops"
 copyright: "Copyright &copy; The Authors"
 theme:
   name: "material"
