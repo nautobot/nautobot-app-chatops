@@ -159,4 +159,5 @@ Set up integrations using the specific guides:
 - [Grafana](./integrations/grafana.md)
 - [IPFabric](./integrations/ipfabric.md)
 - [Cisco Meraki](./integrations/meraki.md)
+- [Cisco NSO](./integrations/nso.md)
 - [Palo Alto Panorama](./integrations/panorama.md)

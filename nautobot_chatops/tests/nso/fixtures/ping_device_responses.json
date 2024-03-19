@@ -1,0 +1,44 @@
+[
+  {
+    "url": "https://nso.test/restconf/data/tailf-ncs:devices/device=good_device/ping",
+    "method": "POST",
+    "status": 200,
+    "response_json": {
+      "tailf-ncs:output": {
+        "result": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\n64 bytes from 10.0.0.2: icmp_seq=1 ttl=64 time=0.014 ms\n\n--- 10.0.0.2 ping statistics ---\n1 packets transmitted, 1 received, 0% packet loss, time 0ms\nrtt min/avg/max/mdev = 0.014/0.014/0.014/0.000 ms\n"
+      }
+    }
+  },
+  {
+    "url": "https://nso.test/restconf/data/tailf-ncs:devices/device=offline_device/ping",
+    "method": "POST",
+    "status": 200,
+    "response_json": {
+      "tailf-ncs:output": {
+        "result": "PING 10.0.0.2 (10.0.0.2) 56(84) bytes of data.\n\n--- 10.0.0.2 ping statistics ---\n1 packets transmitted, 0 received, 100% packet loss, time 0ms\n\n"
+      }
+    }
+  },
+  {
+    "url": "https://nso.test/restconf/data/tailf-ncs:devices/device=nonexistent_device/ping",
+    "method": "POST",
+    "status": 404,
+    "response_json": {
+      "ietf-restconf:errors": {
+        "error": [
+          {
+            "error-type": "application",
+            "error-tag": "invalid-value",
+            "error-message": "uri keypath not found"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "url": "https://nso.error/restconf/data/tailf-ncs:devices/device=error_device/ping",
+    "method": "POST",
+    "status": 404,
+    "response_json": {}
+  }
+]

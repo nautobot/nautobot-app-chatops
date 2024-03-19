@@ -1,0 +1,28 @@
+[
+  {
+    "url": "https://nso.test/restconf/data/tailf-ncs:devices/device=in_sync_device/compare-config",
+    "method": "POST",
+    "status": 200,
+    "response_json": {}
+  },
+  {
+    "url": "https://nso.test/restconf/data/tailf-ncs:devices/device=out_of_sync_device/compare-config",
+    "method": "POST",
+    "status": 200,
+    "response_json": {
+      "tailf-ncs:output": {
+        "diff": "\n devices {\n     device out_of_sync_device {\n         config {\n             interface {\n+                Loopback 100 {\n+                    description \"Test Change\";\n+                }\n             }\n         }\n     }\n }\n"
+      }
+    }
+  },
+  {
+    "url": "https://nso.test/restconf/data/tailf-ncs:devices/device=offline_device/compare-config",
+    "method": "POST",
+    "status": 200,
+    "response_json": {
+      "tailf-ncs:output": {
+        "info": "Device c3 is southbound locked"
+      }
+    }
+  }
+]

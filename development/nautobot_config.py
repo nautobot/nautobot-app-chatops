@@ -205,6 +205,12 @@ PLUGINS_CONFIG = {
         "panorama_host": os.environ.get("PANORAMA_HOST"),
         "panorama_password": os.environ.get("PANORAMA_PASSWORD"),
         "panorama_user": os.environ.get("PANORAMA_USER"),
+        # - Cisco NSO ------------------------
+        "enable_nso": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_NSO")),
+        "nso_url": os.environ.get("NSO_URL"),
+        "nso_username": os.environ.get("NSO_USERNAME"),
+        "nso_password": os.environ.get("NSO_PASSWORD"),
+        "nso_request_timeout": os.environ.get("NSO_REQUEST_TIMEOUT", 60),
     },
 }
 

@@ -1612,6 +1612,7 @@ INSERT INTO public.commands VALUES ('urmj87oqbbynir8nzc33by1f4c', '3wxwh3m8mjrzx
 INSERT INTO public.commands VALUES ('mw51fho6ojd3fxqmrgfkt9xykw', 'ppm316za33ritm3xgpobcmmgre', 1698322479271, 1698322479271, 0, '5md7bsji6pbijpxitu8bwezaqy', 'rkpuunm3rp8fffhzkjxw63usyc', 'ipfabric', 'P', '', '', false, '', '', 'IP Fabric', 'IP Fabric Slash Command', 'http://nautobot:8080/api/plugins/chatops/mattermost/slash_command/', '');
 INSERT INTO public.commands VALUES ('11cwjihduffn3ceybits6n5zty', '11ix54hycjr4dmxcgw4d77qc4w', 1698322532951, 1698322532951, 0, '5md7bsji6pbijpxitu8bwezaqy', 'rkpuunm3rp8fffhzkjxw63usyc', 'meraki', 'P', '', '', false, '', '', 'Cisco Meraki', 'Cisco Meraki Slash Command', 'http://nautobot:8080/api/plugins/chatops/mattermost/slash_command/', '');
 INSERT INTO public.commands VALUES ('p43ko8rim3r89d78yexbg3fiww', 'fh1kbk45xtgm8r48jzr39ru1ww', 1698322585580, 1698322585580, 0, '5md7bsji6pbijpxitu8bwezaqy', 'rkpuunm3rp8fffhzkjxw63usyc', 'panorama', 'P', '', '', false, '', '', 'Panorama', 'Panorama Slash Command', 'http://nautobot:8080/api/plugins/chatops/mattermost/slash_command/', '');
+INSERT INTO public.commands VALUES ('qbxb8a33cimdw77hyxjeuyg80i', 'j9bcga71hl4lreaczecen7i5dz', 1698322527456, 1698322527456, 0, '5md7bsji6pbijpxitu8bwezaqy', 'rkpuunm3rp8fffhzkjxw63usyc', 'nso', 'P', '', '', false, '', '', 'Cisco NSO', 'Cisco NSO Slash Command', 'http://nautobot:8080/api/plugins/chatops/mattermost/slash_command/', '');
 
 
 --

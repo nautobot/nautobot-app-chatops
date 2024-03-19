@@ -36,6 +36,7 @@ _COMMAND_TOKENS = {
     "meraki": "11ix54hycjr4dmxcgw4d77qc4w",  # nosec
     "nautobot": "ncygprhkt3rrxr4rkytcaa7c9c",  # nosec
     "panorama": "fh1kbk45xtgm8r48jzr39ru1ww",  # nosec
+    "nso": "j9bcga71hl4lreaczecen7i5dz",  # nosec
 }
 
 for command, token in _COMMAND_TOKENS.items():
@@ -48,7 +49,7 @@ for command, token in _COMMAND_TOKENS.items():
 with contextlib.suppress(ObjectDoesNotExist):
     admin = User.objects.get(name="admin")
     ChatOpsAccountLink.objects.update_or_create(
-        user_id="jactwicuqb8bu8pau8mgjydzeo",
+        user_id="w7uyhzuo7fnfueen6og9cxmn9h",
         platform=PlatformChoices.MATTERMOST,
         defaults={"nautobot_user": admin},
     )
