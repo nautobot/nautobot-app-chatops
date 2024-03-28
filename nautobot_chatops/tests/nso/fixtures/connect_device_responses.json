@@ -1,0 +1,40 @@
+[
+  {
+    "url": "https://nso.test/restconf/data/tailf-ncs:devices/device=good_device/connect",
+    "method": "POST",
+    "status": 200,
+    "response_json": {
+      "tailf-ncs:output": {
+        "result": true,
+        "info": "(admin) Connected to good_device - 127.0.0.1:10022"
+      }
+    }
+  },
+  {
+    "url": "https://nso.test/restconf/data/tailf-ncs:devices/device=offline_device/connect",
+    "method": "POST",
+    "status": 200,
+    "response_json": {
+      "tailf-ncs:output": {
+        "result": false,
+        "info": "Device c3 is southbound locked"
+      }
+    }
+  },
+  {
+    "url": "https://nso.test/restconf/data/tailf-ncs:devices/device=nonexistent_device/connect",
+    "method": "POST",
+    "status": 404,
+    "response_json": {
+      "ietf-restconf:errors": {
+        "error": [
+          {
+            "error-type": "application",
+            "error-tag": "invalid-value",
+            "error-message": "uri keypath not found"
+          }
+        ]
+      }
+    }
+  }
+]

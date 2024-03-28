@@ -4,11 +4,11 @@ This document provides a step-by-step tutorial on how to get the App going and h
 
 ## Install the App
 
-To install the App, please follow the instructions detailed in the [Installation Guide](../admin/install/index.md).
+To install the App, please follow the instructions detailed in the [Administrator Guide](../admin/install.md).
 
 ## Link Nautobot Account
 
-+++3.0.0
++++ 3.0.0
 
 Nautobot ChatOps now uses the built-in Nautobot permissions for Nautobot Objects (Devices, Locations, Racks, etc.). Each user will need to link their Nautobot Account with their Chat Platform User Account. Login to Nautobot then access the Link ChatOps Account within the Plugins menu. Here you can provide your email address and select the ChatOps Platform you are using, then click the Look up User ID from Email to get your Chat User ID.
 
@@ -52,10 +52,11 @@ Interact with Nautobot by utilizing the following sub-commands:
 
 The `nautobot-chatops` package includes multiple integrations. Each integration adds chat commands described here:
 
-- [Cisco ACI](./aci_commands.md)
-- [AWX / Ansible Tower](./ansible_commands.md)
-- [Arista CloudVision](./aristacv_commands.md)
-- [Grafana](./grafana_commands.md)
-- [IPFabric](./ipfabric_commands.md)
-- [Cisco Meraki](./meraki_commands.md)
-- [Palo Alto Panorama](./panorama_commands.md)
+- [Cisco ACI](./integrations/aci.md)
+- [AWX / Ansible Tower](./integrations/ansible.md)
+- [Arista CloudVision](./integrations/aristacv.md)
+- [Grafana](./integrations/grafana.md)
+- [IPFabric](./integrations/ipfabric.md)
+- [Cisco Meraki](./integrations/meraki.md)
+- [Cisco NSO](./integrations/nso.md)
+- [Palo Alto Panorama](./integrations/panorama.md)

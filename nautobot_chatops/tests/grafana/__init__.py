@@ -1,1 +1,1 @@
-"""Unit tests for nautobot_chatops.integrations.grafana plugin."""
+"""Unit tests for nautobot_chatops.integrations.grafana app."""

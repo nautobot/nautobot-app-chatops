@@ -1,0 +1,4 @@
+Add run_job Nautobot subcommand, which initiates a job with kwargs or a job requiring no manual form input.
+Add run_job_form Nautobot subcommand, which presents job's form widgets to the user.
+Add get_jobs Nautobot subcommand, which returns all Nautobot jobs viewable to user.
+Add filter_jobs Nautobot subcommand, which returns filtered set of Nautobot jobs viewable to user.

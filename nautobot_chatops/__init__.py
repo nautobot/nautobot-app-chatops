@@ -1,11 +1,11 @@
-"""Plugin declaration for nautobot_chatops."""
+"""App declaration for nautobot_chatops."""
 # Metadata is inherited from Nautobot. If not including Nautobot in the environment, this should be added
 from importlib import metadata
 
-__version__ = metadata.version(__name__)
-
 from django.conf import settings
 from nautobot.apps import ConstanceConfigItem, NautobotAppConfig
+
+__version__ = metadata.version(__name__)
 
 
 _CONFLICTING_APP_NAMES = [
@@ -32,7 +32,7 @@ _check_for_conflicting_apps()
 
 
 class NautobotChatOpsConfig(NautobotAppConfig):
-    """Plugin configuration for the nautobot_chatops plugin."""
+    """App configuration for the nautobot_chatops app."""
 
     name = "nautobot_chatops"
     verbose_name = "Nautobot ChatOps"
@@ -51,7 +51,7 @@ class NautobotChatOpsConfig(NautobotAppConfig):
         # Should menus, text input fields, etc. be deleted from the chat history after the user makes a selection?
         "delete_input_on_submission": False,
         "restrict_help": False,
-        # As requested on https://github.com/nautobot/nautobot-plugin-chatops/issues/114 this setting is used for
+        # As requested on https://github.com/nautobot/nautobot-app-chatops/issues/114 this setting is used for
         # sending all messages as an ephemeral message, meaning only the person interacting with the bot will see the
         # responses.
         "send_all_messages_private": False,
@@ -105,7 +105,7 @@ class NautobotChatOpsConfig(NautobotAppConfig):
         "grafana_default_timespan": "",
         "grafana_org_id": 1,
         "grafana_default_tz": "",
-        # - IPFabric ---------------------
+        # - IPFabric -------------------------
         "ipfabric_api_token": "",
         "ipfabric_host": "",
         "ipfabric_timeout": "",
@@ -116,6 +116,11 @@ class NautobotChatOpsConfig(NautobotAppConfig):
         "panorama_host": "",
         "panorama_password": "",
         "panorama_user": "",
+        # - Cisco NSO ------------------------
+        "nso_url": "",
+        "nso_username": "",
+        "nso_password": "",
+        "nso_request_timeout": "",
     }
     constance_config = {
         "fallback_chatops_user": ConstanceConfigItem(default="chatbot", help_text="Enable Mattermost Chat Platform."),
@@ -142,12 +147,13 @@ class NautobotChatOpsConfig(NautobotAppConfig):
         "enable_panorama": ConstanceConfigItem(
             default=False, help_text="Enable Panorama Integration.", field_type=bool
         ),
+        "enable_nso": ConstanceConfigItem(default=False, help_text="Enable NSO Integration.", field_type=bool),
     }
 
     caching_config = {}
 
     def ready(self):
-        """Function invoked after all plugins have been loaded."""
+        """Function invoked after all apps have been loaded."""
         super().ready()
         # pylint: disable=import-outside-toplevel
         from nautobot_capacity_metrics import register_metric_func

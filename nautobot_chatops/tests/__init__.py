@@ -1,1 +1,1 @@
-"""Unit tests for nautobot_chatops plugin."""
+"""Unit tests for nautobot_chatops app."""
