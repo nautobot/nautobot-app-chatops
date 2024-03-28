@@ -53,7 +53,7 @@ class Dispatcher:
                 ).nautobot_user
             except ObjectDoesNotExist:
                 logger.warning(
-                    "Could not find User matching %s - id: %s." "Add a ChatOps User to link the accounts.",
+                    "Could not find User matching %s - id: %s. Add a ChatOps User to link the accounts.",
                     self.context["user_name"],
                     self.context["user_id"],
                 )
@@ -64,7 +64,7 @@ class Dispatcher:
         return user
 
     def _get_cache_key(self) -> str:
-        """Key generator for the cache, adding the plugin prefix name."""
+        """Key generator for the cache, adding the app prefix name."""
         # Using __file__ as a key customization within the cache
         return "-".join([__file__, self.context.get("user_id", "generic")])
 
@@ -240,7 +240,6 @@ class Dispatcher:
         """
         raise NotImplementedError
 
-    # pylint: disable=no-self-use
     def needs_permission_to_send_image(self):
         """Return True if this bot needs to ask the user for permission to post an image."""
         return False
@@ -326,17 +325,14 @@ class Dispatcher:
         """Markup for a mention of the username/userid specified in our context."""
         raise NotImplementedError
 
-    # pylint: disable=no-self-use
     def bold(self, text):
         """Mark text as bold."""
         return f"**{text}**"
 
-    # pylint: disable=no-self-use
     def hyperlink(self, text, url):
         """Create Hyperlinks."""
         return f"[{text}]({url})"
 
-    # pylint: disable=no-self-use
     def monospace(self, text):
         """Mark text as monospace."""
         return f"`{text}`"
@@ -367,7 +363,7 @@ class Dispatcher:
         Args:
           action_id (str): Identifying string to associate with this element
           choices (list): List of (display, value) tuples
-          default (tuple: Default (display, value) to preselect
+          default (tuple): Default (display, value) to preselect
           confirm (bool): If true (and the platform supports it), prompt the user to confirm their selection
         """
         raise NotImplementedError

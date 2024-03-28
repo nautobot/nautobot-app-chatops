@@ -204,6 +204,7 @@ class NautobotPluginChatopsAci:
         )
         sp_list = []
         for obj in resp.json()["imdata"]:
+            # pylint: disable-next=use-dict-literal
             sp_dict = dict(encap=obj["fvRsPathAtt"]["attributes"]["encap"])
             # pylint: disable-next=invalid-name
             tDn = obj["fvRsPathAtt"]["attributes"]["tDn"]
@@ -273,6 +274,7 @@ class NautobotPluginChatopsAci:
     def get_epg_details(self, tenant: str, ap: str, epg: str) -> dict:
         """Return EPG configuration details."""
         resp = self._get(f"/api/node/mo/uni/tn-{tenant}/ap-{ap}/epg-{epg}.json?query-target=children")
+        # pylint: disable-next=use-dict-literal
         epg_dict = dict(bd=None, subnets=[], provided_contracts=[], consumed_contracts=[], domains=[], static_paths=[])
         epg_dict["name"] = epg
         for obj in resp.json()["imdata"]:
@@ -281,6 +283,7 @@ class NautobotPluginChatopsAci:
                 epg_dict["subnets"] = self.get_bd_subnet(tenant, epg_dict["bd"])
             if "fvRsCons" in obj:
                 epg_dict["consumed_contracts"].append(
+                    # pylint: disable-next=use-dict-literal
                     dict(
                         name=obj["fvRsCons"]["attributes"]["tnVzBrCPName"],
                         filters=self.get_contract_filters(tenant, obj["fvRsCons"]["attributes"]["tnVzBrCPName"]),
@@ -288,6 +291,7 @@ class NautobotPluginChatopsAci:
                 )
             if "fvRsProv" in obj:
                 epg_dict["provided_contracts"].append(
+                    # pylint: disable-next=use-dict-literal
                     dict(
                         name=obj["fvRsProv"]["attributes"]["tnVzBrCPName"],
                         filters=self.get_contract_filters(tenant, obj["fvRsProv"]["attributes"]["tnVzBrCPName"]),

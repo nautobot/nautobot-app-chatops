@@ -142,7 +142,7 @@ class TestGrafana(TestCase):
                 self.assertIn("nautobot", registry)
 
     def test_grafana_commands_registry_dynamic_subcommands(self):
-        """Specific testing for the Grafana Chatops Plugin."""
+        """Specific testing for the Grafana Chatops App."""
         with dynamic_entrypoint("nautobot.workers", name="grafana", module="nautobot_chatops.grafana.worker"):
             registry = get_commands_registry()
 

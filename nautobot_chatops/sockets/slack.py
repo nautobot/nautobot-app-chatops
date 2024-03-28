@@ -15,11 +15,11 @@ from nautobot_chatops.dispatchers.slack import SlackDispatcher
 from nautobot_chatops.utils import socket_check_and_enqueue_command
 
 
-async def main():  # pylint: disable=too-many-statements
+# pylint: disable-next=too-many-statements
+async def main():
     """Slack Socket Main Loop."""
-    SLASH_PREFIX = settings.PLUGINS_CONFIG["nautobot_chatops"].get(  # pylint:disable=invalid-name
-        "slack_slash_command_prefix"
-    )
+    # pylint: disable-next=invalid-name
+    SLASH_PREFIX = settings.PLUGINS_CONFIG["nautobot_chatops"].get("slack_slash_command_prefix")
     client = SocketModeClient(
         app_token=settings.PLUGINS_CONFIG["nautobot_chatops"].get("slack_app_token"),
         web_client=AsyncWebClient(token=settings.PLUGINS_CONFIG["nautobot_chatops"]["slack_api_token"]),
@@ -78,7 +78,7 @@ async def main():  # pylint: disable=too-many-statements
 
         return await socket_check_and_enqueue_command(registry, command, subcommand, params, context, SlackDispatcher)
 
-    # pylint: disable=too-many-locals,too-many-return-statements,too-many-branches,too-many-statements,too-many-nested-blocks
+    # pylint: disable-next=too-many-locals,too-many-return-statements,too-many-branches,too-many-statements
     async def process_interactive(client, req):
         client.logger.debug("Processing interactive.")
         payload = req.payload
@@ -125,6 +125,7 @@ async def main():  # pylint: disable=too-many-statements
                 # Nothing more to do
                 return
 
+        # pylint: disable-next=too-many-nested-blocks
         elif "view" in payload and payload["view"]:
             # View submission triggered from a modal dialog
             client.logger.info("Submission triggered from a modal dialog")

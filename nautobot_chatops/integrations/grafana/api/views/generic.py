@@ -1,4 +1,4 @@
-"""API Views for Nautobot Plugin Chatops Grafana."""
+"""API Views for Nautobot App Chatops Grafana."""
 from rest_framework.routers import APIRootView
 
 

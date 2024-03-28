@@ -1,9 +1,5 @@
 """Test cases for Nautobot Chatops API."""
-try:
-    from importlib import metadata
-except ImportError:
-    # Python version < 3.8
-    import importlib_metadata as metadata
+from importlib import metadata
 
 from django.urls import reverse
 

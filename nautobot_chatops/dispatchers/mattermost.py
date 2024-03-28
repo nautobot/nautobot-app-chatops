@@ -606,7 +606,6 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
         # Leaving in place to pass the testing.
         return {"block_id": block_id, "actions": actions}
 
-    # pylint: disable=no-self-use
     def _input_block(self, block_id, label, element):
         """Construct a block consisting of Input elements."""
         element["display_name"] = label

@@ -49,7 +49,7 @@ Add the release notes (`docs/release-notes/X.Y.md`) to the table of contents wit
 
 ### Verify and Revise the Installation Documentation
 
-Follow the [installation instructions](../admin/install/index.md) to perform a new production installation of Nautobot ChatOps.
+Follow the [installation instructions](../admin/install.md) to perform a new production installation of Nautobot ChatOps.
 
 The goal of this step is to walk through the entire install process *as documented* to make sure nothing there needs to be changed or updated, to catch any errors or omissions in the documentation, and to ensure that it is current with each release.
 
@@ -143,7 +143,7 @@ Once CI has completed on the PR, merge it.
 
 ### Create a New Release
 
-Draft a [new release](https://github.com/nautobot/nautobot-plugin-chatops/releases/new) with the following parameters.
+Draft a [new release](https://github.com/nautobot/nautobot-app-chatops/releases/new) with the following parameters.
 
 * **Tag:** Current version (e.g. `v1.0.0`)
 * **Target:** `main`

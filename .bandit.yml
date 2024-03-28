@@ -1,7 +1,7 @@
 ---
+skips:
+  - "B404"  # Ignore subprocess
 # No need to check for security issues in the test scripts!
 exclude_dirs:
   - "./nautobot_chatops/tests/"
-
-skips:
-  - "B404"
+  - "./.venv/"

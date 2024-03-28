@@ -1,4 +1,4 @@
-"""API Serializers for ChatOps Plugin."""
+"""API Serializers for ChatOps App."""
 
 from rest_framework import serializers
 

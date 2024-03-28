@@ -1,11 +1,11 @@
 ---
 dev_addr: "127.0.0.1:8001"
-edit_uri: "edit/develop/docs"
+edit_uri: "edit/main/nautobot-app-chatops/docs"
 site_dir: "nautobot_chatops/static/nautobot_chatops/docs"
-site_name: "Nautobot ChatOps Documentation"
-site_url: "https://docs.nautobot.com/projects/chatops/en/stable/"
-repo_url: "https://github.com/nautobot/nautobot-plugin-chatops"
-copyright: "Copyright &copy; 2020 Network to Code"
+site_name: "Nautobot ChatOps App Documentation"
+site_url: "https://docs.nautobot.com/projects/chatops/en/latest/"
+repo_url: "https://github.com/nautobot/nautobot-app-chatops"
+copyright: "Copyright &copy; The Authors"
 theme:
   name: "material"
   navigation_depth: 4
@@ -14,16 +14,17 @@ theme:
     - "django"
     - "yaml"
   features:
-    - "navigation.tracking"
-    - "navigation.tabs"
-    - "navigation.tabs.sticky"
-    - "navigation.footer"
-    - "search.suggest"
-    - "search.highlight"
-    - "search.share"
-    - "navigation.indexes"
     - "content.action.edit"
     - "content.action.view"
+    - "content.code.copy"
+    - "navigation.footer"
+    - "navigation.indexes"
+    - "navigation.tabs"
+    - "navigation.tabs.sticky"
+    - "navigation.tracking"
+    - "search.highlight"
+    - "search.share"
+    - "search.suggest"
   favicon: "assets/favicon.ico"
   logo: "assets/nautobot_logo.svg"
   palette:
@@ -80,11 +81,14 @@ markdown_extensions:
       anchor_linenums: true
   - "pymdownx.inlinehilite"
   - "pymdownx.snippets"
-  - "pymdownx.superfences"
+  - "pymdownx.superfences":
+      custom_fences:
+        - name: "mermaid"
+          class: "mermaid"
+          format: !!python/name:pymdownx.superfences.fence_code_format
   - "footnotes"
 plugins:
   - "search"
-  - "include-markdown"
   - "mkdocs-version-annotations"
   - "mkdocstrings":
       default_handler: "python"
@@ -93,6 +97,7 @@ plugins:
           paths: ["."]
           options:
             show_root_heading: true
+  - "include-markdown"
 watch:
   - "README.md"
 
@@ -101,29 +106,32 @@ nav:
   - User Guide:
       - App Overview: "user/app_overview.md"
       - Getting Started: "user/app_getting_started.md"
-      - Frequently Asked Questions: "user/app_faq.md"
+      - Frequently Asked Questions: "user/faq.md"
       - Integrations:
-          - "user/aci_commands.md"
-          - "user/ansible_commands.md"
-          - "user/aristacv_commands.md"
-          - "user/grafana_commands.md"
-          - "user/ipfabric_commands.md"
-          - "user/meraki_commands.md"
-          - "user/panorama_commands.md"
+          - "user/integrations/aci.md"
+          - "user/integrations/ansible.md"
+          - "user/integrations/aristacv.md"
+          - "user/integrations/grafana.md"
+          - "user/integrations/ipfabric.md"
+          - "user/integrations/meraki.md"
+          - "user/integrations/panorama.md"
+          - "user/integrations/nso.md"
   - Administrator Guide:
-      - Install and Configure:
-          - "admin/install/index.md"
-          - "admin/install/slack_setup.md"
-          - "admin/install/mattermost_setup.md"
-          - "admin/install/webex_setup.md"
-          - "admin/install/microsoft_teams_setup.md"
-          - "admin/install/aci_setup.md"
-          - "admin/install/ansible_setup.md"
-          - "admin/install/aristacv_setup.md"
-          - "admin/install/grafana_setup.md"
-          - "admin/install/ipfabric_setup.md"
-          - "admin/install/meraki_setup.md"
-          - "admin/install/panorama_setup.md"
+      - Install and Configure: "admin/install.md"
+      - Platforms:
+          - "admin/platforms/slack.md"
+          - "admin/platforms/mattermost.md"
+          - "admin/platforms/webex.md"
+          - "admin/platforms/microsoft_teams.md"
+      - Integrations:
+          - "admin/integrations/aci.md"
+          - "admin/integrations/ansible.md"
+          - "admin/integrations/aristacv.md"
+          - "admin/integrations/grafana.md"
+          - "admin/integrations/ipfabric.md"
+          - "admin/integrations/meraki.md"
+          - "admin/integrations/panorama.md"
+          - "admin/integrations/nso.md"
       - Upgrade: "admin/upgrade.md"
       - Uninstall: "admin/uninstall.md"
       - Compatibility Matrix: "admin/compatibility_matrix.md"
@@ -151,6 +159,7 @@ nav:
       - Glossary: "glossary.md"
       - Code Reference:
           - "dev/code_reference/index.md"
+          - Package: "dev/code_reference/package.md"
           - Models: "dev/code_reference/models.md"
           - API: "dev/code_reference/api.md"
           - Dispatchers:
@@ -161,4 +170,5 @@ nav:
               - "dev/code_reference/mattermost.md"
           - "models/accessgrant.md"
           - "models/commandtoken.md"
+          - "models/chatopsaccountlink.md"
   - Nautobot Docs Home ↗︎: "https://docs.nautobot.com"

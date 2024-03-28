@@ -1,6 +1,6 @@
 # The design of Nautobot ChatOps
 
-By delivering this as a Nautobot ChatOps plugin, we gain the following benefits:
+By delivering this as a Nautobot ChatOps App, we gain the following benefits:
 
 - No need to stand up a separate HTTP server, just use Nautobot's own HTTP server.
 - Use of `async` is not required because we can hand off long-running tasks to Nautobot's `celery` workers. With one notable exception, WebSocket connections will be done with `async`. We have opted for `AIOHTTP` for our WebSocket [clients](https://docs.aiohttp.org/en/stable/client_quickstart.html#aiohttp-client-websockets).
@@ -12,7 +12,7 @@ By delivering this as a Nautobot ChatOps plugin, we gain the following benefits:
 
 ## Code structure
 
-The design goal of this plugin is to be able to write chatbot commands once and have them run anywhere
+The design goal of this app is to be able to write chatbot commands once and have them run anywhere
 (Slack, Microsoft Teams, Cisco Webex, etc.). Toward that end, it's divided into three layers:
 
 1. input
@@ -39,8 +39,8 @@ The design goal of this plugin is to be able to write chatbot commands once and 
     - In addition to enqueuing the command parameters for the worker, the queue also requires a `Dispatcher` class
      (see below) and any additional `context` that the dispatcher requires (such as user_id, channel_id, tokens, etc.)
 
-    - Support for additional chat platform endpoints can be implemented as additional modules in this plugin,
-     or could be delivered as an entirely separate Nautobot plugin if desired.
+    - Support for additional chat platform endpoints can be implemented as additional modules in this app,
+     or could be delivered as an entirely separate Nautobot app if desired.
 
 2. worker (`nautobot_chatops.workers`)
 
@@ -54,7 +54,7 @@ The design goal of this plugin is to be able to write chatbot commands once and 
     - Each module in this layer would provide a different top-level command, such as `nautobot`, `grafana`, or `ansible`.
 
     - This layer is designed to be extensible through Python's packaging `entry_points` functionality (`plugins` in
-     Poetry's terminology). A Python package (Nautobot plugin) can register any worker functions under the `nautobot.workers` entry point,
+     Poetry's terminology). A Python package (Nautobot App) can register any worker functions under the `nautobot.workers` entry point,
      and the worker(s) will automatically be added to the client's capabilities.
 
 3. output (`nautobot_chatops.dispatchers`)
@@ -78,7 +78,7 @@ The design goal of this plugin is to be able to write chatbot commands once and 
      `views` submodules and `dispatchers` submodules.
 
     - As with the `views` layer, the `Dispatcher` for a new chat platform could be implemented as a new submodule for
-     this plugin, or could be delivered as part of a separate Nautobot plugin.
+     this app, or could be delivered as part of a separate Nautobot App.
 
 ## Information flow
 
@@ -90,7 +90,7 @@ The design goal of this plugin is to be able to write chatbot commands once and 
  |-- User input ->|               |
  |                |-- HTTP POST ->|
  |                |               | nautobot_chatops/views/*
- |                |               |-- Enqueue job,dispatcher to RQ --> <queue>
+ |                |               |-- Enqueue job,dispatcher to Celery --> <queue>
  |                |<---- 200 OK --|
  |<- "Received" --|
 ```

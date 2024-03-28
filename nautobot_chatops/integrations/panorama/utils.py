@@ -12,7 +12,7 @@ from panos.panorama import Panorama, DeviceGroup, PanoramaDeviceGroupHierarchy
 from panos.policies import PostRulebase, PreRulebase, Rulebase, SecurityRule
 from requests.exceptions import RequestException
 
-from .constant import PLUGIN_CFG
+from .constant import DEFAULT_TIMEOUT, PLUGIN_CFG
 
 
 logger = logging.getLogger(__name__)
@@ -31,7 +31,12 @@ def get_api_key_api(url: str = PLUGIN_CFG["panorama_host"]) -> str:
 
     params = {"type": "keygen", "user": PLUGIN_CFG["panorama_user"], "password": PLUGIN_CFG["panorama_password"]}
 
-    response = requests.get(f"https://{url}/api/", params=params, verify=False)  # nosec
+    response = requests.get(
+        f"https://{url}/api/",
+        params=params,
+        verify=False,  # nosec
+        timeout=DEFAULT_TIMEOUT,
+    )
     if response.status_code != 200:
         raise RequestException(f"Something went wrong while making a request. Reason: {response.text}")
 
@@ -218,7 +223,12 @@ def _get_pcap(capture_filename: str, ip_address: str):
 
     params = {"key": get_api_key_api(), "type": "export", "category": "filters-pcap", "from": "1.pcap"}
 
-    respone = requests.get(url, params=params, verify=False)  # nosec
+    respone = requests.get(
+        url,
+        params=params,
+        verify=False,  # nosec
+        timeout=DEFAULT_TIMEOUT,
+    )
 
     with open(capture_filename, "wb") as pcap_file:
         pcap_file.write(respone.content)

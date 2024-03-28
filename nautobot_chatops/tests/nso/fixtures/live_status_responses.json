@@ -1,0 +1,142 @@
+[
+  {
+    "url": "https://nso.test/restconf/data/tailf-ncs:devices/device=good_device/device-type",
+    "method": "GET",
+    "status": 200,
+    "response_json": {
+      "tailf-ncs:device-type": {
+        "cli": {
+          "ned-id": "cisco-ios-cli-6.77:cisco-ios-cli-6.77"
+        }
+      }
+    }
+  },
+  {
+    "url": "https://nso.test/restconf/data/tailf-ncs:devices/device=good_device/live-status/tailf-ned-cisco-ios-stats:exec/show",
+    "method": "POST",
+    "status": 200,
+    "body": {
+      "input": {
+        "args": "version"
+      }
+    },
+    "response_json": {
+    "tailf-ned-cisco-ios-stats:output": {
+        "result": "\r\nCisco IOS Software, NETSIM\r\ngood_device# "
+      }
+    }
+  },
+  {
+    "url": "https://nso.test/restconf/data/tailf-ncs:devices/device=offline_device/device-type",
+    "method": "GET",
+    "status": 200,
+    "response_json": {
+      "tailf-ncs:device-type": {
+        "cli": {
+          "ned-id": "cisco-ios-cli-6.77:cisco-ios-cli-6.77"
+        }
+      }
+    }
+  },
+  {
+    "url": "https://nso.test/restconf/data/tailf-ncs:devices/device=offline_device/live-status/tailf-ned-cisco-ios-stats:exec/show",
+    "method": "POST",
+    "status": 500,
+    "body": {
+      "input": {
+        "args": "version"
+      }
+    },
+    "response_json": {
+    "ietf-restconf:errors": {
+      "error": [
+          {
+            "error-type": "application",
+            "error-tag": "operation-failed",
+            "error-path": "/tailf-ncs:devices/device[name='offline_device']/live-status/tailf-ned-cisco-ios-stats:exec/show",
+            "error-message": "Device offline_device is southbound locked"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "url": "https://nso.test/restconf/data/tailf-ncs:devices/device=nonexistent_device/device-type",
+    "method": "GET",
+    "status": 404,
+    "response_json": {
+    "ietf-restconf:errors": {
+      "error": [
+          {
+            "error-type": "application",
+            "error-tag": "invalid-value",
+            "error-message": "uri keypath not found"
+          }
+        ]
+      }
+    }
+  },
+  {
+    "url": "https://nso.test/restconf/data/tailf-ncs:devices/device=good_device_nx/device-type",
+    "method": "GET",
+    "status": 200,
+    "response_json": {
+      "tailf-ncs:device-type": {
+        "cli": {
+          "ned-id": "cisco-nx-cli-3.0:cisco-nx-cli-3.0"
+        }
+      }
+    }
+  },
+  {
+    "url": "https://nso.test/restconf/data/tailf-ncs:devices/device=good_device_nx/live-status/tailf-ned-cisco-nx-stats:exec/show",
+    "method": "POST",
+    "status": 200,
+    "body": {
+      "input": {
+        "args": "version"
+      }
+    },
+    "response_json": {
+    "tailf-ned-cisco-nx-stats:output": {
+        "result": "\r\nCisco NX-OS Software, NETSIM\r\ngood_device_nx# "
+      }
+    }
+  },
+  {
+    "url": "https://nso.test/restconf/data/tailf-ncs:devices/device=unsupported_device_asa/device-type",
+    "method": "GET",
+    "status": 200,
+    "response_json": {
+      "tailf-ncs:device-type": {
+        "cli": {
+          "ned-id": "cisco-asa-cli-6.6:cisco-asa-cli-6.6"
+        }
+      }
+    }
+  },
+  {
+    "url": "https://nso.error/restconf/data/tailf-ncs:devices/device=error_device_type/device-type",
+    "method": "GET",
+    "status": 404,
+    "response_json": {}
+  },
+  {
+    "url": "https://nso.error/restconf/data/tailf-ncs:devices/device=error_live_status/device-type",
+    "method": "GET",
+    "status": 200,
+    "response_json": {
+      "tailf-ncs:device-type": {
+        "cli": {
+          "ned-id": "cisco-ios-cli-6.77:cisco-ios-cli-6.77"
+        }
+      }
+    }
+  },
+  {
+    "url": "https://nso.error/restconf/data/tailf-ncs:devices/device=error_live_status/live-status/tailf-ned-cisco-ios-stats:exec/show",
+    "method": "POST",
+    "status": 404,
+    "response_json": {}
+  }
+]

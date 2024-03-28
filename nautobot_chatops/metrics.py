@@ -1,4 +1,4 @@
-"""Nautobot plugin metrics exposed through nautobot_metrics_ext."""
+"""Nautobot app metrics exposed through nautobot_metrics_ext."""
 
 from prometheus_client import Counter, Histogram, Summary
 

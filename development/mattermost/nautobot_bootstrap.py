@@ -27,15 +27,16 @@ for grant_type in AccessGrantTypeChoices.values():
 
 # The following tokens are for the development only and safe to store in the repo.
 _COMMAND_TOKENS = {
-    "aci": "tc1u8wbh53fwxxdkhswbmu9wsa",  # nosec
-    "ansible": "c7udax974iymjkmoyhi1a11cpy",  # nosec
-    "clear": "p7phuwhpaiddjxqf8c1hnw33yh",  # nosec
-    "cloudvision": "pxannsh78iyhbm8fumz8mxk9ih",  # nosec
-    "grafana": "o1yiadnpifbzddt3umcedeypdr",  # nosec
-    "ipfabric": "uqydyxkx4tykinw5z5u9dany1o",  # nosec
-    "meraki": "t9irqwjni3dozf3yx6tzak7k3w",  # nosec
-    "nautobot": "rmdpfdjhnpg988e7ujzyom4euh",  # nosec
-    "panorama": "6nf5cmz1ft8bdfykz46cs5pofo",  # nosec
+    "aci": "b9wrs7paz7fi5ragz9uurwd9fa",  # nosec
+    "ansible": "4hz941bgtpde9g75sesdp7tp1h",  # nosec
+    "clear": "u7p1an973bd1jqg75i3y7pxj7y",  # nosec
+    "cloudvision": "71o3ku7jwjyxup6biu1way1h5y",  # nosec
+    "grafana": "3wxwh3m8mjrzxr11psersqkwue",  # nosec
+    "ipfabric": "ppm316za33ritm3xgpobcmmgre",  # nosec
+    "meraki": "11ix54hycjr4dmxcgw4d77qc4w",  # nosec
+    "nautobot": "ncygprhkt3rrxr4rkytcaa7c9c",  # nosec
+    "panorama": "fh1kbk45xtgm8r48jzr39ru1ww",  # nosec
+    "nso": "j9bcga71hl4lreaczecen7i5dz",  # nosec
 }
 
 for command, token in _COMMAND_TOKENS.items():
@@ -48,7 +49,7 @@ for command, token in _COMMAND_TOKENS.items():
 with contextlib.suppress(ObjectDoesNotExist):
     admin = User.objects.get(name="admin")
     ChatOpsAccountLink.objects.update_or_create(
-        user_id="jactwicuqb8bu8pau8mgjydzeo",
+        user_id="w7uyhzuo7fnfueen6og9cxmn9h",
         platform=PlatformChoices.MATTERMOST,
         defaults={"nautobot_user": admin},
     )

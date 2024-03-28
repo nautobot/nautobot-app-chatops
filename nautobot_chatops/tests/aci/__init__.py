@@ -1,1 +1,1 @@
-"""Unit tests for integrations.aci plugin."""
+"""Unit tests for integrations.aci app."""
