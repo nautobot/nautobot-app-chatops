@@ -307,3 +307,4 @@ public
 /compose.yaml
 /dump.sql
 /nautobot_chatops/static/nautobot_chatops/docs
+docs/admin/release_notes/version_X.Y.md
