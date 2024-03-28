@@ -160,8 +160,8 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
         logger.debug("DEBUG: _send() - Sending content with %s", content)
         logger.debug(
             "DEBUG: _send() - Sending to URL %s/v3/conversations/%s/activities",
-            self.context['service_url'],
-            self.context['conversation_id'],
+            self.context["service_url"],
+            self.context["conversation_id"],
         )
         response = requests.post(
             f"{self.context['service_url']}/v3/conversations/{self.context['conversation_id']}/activities",
