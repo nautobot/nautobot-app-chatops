@@ -1,13 +1,14 @@
 [tool.poetry]
 name = "nautobot-chatops"
-version = "3.0.1"
+version = "3.0.2"
 description = "A app providing chatbot capabilities for Nautobot"
 authors = ["Network to Code, LLC <opensource@networktocode.com>"]
 license = "Apache-2.0"
 readme = "README.md"
-homepage = "https://github.com/nautobot/nautobot-app-chatops/"
-repository = "https://github.com/nautobot/nautobot-app-chatops/"
-keywords = ["nautobot", "nautobot-plugin", "nautobot-app"]
+homepage = "https://github.com/nautobot/nautobot-app-chatops"
+repository = "https://github.com/nautobot/nautobot-app-chatops"
+documentation = "https://docs.nautobot.com/projects/chatops/en/latest/"
+keywords = ["nautobot", "nautobot-app", "nautobot-plugin"]
 classifiers = [
     "Intended Audience :: Developers",
     "Development Status :: 5 - Production/Stable",
@@ -17,24 +18,25 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
 ]
-include = [
-    "LICENSE",
-    "README.md",
-]
 packages = [
     { include = "nautobot_chatops" },
+]
+include = [
+    # Poetry by default will exclude files that are in .gitignore
+    "nautobot_chatops/static/nautobot_chatops/docs/**/*",
 ]
 
 [tool.poetry.plugins."nautobot.workers"]
 "aci" = "nautobot_chatops.integrations.aci.worker:aci"
 "ansible" = "nautobot_chatops.integrations.ansible.worker:ansible"
 "clear" = "nautobot_chatops.workers.clear:clear"
-"cloudvision" = "nautobot_chatops.integrations.aristacv.worker:cloudvision"
+"cloudvision" = "nautobot_chatops.integrations.cloudvision.worker:cloudvision"
 "grafana" = "nautobot_chatops.integrations.grafana.worker:grafana"
 "ipfabric" = "nautobot_chatops.integrations.ipfabric.worker:ipfabric"
 "meraki" = "nautobot_chatops.integrations.meraki.worker:cisco_meraki"
 "nautobot" = "nautobot_chatops.workers.nautobot:nautobot"
 "panorama" = "nautobot_chatops.integrations.panorama.worker:panorama"
+"nso" = "nautobot_chatops.integrations.nso.worker:nso"
 
 [tool.poetry.dependencies]
 Markdown = "!=3.3.5"
@@ -69,6 +71,7 @@ texttable = "^1.6.2"
 webexteamssdk = "^1.3"
 
 [tool.poetry.group.dev.dependencies]
+Markdown = "*"
 bandit = "*"
 black = "*"
 coverage = "~5.4"
@@ -77,20 +80,22 @@ flake8 = "*"
 invoke = "*"
 ipython = "*"
 mkdocs = "1.5.2"
+mkdocs-include-markdown-plugin = "6.0.3"
 mkdocs-material = "9.1.15"
 mkdocs-version-annotations = "1.0.0"
 mkdocstrings = "0.22.0"
 mkdocstrings-python = "1.5.2"
-mkdocs-include-markdown-plugin = "6.0.3"
 prybar = "*"
-pydocstyle = "*"
 pylint = "*"
 pylint-django = "*"
-pylint-nautobot = "^0.2.0"
+pylint-nautobot = "*"
 requests-mock = "^1.9.3"
+ruff = "*"
 toml = "*"
-towncrier = "~22.8.0"
-yamllint = "*"
+towncrier = "~23.6.0"
+to-json-schema = "*"
+jsonschema = "*"
+responses = "^0.24.0"
 
 [tool.poetry.extras]
 all = [
@@ -208,18 +213,99 @@ supported_nautobot_versions = [
     "2.0.0"
 ]
 
-[tool.pydocstyle]
+[tool.ruff]
+line-length = 120
+target-version = "py38"
+
+[tool.ruff.lint]
+select = [
+    "D",  # pydocstyle
+]
+ignore = [
+    # warning: `one-blank-line-before-class` (D203) and `no-blank-line-before-class` (D211) are incompatible.
+    "D203",  # 1 blank line required before class docstring
+
+    # D212 is enabled by default in google convention, and complains if we have a docstring like:
+    # """
+    # My docstring is on the line after the opening quotes instead of on the same line as them.
+    # """
+    # We've discussed and concluded that we consider this to be a valid style choice.
+    "D212",  # Multi-line docstring summary should start at the first line
+    "D213",  # Multi-line docstring summary should start at the second line
+
+    # Produces a lot of issues in the current codebase.
+    "D401",  # First line of docstring should be in imperative mood
+    "D407",  # Missing dashed underline after section
+    "D416",  # Section name ends in colon
+
+    # Package specific
+    "D417",  # Missing argument descriptions in Docstrings
+]
+
+[tool.ruff.lint.pydocstyle]
 convention = "google"
-inherit = false
-match = "(?!__init__).*\\.py"
-match-dir = "(?!tests|migrations|development)[^\\.].*"
-# D212 is enabled by default in google convention, and complains if we have a docstring like:
-# """
-# My docstring is on the line after the opening quotes instead of on the same line as them.
-# """
-# We've discussed and concluded that we consider this to be a valid style choice.
-add_ignore = "D212"
+
+[tool.ruff.per-file-ignores]
+"nautobot_chatops/migrations/*" = [
+    "D",  # pydocstyle
+]
+"nautobot_chatops/tests/*" = [
+    "D",  # pydocstyle
+]
 
 [build-system]
 requires = ["poetry_core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.towncrier]
+package = "nautobot_chatops"
+directory = "changes"
+filename = "docs/admin/release_notes/version_X.Y.md"
+template = "development/towncrier_template.j2"
+start_string = "<!-- towncrier release notes start -->"
+issue_format = "[#{issue}](https://github.com/nautobot/nautobot-app-chatops/issues/{issue})"
+
+[[tool.towncrier.type]]
+directory = "security"
+name = "Security"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "added"
+name = "Added"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "changed"
+name = "Changed"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "deprecated"
+name = "Deprecated"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "removed"
+name = "Removed"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "fixed"
+name = "Fixed"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "dependencies"
+name = "Dependencies"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "documentation"
+name = "Documentation"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "housekeeping"
+name = "Housekeeping"
+showcontent = true

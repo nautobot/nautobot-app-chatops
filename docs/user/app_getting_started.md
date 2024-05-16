@@ -58,4 +58,5 @@ The `nautobot-chatops` package includes multiple integrations. Each integration 
 - [Grafana](./integrations/grafana.md)
 - [IPFabric](./integrations/ipfabric.md)
 - [Cisco Meraki](./integrations/meraki.md)
+- [Cisco NSO](./integrations/nso.md)
 - [Palo Alto Panorama](./integrations/panorama.md)

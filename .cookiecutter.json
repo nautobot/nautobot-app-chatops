@@ -8,7 +8,7 @@
         "verbose_name": "Nautobot ChatOps App",
         "app_slug": "nautobot-chatops",
         "project_slug": "nautobot-app-chatops",
-        "repo_url": "https://github.com/nautobot/nautobot-app-chatops/",
+        "repo_url": "https://github.com/nautobot/nautobot-app-chatops",
         "base_url": "chatops",
         "min_nautobot_version": "2.0.0",
         "max_nautobot_version": "2.9999",
@@ -21,7 +21,7 @@
         "_drift_manager": {
             "template": "https://github.com/nautobot/cookiecutter-nautobot-app.git",
             "template_dir": "nautobot-app",
-            "template_ref": "develop",
+            "template_ref": "refs/tags/nautobot-app-v2.2.1",
             "cookie_dir": "",
             "branch_prefix": "drift-manager",
             "pull_request_strategy": "create",
@@ -29,7 +29,7 @@
                 "black"
             ],
             "draft": true,
-            "baked_commit_ref": "f7199da166a77ef00af4347535a1e09f939a711a"
+            "baked_commit_ref": "cfd9475f3ea601572d0f3b23d4bb6d9655bc2721"
         }
     }
 }

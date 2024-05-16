@@ -1,0 +1,61 @@
+[
+  {
+    "url": "https://nso.test/restconf/data/tailf-ncs:devices/device=in_sync_device/check-sync",
+    "method": "POST",
+    "status": 200,
+    "response_json": {
+      "tailf-ncs:output": {
+        "result": "in-sync"
+      }
+    }
+  },
+  {
+    "url": "https://nso.test/restconf/data/tailf-ncs:devices/device=out_of_sync_device/check-sync",
+    "method": "POST",
+    "status": 200,
+    "response_json": {
+      "tailf-ncs:output": {
+        "result": "out-of-sync"
+      }
+    }
+  },
+  {
+    "url": "https://nso.test/restconf/data/tailf-ncs:devices/device=offline_device/check-sync",
+    "method": "POST",
+    "status": 200,
+    "response_json": {
+      "tailf-ncs:output": {
+        "result": "locked"
+      }
+    }
+  },
+  {
+    "url": "https://nso.test/restconf/data/tailf-ncs:devices/check-sync",
+    "method": "POST",
+    "status": 200,
+    "response_json": {
+      "tailf-ncs:output": {
+        "sync-result": [
+            {
+                "device": "in_sync_device",
+                "result": "in-sync"
+            },
+            {
+                "device": "out_of_sync_device",
+                "result": "out-of-sync"
+            },
+            {
+                "device": "offline_device",
+                "result": "locked"
+            }
+        ]
+      }
+    }
+  },
+  {
+    "url": "https://nso.error/restconf/data/tailf-ncs:devices/check-sync",
+    "method": "POST",
+    "status": 404,
+    "response_json": {}
+  }
+]

@@ -29,8 +29,9 @@ Using **Invoke** these configuration options can be overridden using [several me
 
 This project is managed by [Python Poetry](https://python-poetry.org/) and has a few requirements to set up your development environment:
 
-1. Install Poetry, see the [Poetry Documentation](https://python-poetry.org/docs/#installation) for your operating system.
+1. Install Poetry, see the [Poetry documentation](https://python-poetry.org/docs/#installation) for your operating system.
 2. Install Docker, see the [Docker documentation](https://docs.docker.com/get-docker/) for your operating system.
+3. Install Docker-compose, see the [Docker-compose documentation](https://github.com/docker/compose) for your operation system.
 
 Once you have Poetry and Docker installed you can run the following commands (in the root of the repository) to install all other development dependencies in an isolated Python virtual environment:
 
@@ -81,7 +82,7 @@ nautobot-server migrate
 !!! note
     If you want to develop on the latest develop branch of Nautobot, run the following command: `poetry add --optional git+https://github.com/nautobot/nautobot@develop`. After the `@` symbol must match either a branch or a tag.
 
-You can now run `nautobot-server` commands as you would from the [Nautobot documentation](https://nautobot.readthedocs.io/en/latest/) for example to start the development server:
+You can now run `nautobot-server` commands as you would from the [Nautobot documentation](https://docs.nautobot.com/projects/core/en/stable/user-guide/administration/tools/nautobot-server/) for example to start the development server:
 
 ```shell
 nautobot-server runserver 0.0.0.0:8080 --insecure
@@ -133,7 +134,7 @@ Each command can be executed with `invoke <command>`. All commands support the a
   bandit           Run bandit to validate basic static code security analysis.
   black            Run black to check that Python files adhere to its style standards.
   flake8           Run flake8 to check that Python files adhere to its style standards.
-  pydocstyle       Run pydocstyle to validate docstring formatting adheres to NTC defined standards.
+  ruff             Run ruff to validate docstring formatting adheres to NTC defined standards.
   pylint           Run pylint code analysis.
   tests            Run all tests for this app.
   unittest         Run Django unit tests for the app.
@@ -324,7 +325,7 @@ When trying to debug an issue, one helpful thing you can look at are the logs wi
 !!! info
     Want to limit the log output even further? Use the `--tail <#>` command line argument in conjunction with `-f`.
 
-So for example, `invoke logs --service nautobot --follow` will follow logs from `nautobot` docker compose service. You can find all running services via `invoke ps`.
+So for example, our app is named `nautobot-chatops`, the command would most likely be `docker logs nautobot_chatops_nautobot_1 -f`. You can find the name of all running containers via `docker ps`.
 
 If you want to view the logs specific to the worker container, simply use the name of that container instead.
 
@@ -474,6 +475,24 @@ To run an individual test, you can run any or all of the following:
 ➜ invoke bandit
 ➜ invoke black
 ➜ invoke flake8
-➜ invoke pydocstyle
+➜ invoke ruff
 ➜ invoke pylint
 ```
+
+### App Configuration Schema
+
+In the package source, there is the `nautobot_chatops/app-config-schema.json` file, conforming to the [JSON Schema](https://json-schema.org/) format. This file is used to validate the configuration of the app in CI pipelines.
+
+If you make changes to `PLUGINS_CONFIG` or the configuration schema, you can run the following command to validate the schema:
+
+```bash
+invoke validate-app-config
+```
+
+To generate the `app-config-schema.json` file based on the current `PLUGINS_CONFIG` configuration, run the following command:
+
+```bash
+invoke generate-app-config-schema
+```
+
+This command can only guess the schema, so it's up to the developer to manually update the schema as needed.

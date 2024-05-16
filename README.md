@@ -1,15 +1,17 @@
-# Nautobot ChatOps
+# Nautobot ChatOps App
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/nautobot/nautobot-app-chatops/develop/docs/assets/icon-ChatOps.png" alt="ChatOps Logo" class="logo" height="200px">
   <br>
   <a href="https://github.com/nautobot/nautobot-app-chatops/actions"><img src="https://github.com/nautobot/nautobot-app-chatops/actions/workflows/ci.yml/badge.svg?branch=main"></a>
-  <a href="https://docs.nautobot.com/projects/chatops/en/latest"><img src="https://readthedocs.org/projects/nautobot-plugin-chatops/badge/"></a>
+  <a href="https://docs.nautobot.com/projects/chatops/en/latest/"><img src="https://readthedocs.org/projects/nautobot-plugin-chatops/badge/"></a>
   <a href="https://pypi.org/project/nautobot-chatops/"><img src="https://img.shields.io/pypi/v/nautobot-chatops"></a>
   <a href="https://pypi.org/project/nautobot-chatops/"><img src="https://img.shields.io/pypi/dm/nautobot-chatops"></a>
   <br>
-  A multi-platform ChatOps bot App for <a href="https://github.com/nautobot/nautobot">Nautobot</a>.
+  A multi-platform ChatOps bot <a href="https://www.networktocode.com/nautobot/apps/">App</a> for <a href="https://nautobot.com/">Nautobot</a>.
 </p>
+
+## Overview
 
 - Support for multiple chat platforms:
     - Mattermost
@@ -29,32 +31,44 @@
 - Automatic generation of basic help menus (accessed via `help`, `/command help`, or `/command sub-command help`).
 - Metrics of command usage via the `nautobot_capacity_metrics` app.
 
-## Documentation
+### Screenshots
 
-Full web-based HTML documentation for this app can be found over on the [Nautobot Docs](https://docs.nautobot.com/projects/chatops/en/latest/) website:
-
-- [User Guide](https://docs.nautobot.com/projects/chatops/en/latest/user/app_overview/) - Overview, Using the App, Getting Started
-- [Administrator Guide](https://docs.nautobot.com/projects/chatops/en/latest/admin/install/) - How to Install, Configure, Upgrade, or Uninstall the App.
-- [Developer Guide](https://docs.nautobot.com/projects/chatops/en/latest/dev/contributing/) - Extending the App, Code Reference, Contribution Guide.
-- [Release Notes / Changelog](https://docs.nautobot.com/projects/chatops/en/latest/admin/release_notes/)
-- [Frequently Asked Questions](https://docs.nautobot.com/projects/chatops/en/latest/user/app_faq/)
-- [Glossary](https://docs.nautobot.com/projects/chatops/en/latest/glossary/)
-
-## Try it Out
-
-Interested to see Nautobot ChatOps in action?  It's currently setup on the [Demo Instance](https://demo.nautobot.com/) and integrated into [NTC Slack](https://slack.networktocode.com).  You can sign up for that Slack workspace and join the `#nautobot-chat` channel to understand what this bot can do and try it for yourself.  You can try these exact chat commands and many more:
-
-### Command: `/nautobot`
+#### Command: `/nautobot`
 
 ![image](https://user-images.githubusercontent.com/6332586/118281576-5db4e980-b49b-11eb-8574-1332ed4b9757.png)
 
-### Command: `/nautobot get-devices`
+#### Command: `/nautobot get-devices`
 
 ![image](https://user-images.githubusercontent.com/6332586/118281772-95239600-b49b-11eb-9c79-e2040dc4a982.png)
 
-### Command: `/nautobot get-interface-connections`
+#### Command: `/nautobot get-interface-connections`
 
 ![image](https://user-images.githubusercontent.com/6332586/118281976-ca2fe880-b49b-11eb-87ad-2a41eaa168ed.png)
+
+## Try it out!
+
+This App is installed in the Nautobot Community Sandbox found over at [demo.nautobot.com](https://demo.nautobot.com/)!
+
+> For a full list of all the available always-on sandbox environments, head over to the main page on [networktocode.com](https://www.networktocode.com/nautobot/sandbox-environments/).
+
+## Documentation
+
+Full documentation for this App can be found over on the [Nautobot Docs](https://docs.nautobot.com) website:
+
+- [User Guide](https://docs.nautobot.com/projects/chatops/en/latest/user/app_overview/) - Overview, Using the App, Getting Started.
+- [Administrator Guide](https://docs.nautobot.com/projects/chatops/en/latest/admin/install/) - How to Install, Configure, Upgrade, or Uninstall the App.
+- [Developer Guide](https://docs.nautobot.com/projects/chatops/en/latest/dev/contributing/) - Extending the App, Code Reference, Contribution Guide.
+- [Release Notes / Changelog](https://docs.nautobot.com/projects/chatops/en/latest/admin/release_notes/).
+- [Frequently Asked Questions](https://docs.nautobot.com/projects/chatops/en/latest/user/faq/).
+- [Glossary](https://docs.nautobot.com/projects/chatops/en/latest/glossary/)
+
+### Contributing to the Documentation
+
+You can find all the Markdown source for the App documentation under the [`docs`](https://github.com/nautobot/nautobot-app-chatops/tree/develop/docs) folder in this repository. For simple edits, a Markdown capable editor is sufficient: clone the repository and edit away.
+
+If you need to view the fully-generated documentation site, you can build it with [MkDocs](https://www.mkdocs.org/). A container hosting the documentation can be started using the `invoke` commands (details in the [Development Environment Guide](https://docs.nautobot.com/projects/chatops/en/latest/dev/dev_environment/#docker-development-environment)) on [http://localhost:8001](http://localhost:8001). Using this container, as your changes to the documentation are saved, they will be automatically rebuilt and any pages currently being viewed will be reloaded in your browser.
+
+Any PRs with fixes or improvements are very welcome!
 
 ## Questions
 
