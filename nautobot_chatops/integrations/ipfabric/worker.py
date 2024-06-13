@@ -1,11 +1,12 @@
 """Worker functions implementing Nautobot "ipfabric" command and subcommands."""  # pylint: disable=too-many-lines
+
 import logging
 import tempfile
 import os
 from datetime import datetime
 
 from django.conf import settings
-from ipfabric_diagrams import Unicast, icmp
+from ipfabric.diagrams import Unicast, icmp
 from netutils.ip import is_ip
 from netutils.mac import is_valid_mac
 from pkg_resources import parse_version
@@ -70,10 +71,11 @@ def prompt_snapshot_id(action_id, help_text, dispatcher, choices=None):
 def prompt_inventory_filter_values(action_id, help_text, dispatcher, filter_key, choices=None):
     """Prompt the user for input inventory search value selection."""
     column_name = inventory_field_mapping.get(filter_key.lower())
-    inventory_data = ipfabric_api.client.inventory.devices.fetch(
-        columns=IpFabric.DEVICE_INFO_COLUMNS,
-        limit=IpFabric.DEFAULT_PAGE_LIMIT,
-        snapshot_id=get_user_snapshot(dispatcher),
+    inventory_data = list(
+        ipfabric_api.client.inventory.devices.fetch(
+            columns=IpFabric.DEVICE_INFO_COLUMNS,
+            limit=IpFabric.DEFAULT_PAGE_LIMIT,
+        )
     )
     choices = {(device[column_name], device[column_name]) for device in inventory_data if device.get(column_name)}
     dispatcher.prompt_from_menu(action_id, help_text, list(choices))
@@ -145,22 +147,27 @@ def get_snapshots_table(dispatcher, formatted_snapshots=None):
     return True
 
 
+def get_snapshot_id(snapshot, dispatcher):
+    """Gets a valid snapshot ID or errors."""
+    snapshot = snapshot.lower()
+    snapshot = IpFabric.LAST_LOCKED if snapshot == "$lastlocked" else snapshot
+    user = dispatcher.context["user_id"]
+    if snapshot not in ipfabric_api.client.snapshots:
+        dispatcher.send_markdown(f"<@{user}>, snapshot *{snapshot}* does not exist in IP Fabric.")
+        return False
+    return ipfabric_api.client.snapshots[snapshot].snapshot_id
+
+
 @subcommand_of("ipfabric")
 def set_snapshot(dispatcher, snapshot: str = None):
     """Set snapshot as reference for commands."""
     ipfabric_api.client.update()
+    user = dispatcher.context["user_id"]
     if not snapshot:
         prompt_snapshot_id(f"{BASE_CMD} set-snapshot", "What snapshot are you interested in?", dispatcher)
         return False
 
-    snapshot = snapshot.lower()
-    snapshot = IpFabric.LAST_LOCKED if snapshot == "$lastlocked" else snapshot
-    user = dispatcher.context["user_id"]
-
-    if snapshot not in ipfabric_api.client.snapshots:
-        dispatcher.send_markdown(f"<@{user}>, snapshot *{snapshot}* does not exist in IP Fabric.")
-        return False
-    snapshot_id = ipfabric_api.client.snapshots[snapshot].snapshot_id
+    snapshot_id = get_snapshot_id(snapshot, dispatcher)
     ipfabric_api.client.snapshot_id = snapshot_id
     set_context(user, {"snapshot": snapshot_id})
 
@@ -214,11 +221,13 @@ def get_inventory(dispatcher, filter_key=None, filter_value=None):
 
     col_name = inventory_field_mapping.get(filter_key.lower())
     filter_api = {col_name: [IpFabric.IEQ, filter_value]}
-    devices = ipfabric_api.client.inventory.devices.fetch(
-        columns=IpFabric.INVENTORY_COLUMNS,
-        filters=filter_api,
-        limit=IpFabric.DEFAULT_PAGE_LIMIT,
-        snapshot_id=get_user_snapshot(dispatcher),
+    devices = list(
+        ipfabric_api.client.inventory.devices.fetch(
+            columns=IpFabric.INVENTORY_COLUMNS,
+            filters=filter_api,
+            limit=IpFabric.DEFAULT_PAGE_LIMIT,
+            snapshot_id=get_user_snapshot(dispatcher),
+        )
     )
 
     dispatcher.send_blocks(
@@ -254,10 +263,12 @@ def interfaces(dispatcher, device=None, metric=None):
     snapshot_id = get_user_snapshot(dispatcher)
     logger.debug("Getting devices")
     sub_cmd = "interfaces"
-    inventory_data = ipfabric_api.client.inventory.devices.fetch(
-        columns=IpFabric.DEVICE_INFO_COLUMNS,
-        limit=IpFabric.DEFAULT_PAGE_LIMIT,
-        snapshot_id=get_user_snapshot(dispatcher),
+    inventory_data = list(
+        ipfabric_api.client.inventory.devices.fetch(
+            columns=IpFabric.DEVICE_INFO_COLUMNS,
+            limit=IpFabric.DEFAULT_PAGE_LIMIT,
+            snapshot_id=get_user_snapshot(dispatcher),
+        )
     )
     devices = [
         (inventory_device["hostname"], inventory_device["hostname"].lower()) for inventory_device in inventory_data
@@ -311,12 +322,14 @@ def get_int_load(dispatcher, device, snapshot_id):
     sub_cmd = "interfaces"
     dispatcher.send_markdown(f"Load in interfaces for *{device}* in snapshot *{snapshot_id}*.")
     filter_api = {"hostname": [IpFabric.IEQ, device]}
-    int_load = ipfabric_api.client.technology.interfaces.current_rates_data_bidirectional.fetch(
-        columns=IpFabric.INTERFACE_LOAD_COLUMNS,
-        filters=filter_api,
-        limit=IpFabric.DEFAULT_PAGE_LIMIT,
-        snapshot_id=get_user_snapshot(dispatcher),
-        sort=IpFabric.INTERFACE_SORT,
+    int_load = list(
+        ipfabric_api.client.technology.interfaces.current_rates_data_bidirectional.fetch(
+            columns=IpFabric.INTERFACE_LOAD_COLUMNS,
+            filters=filter_api,
+            limit=IpFabric.DEFAULT_PAGE_LIMIT,
+            snapshot_id=get_user_snapshot(dispatcher),
+            sort=IpFabric.INTERFACE_SORT,
+        )
     )
     dispatcher.send_blocks(
         [
@@ -351,12 +364,14 @@ def get_int_errors(dispatcher, device, snapshot_id):
     sub_cmd = "interfaces"
     dispatcher.send_markdown(f"Load in interfaces for *{device}* in snapshot *{snapshot_id}*.")
     filter_api = {"hostname": [IpFabric.IEQ, device]}
-    int_errors = ipfabric_api.client.technology.interfaces.average_rates_errors_bidirectional.fetch(
-        columns=IpFabric.INTERFACE_ERRORS_COLUMNS,
-        filters=filter_api,
-        limit=IpFabric.DEFAULT_PAGE_LIMIT,
-        snapshot_id=get_user_snapshot(dispatcher),
-        sort=IpFabric.INTERFACE_SORT,
+    int_errors = list(
+        ipfabric_api.client.technology.interfaces.average_rates_errors_bidirectional.fetch(
+            columns=IpFabric.INTERFACE_ERRORS_COLUMNS,
+            filters=filter_api,
+            limit=IpFabric.DEFAULT_PAGE_LIMIT,
+            snapshot_id=get_user_snapshot(dispatcher),
+            sort=IpFabric.INTERFACE_SORT,
+        )
     )
 
     dispatcher.send_blocks(
@@ -392,12 +407,14 @@ def get_int_drops(dispatcher, device, snapshot_id):
     sub_cmd = "interfaces"
     dispatcher.send_markdown(f"Load in interfaces for *{device}* in snapshot *{snapshot_id}*.")
     filter_api = {"hostname": [IpFabric.IEQ, device]}
-    int_drops = ipfabric_api.client.technology.interfaces.average_rates_drops_bidirectional.fetch(
-        columns=IpFabric.INTERFACE_DROPS_COLUMNS,
-        filters=filter_api,
-        limit=IpFabric.DEFAULT_PAGE_LIMIT,
-        snapshot_id=get_user_snapshot(dispatcher),
-        sort=IpFabric.INTERFACE_SORT,
+    int_drops = list(
+        ipfabric_api.client.technology.interfaces.average_rates_drops_bidirectional.fetch(
+            columns=IpFabric.INTERFACE_DROPS_COLUMNS,
+            filters=filter_api,
+            limit=IpFabric.DEFAULT_PAGE_LIMIT,
+            snapshot_id=get_user_snapshot(dispatcher),
+            sort=IpFabric.INTERFACE_SORT,
+        )
     )
 
     dispatcher.send_blocks(
@@ -437,49 +454,50 @@ def submit_pathlookup(
     # diagrams for 4.0 - 4.2 are not supported due to attribute changes in 4.3+
     try:
         os_version = ipfabric_api.client.os_version
-        if os_version and parse_version(os_version) >= parse_version("4.3"):
-            if protocol != "icmp":
-                unicast = Unicast(
-                    startingPoint=src_ip,
-                    destinationPoint=dst_ip,
-                    protocol=protocol,
-                    srcPorts=src_port,
-                    dstPorts=dst_port,
-                )
-            else:
-                unicast = Unicast(
-                    startingPoint=src_ip,
-                    destinationPoint=dst_ip,
-                    protocol=protocol,
-                    icmp=getattr(icmp, icmp_type),
-                )
-            raw_png = ipfabric_api.diagram.diagram_png(unicast, snapshot_id)
-            if not raw_png:
-                raise RuntimeError(
-                    "An error occurred while retrieving the path lookup. Please verify the path using the link above."
-                )
-            with tempfile.TemporaryDirectory() as tempdir:
-                # Note: Microsoft Teams will silently fail if we have ":" in our filename,
-                # so the timestamp has to skip them.
-                time_str = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
-                img_path = os.path.join(tempdir, f"{sub_cmd}_{time_str}.png")
-                # MS Teams requires permission to upload files.
-                if dispatcher.needs_permission_to_send_image():
-                    dispatcher.ask_permission_to_send_image(
-                        f"{sub_cmd}_{time_str}.png",
-                        f"{BASE_CMD} {sub_cmd} {src_ip} {dst_ip} {src_port} {dst_port} {protocol}",
-                    )
-                    return False
-
-                with open(img_path, "wb") as img_file:
-                    img_file.write(raw_png)
-                dispatcher.send_image(img_path)
-                return CommandStatusChoices.STATUS_SUCCEEDED
-        else:
+        if os_version and parse_version(os_version) < parse_version("4.3"):
             raise RuntimeError(
                 "Diagrams only supported in IP Fabric version 4.3+ and current version is "
                 f"{str(ipfabric_api.client.os_version)}"
             )
+
+        if protocol != "icmp":
+            unicast = Unicast(
+                startingPoint=src_ip,
+                destinationPoint=dst_ip,
+                protocol=protocol,
+                srcPorts=src_port,
+                dstPorts=dst_port,
+            )
+        else:
+            unicast = Unicast(
+                startingPoint=src_ip,
+                destinationPoint=dst_ip,
+                protocol=protocol,
+                icmp=getattr(icmp, icmp_type),
+            )
+        raw_png = ipfabric_api.client.diagram.png(unicast, snapshot_id)
+        if not raw_png:
+            raise RuntimeError(
+                "An error occurred while retrieving the path lookup. Please verify the path using the link above."
+            )
+        with tempfile.TemporaryDirectory() as tempdir:
+            # Note: Microsoft Teams will silently fail if we have ":" in our filename,
+            # so the timestamp has to skip them.
+            time_str = datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+            img_path = os.path.join(tempdir, f"{sub_cmd}_{time_str}.png")
+            # MS Teams requires permission to upload files.
+            if dispatcher.needs_permission_to_send_image():
+                dispatcher.ask_permission_to_send_image(
+                    f"{sub_cmd}_{time_str}.png",
+                    f"{BASE_CMD} {sub_cmd} {src_ip} {dst_ip} {src_port} {dst_port} {protocol}",
+                )
+                return False
+
+            with open(img_path, "wb") as img_file:
+                img_file.write(raw_png)
+            dispatcher.send_image(img_path)
+            return CommandStatusChoices.STATUS_SUCCEEDED
+
     except (RuntimeError, OSError) as error:
         dispatcher.send_error(error)
         return CommandStatusChoices.STATUS_FAILED
@@ -625,10 +643,12 @@ def routing(dispatcher, device=None, protocol=None, filter_opt=None):
     snapshot_id = get_user_snapshot(dispatcher)
     logger.debug("Getting devices")
 
-    inventory_devices = ipfabric_api.client.inventory.devices.fetch(
-        columns=IpFabric.DEVICE_INFO_COLUMNS,
-        limit=IpFabric.DEFAULT_PAGE_LIMIT,
-        snapshot_id=get_user_snapshot(dispatcher),
+    inventory_devices = list(
+        ipfabric_api.client.inventory.devices.fetch(
+            columns=IpFabric.DEVICE_INFO_COLUMNS,
+            limit=IpFabric.DEFAULT_PAGE_LIMIT,
+            snapshot_id=get_user_snapshot(dispatcher),
+        )
     )
     devices = [(device["hostname"], device["hostname"]) for device in inventory_devices]
 
@@ -693,11 +713,13 @@ def get_bgp_neighbors(dispatcher, device=None, snapshot_id=None, state=None):
     else:
         filter_api = {"hostname": ["reg", device]}
 
-    bgp_neighbors = ipfabric_api.client.technology.routing.bgp_neighbors.fetch(
-        columns=IpFabric.BGP_NEIGHBORS_COLUMNS,
-        filters=filter_api,
-        limit=IpFabric.DEFAULT_PAGE_LIMIT,
-        snapshot_id=snapshot_id,
+    bgp_neighbors = list(
+        ipfabric_api.client.technology.routing.bgp_neighbors.fetch(
+            columns=IpFabric.BGP_NEIGHBORS_COLUMNS,
+            filters=filter_api,
+            limit=IpFabric.DEFAULT_PAGE_LIMIT,
+            snapshot_id=snapshot_id,
+        )
     )
 
     dispatcher.send_blocks(
@@ -783,10 +805,12 @@ def wireless(dispatcher, option=None, ssid=None):
 def get_wireless_ssids(dispatcher, ssid=None, snapshot_id=None):
     """Get All Wireless SSID Information."""
     sub_cmd = "wireless"
-    ssids = ipfabric_api.client.technology.wireless.radios_detail.fetch(
-        columns=IpFabric.WIRELESS_SSID_COLUMNS,
-        limit=IpFabric.DEFAULT_PAGE_LIMIT,
-        snapshot_id=snapshot_id,
+    ssids = list(
+        ipfabric_api.client.technology.wireless.radios_detail.fetch(
+            columns=IpFabric.WIRELESS_SSID_COLUMNS,
+            limit=IpFabric.DEFAULT_PAGE_LIMIT,
+            snapshot_id=snapshot_id,
+        )
     )
     if not ssids:
         dispatcher.send_blocks(
@@ -839,10 +863,12 @@ def get_wireless_ssids(dispatcher, ssid=None, snapshot_id=None):
 def get_wireless_clients(dispatcher, ssid=None, snapshot_id=None):
     """Get Wireless Clients."""
     sub_cmd = "wireless"
-    wireless_ssids = ipfabric_api.client.technology.wireless.radios_detail.fetch(
-        columns=IpFabric.WIRELESS_SSID_COLUMNS,
-        limit=IpFabric.DEFAULT_PAGE_LIMIT,
-        snapshot_id=snapshot_id,
+    wireless_ssids = list(
+        ipfabric_api.client.technology.wireless.radios_detail.fetch(
+            columns=IpFabric.WIRELESS_SSID_COLUMNS,
+            limit=IpFabric.DEFAULT_PAGE_LIMIT,
+            snapshot_id=snapshot_id,
+        )
     )
     ssids = [
         (f"{ssid_['wlanSsid']}-{ssid_['radioDscr']}", ssid_["wlanSsid"])
@@ -872,11 +898,13 @@ def get_wireless_clients(dispatcher, ssid=None, snapshot_id=None):
         return False
 
     filter_api = {"ssid": [IpFabric.IEQ, ssid]} if ssid else {}
-    clients = ipfabric_api.client.technology.wireless.clients.fetch(
-        columns=IpFabric.WIRELESS_CLIENT_COLUMNS,
-        filters=filter_api,
-        limit=IpFabric.DEFAULT_PAGE_LIMIT,
-        snapshot_id=snapshot_id,
+    clients = list(
+        ipfabric_api.client.technology.wireless.clients.fetch(
+            columns=IpFabric.WIRELESS_CLIENT_COLUMNS,
+            filters=filter_api,
+            limit=IpFabric.DEFAULT_PAGE_LIMIT,
+            snapshot_id=snapshot_id,
+        )
     )
 
     dispatcher.send_blocks(
@@ -1024,13 +1052,8 @@ def table_diff(
             f"{BASE_CMD} {sub_cmd} {category} {table} {view}", "What snapshot would like to compare with?", dispatcher
         )
         return False
-    snapshot = snapshot.lower()
-    snapshot = IpFabric.LAST_LOCKED if snapshot == "$lastlocked" else snapshot
-    user = dispatcher.context["user_id"]
-    if snapshot not in ipfabric_api.client.snapshots:
-        dispatcher.send_markdown(f"<@{user}>, snapshot *{snapshot}* does not exist in IP Fabric.")
-        return False
-    snapshot_id = ipfabric_api.client.snapshots[snapshot].snapshot_id
+
+    snapshot_id = get_snapshot_id(snapshot, dispatcher)
 
     if category == "inventory":
         obj = getattr(ipfabric_api.client.inventory, table)
