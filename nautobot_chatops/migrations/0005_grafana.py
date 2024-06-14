@@ -162,5 +162,5 @@ class Migration(migrations.Migration):
                 nautobot.extras.models.mixins.NotesMixin,
             ),
         ),
-        migrations.RunPython(_move_data),
+        migrations.RunPython(_move_data, migrations.RunPython.noop),
     ]
