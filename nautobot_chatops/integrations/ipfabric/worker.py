@@ -1,16 +1,22 @@
 """Worker functions implementing Nautobot "ipfabric" command and subcommands."""  # pylint: disable=too-many-lines
+
 import logging
 import tempfile
 import os
+import uuid
 from datetime import datetime
 
 from django.conf import settings
+from django.contrib.contenttypes.models import ContentType
 from ipfabric_diagrams import Unicast, icmp
 from netutils.ip import is_ip
 from netutils.mac import is_valid_mac
 from pkg_resources import parse_version
 
+from nautobot.core.settings_funcs import is_truthy
+from nautobot.extras.models import JobResult
 from nautobot_chatops.choices import CommandStatusChoices
+from nautobot_chatops.dispatchers import Dispatcher
 from nautobot_chatops.workers import subcommand_of, handle_subcommands
 
 from .ipfabric_wrapper import IpFabric
@@ -24,6 +30,14 @@ IPFABRIC_LOGO_ALT = "IPFabric Logo"
 CHATOPS_PLUGIN = "nautobot_chatops"
 
 logger = logging.getLogger("nautobot")
+
+try:
+    from nautobot_ssot.integrations.ipfabric.jobs import IpFabricDataSource
+
+    IPFABRIC_SSOT_JOB_FOUND = True
+except ImportError:
+    logger.error(msg="Unable to find IPFabric SSoT Job.")
+    IPFABRIC_SSOT_JOB_FOUND = False
 
 inventory_field_mapping = {
     "site": "siteName",
@@ -91,6 +105,13 @@ def prompt_find_host_filter_keys(action_id, help_text, dispatcher, choices=None)
     """Prompt the user for find host search criteria."""
     choices = [("Host IP address", inventory_host_fields[0]), ("Host MAC address", inventory_host_fields[1])]
     dispatcher.prompt_from_menu(action_id, help_text, choices)
+    return False
+
+
+def prompt_for_bool(dispatcher: Dispatcher, action_id: str, help_text: str):
+    """Prompt the user to select a True or False choice."""
+    choices = [("Yes", "True"), ("No", "False")]
+    dispatcher.prompt_from_menu(action_id, help_text, choices, default=("Yes", "True"))
     return False
 
 
@@ -1073,4 +1094,99 @@ def table_diff(
                 )
             else:
                 dispatcher.send_markdown(f"{key.title()}: None")
+    return CommandStatusChoices.STATUS_SUCCEEDED
+
+
+@subcommand_of("ipfabric")
+def ssot_sync_to_nautobot(
+    dispatcher,
+    dry_run=None,
+    safe_delete_mode=None,
+    sync_ipfabric_tagged_only=None,
+):
+    """Start an SSoT sync from IPFabric to Nautobot."""
+    if not IPFABRIC_SSOT_JOB_FOUND:
+        dispatcher.send_error(
+            "Unable to find IPFabric SSoT Job installed. Please confirm the IPFabric SSoT integration is installed and enabled."
+        )
+        return CommandStatusChoices.STATUS_FAILED
+
+    if dry_run is None:
+        prompt_for_bool(dispatcher, f"{BASE_CMD} ssot-sync-to-nautobot", "Do you want to run a `Dry Run`?")
+        return (CommandStatusChoices.STATUS_SUCCEEDED, "Success")
+
+    if safe_delete_mode is None:
+        prompt_for_bool(
+            dispatcher, f"{BASE_CMD} ssot-sync-to-nautobot {dry_run}", "Do you want to run in `Safe Delete Mode`?"
+        )
+        return (CommandStatusChoices.STATUS_SUCCEEDED, "Success")
+
+    if sync_ipfabric_tagged_only is None:
+        prompt_for_bool(
+            dispatcher,
+            f"{BASE_CMD} ssot-sync-to-nautobot {dry_run} {safe_delete_mode}",
+            "Do you want to sync against `ssot-tagged-from-ipfabric` tagged objects only?",
+        )
+        return (CommandStatusChoices.STATUS_SUCCEEDED, "Success")
+
+    # if location_filter is None:
+    #     prompt_for_site(
+    #         dispatcher,
+    #         f"{BASE_CMD} ssot-sync-to-nautobot {dry_run} {safe_delete_mode} {sync_ipfabric_tagged_only}",
+    #         "Select a Site to use as an optional filter?",
+    #     )
+    #     return (CommandStatusChoices.STATUS_SUCCEEDED, "Success")
+
+    # Implement filter in future release
+    location_filter = False
+
+    sync_job = IpFabricDataSource()
+
+    sync_job.job_result = JobResult(
+        name=sync_job.class_path,
+        obj_type=ContentType.objects.get(
+            app_label="extras",
+            model="job",
+        ),
+        job_id=uuid.uuid4(),
+    )
+    sync_job.job_result.validated_save()
+
+    dispatcher.send_markdown(
+        f"Stand by {dispatcher.user_mention()}, I'm running your sync with options set to `Dry Run`: {dry_run}, `Safe Delete Mode`: {safe_delete_mode}. `Sync Tagged Only`: {sync_ipfabric_tagged_only}",
+        ephemeral=True,
+    )
+
+    sync_job.run(
+        dryrun=is_truthy(dry_run),
+        memory_profiling=False,
+        safe_delete_mode=is_truthy(safe_delete_mode),
+        sync_ipfabric_tagged_only=is_truthy(sync_ipfabric_tagged_only),
+        location_filter=location_filter,
+        debug=False,
+    )
+    sync_job.job_result.validated_save()
+
+    blocks = [
+        *dispatcher.command_response_header(
+            "ipfabric",
+            "ssot-sync-to-nautobot",
+            [
+                ("Dry Run", str(dry_run)),
+                ("Safe Delete Mode", str(safe_delete_mode)),
+                ("Sync IPFabric Tagged Only", str(sync_ipfabric_tagged_only)),
+            ],
+            "sync job",
+            ipfabric_logo(dispatcher),
+        ),
+    ]
+    dispatcher.send_blocks(blocks)
+    if sync_job.job_result.status == "completed":
+        dispatcher.send_markdown(
+            f"Sync completed succesfully. Here is the link to your job: {os.getenv('NAUTOBOT_HOST')}{sync_job.sync.get_absolute_url()}."
+        )
+    else:
+        dispatcher.send_warning(
+            f"Sync failed. Here is the link to your job: {os.getenv('NAUTOBOT_HOST')}{sync_job.sync.get_absolute_url()}"
+        )
     return CommandStatusChoices.STATUS_SUCCEEDED
