@@ -151,6 +151,7 @@ class NautobotChatOpsConfig(NautobotAppConfig):
     }
 
     caching_config = {}
+    docs_view_name = "plugins:nautobot_chatops:docs"
 
     def ready(self):
         """Function invoked after all apps have been loaded."""
