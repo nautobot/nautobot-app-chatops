@@ -2,6 +2,8 @@
 import logging
 
 from django.urls import path
+from django.templatetags.static import static
+from django.views.generic import RedirectView
 
 from nautobot.apps.config import get_app_settings_or_config
 from nautobot.extras.views import ObjectChangeLogView, ObjectNotesView
@@ -100,4 +102,5 @@ urlpatterns = [
         kwargs={"model": ChatOpsAccountLink},
     ),
     *grafana_urlpatterns,
+    path("docs/", RedirectView.as_view(url=static("nautobot_chatops/docs/index.html")), name="docs"),
 ]
