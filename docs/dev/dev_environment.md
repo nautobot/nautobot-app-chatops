@@ -496,3 +496,51 @@ invoke generate-app-config-schema
 ```
 
 This command can only guess the schema, so it's up to the developer to manually update the schema as needed.
+
+## Using Bot Framework Emulator
+
+This option is limited to testing an Azure bot, but allows you to test the bots functionality without the need to create, publish, deploy the bot app into the MS Teams infrastructure.
+
+There are a few requirements to get this up and running, the steps are provided below to help a user get started.
+
+1. Follow the instructions on setting up the [Azure bot](../../admin/platforms/microsoft_teams/#azure).
+
+    !!! note
+        You can skip the `messaging endpoint` definition while testing in the Bot Emulator.
+
+    !!! note
+        You can also skip adding MS Teams to the channels list.
+
+    ![example-azure-bot](../images/azurebot.png)
+
+2. Now that your Azure bot is created, and you've followed all the steps to capture the `Microsoft App ID` and the `Value` from your `Client Secret Key`. You can setup your local development environment. Please follow the standard steps outlined in the [Full Docker Development Environment](#full-docker-development-environment) section.
+
+    !!! warn
+        In order for this to work while running on the same host machine you'll need to add the `extra_hosts` option to the nautobot and worker docker compose services. Add the following to the end of your `invoke.yml`.
+
+    ```yaml
+        ---
+        nautobot_chatops:
+        ...
+        compose_files:
+            ...
+            - "docker-compose.bot-framework.yml"
+    ```
+
+3. Install Bot Framework Emulator. Based on the OS download and install from GitHub [releases](https://github.com/microsoft/BotFramework-Emulator/releases)
+
+4. Once you install the Bot Framework Emulator, click on `Open Bot` in the center of the home page.  Fill in the `Open a Bot` with the details. In order for authentication to work the `Microsoft App ID` and `Microsoft App password` must be filled out based on the Azure bot steps that were previously captured.
+
+    ![open a bot](../images/open-a-bot.png)
+
+5. Click `connect` and the debugging pane will show that its connecting to the endpoint provided. This step is doing the authentication for the bot.
+
+    ![bot-connect](../images/connect-a-bot.png)
+
+6. Type `nautobot` and the responses will be similar to what you'd expect if you were interacting with the bot directly from MS Teams client. An example is shown below.
+
+    ![bot-test-command](../images/test-a-bot.png)
+
+    As shown below the commands do operate as expected.
+
+    ![bot-test-command2](../images/test-a-bot2.png)

@@ -1,0 +1,8 @@
+---
+services:
+  nautobot:
+    extra_hosts:
+      - "localhost:host-gateway"
+  worker:
+    extra_hosts:
+      - "localhost:host-gateway"
