@@ -83,7 +83,7 @@ def error_report(function):
                 raise UnauthorizedException(f"Invalid credentials provided or account is locked: {err.response.text}")
             if err.response.status_code == 403:
                 raise ForbiddenException(
-                    f"Insufficient permissions to execute request (ie, any POST method as a regular user): {err.response.text}"
+                    f"Insufficient permissions to execute request (ie, any POST method as a regular user): {err.response.text}"  # noqa: E501
                 )
             if err.response.status_code == 404:
                 raise NotFoundException(f"Attempting to access an endpoint that does not exist: {err.response.text}")
@@ -93,7 +93,7 @@ def error_report(function):
                 )
             if err.response.status_code == 406:
                 raise NotAcceptableException(
-                    f"Content Type of the data returned does not match the Accept header of the request: {err.response.text}"
+                    f"Content Type of the data returned does not match the Accept header of the request: {err.response.text}"  # noqa: E501
                 )
             if err.response.status_code == 415:
                 raise UnsupportedMediaTypeException(f"Attempting to POST data in incorrect format: {err.response.text}")
@@ -565,7 +565,8 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
             - choices: A list of tuples which populates the choices in a dropdown selector
             - default: (optional) Default choice of a select menu or initial value to put in a text field.
             - confirm: (optional) If set to True, it will display a "Are you sure?" dialog upon submit.
-            - optional: (optional) If set to True, the field can is not required and will return an empty variable of NoneType if left blank.
+            - optional: (optional) If set to True, the field can is not required and will return an empty
+                        variable of NoneType if left blank.
         """
         blocks = []
         callback_id = f"{command} {sub_command}"

@@ -77,7 +77,6 @@ bandit = "*"
 black = "*"
 coverage = "~5.4"
 django-debug-toolbar = "*"
-flake8 = "*"
 invoke = "*"
 ipython = "*"
 mkdocs = "1.5.2"
@@ -223,6 +222,8 @@ target-version = "py38"
 [tool.ruff.lint]
 select = [
     "D",  # pydocstyle
+    "DJ",
+    "E", # pycodestyle
 ]
 ignore = [
     # warning: `one-blank-line-before-class` (D203) and `no-blank-line-before-class` (D211) are incompatible.
@@ -254,6 +255,9 @@ convention = "google"
 ]
 "nautobot_chatops/tests/*" = [
     "D",  # pydocstyle
+]
+"development/*" = [
+    "E",
 ]
 
 [build-system]

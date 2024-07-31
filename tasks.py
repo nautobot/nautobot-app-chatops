@@ -502,7 +502,8 @@ def dbshell(context, db_name="", input_file="", output_file="", query=""):
 @task(
     help={
         "db-name": "Database name to create (default: Nautobot database)",
-        "input-file": "SQL dump file to replace the existing database with. This can be generated using `invoke backup-db` (default: `dump.sql`).",
+        "input-file": "SQL dump file to replace the existing database with. This can be generated using"
+        "`invoke backup-db` (default: `dump.sql`).",
     }
 )
 def import_db(context, db_name="", input_file="dump.sql"):
@@ -667,13 +668,6 @@ def black(context, autoformat=False):
 
 
 @task
-def flake8(context):
-    """Check for PEP8 compliance and other style issues."""
-    command = "flake8 . --config .flake8"
-    run_command(context, command)
-
-
-@task
 def hadolint(context):
     """Check Dockerfile for hadolint compliance and other style issues."""
     command = "hadolint development/Dockerfile"
@@ -805,8 +799,6 @@ def tests(context, failfast=False, keepdb=False, lint_only=False):
     black(context)
     print("Running ruff...")
     ruff(context)
-    print("Running flake8...")
-    flake8(context)
     print("Running bandit...")
     bandit(context)
     print("Running yamllint...")
