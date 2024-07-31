@@ -138,7 +138,7 @@ class Driver:
             data = json.dumps(data)
 
         mm_response = requests.post(
-            self._url + endpoint, headers=self._headers, params=params, data=data, files=multipart_formdata
+            self._url + endpoint, headers=self._headers, params=params, data=data, files=multipart_formdata, timeout=15
         )
         mm_response.raise_for_status()
 
@@ -156,7 +156,7 @@ class Driver:
         Returns:
             dict: Response from Mattermost API. Unless raw, which returns the string.
         """
-        mm_response = requests.get(self._url + endpoint, headers=self._headers, params=params)
+        mm_response = requests.get(self._url + endpoint, headers=self._headers, params=params, timeout=15)
         mm_response.raise_for_status()
         if raw:
             return mm_response
@@ -170,7 +170,7 @@ class Driver:
         Args:
             endpoint (string): Endpoint to post delete to.
         """
-        mm_response = requests.delete(self._url + endpoint, headers=self._headers)
+        mm_response = requests.delete(self._url + endpoint, headers=self._headers, timeout=15)
         mm_response.raise_for_status()
 
     def chat_post_message(self, channel_id, message=None, blocks=None, files=None, snippet=None):
@@ -309,6 +309,23 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
             return response["id"]
 
         return None
+
+    @classmethod
+    def lookup_user_id_by_email(cls, email) -> Optional[str]:
+        """Call out to Mattermost to look up a specific user ID by email.
+
+        Args:
+          email (str): Uniquely identifying email address of the user.
+
+        Returns:
+          (str, None)
+        """
+        instance = cls(context=None)
+        try:
+            response = instance.mm_client.get(f"/users/email/{email}")
+            return response["id"]
+        except NotFoundException:
+            return None
 
     # More complex APIs for presenting structured data - these typically build on the more basic functions below
     def command_response_header(self, command, subcommand, args, description="information", image_element=None):
@@ -589,7 +606,6 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
         # Leaving in place to pass the testing.
         return {"block_id": block_id, "actions": actions}
 
-    # pylint: disable=no-self-use
     def _input_block(self, block_id, label, element):
         """Construct a block consisting of Input elements."""
         element["display_name"] = label

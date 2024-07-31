@@ -2,6 +2,7 @@
 
 import json
 import re
+import logging
 
 import requests
 import jwt
@@ -17,6 +18,8 @@ from nautobot_chatops.dispatchers.ms_teams import MSTeamsDispatcher
 from nautobot_chatops.utils import check_and_enqueue_command
 
 
+logger = logging.getLogger(__name__)
+
 APP_ID = settings.PLUGINS_CONFIG["nautobot_chatops"]["microsoft_app_id"]
 
 BOT_CONNECTOR_METADATA_URI = "https://login.botframework.com/v1/.well-known/openidconfiguration"
@@ -25,11 +28,11 @@ BOT_EMULATOR_METADATA_URI = "https://login.microsoftonline.com/botframework.com/
 
 def get_bot_signing_keys(metadata_uri=BOT_CONNECTOR_METADATA_URI):
     """Get the keys used by the Bot Connector service to sign requests and the associated algorithms."""
-    response = requests.get(metadata_uri)
+    response = requests.get(metadata_uri, timeout=15)
     id_token_signing_alg_values_supported = response.json()["id_token_signing_alg_values_supported"]
     jwks_uri = response.json()["jwks_uri"]
 
-    response = requests.get(jwks_uri)
+    response = requests.get(jwks_uri, timeout=15)
     # https://renzo.lucioni.xyz/verifying-jwts-with-jwks-and-pyjwt/
     public_keys = {}
     for jwk in response.json()["keys"]:
@@ -139,22 +142,26 @@ class MSTeamsMessagesView(View):
             "user_id": body["from"]["id"],
             "user_name": body["from"]["name"],
             "user_role": body["from"].get("role"),
+            "user_ad_id": body["from"].get("aadObjectId"),
             "conversation_id": body["conversation"]["id"],
             "conversation_name": body["conversation"].get("name"),
             "bot_id": body["recipient"]["id"],
             "bot_name": body["recipient"]["name"],
             "bot_role": body["recipient"].get("role"),
             "message_id": body["id"],
-            "service_url": body["serviceUrl"],
+            "service_url": body["serviceUrl"].rstrip("/"),
             "tenant_id": body["channelData"]["tenant"]["id"],
             "is_group": body["conversation"].get("isGroup", False),
         }
+
+        logger.debug("DEBUG: post context %s", context)
 
         if context["org_id"]:
             # Get the organization name as well
             response = requests.get(
                 f"{context['service_url']}/v3/teams/{context['org_id']}",
                 headers={"Authorization": f"Bearer {MSTeamsDispatcher.get_token()}"},
+                timeout=15,
             )
             response.raise_for_status()
             context["org_name"] = response.json()["name"]
@@ -168,6 +175,7 @@ class MSTeamsMessagesView(View):
             response = requests.get(
                 f"{context['service_url']}/v3/teams/{context['org_id']}/conversations",
                 headers={"Authorization": f"Bearer {MSTeamsDispatcher.get_token()}"},
+                timeout=15,
             )
             response.raise_for_status()
             for conversation in response.json()["conversations"]:

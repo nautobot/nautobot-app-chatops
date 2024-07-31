@@ -1,0 +1,29 @@
+---
+x-nautobot: &nautobot
+  environment:
+    NAUTOBOT_CHATOPS_ENABLE_MATTERMOST: "True"
+
+version: "3.8"
+services:
+  nautobot:
+    <<: *nautobot
+  worker:
+    <<: *nautobot
+  mattermost:
+    image: "mattermost/mattermost-preview:9.0.1"
+    hostname: "mattermost"
+    environment:
+      MM_LOGSETTINGS_SENDCRASHREPORTS: "false"
+      MM_SERVICESETTINGS_ALLOWCORSFROM: "*"
+      MM_SERVICESETTINGS_ALLOWEDUNTRUSTEDINTERNALCONNECTIONS: "0.0.0.0/0"
+      MM_SERVICESETTINGS_ENABLEDEVELOPER: "true"
+      MM_SERVICESETTINGS_ENABLEDIAGNOSTICS: "false"
+      MM_SERVICESETTINGS_SITEURL: "http://mattermost:8065"
+      MM_TEAMSETTINGS_ENABLEOPENSERVER: "true"
+    ports:
+      - "8065:8065"
+    volumes:
+      - "./mattermost/dump.sql:/docker-entrypoint-initdb.d/dump.sql"
+      - "mattermost-data:/var/lib/postgresql/data"
+volumes:
+  mattermost-data: {}

@@ -1,10 +1,10 @@
 """API Views for Nautobot Chatops."""
 from rest_framework.routers import APIRootView
-from nautobot.core.api.views import ModelViewSet
+from nautobot.apps.api import NautobotModelViewSet
 
-from nautobot_chatops.api.serializers import AccessGrantSerializer, CommandTokenSerializer
-from nautobot_chatops.models import AccessGrant, CommandToken
-from nautobot_chatops.filters import AccessGrantFilterSet, CommandTokenFilterSet
+from nautobot_chatops.api.serializers import AccessGrantSerializer, CommandLogSerializer, CommandTokenSerializer
+from nautobot_chatops.models import AccessGrant, CommandLog, CommandToken
+from nautobot_chatops.filters import AccessGrantFilterSet, CommandLogFilterSet, CommandTokenFilterSet
 
 
 class NautobotChatopsRootView(APIRootView):
@@ -15,7 +15,7 @@ class NautobotChatopsRootView(APIRootView):
         return "Nautobot Chatops"
 
 
-class CommandTokenViewSet(ModelViewSet):  # pylint: disable=too-many-ancestors
+class CommandTokenViewSet(NautobotModelViewSet):  # pylint: disable=too-many-ancestors
     """API viewset for interacting with CommandToken objects."""
 
     queryset = CommandToken.objects.all()
@@ -23,7 +23,15 @@ class CommandTokenViewSet(ModelViewSet):  # pylint: disable=too-many-ancestors
     filterset_class = CommandTokenFilterSet
 
 
-class AccessGrantViewSet(ModelViewSet):  # pylint: disable=too-many-ancestors
+class CommandLogViewSet(NautobotModelViewSet):
+    """API viewset for interacting with CommandLog objects."""
+
+    queryset = CommandLog.objects.all()
+    serializer_class = CommandLogSerializer
+    filterset_class = CommandLogFilterSet
+
+
+class AccessGrantViewSet(NautobotModelViewSet):  # pylint: disable=too-many-ancestors
     """API viewset for interacting with AccessGrant objects."""
 
     queryset = AccessGrant.objects.all()

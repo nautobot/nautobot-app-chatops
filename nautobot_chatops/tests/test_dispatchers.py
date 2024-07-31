@@ -7,7 +7,7 @@ from slack_sdk.errors import SlackApiError
 
 from nautobot_chatops.dispatchers.ms_teams import MSTeamsDispatcher
 from nautobot_chatops.dispatchers.slack import SlackDispatcher
-from nautobot_chatops.dispatchers.webex import WebExDispatcher
+from nautobot_chatops.dispatchers.webex import WebexDispatcher
 from nautobot_chatops.dispatchers.mattermost import MattermostDispatcher
 
 
@@ -125,14 +125,16 @@ class TestSlackDispatcher(TestCase):
         """Make sure files_upload is called with no title."""
         with patch.object(self.dispatcher.slack_client, "files_upload") as mocked_files_upload:
             self.dispatcher.send_snippet("Testing files upload.")
-            mocked_files_upload.assert_called_with(channels="456def", content="Testing files upload.", title=None)
+            mocked_files_upload.assert_called_with(
+                channels="456def", content="Testing files upload.", title=None, thread_ts=None
+            )
 
     def test_send_snippet_title(self):
         """Make sure files_upload is called with title."""
         with patch.object(self.dispatcher.slack_client, "files_upload") as mocked_files_upload:
             self.dispatcher.send_snippet("Testing files upload.", "Testing files upload title.")
             mocked_files_upload.assert_called_with(
-                channels="456def", content="Testing files upload.", title="Testing files upload title."
+                channels="456def", content="Testing files upload.", title="Testing files upload title.", thread_ts=None
             )
 
     @patch("nautobot_chatops.dispatchers.slack.SlackDispatcher.send_blocks")
@@ -197,6 +199,15 @@ class TestSlackDispatcher(TestCase):
         # This should not raise an exception
         self.dispatcher.unset_session_entry("key1")
 
+    def test_thread_ts_passed_into_slack_client(self):
+        """Test thread_ts being passed correctly when it exists in the context."""
+        self.dispatcher.context.update({"thread_ts": "12345"})
+        with patch.object(self.dispatcher.slack_client, "chat_postMessage") as mocked_chat_post_message:
+            self.dispatcher.send_markdown("test message")
+            mocked_chat_post_message.assert_called_with(
+                channel="456def", user="abc123", text="test message", thread_ts="12345"
+            )
+
 
 class TestMSTeamsDispatcher(TestSlackDispatcher):
     """Test the MSTeamsDispatcher class."""
@@ -230,15 +241,25 @@ class TestMSTeamsDispatcher(TestSlackDispatcher):
         # pylint: disable=W0221
         pass
 
+    def test_thread_ts_passed_into_slack_client(self):
+        """thread_ts is a Slack specific implementation."""
+        # pylint: disable=W0221
+        pass
 
-class TestWebExDispatcher(TestSlackDispatcher):
-    """Test the WebExDispatcher class."""
 
-    dispatcher_class = WebExDispatcher
-    platform_name = "WebEx"
+class TestWebexDispatcher(TestSlackDispatcher):
+    """Test the WebexDispatcher class."""
+
+    dispatcher_class = WebexDispatcher
+    platform_name = "Webex"
     enable_opt_name = "enable_webex"
 
-    # Includes all of the test cases defined in TestSlackDispatcher, but uses WebExDispatcher instead
+    # Includes all of the test cases defined in TestSlackDispatcher, but uses WebexDispatcher instead
+
+    @patch.dict("nautobot_chatops.dispatchers.webex.WEBEX_CONFIG", {"enabled": True, "token": "changeme"})
+    def setUp(self):
+        """Per-test-case setup function."""
+        super().setUp()
 
     def test_prompt_from_menu_error(self):
         """Not implemented."""
@@ -261,7 +282,12 @@ class TestWebExDispatcher(TestSlackDispatcher):
         # pylint: disable=W0221
         pass
 
-    @patch("nautobot_chatops.dispatchers.webex.WebExDispatcher.send_markdown")
+    def test_thread_ts_passed_into_slack_client(self):
+        """thread_ts is a Slack specific implementation."""
+        # pylint: disable=W0221
+        pass
+
+    @patch("nautobot_chatops.dispatchers.webex.WebexDispatcher.send_markdown")
     def test_send_large_table(self, mock_send_markdown):
         """Make sure send_large_table() is implemented."""
         header = ["Name", "Status", "Tenant", "Site", "Rack", "Role", "Type", "IP Address"]
@@ -276,7 +302,7 @@ class TestWebExDispatcher(TestSlackDispatcher):
 
         self.dispatcher.send_large_table(header, rows)
 
-        # Make sure the outputs include proper formatting for WebEx
+        # Make sure the outputs include proper formatting for Webex
         self.assertTrue(mock_send_markdown.called)
         self.assertEqual(mock_send_markdown.call_args[0][0], expected_arg0)
 
@@ -327,6 +353,11 @@ class TestMattermostDispatcher(TestSlackDispatcher):
     def test_send_snippet_title(self):
         """Not implemented."""
         # pylint: disable W0221
+        pass
+
+    def test_thread_ts_passed_into_slack_client(self):
+        """thread_ts is a Slack specific implementation."""
+        # pylint: disable=W0221
         pass
 
     @patch("nautobot_chatops.dispatchers.mattermost.MattermostDispatcher.send_blocks")

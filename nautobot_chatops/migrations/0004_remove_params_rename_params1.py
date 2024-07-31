@@ -2,7 +2,6 @@ from django.db import migrations, connection
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("nautobot_chatops", "0003_params_to_params1"),
     ]

@@ -1,69 +1,62 @@
 # Getting Started with the App
 
-A step-by-step tutorial on how to get the App going and how to use it.
+This document provides a step-by-step tutorial on how to get the App going and how to use it.
 
 ## Install the App
 
-To install the App, please follow the instructions detailed in the [Administrator Guide](../admin/install/index.md).
+To install the App, please follow the instructions detailed in the [Administrator Guide](../admin/install.md).
+
+## Link Nautobot Account
+
++++ 3.0.0
+
+Nautobot ChatOps now uses the built-in Nautobot permissions for Nautobot Objects (Devices, Locations, Racks, etc.). Each user will need to link their Nautobot Account with their Chat Platform User Account. Login to Nautobot then access the Link ChatOps Account within the Plugins menu. Here you can provide your email address and select the ChatOps Platform you are using, then click the Look up User ID from Email to get your Chat User ID.
+
+![Link Accounts](../images/account_link.png)
 
 ## Built-in Commands
 
-### Nautobot
+Each command can be invoked with `help` sub-command to display all sub-commands with the description.
 
-Use `nautobot` to interact with Nautobot!
+### `/clear` Command
 
-#### get-vlans
+Scroll the chat history out of view. This command has no sub-commands.
 
-Return a filtered list of VLANS based on filter type and/or values.
+### `/nautobot` Command
 
-#### get-interface-connections
+Interact with Nautobot by utilizing the following sub-commands:
 
-Return a filtered list of interface connections based on filter type and values.
+| Command | Arguments | Description |
+| ------- | --------- | ----------- |
+| `about` || Provide a link for more information on Nautobot Apps. |
+| `change-device-status` | `[device-name]` `[status]` | Set the status of a device in Nautobot. |
+| `get-circuit-connections` | `[provider-slug]` `[circuit-id]` | For a given circuit, find the objects the circuit connects to. |
+| `get-circuit-providers` || Get a list of circuit providers. |
+| `get-circuits` | `[filter-type]` `[filter-value]` | Get a filtered list of circuits from Nautobot. |
+| `get-device-facts` | `[device-name]` | Get detailed facts about a device from Nautobot in YAML format. |
+| `get-device-status` | `[device-name]` | Get the status of a device in Nautobot. |
+| `get-devices` | `[filter-type]` `[filter-value]` | Get a filtered list of devices from Nautobot. |
+| `get-interface-connections` | `[filter-type]` `[filter-value-1]` `[filter-value-2]` | Return a filtered list of interface connections based on filter type, `filter_value_1` and/or `filter_value_2`. |
+| `get-manufacturer-summary` || Provides a summary of each manufacturer and how many devices have that manufacturer. |
+| `get-rack` | `[site-slug]` `[rack-id]` | Get information about a specific rack from Nautobot. |
+| `get-vlans` | `[filter-type]` `[filter-value-1]` | Return a filtered list of VLANs based on filter type and/or `filter_value_1`. |
 
-#### get-device-status
+!!! note
+    All sub-commands are intended to be used with the `nautobot` prefix. For example, to retrieve a filtered list of VLANs, use the command `/nautobot get-vlans`.
 
-Get the status of a device in Nautobot.
++/- 3.0.0
+    Due to the removal of slug in Nautobot 2.0, the command shortcuts will use the PK value of an object. This will be
+    changed to the Natural Key or PK in an upcoming release.
 
-#### change-device-status
+### Integrations Commands
 
-Set the status of a device in Nautobot.
+The `nautobot-chatops` package includes multiple integrations. Each integration adds chat commands described here:
 
-#### get-device-facts
-
-Get detailed facts about a device from Nautobot in YAML format.
-
-#### get-devices
-
-Get a filtered list of devices from Nautobot.
-
-#### get-rack
-
-Get information about a specific rack from Nautobot.
-
-#### get-circuits
-
-Get a filtered list of circuits from Nautobot.
-
-#### get-circuit-connections
-
-For a given circuit, find the objects the circuit connects to.
-
-#### get-circuit-providers
-
-Get a list of circuit providers.
-
-#### about
-
-Provide link for more information on Nautobot Apps.
-
-#### get-manufacturer-summary
-
-Provides summary of each manufacturer and how many devices have that manufacturer.
-
-### Clear
-
-Scroll the chat history out of view.
-
-## Community Commands
-
-The [nautobot-chatops](https://github.com/topics/nautobot-chatops) topic on GitHub provides a list of Nautobot ChatOps compatible plugins that provide additional commands.
+- [Cisco ACI](./integrations/aci.md)
+- [AWX / Ansible Tower](./integrations/ansible.md)
+- [Arista CloudVision](./integrations/aristacv.md)
+- [Grafana](./integrations/grafana.md)
+- [IPFabric](./integrations/ipfabric.md)
+- [Cisco Meraki](./integrations/meraki.md)
+- [Cisco NSO](./integrations/nso.md)
+- [Palo Alto Panorama](./integrations/panorama.md)

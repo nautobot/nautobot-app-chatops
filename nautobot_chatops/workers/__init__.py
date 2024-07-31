@@ -1,4 +1,4 @@
-"""Workers module for the nautobot_chatops Nautobot plugin.
+"""Workers module for the nautobot_chatops Nautobot App.
 
 The functions in this module provide back-end worker logic that is totally ignorant
 of the differences between various chat platforms. They receive generic data from
@@ -13,8 +13,12 @@ import logging
 import shlex
 import pkg_resources
 
-from nautobot_chatops.choices import CommandStatusChoices
-from nautobot_chatops.models import CommandLog
+from django.conf import settings
+from django.db.models import Q
+
+from nautobot_chatops.choices import AccessGrantTypeChoices, CommandStatusChoices
+from nautobot_chatops.integrations.utils import ALL_INTEGRATIONS, DISABLED_INTEGRATIONS
+from nautobot_chatops.models import AccessGrant
 from nautobot_chatops.utils import create_command_log
 from nautobot_chatops.metrics import request_command_cntr, command_histogram
 
@@ -66,8 +70,31 @@ def get_commands_registry():
     # so don't treat the subcommand-before-command case as an error.
 
     for worker in pkg_resources.iter_entry_points("nautobot.workers"):
+        if worker.name in DISABLED_INTEGRATIONS:
+            logger.info("`%s` integration disabled, skipping.", worker.name)
+            continue
+
         # See above. However, we still should never have two command worker functions registered under the same name.
-        command_func = worker.load()
+        try:
+            command_func = worker.load()
+        except ModuleNotFoundError as exc:
+            logger.warning("Unable to load worker %s, skipping. Exception follows:", worker.name)
+            logger.exception(exc)
+            if worker.name in ALL_INTEGRATIONS:
+                logger.warning(
+                    (
+                        "To disable an integration, set `NAUTOBOT_CHATOPS_ENABLE_%s='False'`. "
+                        "To install missing dependencies run `pip install nautobot-chatops[%s]`."
+                    ),
+                    worker.name.upper(),
+                    worker.name,
+                )
+            continue
+        except Exception as exc:  # pylint: disable=broad-except
+            logger.warning("Unable to load worker %s, skipping. Exception follows:", worker.name)
+            logger.exception(exc)
+            continue
+
         if (
             worker.name in _commands_registry
             and "function" in _commands_registry[worker.name]
@@ -76,7 +103,7 @@ def get_commands_registry():
             if _commands_registry[worker.name]["function"] == command_func:
                 logger.warning("Command worker function '%s' was processed twice. This should not happen", worker.name)
             else:
-                logger.error("Duplicate worker name '%s' detected! Check for redundant plugins", worker.name)
+                logger.error("Duplicate worker name '%s' detected! Check for redundant apps", worker.name)
             continue
 
         if worker.name not in _commands_registry:
@@ -87,7 +114,6 @@ def get_commands_registry():
 
     # Mark the registry as initialized
     _registry_initialized = True
-
     return _commands_registry
 
 
@@ -267,6 +293,10 @@ def handle_subcommands(command, subcommand, params=(), dispatcher_class=None, co
     if subcommand == "help" or not subcommand:
         message = f"I know the following `{dispatcher.command_prefix}{command}` subcommands:\n"
         for subcmd, entry in registry[command].get("subcommands", {}).items():
+            if settings.PLUGINS_CONFIG["nautobot_chatops"].get("restrict_help") and not AccessGrant.objects.filter(
+                Q(command="*") | Q(command=command, subcommand="*") | Q(command=command, subcommand=subcmd),
+            ).filter(grant_type=AccessGrantTypeChoices.TYPE_USER).filter(Q(value="*") | Q(value=context["user_id"])):
+                continue
             message += (
                 f"- `{dispatcher.command_prefix}{command} {subcmd} "
                 f"{' '.join(f'[{param}]' for param in entry['params'])}`\t{entry['doc']}\n"
@@ -298,15 +328,14 @@ def handle_subcommands(command, subcommand, params=(), dispatcher_class=None, co
         result = registry[command]["subcommands"][subcommand]["worker"](dispatcher, *params)
         if result is not False:
             command_log.runtime = datetime.now(timezone.utc) - command_log.start_time
+            status = result
+            details = ""
             # For backward compatibility, a return value of True is considered a "success" status.
             if result is True:
                 status = CommandStatusChoices.STATUS_SUCCEEDED
                 details = ""
             elif isinstance(result, (list, tuple)):
                 status, details = result[:2]
-            else:
-                status = result
-                details = ""
 
             if status not in CommandStatusChoices.values():
                 if not details:

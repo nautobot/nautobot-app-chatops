@@ -171,7 +171,6 @@ ehthumbs_vista.db
 
 # Dump file
 *.stackdump
-dumps/
 
 # Folder config file
 [Dd]esktop.ini
@@ -298,9 +297,14 @@ fabric.properties
 
 # Rando
 creds.env
+development/*.txt
 
 # Invoke overrides
 invoke.yml
 
-# Static docs
-/nautobot_chatops/static/nautobot_chatops/docs/
+# Docs
+public
+/compose.yaml
+/dump.sql
+/nautobot_chatops/static/nautobot_chatops/docs
+docs/admin/release_notes/version_X.Y.md

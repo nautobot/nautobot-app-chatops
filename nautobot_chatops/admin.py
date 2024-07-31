@@ -1,7 +1,7 @@
-"""Administrative capabilities for nautobot_chatops plugin."""
+"""Administrative capabilities for nautobot_chatops app."""
 
 from django.contrib import admin
-from .models import CommandLog
+from .models import ChatOpsAccountLink, CommandLog
 
 
 @admin.register(CommandLog)
@@ -17,4 +17,17 @@ class CommandLogAdmin(admin.ModelAdmin):
         "platform",
         "command",
         "subcommand",
+        "nautobot_user",
+    )
+
+
+@admin.register(ChatOpsAccountLink)
+class ChatOpsAccountLinkAdmin(admin.ModelAdmin):
+    """Administrative view for managing ChatOps Account Link instances."""
+
+    list_display = (
+        "pk",
+        "nautobot_user",
+        "platform",
+        "user_id",
     )

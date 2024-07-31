@@ -1,0 +1,131 @@
+{
+    "count": 1,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 8,
+            "type": "project",
+            "url": "/api/v2/projects/8/",
+            "related": {
+                "created_by": "/api/v2/users/1/",
+                "modified_by": "/api/v2/users/1/",
+                "credential": "/api/v2/credentials/4/",
+                "last_job": "/api/v2/project_updates/69/",
+                "teams": "/api/v2/projects/8/teams/",
+                "playbooks": "/api/v2/projects/8/playbooks/",
+                "inventory_files": "/api/v2/projects/8/inventories/",
+                "update": "/api/v2/projects/8/update/",
+                "project_updates": "/api/v2/projects/8/project_updates/",
+                "scm_inventory_sources": "/api/v2/projects/8/scm_inventory_sources/",
+                "schedules": "/api/v2/projects/8/schedules/",
+                "activity_stream": "/api/v2/projects/8/activity_stream/",
+                "notification_templates_started": "/api/v2/projects/8/notification_templates_started/",
+                "notification_templates_success": "/api/v2/projects/8/notification_templates_success/",
+                "notification_templates_error": "/api/v2/projects/8/notification_templates_error/",
+                "access_list": "/api/v2/projects/8/access_list/",
+                "object_roles": "/api/v2/projects/8/object_roles/",
+                "copy": "/api/v2/projects/8/copy/",
+                "organization": "/api/v2/organizations/1/",
+                "last_update": "/api/v2/project_updates/69/"
+            },
+            "summary_fields": {
+                "organization": {
+                    "id": 1,
+                    "name": "Default",
+                    "description": ""
+                },
+                "credential": {
+                    "id": 4,
+                    "name": "GitHub",
+                    "description": "",
+                    "kind": "scm",
+                    "cloud": false,
+                    "kubernetes": false,
+                    "credential_type_id": 2
+                },
+                "last_job": {
+                    "id": 69,
+                    "name": "GitHub",
+                    "description": "",
+                    "finished": "2021-03-05T16:58:51.394959Z",
+                    "status": "successful",
+                    "failed": false
+                },
+                "last_update": {
+                    "id": 69,
+                    "name": "GitHub",
+                    "description": "",
+                    "status": "successful",
+                    "failed": false
+                },
+                "created_by": {
+                    "id": 1,
+                    "username": "admin",
+                    "first_name": "",
+                    "last_name": ""
+                },
+                "modified_by": {
+                    "id": 1,
+                    "username": "admin",
+                    "first_name": "",
+                    "last_name": ""
+                },
+                "object_roles": {
+                    "admin_role": {
+                        "description": "Can manage all aspects of the project",
+                        "name": "Admin",
+                        "id": 39
+                    },
+                    "use_role": {
+                        "description": "Can use the project in a job template",
+                        "name": "Use",
+                        "id": 40
+                    },
+                    "update_role": {
+                        "description": "May update the project",
+                        "name": "Update",
+                        "id": 41
+                    },
+                    "read_role": {
+                        "description": "May view settings for the project",
+                        "name": "Read",
+                        "id": 42
+                    }
+                },
+                "user_capabilities": {
+                    "edit": true,
+                    "delete": true,
+                    "start": true,
+                    "schedule": true,
+                    "copy": true
+                }
+            },
+            "created": "2021-02-04T03:07:39.380209Z",
+            "modified": "2021-02-04T03:13:14.724791Z",
+            "name": "GitHub",
+            "description": "",
+            "local_path": "_8__github",
+            "scm_type": "git",
+            "scm_url": "git@github.com:jvanderaa/HomeNet.git",
+            "scm_branch": "",
+            "scm_refspec": "",
+            "scm_clean": false,
+            "scm_delete_on_update": false,
+            "credential": 4,
+            "timeout": 0,
+            "scm_revision": "a90af84d74b73eaf7913f0d17431f6673b5792a2",
+            "last_job_run": "2021-03-05T16:58:51.394959Z",
+            "last_job_failed": false,
+            "next_job_run": null,
+            "status": "successful",
+            "organization": 1,
+            "scm_update_on_launch": false,
+            "scm_update_cache_timeout": 0,
+            "allow_override": false,
+            "custom_virtualenv": null,
+            "last_update_failed": false,
+            "last_updated": "2021-03-05T16:58:51.394959Z"
+        }
+    ]
+}

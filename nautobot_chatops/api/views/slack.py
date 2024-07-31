@@ -140,6 +140,7 @@ class SlackInteractionView(View):
             "user_name": payload.get("user", {}).get("username"),
             "response_url": payload.get("response_url"),
             "trigger_id": payload.get("trigger_id"),
+            "thread_ts": payload.get("event", {}).get("event_ts") or payload.get("container", {}).get("thread_ts"),
         }
 
         # Check for channel_name if channel_id is present
@@ -239,6 +240,8 @@ class SlackInteractionView(View):
                 private_metadata = json.loads(payload["view"]["private_metadata"])
                 if "channel_id" in private_metadata:
                     context["channel_id"] = private_metadata["channel_id"]
+                if "thread_ts" in private_metadata:
+                    context["thread_ts"] = private_metadata["thread_ts"]
         else:
             return HttpResponse("I didn't understand that notification.")
 
@@ -266,5 +269,50 @@ class SlackInteractionView(View):
         # What we'd like to do here is send a "Nautobot is typing..." to the channel,
         # but unfortunately the API we're using doesn't support that (only the legacy/deprecated RTM API does).
         # SlackDispatcher(context).send_busy_indicator()
+
+        return check_and_enqueue_command(registry, command, subcommand, params, context, SlackDispatcher)
+
+
+@method_decorator(csrf_exempt, name="dispatch")
+class SlackEventAPIView(View):
+    """Handle notifications resulting from a mention of the Slack app."""
+
+    http_method_names = ["post"]
+
+    # pylint: disable=too-many-locals,too-many-return-statements,too-many-branches,too-many-statements
+    def post(self, request, *args, **kwargs):
+        """Handle an inbound HTTP POST request representing an app mention."""
+        valid, reason = verify_signature(request)
+        if not valid:
+            return HttpResponse(status=401, reason=reason)
+
+        # event api data is in request body
+        event = json.loads(request.body.decode("utf-8"))
+        # url verification happens when you add the request URL to the app manifest
+        if event.get("type") == "url_verification":
+            return HttpResponse(event.get("challenge"))
+
+        context = {
+            "org_id": event.get("team_id"),
+            "org_name": event.get("team_domain"),
+            "channel_id": event.get("event", {}).get("channel"),
+            "channel_name": event.get("channel_name"),
+            "user_id": event.get("event", {}).get("user"),
+            "user_name": event.get("event", {}).get("user"),
+            "thread_ts": event.get("event", {}).get("thread_ts"),
+        }
+        bot_id = event.get("authorizations", [{}])[0].get("user_id")
+        text_after_mention = event.get("event", {}).get("text").split(f"<@{bot_id}>")[-1]
+        text_after_mention = text_after_mention.replace(SLASH_PREFIX, "")
+        try:
+            command, subcommand, params = parse_command_string(text_after_mention)
+        except ValueError as err:
+            logger.error("%s", err)
+            return HttpResponse(f"'Error: {err}' encountered on command '{text_after_mention}'.")
+
+        registry = get_commands_registry()
+
+        if command not in registry:
+            SlackDispatcher(context).send_markdown(commands_help(prefix=SLASH_PREFIX))
 
         return check_and_enqueue_command(registry, command, subcommand, params, context, SlackDispatcher)

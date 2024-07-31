@@ -15,7 +15,7 @@ from nautobot_chatops.dispatchers.mattermost import MattermostDispatcher, Driver
 from nautobot_chatops.utils import check_and_enqueue_command
 from nautobot_chatops.metrics import signature_error_cntr
 from nautobot_chatops.models import CommandToken
-from nautobot_chatops.choices import CommandTokenPlatformChoices
+from nautobot_chatops.choices import PlatformChoices
 
 # pylint: disable=logging-fstring-interpolation
 
@@ -58,7 +58,7 @@ def verify_signature(request):
         signature_error_cntr.labels("mattermost", "missing_signature").inc()
         return False, "Missing Command Token"
 
-    command_tokens = CommandToken.objects.filter(platform=CommandTokenPlatformChoices.MATTERMOST)
+    command_tokens = CommandToken.objects.filter(platform=PlatformChoices.MATTERMOST)
 
     if not command_tokens.filter(token=expected_signature.split("Token ")[1]):
         signature_error_cntr.labels("mattermost", "incorrect_signature").inc()

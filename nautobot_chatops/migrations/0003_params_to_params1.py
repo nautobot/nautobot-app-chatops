@@ -21,7 +21,6 @@ def reverse_migrate_params(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("nautobot_chatops", "0002_commandlog_params1"),
     ]

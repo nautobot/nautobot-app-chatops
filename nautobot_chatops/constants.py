@@ -1,4 +1,4 @@
-"""Static variables used in plugin."""
+"""Static variables used in app."""
 
 COMMAND_LOG_USER_NAME_HELP_TEXT = "Invoking username"
 COMMAND_LOG_USER_ID_HELP_TEXT = "Invoking user ID"
@@ -17,3 +17,4 @@ COMMAND_TOKEN_COMMENT_HELP_TEXT = "Optional: Enter description of token"  # nose
 COMMAND_TOKEN_TOKEN_HELP_TEXT = (
     "Token given by chat platform for signing or command validation"  # nosec - skips Bandit B105 error
 )
+CHATOPS_USER_ID_HELP_TEXT = "Enter the chat platform's User ID you want to link."

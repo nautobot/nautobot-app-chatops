@@ -5,8 +5,12 @@ from typing import Optional
 import requests
 
 from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.core.exceptions import ObjectDoesNotExist
+from nautobot.apps.config import get_app_settings_or_config
 
 from nautobot_chatops.metrics import backend_action_sum
+from nautobot_chatops.models import ChatOpsAccountLink
 from .adaptive_cards import AdaptiveCardsDispatcher
 
 logger = logging.getLogger(__name__)
@@ -30,6 +34,27 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
         """Init a MSTeamsDispatcher."""
         super().__init__(*args, **kwargs)
 
+    @property
+    def user(self):
+        """Dispatcher property containing the Nautobot User that is linked to the Chat User."""
+        if self.context.get("user_ad_id"):
+            try:
+                logger.debug("DEBUG: user() - Found ChatOps user - %s", self.context["user_name"])
+                return ChatOpsAccountLink.objects.get(
+                    platform=self.platform_slug, user_id=self.context["user_ad_id"]
+                ).nautobot_user
+            except ObjectDoesNotExist:
+                logger.warning(
+                    "Could not find User matching %s - id: %s. Add a ChatOps User to link the accounts.",
+                    self.context["user_name"],
+                    self.context["user_ad_id"],
+                )
+        user_model = get_user_model()
+        user, _ = user_model.objects.get_or_create(
+            username=get_app_settings_or_config("nautobot_chatops", "fallback_chatops_user")
+        )
+        return user
+
     @classmethod
     @BACKEND_ACTION_LOOKUP.time()
     def platform_lookup(cls, item_type, item_name) -> Optional[str]:
@@ -49,24 +74,69 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
         raise NotImplementedError
 
     @staticmethod
-    def get_token():
+    def get_token(service="botframework.com", scope="https://api.botframework.com/.default"):
         """Obtain the JWT token that's needed for the bot to publish messages back to MS Teams."""
         # TODO: for efficiency, cache the token and only refresh it when it expires
         # For now we just get a new token every time.
         response = requests.post(
-            "https://login.microsoftonline.com/botframework.com/oauth2/v2.0/token",
+            f"https://login.microsoftonline.com/{service}/oauth2/v2.0/token",
             data={
                 "grant_type": "client_credentials",
                 "client_id": settings.PLUGINS_CONFIG["nautobot_chatops"]["microsoft_app_id"],
                 "client_secret": settings.PLUGINS_CONFIG["nautobot_chatops"]["microsoft_app_password"],
-                "scope": "https://api.botframework.com/.default",
+                "scope": scope,
             },
+            timeout=15,
         )
-        token = response.json()["access_token"]
+        logger.debug("DEBUG: get_token() response %s", response.json())
+        try:
+            token = response.json()["access_token"]
+        except KeyError as exc:
+            logger.error(
+                "get_token() response is missing access_token, which indicates an error authenticating with MS Teams."
+                "Check the app_id and app_secret."
+            )
+            raise KeyError(
+                "get_token() response is missing access_token, which indicates an error authenticating with MS Teams."
+                "Check the app_id and app_secret."
+            ) from exc
         return token
+
+    @classmethod
+    def lookup_user_id_by_email(cls, email) -> Optional[str]:
+        """Call out to Microsoft Teams to look up a specific user ID by email.
+
+        Args:
+          email (str): Uniquely identifying email address of the user.
+
+        Returns:
+          (str, None)
+        """
+        service = settings.PLUGINS_CONFIG["nautobot_chatops"]["microsoft_tenant_id"]
+        scope = "https://graph.microsoft.com/.default"
+        try:
+            # Try to use the email as the User Principal Name
+            response = requests.get(
+                f"https://graph.microsoft.com/v1.0/users/{email}?$select=id",
+                headers={"Authorization": f"Bearer {cls.get_token(service=service, scope=scope)}"},
+                timeout=15,
+            )
+            return response.json()["id"]
+        except KeyError:
+            try:
+                # Fall back to filtering by email address.
+                response = requests.get(
+                    f"https://graph.microsoft.com/v1.0/users?$select=id&$filter=mail eq '{email}'",
+                    headers={"Authorization": f"Bearer {cls.get_token(service=service, scope=scope)}"},
+                    timeout=15,
+                )
+                return response.json()["value"][0]["id"]
+            except (KeyError, IndexError):
+                return None
 
     def _send(self, content, content_type="message"):
         """Publish content back to Microsoft Teams."""
+        logger.debug("DEBUG: _send() - updating content with %s", self.context)
         content = content.copy()
         content.update(
             {
@@ -86,11 +156,22 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
                 "replyToId": self.context["message_id"],
             }
         )
+        logger.debug("DEBUG: _send() - Sending response back to MSTeams")
+        logger.debug("DEBUG: _send() - Sending content with %s", content)
+        logger.debug(
+            "DEBUG: _send() - Sending to URL %s/v3/conversations/%s/activities",
+            self.context["service_url"],
+            self.context["conversation_id"],
+        )
         response = requests.post(
             f"{self.context['service_url']}/v3/conversations/{self.context['conversation_id']}/activities",
             headers={"Authorization": f"Bearer {self.get_token()}"},
             json=content,
+            timeout=15,
         )
+        logger.debug("DEBUG: _send() response %s", response.status_code)
+        logger.debug("DEBUG: _send() reason %s", response.reason)
+        response.raise_for_status()
         return response
 
     def send_large_table(self, header, rows, title=None):
@@ -133,6 +214,7 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
                     "tenantId": self.context["tenant_id"],
                     "topicName": "Image upload",
                 },
+                timeout=15,
             )
             response.raise_for_status()
             self.context["conversation_id"] = response.json()["id"]
@@ -152,11 +234,13 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
     @BACKEND_ACTION_MARKDOWN.time()
     def send_markdown(self, message, ephemeral=None):
         """Send a markdown-formatted text message to the user/channel specified by the context."""
+        logger.debug("DEBUG: send_markdown() Sending message =  %s", message)
         self._send({"text": message, "textFormat": "markdown"})
 
     @BACKEND_ACTION_BLOCKS.time()
     def send_blocks(self, blocks, callback_id=None, modal=False, ephemeral=None, title=None):
         """Send a series of formatting blocks to the user/channel specified by the context."""
+        logger.debug("DEBUG: send_blocks() Sending Blocks = %s", blocks)
         if title and title not in str(blocks[0]):
             blocks.insert(0, self.markdown_element(self.bold(title)))
         self._send(
@@ -191,6 +275,7 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
                 "Content-Length": str(file_size),
                 "Content-Range": f"bytes 0-{file_size-1}/{file_size}",
             },
+            timeout=15,
         )
         response.raise_for_status()
 
@@ -221,6 +306,7 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
         requests.delete(
             f"{self.context['service_url']}/v3/conversations/{self.context['conversation_id']}/activities/{message_id}",
             headers={"Authorization": f"Bearer {self.get_token()}"},
+            timeout=15,
         )
 
     def user_mention(self):

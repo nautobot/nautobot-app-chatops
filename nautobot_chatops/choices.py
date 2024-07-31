@@ -1,6 +1,6 @@
 """ChoiceSet classes for Nautobot."""
 
-from nautobot.utilities.choices import ChoiceSet
+from nautobot.core.choices import ChoiceSet
 
 
 class AccessGrantTypeChoices(ChoiceSet):
@@ -12,7 +12,7 @@ class AccessGrantTypeChoices(ChoiceSet):
 
     CHOICES = (
         (TYPE_ORGANIZATION, "Organization"),
-        (TYPE_CHANNEL, "Channel"),
+        (TYPE_CHANNEL, "Channel (Room)"),
         (TYPE_USER, "User"),
     )
 
@@ -35,12 +35,17 @@ class CommandStatusChoices(ChoiceSet):
     )
 
 
-class CommandTokenPlatformChoices(ChoiceSet):
-    """Choices for the CommandToken platform field."""
+class PlatformChoices(ChoiceSet):
+    """Choices for the Platform field."""
 
     MATTERMOST = "mattermost"
     SLACK = "slack"
     MS_TEAMS = "microsoft_teams"
     WEBEX = "webex"
 
-    CHOICES = ((MATTERMOST, "Mattermost"),)
+    CHOICES = (
+        (MATTERMOST, "Mattermost"),
+        (MS_TEAMS, "Microsoft Teams"),
+        (SLACK, "Slack"),
+        (WEBEX, "Webex"),
+    )

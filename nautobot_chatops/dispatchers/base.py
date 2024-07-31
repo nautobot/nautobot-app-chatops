@@ -2,12 +2,19 @@
 import logging
 from typing import Dict, Optional
 from django.templatetags.static import static
+from django.contrib.auth import get_user_model
 from django.core.cache import cache
+from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
-
+from nautobot.apps.config import get_app_settings_or_config
 from texttable import Texttable
 
+from nautobot_chatops.models import ChatOpsAccountLink
+
+
 logger = logging.getLogger(__name__)
+
+_APP_CONFIG: Dict = settings.PLUGINS_CONFIG["nautobot_chatops"]
 
 
 class Dispatcher:
@@ -36,8 +43,28 @@ class Dispatcher:
         """Init this Dispatcher with the provided dict of contextual information (which will vary by app)."""
         self.context = context or {}
 
+    @property
+    def user(self):
+        """Dispatcher property containing the Nautobot User that is linked to the Chat User."""
+        if self.context.get("user_id"):
+            try:
+                return ChatOpsAccountLink.objects.get(
+                    platform=self.platform_slug, user_id=self.context["user_id"]
+                ).nautobot_user
+            except ObjectDoesNotExist:
+                logger.warning(
+                    "Could not find User matching %s - id: %s. Add a ChatOps User to link the accounts.",
+                    self.context["user_name"],
+                    self.context["user_id"],
+                )
+        user_model = get_user_model()
+        user, _ = user_model.objects.get_or_create(
+            username=get_app_settings_or_config("nautobot_chatops", "fallback_chatops_user")
+        )
+        return user
+
     def _get_cache_key(self) -> str:
-        """Key generator for the cache, adding the plugin prefix name."""
+        """Key generator for the cache, adding the app prefix name."""
         # Using __file__ as a key customization within the cache
         return "-".join([__file__, self.context.get("user_id", "generic")])
 
@@ -53,7 +80,7 @@ class Dispatcher:
         cache.set(
             self._get_cache_key(),
             session_value,
-            timeout=settings.PLUGINS_CONFIG["nautobot_chatops"]["session_cache_timeout"],
+            timeout=_APP_CONFIG["session_cache_timeout"],
         )
 
     def unset_session_entry(self, key: str):
@@ -78,7 +105,7 @@ class Dispatcher:
         cache.set(
             self._get_cache_key(),
             session_value,
-            timeout=settings.PLUGINS_CONFIG["nautobot_chatops"]["session_cache_timeout"],
+            timeout=_APP_CONFIG["session_cache_timeout"],
         )
 
     def unset_session(self):
@@ -90,22 +117,16 @@ class Dispatcher:
         """Get a list of all subclasses of Dispatcher that are known to Nautobot."""
         # TODO: this should be dynamic using entry_points
         # pylint: disable=import-outside-toplevel, unused-import, cyclic-import
-        if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_slack"):
+        if get_app_settings_or_config("nautobot_chatops", "enable_slack"):
             from .slack import SlackDispatcher
 
-        if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_ms_teams"):
+        if get_app_settings_or_config("nautobot_chatops", "enable_ms_teams"):
             from .ms_teams import MSTeamsDispatcher
 
-        # v1.4.0 backwards compatibility
-        if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_webex") or settings.PLUGINS_CONFIG[
-            "nautobot_chatops"
-        ].get("enable_webex_teams"):
-            from .webex import WebExDispatcher
+        if get_app_settings_or_config("nautobot_chatops", "enable_webex"):
+            from .webex import WebexDispatcher
 
-            if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_webex_teams"):
-                logger.warning("The 'enable_webex_teams' setting is deprecated, please use 'enable_webex' instead.")
-
-        if settings.PLUGINS_CONFIG["nautobot_chatops"].get("enable_mattermost"):
+        if get_app_settings_or_config("nautobot_chatops", "enable_mattermost"):
             from .mattermost import MattermostDispatcher
 
         subclasses = set()
@@ -125,6 +146,18 @@ class Dispatcher:
         Args:
           item_type (str): One of "organization", "channel", "user"
           item_name (str): Uniquely identifying name of the given item.
+
+        Returns:
+          (str, None)
+        """
+        raise NotImplementedError
+
+    @classmethod
+    def lookup_user_id_by_email(cls, email) -> Optional[str]:
+        """Call out to the chat platform to look up a specific user ID by email.
+
+        Args:
+          email (str): Uniquely identifying email address of the user.
 
         Returns:
           (str, None)
@@ -155,13 +188,15 @@ class Dispatcher:
     def send_large_table(self, header, rows, title=None):
         """Send a large table of data to the user/channel.
 
-        The below default implementation works for both Slack and WebEx.
+        The below default implementation works for both Slack and Webex.
         """
         table = Texttable(max_width=120)
         table.set_deco(Texttable.HEADER)
         table.header(header)
+        # Left Align headers to match the alignment of the rows
+        table.set_header_align(["l" for _ in header])
         # Force all columns to be shown as text. Otherwise long numbers (such as account #) get abbreviated as 123.4e10
-        table.set_cols_dtype(["t" for item in header])
+        table.set_cols_dtype(["t" for _ in header])
         table.add_rows(rows, header=False)
         self.send_snippet(table.draw(), title=title)
 
@@ -205,7 +240,6 @@ class Dispatcher:
         """
         raise NotImplementedError
 
-    # pylint: disable=no-self-use
     def needs_permission_to_send_image(self):
         """Return True if this bot needs to ask the user for permission to post an image."""
         return False
@@ -220,7 +254,7 @@ class Dispatcher:
         """Send a Markdown-formatted text message to the user/channel specified by the context."""
         # pylint: disable=unused-argument
         if ephemeral is None:
-            ephemeral = settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_private"]
+            ephemeral = _APP_CONFIG["send_all_messages_private"]
         raise NotImplementedError
 
     def send_blocks(
@@ -234,7 +268,7 @@ class Dispatcher:
         """Send a series of formatting blocks to the user/channel specified by the context."""
         # pylint: disable=unused-argument
         if ephemeral is None:
-            ephemeral = settings.PLUGINS_CONFIG["nautobot_chatops"]["send_all_messages_private"]
+            ephemeral = _APP_CONFIG["send_all_messages_private"]
         raise NotImplementedError
 
     def send_snippet(self, text, title=None, ephemeral=None):
@@ -291,17 +325,14 @@ class Dispatcher:
         """Markup for a mention of the username/userid specified in our context."""
         raise NotImplementedError
 
-    # pylint: disable=no-self-use
     def bold(self, text):
         """Mark text as bold."""
         return f"**{text}**"
 
-    # pylint: disable=no-self-use
     def hyperlink(self, text, url):
         """Create Hyperlinks."""
         return f"[{text}]({url})"
 
-    # pylint: disable=no-self-use
     def monospace(self, text):
         """Mark text as monospace."""
         return f"`{text}`"
@@ -332,7 +363,7 @@ class Dispatcher:
         Args:
           action_id (str): Identifying string to associate with this element
           choices (list): List of (display, value) tuples
-          default (tuple: Default (display, value) to preselect
+          default (tuple): Default (display, value) to preselect
           confirm (bool): If true (and the platform supports it), prompt the user to confirm their selection
         """
         raise NotImplementedError

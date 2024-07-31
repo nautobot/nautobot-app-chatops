@@ -1,13 +1,9 @@
 """Test cases for Nautobot Chatops API."""
-try:
-    from importlib import metadata
-except ImportError:
-    # Python version < 3.8
-    import importlib_metadata as metadata
+from importlib import metadata
 
 from django.urls import reverse
 
-from nautobot.utilities.testing import APITestCase, APIViewTestCases
+from nautobot.core.testing import APITestCase, APIViewTestCases
 from nautobot_chatops.models import AccessGrant, CommandToken
 
 
@@ -79,6 +75,6 @@ class AccessGrantTest(APIViewTestCases.APIViewTestCase):  # pylint: disable=too-
     @classmethod
     def setUpTestData(cls):
         """Generate test data for the AccessGrant Endpoint."""
-        AccessGrant.objects.create(command="*", subcommand="*", grant_type="organization", name="test1", value="*")
-        AccessGrant.objects.create(command="*", subcommand="*", grant_type="channel", name="test2", value="*")
-        AccessGrant.objects.create(command="*", subcommand="*", grant_type="user", name="test3", value="*")
+        AccessGrant.objects.create(command="*", subcommand="*", grant_type="organization", name="test1", value="test1")
+        AccessGrant.objects.create(command="*", subcommand="*", grant_type="channel", name="test2", value="test2")
+        AccessGrant.objects.create(command="*", subcommand="*", grant_type="user", name="test3", value="test3")
