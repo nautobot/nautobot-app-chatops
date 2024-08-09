@@ -3,28 +3,26 @@
 import json
 import time
 
-
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db.models import Count
-from django.contrib.contenttypes.models import ContentType
 from django.utils.text import slugify
-
-from nautobot.dcim.models.device_components import Interface, FrontPort, RearPort
-from nautobot.circuits.models import Circuit, CircuitType, Provider, CircuitTermination
-from nautobot.dcim.models import Device, DeviceType, Location, LocationType, Manufacturer, Rack, Cable
+from nautobot.circuits.models import Circuit, CircuitTermination, CircuitType, Provider
+from nautobot.dcim.models import Cable, Device, DeviceType, Location, LocationType, Manufacturer, Rack
+from nautobot.dcim.models.device_components import FrontPort, Interface, RearPort
+from nautobot.extras.choices import JobResultStatusChoices
+from nautobot.extras.jobs import get_job
+from nautobot.extras.models import Job, JobResult, Role, Status
 from nautobot.ipam.models import VLAN, Prefix, VLANGroup
 from nautobot.tenancy.models import Tenant
-from nautobot.extras.choices import JobResultStatusChoices
-from nautobot.extras.models import Job, JobResult, Role, Status
-from nautobot.extras.jobs import get_job
 
 from nautobot_chatops.choices import CommandStatusChoices
-from nautobot_chatops.workers import subcommand_of, handle_subcommands
+from nautobot_chatops.workers import handle_subcommands, subcommand_of
 from nautobot_chatops.workers.helper_functions import (
     add_asterisk,
+    menu_item_check,
     menu_offset_value,
     nautobot_logo,
-    menu_item_check,
     prompt_for_circuit_filter_type,
     prompt_for_device_filter_type,
     prompt_for_interface_filter_type,
@@ -135,11 +133,7 @@ def get_filtered_connections(device, interface):
         status__name="Connected",
         termination_a_type=interface.pk,
         termination_b_type=interface.pk,
-    ).exclude(
-        _termination_b_device=None
-    ).exclude(
-        _termination_a_device=None
-    )
+    ).exclude(_termination_b_device=None).exclude(_termination_a_device=None)
 
 
 def analyze_circuit_endpoints(endpoint):
@@ -1056,6 +1050,7 @@ def filter_jobs(dispatcher, job_filters: str = ""):  # We can use a Literal["ena
     """Get a filtered list of jobs from Nautobot that the request user have view permissions for.
 
     Args:
+        dispatcher (object): Chatops app dispatcher object
         job_filters (str): Filter job results by literals in a comma-separated string.
                            Available filters are: enabled, installed.
     """
@@ -1088,6 +1083,7 @@ def get_jobs(dispatcher, kwargs: str = ""):
     """Get all jobs from Nautobot that the requesting user have view permissions for.
 
     Args:
+        dispatcher (object): Chatops app dispatcher object
         kwargs (str): JSON-string array of header items to be exported. (Optional, default export is: name, id, enabled)
     """
     # Confirm kwargs is valid JSON
@@ -1127,6 +1123,7 @@ def run_job(dispatcher, *args, job_name: str = "", json_string_kwargs: str = "")
     """Initiate a job in Nautobot by job name.
 
     Args:
+        dispatcher (object): Chatops app dispatcher object
         *args (tuple): Dispatcher form will pass job args as tuple.
         job_name (str): Name of Nautobot job to run.
         json_string_kwargs (str): JSON-string dictionary for input keyword arguments for job run.
@@ -1241,6 +1238,7 @@ def run_job_form(dispatcher, job_name: str = ""):
     """Send job form as a multi-input dialog. On form submit it initiates the job with the form arguments.
 
     Args:
+        dispatcher (object): Chatops app dispatcher object
         job_name (str): Name of Nautobot job to run.
     """
     # Prompt the user to pick a job if they did not specify one

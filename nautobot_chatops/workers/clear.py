@@ -2,7 +2,6 @@
 
 from datetime import datetime, timezone
 
-
 from nautobot_chatops.choices import CommandStatusChoices
 from nautobot_chatops.dispatchers.slack import SlackDispatcher
 from nautobot_chatops.utils import create_command_log

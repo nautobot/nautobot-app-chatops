@@ -18,12 +18,8 @@ if DEBUG and not _TESTING:
 
     if "debug_toolbar" not in INSTALLED_APPS:  # noqa: F405
         INSTALLED_APPS.append("debug_toolbar")  # noqa: F405
-    if (
-        "debug_toolbar.middleware.DebugToolbarMiddleware" not in MIDDLEWARE
-    ):  # noqa: F405
-        MIDDLEWARE.insert(
-            0, "debug_toolbar.middleware.DebugToolbarMiddleware"
-        )  # noqa: F405
+    if "debug_toolbar.middleware.DebugToolbarMiddleware" not in MIDDLEWARE:  # noqa: F405
+        MIDDLEWARE.insert(0, "debug_toolbar.middleware.DebugToolbarMiddleware")  # noqa: F405
 
 #
 # Misc. settings
@@ -55,9 +51,7 @@ DATABASES = {
             "NAUTOBOT_DB_PORT",
             default_db_settings[nautobot_db_engine]["NAUTOBOT_DB_PORT"],
         ),  # Database port, default to postgres
-        "CONN_MAX_AGE": int(
-            os.getenv("NAUTOBOT_DB_TIMEOUT", "300")
-        ),  # Database timeout
+        "CONN_MAX_AGE": int(os.getenv("NAUTOBOT_DB_TIMEOUT", "300")),  # Database timeout
         "ENGINE": nautobot_db_engine,
     }
 }
@@ -179,7 +173,7 @@ PLUGINS_CONFIG = {
         "tower_password": os.getenv("NAUTOBOT_TOWER_PASSWORD"),
         "tower_uri": os.getenv("NAUTOBOT_TOWER_URI"),
         "tower_username": os.getenv("NAUTOBOT_TOWER_USERNAME"),
-        "tower_verify_ssl": is_truthy(os.getenv("NAUTOBOT_TOWER_VERIFY_SSL", True)),
+        "tower_verify_ssl": is_truthy(os.getenv("NAUTOBOT_TOWER_VERIFY_SSL", "true")),
         # - Arista CloudVision ---------------
         "enable_aristacv": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_ARISTACV")),
         "aristacv_cvaas_url": os.environ.get("ARISTACV_CVAAS_URL"),

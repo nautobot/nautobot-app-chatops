@@ -1,11 +1,12 @@
 """Unit tests for nautobot_chatops."""
 
+from importlib import metadata
+
 from django.contrib.auth import get_user_model
-from django.test import TestCase
 from django.urls import reverse
-from nautobot.users.models import Token
-from rest_framework import status
-from rest_framework.test import APIClient
+from nautobot.core.testing import APITestCase, APIViewTestCases
+
+from nautobot_chatops.models import AccessGrant, CommandToken
 
 User = get_user_model()
 

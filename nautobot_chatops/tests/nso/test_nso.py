@@ -1,19 +1,19 @@
 """Test rundeck client."""
 # Disable protected access, since..ya know. We need to test them. # pylint: disable=protected-access
 
-from os import path
 import json
+from os import path
+
 import responses
 from django.test import SimpleTestCase
 
-from nautobot_chatops.integrations.nso.nso import NSOClient as nso
 from nautobot_chatops.integrations.nso.exceptions import (
     CommunicationError,
+    DeviceLocked,
     DeviceNotFound,
     DeviceNotSupported,
-    DeviceLocked,
 )
-
+from nautobot_chatops.integrations.nso.nso import NSOClient as nso
 
 HERE = path.abspath(path.dirname(__file__))
 

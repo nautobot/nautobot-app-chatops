@@ -4,15 +4,16 @@ import json
 import logging
 import os
 import time
-
 from typing import Optional
+
 from django.conf import settings
 from django.templatetags.static import static
 from slack_sdk import WebClient
-from slack_sdk.webhook.client import WebhookClient
 from slack_sdk.errors import SlackApiError, SlackClientError
+from slack_sdk.webhook.client import WebhookClient
 
 from nautobot_chatops.metrics import backend_action_sum
+
 from .base import Dispatcher
 
 logger = logging.getLogger(__name__)
@@ -371,9 +372,7 @@ class SlackDispatcher(Dispatcher):
                 choices.append(("Next...", f"menu_offset-{new_offset}"))
         return choices
 
-    def prompt_from_menu(
-        self, action_id, help_text, choices, default=(None, None), confirm=False, offset=0
-    ):  # pylint: disable=too-many-arguments
+    def prompt_from_menu(self, action_id, help_text, choices, default=(None, None), confirm=False, offset=0):  # pylint: disable=too-many-arguments
         """Prompt the user for a selection from a menu.
 
         Args:

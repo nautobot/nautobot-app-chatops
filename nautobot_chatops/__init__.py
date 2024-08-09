@@ -159,6 +159,7 @@ class NautobotChatOpsConfig(NautobotAppConfig):
         super().ready()
         # pylint: disable=import-outside-toplevel
         from nautobot_capacity_metrics import register_metric_func
+
         from .metrics_app import metric_commands
 
         register_metric_func(metric_commands)

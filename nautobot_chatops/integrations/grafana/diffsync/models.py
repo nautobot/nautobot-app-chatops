@@ -1,8 +1,11 @@
 """DiffSync model definitions for Grafana Dashboards."""
-from typing import Optional, List
+
+from typing import List, Optional
+
 from diffsync import DiffSync, DiffSyncModel
-from nautobot_chatops.integrations.grafana.models import Dashboard, Panel, PanelVariable
+
 from nautobot_chatops.integrations.grafana.helpers import format_command
+from nautobot_chatops.integrations.grafana.models import Dashboard, Panel, PanelVariable
 
 
 class DashboardModel(DiffSyncModel):

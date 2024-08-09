@@ -13,8 +13,6 @@ ACCESS_GRANT_NAME_HELP_TEXT = "Organization name, channel name, or user name"
 # pylint: disable=line-too-long
 ACCESS_GRANT_VALUE_HELP_TEXT = "Corresponding ID value to grant access to.<br>Enter <tt>*</tt> to grant access to all organizations, channels, or users"
 
-COMMAND_TOKEN_COMMENT_HELP_TEXT = "Optional: Enter description of token"  # nosec - skips Bandit B105 error
-COMMAND_TOKEN_TOKEN_HELP_TEXT = (
-    "Token given by chat platform for signing or command validation"  # nosec - skips Bandit B105 error
-)
+COMMAND_TOKEN_COMMENT_HELP_TEXT = "Optional: Enter description of token"  # noqa S105 # nosec - skips Bandit B105 error
+COMMAND_TOKEN_TOKEN_HELP_TEXT = "Token given by chat platform for signing or command validation"  # noqa S105 # nosec - skips Bandit B105 error
 CHATOPS_USER_ID_HELP_TEXT = "Enter the chat platform's User ID you want to link."

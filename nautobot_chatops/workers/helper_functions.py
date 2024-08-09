@@ -1,6 +1,5 @@
 """Helper functions for nautobot.py worker."""
 
-
 NAUTOBOT_LOGO_PATH = "nautobot/NautobotLogoSquare.png"
 NAUTOBOT_LOGO_ALT = "Nautobot Logo"
 

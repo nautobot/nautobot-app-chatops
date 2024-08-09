@@ -9,7 +9,6 @@ from nautobot_chatops.choices import AccessGrantTypeChoices
 from nautobot_chatops.models import AccessGrant
 from nautobot_chatops.utils import check_and_enqueue_command
 
-
 User = get_user_model()
 
 
