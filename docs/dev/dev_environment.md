@@ -511,7 +511,8 @@ There are a few requirements to get this up and running, the steps are provided 
     !!! note
         You can also skip adding MS Teams to the channels list.
 
-    ![example-azure-bot](../images/azurebot.png)
+    ![example-azure-bot](../images/light/azurebot.png#only-light)
+    ![example-azure-bot](../images/dark/azurebot.png#only-dark)
 
 2. Now that your Azure bot is created, and you've followed all the steps to capture the `Microsoft App ID` and the `Value` from your `Client Secret Key`. You can setup your local development environment. Please follow the standard steps outlined in the [Full Docker Development Environment](#full-docker-development-environment) section.
 
