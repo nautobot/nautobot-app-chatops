@@ -119,16 +119,16 @@ class Dispatcher:
         # TODO: this should be dynamic using entry_points
         # pylint: disable=import-outside-toplevel, unused-import, cyclic-import
         if get_app_settings_or_config("nautobot_chatops", "enable_slack"):
-            pass
+            from .slack import SlackDispatcher  # noqa: F401
 
         if get_app_settings_or_config("nautobot_chatops", "enable_ms_teams"):
-            pass
+            from .ms_teams import MSTeamsDispatcher  # noqa: F401
 
         if get_app_settings_or_config("nautobot_chatops", "enable_webex"):
-            pass
+            from .webex import WebexDispatcher  # noqa: F401
 
         if get_app_settings_or_config("nautobot_chatops", "enable_mattermost"):
-            pass
+            from .mattermost import MattermostDispatcher  # noqa: F401
 
         subclasses = set()
         classes = [cls]
