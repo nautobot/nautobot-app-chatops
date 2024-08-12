@@ -1,4 +1,5 @@
 """App declaration for nautobot_chatops."""
+
 # Metadata is inherited from Nautobot. If not including Nautobot in the environment, this should be added
 from importlib import metadata
 
@@ -158,6 +159,7 @@ class NautobotChatOpsConfig(NautobotAppConfig):
         super().ready()
         # pylint: disable=import-outside-toplevel
         from nautobot_capacity_metrics import register_metric_func
+
         from .metrics_app import metric_commands
 
         register_metric_func(metric_commands)

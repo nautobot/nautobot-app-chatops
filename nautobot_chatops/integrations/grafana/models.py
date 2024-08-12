@@ -1,17 +1,17 @@
 """Models for Grafana Plugin."""
-from django.db import models
+
 from django.core.exceptions import ValidationError
 from django.core.serializers.json import DjangoJSONEncoder
+from django.db import models
 from django.utils.translation import gettext_lazy as _
 from nautobot.circuits import models as circuit_models
-from nautobot.core.models.generics import PrimaryModel, OrganizationalModel
+from nautobot.core.models.generics import OrganizationalModel, PrimaryModel
 from nautobot.dcim import models as dcim_models
 from nautobot.extras import models as extra_models
 from nautobot.extras.utils import extras_features
 from nautobot.ipam import models as ipam_models
 from nautobot.tenancy import models as tenancy_models
 from nautobot.virtualization import models as virtualization_models
-
 
 # Valid models to be used in Panel Variables as query options. If a model doesn't exist in
 # this list, you cannot set or use the `query` field in a panel variable.

@@ -1,22 +1,20 @@
 """Views to receive inbound notifications from Microsoft Teams, parse them, and enqueue worker actions."""
 
 import json
-import re
 import logging
+import re
 
-import requests
 import jwt
-
+import requests
 from django.conf import settings
 from django.http import HttpResponse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 
-from nautobot_chatops.workers import get_commands_registry, commands_help, parse_command_string
 from nautobot_chatops.dispatchers.ms_teams import MSTeamsDispatcher
 from nautobot_chatops.utils import check_and_enqueue_command
-
+from nautobot_chatops.workers import commands_help, get_commands_registry, parse_command_string
 
 logger = logging.getLogger(__name__)
 

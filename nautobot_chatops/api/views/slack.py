@@ -13,10 +13,10 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from slack_sdk import WebClient
 
-from nautobot_chatops.workers import get_commands_registry, commands_help, parse_command_string
 from nautobot_chatops.dispatchers.slack import SlackDispatcher
-from nautobot_chatops.utils import check_and_enqueue_command
 from nautobot_chatops.metrics import signature_error_cntr
+from nautobot_chatops.utils import check_and_enqueue_command
+from nautobot_chatops.workers import commands_help, get_commands_registry, parse_command_string
 
 # pylint: disable=logging-fstring-interpolation
 
@@ -194,10 +194,12 @@ class SlackInteractionView(View):
                 except ValueError as err:
                     logger.error("%s", err)
                     return HttpResponse(f"Error: {err} encountered when processing {callback_id}")
+                # If more than 2 arguments are provided, we will need to format the selected value
+                argument_check = 2
                 for i, cmd in enumerate(cmds):
-                    if i == 2:
+                    if i == argument_check:
                         selected_value += f"'{cmd}'"
-                    elif i > 2:
+                    elif i > argument_check:
                         selected_value += f" '{cmd}'"
                 action_id = f"{cmds[0]} {cmds[1]}"
 

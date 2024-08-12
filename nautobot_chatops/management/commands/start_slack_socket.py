@@ -1,7 +1,9 @@
 """Command to start a slack socket."""
 
 import asyncio
+
 from django.core.management.base import BaseCommand
+
 from nautobot_chatops.sockets.slack import main
 
 

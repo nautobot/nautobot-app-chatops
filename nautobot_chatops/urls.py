@@ -1,28 +1,28 @@
 """Django urlpatterns declaration for nautobot_chatops app."""
+
 import logging
 
-from django.urls import path
 from django.templatetags.static import static
+from django.urls import path
 from django.views.generic import RedirectView
-
 from nautobot.apps.config import get_app_settings_or_config
 from nautobot.extras.views import ObjectChangeLogView, ObjectNotesView
 
 from nautobot_chatops.models import AccessGrant, ChatOpsAccountLink, CommandLog, CommandToken
 from nautobot_chatops.views import (
+    AccessGrantBulkDeleteView,
+    AccessGrantCreateView,
+    AccessGrantListView,
+    AccessGrantView,
+    ChatOpsAccountLinkDeleteView,
+    ChatOpsAccountLinkEditView,
+    ChatOpsAccountLinkListView,
+    ChatOpsAccountLinkView,
+    CommandLogListView,
     CommandTokenBulkDeleteView,
     CommandTokenCreateView,
     CommandTokenListView,
     CommandTokenView,
-    CommandLogListView,
-    AccessGrantListView,
-    AccessGrantView,
-    AccessGrantCreateView,
-    AccessGrantBulkDeleteView,
-    ChatOpsAccountLinkView,
-    ChatOpsAccountLinkEditView,
-    ChatOpsAccountLinkListView,
-    ChatOpsAccountLinkDeleteView,
 )
 
 if get_app_settings_or_config("nautobot_chatops", "enable_grafana"):

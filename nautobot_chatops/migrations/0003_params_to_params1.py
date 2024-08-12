@@ -1,7 +1,6 @@
 import copy
-import json
 
-from django.db import migrations, connection
+from django.db import connection, migrations
 
 
 def migrate_params(apps, schema_editor):

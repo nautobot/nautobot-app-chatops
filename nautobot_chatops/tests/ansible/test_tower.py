@@ -1,4 +1,5 @@
 """Test of tower.py."""
+
 from collections import namedtuple
 from os import path
 

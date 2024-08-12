@@ -2,9 +2,8 @@
 
 import logging
 
-from ipfabric_diagrams import IPFDiagram
 from ipfabric import IPFClient
-
+from ipfabric_diagrams import IPFDiagram
 
 logger = logging.getLogger("nautobot")
 

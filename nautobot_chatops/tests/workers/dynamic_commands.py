@@ -1,6 +1,6 @@
 """Test file defining a dynamic subcommand (issue #54)."""
 
-from nautobot_chatops.workers import subcommand_of, handle_subcommands
+from nautobot_chatops.workers import handle_subcommands, subcommand_of
 
 
 def dynamic_command(subcommand, **kwargs):

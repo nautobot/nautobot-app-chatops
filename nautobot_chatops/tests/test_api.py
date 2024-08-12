@@ -1,10 +1,14 @@
-"""Test cases for Nautobot Chatops API."""
+"""Unit tests for nautobot_chatops."""
+
 from importlib import metadata
 
+from django.contrib.auth import get_user_model
 from django.urls import reverse
-
 from nautobot.core.testing import APITestCase, APIViewTestCases
+
 from nautobot_chatops.models import AccessGrant, CommandToken
+
+User = get_user_model()
 
 
 nautobot_version = metadata.version("nautobot")

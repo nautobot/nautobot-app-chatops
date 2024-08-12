@@ -1,8 +1,8 @@
 """Utility functions for API view implementations."""
 
-from datetime import datetime, timezone
 import logging
 import sys
+from datetime import datetime, timezone
 
 from asgiref.sync import sync_to_async
 from django.conf import settings
@@ -11,8 +11,8 @@ from django.http import HttpResponse, JsonResponse
 from nautobot.core.celery import nautobot_task
 
 from nautobot_chatops.choices import AccessGrantTypeChoices, CommandStatusChoices
-from nautobot_chatops.models import AccessGrant, CommandLog
 from nautobot_chatops.metrics import request_command_cntr
+from nautobot_chatops.models import AccessGrant, CommandLog
 
 logger = logging.getLogger(__name__)
 
@@ -118,9 +118,7 @@ def socket_check_and_enqueue_command(*args, **kwargs):
     return check_and_enqueue_command(*args, **kwargs)
 
 
-def check_and_enqueue_command(
-    registry, command, subcommand, params, context, dispatcher_class
-):  # pylint:disable=too-many-statements
+def check_and_enqueue_command(registry, command, subcommand, params, context, dispatcher_class):  # noqa: PLR0915 pylint:disable=too-many-statements
     """Check whether the given command is permitted by any access grants, and enqueue it if permitted.
 
     For a command/subcommand to be permitted, we must have:
