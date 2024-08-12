@@ -6,21 +6,21 @@ one of the platform-specific ``views``, handle it appropriately, then dispatch i
 back to the chat using the provided ``dispatchers`` instance's generic API.
 """
 
-from datetime import datetime, timezone
 import inspect
-from functools import wraps
 import logging
 import shlex
-import pkg_resources
+from datetime import datetime, timezone
+from functools import wraps
 
+import pkg_resources
 from django.conf import settings
 from django.db.models import Q
 
 from nautobot_chatops.choices import AccessGrantTypeChoices, CommandStatusChoices
 from nautobot_chatops.integrations.utils import ALL_INTEGRATIONS, DISABLED_INTEGRATIONS
+from nautobot_chatops.metrics import command_histogram, request_command_cntr
 from nautobot_chatops.models import AccessGrant
 from nautobot_chatops.utils import create_command_log
-from nautobot_chatops.metrics import request_command_cntr, command_histogram
 
 logger = logging.getLogger(__name__)
 
@@ -57,8 +57,8 @@ _commands_registry = {
 
 def get_commands_registry():
     """Populate and return the _commands_registry dictionary with all known commands, subcommands, and workers."""
-    global _commands_registry  # pylint: disable=global-statement,global-variable-not-assigned,invalid-name
-    global _registry_initialized  # pylint: disable=global-statement,invalid-name
+    global _commands_registry  # pylint: disable=global-variable-not-assigned
+    global _registry_initialized  # pylint: disable=global-statement
     if _registry_initialized:
         # Already populated, don't regenerate it
         return _commands_registry

@@ -1,4 +1,5 @@
 """Navigation for Circuit Maintenance."""
+
 from nautobot.apps.ui import NavMenuAddButton, NavMenuItem
 
 items = [

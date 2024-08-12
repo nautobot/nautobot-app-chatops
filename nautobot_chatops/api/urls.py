@@ -5,6 +5,7 @@ import logging
 from django.urls import include, path
 from nautobot.apps.api import OrderedDefaultRouter
 from nautobot.apps.config import get_app_settings_or_config
+
 from nautobot_chatops.api.views.generic import (
     AccessGrantViewSet,
     CommandLogViewSet,
@@ -13,7 +14,6 @@ from nautobot_chatops.api.views.generic import (
 )
 from nautobot_chatops.api.views.lookup import AccessLookupView, UserEmailLookupView
 
-
 logger = logging.getLogger(__name__)
 urlpatterns = [
     path("lookup/", AccessLookupView.as_view(), name="access_lookup"),
@@ -21,7 +21,7 @@ urlpatterns = [
 ]
 
 if get_app_settings_or_config("nautobot_chatops", "enable_slack"):
-    from nautobot_chatops.api.views.slack import SlackSlashCommandView, SlackInteractionView, SlackEventAPIView
+    from nautobot_chatops.api.views.slack import SlackEventAPIView, SlackInteractionView, SlackSlashCommandView
 
     urlpatterns += [
         path("slack/slash_command/", SlackSlashCommandView.as_view(), name="slack_slash_command"),
@@ -44,7 +44,7 @@ if get_app_settings_or_config("nautobot_chatops", "enable_webex"):
     ]
 
 if get_app_settings_or_config("nautobot_chatops", "enable_mattermost"):
-    from nautobot_chatops.api.views.mattermost import MattermostSlashCommandView, MattermostInteractionView
+    from nautobot_chatops.api.views.mattermost import MattermostInteractionView, MattermostSlashCommandView
 
     urlpatterns += [
         path("mattermost/slash_command/", MattermostSlashCommandView.as_view(), name="mattermost_slash_command"),

@@ -1,9 +1,10 @@
 """Generate a panels.yml file using the json file retrieved from Grafana."""
-import json
-import yaml
 
-from termcolor import colored
+import json
+
+import yaml
 from django.core.management.base import BaseCommand
+from termcolor import colored
 
 
 class Command(BaseCommand):

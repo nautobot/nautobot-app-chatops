@@ -4,30 +4,28 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
-
 from nautobot.core.models.fields import ColorField
 from nautobot.core.models.generics import PrimaryModel
-from .choices import AccessGrantTypeChoices, CommandStatusChoices, PlatformChoices
 
+from .choices import AccessGrantTypeChoices, CommandStatusChoices, PlatformChoices
+from .constants import (
+    ACCESS_GRANT_COMMAND_HELP_TEXT,
+    ACCESS_GRANT_NAME_HELP_TEXT,
+    ACCESS_GRANT_SUBCOMMAND_HELP_TEXT,
+    ACCESS_GRANT_VALUE_HELP_TEXT,
+    CHATOPS_USER_ID_HELP_TEXT,
+    COMMAND_LOG_COMMAND_TEXT,
+    COMMAND_LOG_PARAMS_HELP_TEXT,
+    COMMAND_LOG_PLATFORM_HELP_TEXT,
+    COMMAND_LOG_SUBCOMMAND_HELP_TEXT,
+    COMMAND_LOG_USER_ID_HELP_TEXT,
+    COMMAND_LOG_USER_NAME_HELP_TEXT,
+    COMMAND_TOKEN_COMMENT_HELP_TEXT,
+    COMMAND_TOKEN_TOKEN_HELP_TEXT,
+)
 from .integrations.grafana.models import Dashboard as GrafanaDashboard
 from .integrations.grafana.models import Panel as GrafanaPanel
 from .integrations.grafana.models import PanelVariable as GrafanaPanelVariable
-
-from .constants import (
-    COMMAND_LOG_USER_NAME_HELP_TEXT,
-    COMMAND_LOG_USER_ID_HELP_TEXT,
-    COMMAND_LOG_PLATFORM_HELP_TEXT,
-    COMMAND_LOG_COMMAND_TEXT,
-    COMMAND_LOG_SUBCOMMAND_HELP_TEXT,
-    COMMAND_LOG_PARAMS_HELP_TEXT,
-    ACCESS_GRANT_COMMAND_HELP_TEXT,
-    ACCESS_GRANT_SUBCOMMAND_HELP_TEXT,
-    ACCESS_GRANT_NAME_HELP_TEXT,
-    ACCESS_GRANT_VALUE_HELP_TEXT,
-    COMMAND_TOKEN_COMMENT_HELP_TEXT,
-    COMMAND_TOKEN_TOKEN_HELP_TEXT,
-    CHATOPS_USER_ID_HELP_TEXT,
-)
 
 
 class CommandLog(PrimaryModel):  # pylint: disable=nb-string-field-blank-null

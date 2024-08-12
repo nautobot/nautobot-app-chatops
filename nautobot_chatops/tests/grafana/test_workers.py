@@ -1,13 +1,13 @@
 """Test cases for the Nautobot workers module."""
-from django.test import TestCase
 
+from django.test import TestCase
 from prybar import dynamic_entrypoint
 
-from nautobot_chatops.workers import parse_command_string, get_commands_registry, add_subcommand
-from nautobot_chatops.tests.workers.dynamic_commands import dynamic_command, dynamic_subcommand
 import nautobot_chatops.workers
+from nautobot_chatops.integrations.grafana.models import Dashboard, Panel
 from nautobot_chatops.integrations.grafana.worker import initialize_subcommands
-from nautobot_chatops.integrations.grafana.models import Panel, Dashboard
+from nautobot_chatops.tests.workers.dynamic_commands import dynamic_command, dynamic_subcommand
+from nautobot_chatops.workers import add_subcommand, get_commands_registry, parse_command_string
 
 
 class TestGrafana(TestCase):

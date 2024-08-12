@@ -1,7 +1,7 @@
 """Filtering for nautobot_plugin_device_lifecycle_mgmt UI."""
 
-from django_filters import FilterSet, CharFilter
 from django.db.models import Q
+from django_filters import CharFilter, FilterSet
 
 from nautobot_chatops.integrations.grafana.models import Dashboard, Panel, PanelVariable
 
