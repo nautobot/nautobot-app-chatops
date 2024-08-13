@@ -511,7 +511,7 @@ There are a few requirements to get this up and running, the steps are provided 
 2. Now that your Azure bot is created, and you've followed all the steps to capture the `Microsoft App ID` and the `Value` from your `Client Secret Key`. You can setup your local development environment. Please follow the standard steps outlined in the [Full Docker Development Environment](#full-docker-development-environment) section.
 
     !!! warn
-        In order for this to work while running on the same host machine you'll need to add the `extra_hosts` option to the nautobot and worker docker compose services. Add the following to the end of your `invoke.yml`.
+        In order for this to work while running on the same host machine you'll need to add the `extra_hosts` option to the `nautobot` and `worker` docker compose services. This configuration is provided in the `development/docker-compose.bot-framework.yml` file. Add the following to the end of your `invoke.yml` to include this file in your docker compose project.
 
     ```yaml
         ---
