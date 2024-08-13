@@ -5,6 +5,7 @@
 | `enable_ms_teams`            | **Yes**    | False   | Yes                       |
 | `microsoft_app_id`           | **Yes**    | --      | No                        |
 | `microsoft_app_password`     | **Yes**    | --      | No                        |
+| `microsoft_tenant_id`        | **Yes**    | --      | No                        |
 
 ## Register Microsoft Entra App
 
@@ -179,32 +180,36 @@
 
 ### Upload the App to MS Teams Portal
 
-1. To deploy the bot to your team, log in to the [Microsoft Developer Portal](https://dev.teams.microsoft.com/) and select “Apps” from the left-hand menu.
-2. Select "Import app" and upload the Nautobot ChatOps_ms_teams.zip file. It can be found from this directory or downloaded from GitHub [here](https://github.com/nautobot/nautobot-app-chatops/blob/develop/Nautobot_ms_teams.zip). **NOTE:** If you get an error stating “App package has errors”, you can ignore this and click on “Import” to complete the import.
-3. Under section “Configure”, select “Basic Information”. Scroll to the bottom. Under “Application (client) ID, type in the value that you took note of above in Azure step 10.
-4.  Under section “Configure”, select “App features”. Select the triple dots (...) next to the “Bot” tile and select “Edit”.
-5.  On the Bot Edit page, under section “Identify your bot,” select “Enter a bot ID” and type in the same App ID value used above in step 4. Click Save.
-6.  Under section “Publish”, select “Publish to org.” Click the “Publish your app” button. This will need to be approved by your organization’s MS Teams administrator.
+1. To deploy the bot to your team, log in to the [Microsoft Developer Portal](https://dev.teams.microsoft.com/)
+2. Select “Apps” from the left menu bar.
+3. Select "Import App" at the top of the screen.
+    ![Developer Teams Import App](../../images/light/azure_import_app.png#only-light)
+    ![Developer Teams Import App](../../images/dark/azure_import_app.png#only-dark)
+4. Select the modified **Nautobot_ms_teams.zip** file created during the steps of [Configure The Chatops App](#configure-the-chatops-app).
+5. Once imported, the **Edit an app page** will appear, allowing you to configure the settings for the bot.
+6. Confirm **Application (client) ID** matches the value from [Add App Registration](#add-app-registration).
+7. Select **App Features** under the same **Configure** section.
+8. Confirm the **Bot ID** matches the **Application (client) ID** value.
 
-## MS Teams Client
+### Publish Bot App for Organizational Use
 
-1. In the Microsoft Teams client, select “Apps” from the sidebar to the left.
-2. Select “Built for your org.”
-3. Select the tile for the new Nautobot app. Click the blue “Add” button.
-4. Proceed to the [Install Guide](../install.md#Install-Guide) section.
+1. Under the Publish section select **Publish to org** and select the blue **Publish** your app button.
+2. The App will be submitted for approval by your MS Teams administrators.
+3. Once approved, the status will change from **Submitted** to **Published**, and you can find the app in your MS Teams client.
+4. Open your MS Teams client and select **Apps** at the bottom of the left-side menu.
+5. Select **Built for your org** to see the new Nautobot app.
+6. Select the new app and click the blue **Add** button.
+7. Proceed to the [Install Guide](../install.md#Install-Guide) section.
 
 ## Nautobot Config
 
-- `microsoft_app_id` - This is the "Microsoft App ID" from Azure step 10.
-- `microsoft_app_password` - This is the "Client Secret" from Azure step 13.
+- `microsoft_app_id` - This is the "Application (client) ID" from [Add App Registration](#add-app-registration).
+- `microsoft_app_password` - This is the "Client Secret" from [Create a Client Secret](#create-a-client-secret)
+- `microsoft_tenant_id` - This is the "Directory (tenant) ID" from [Add App Registration](#add-app-registration).
 
 ## Handling ChatOps Behind a Firewall
 
 A common security concern with ChatOps is how to protect your network/application from malicious activity. In order to do so proper firewall policy should be implemented. Through trials, researching, and testing in multiple environments, allowing inbound connections from `52.112.0.0/14` has proven to be successful. Although Microsoft doesn't publish all their ranges this range was found in a [Microsoft Blog Post](https://blog.botframework.com/2020/11/23/bots-secured-behind-a-firewall-teams/) and has yielded success in locked down environments.  Additionally Microsoft Posted their [IP Address and DNS ranges](https://learn.microsoft.com/en-us/microsoft-365/enterprise/urls-and-ip-address-ranges?view=o365-worldwide#skype-for-business-online-and-microsoft-teams).
-
-## Additional Resources
-
-Reference the [Setting Up Nautobot ChatOps With MSTeams Fall 2022](https://blog.networktocode.com/post/setting-up-nautobot-chatops-with-msteams-fall-2022/) blog post for more details and additional screenshots.
 
 ## General Chat Setup Instructions
 
