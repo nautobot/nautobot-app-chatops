@@ -491,7 +491,9 @@ invoke generate-app-config-schema
 
 This command can only guess the schema, so it's up to the developer to manually update the schema as needed.
 
-## Using Bot Framework Emulator
+## Using Bot Framework Emulator (Optional)
+
+[Bot Framework Emulator](https://aka.ms/botemulator) is a desktop application that allows users to locally test and debug chat bots built with the Bot Framework SDK.
 
 This option is limited to testing an Azure bot, but allows you to test the bot's functionality without the need to create, publish and deploy the bot app into the MS Teams infrastructure.
 
