@@ -493,7 +493,7 @@ This command can only guess the schema, so it's up to the developer to manually 
 
 ## Using Bot Framework Emulator
 
-This option is limited to testing an Azure bot, but allows you to test the bots functionality without the need to create, publish, deploy the bot app into the MS Teams infrastructure.
+This option is limited to testing an Azure bot, but allows you to test the bot's functionality without the need to create, publish and deploy the bot app into the MS Teams infrastructure.
 
 There are a few requirements to get this up and running, the steps are provided below to help a user get started.
 
