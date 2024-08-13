@@ -83,35 +83,108 @@
 
 ### Add Application ID URI
 
+1. In the left pane, under **Manage**, select **Expose an API**, then **Add** next to **Application ID URI**.
+    ![Azure Expose API](../../images/light/azure_expose_api.png#only-light)
+    ![Azure Expose API](../../images/dark/azure_expose_api.png#only-dark)
+2. Add the FQDN to the Application ID URI, be sure to leave the UUID in place.
+    ![Azure Application ID URI](../../images/light/azure_application_id_uri.png#only-light)
+    ![Azure Application ID URI](../../images/dark/azure_application_id_uri.png#only-dark)
+3. Click on Save.
+
+### Add a Scope
+
 1. In the left pane, under **Manage**, select **Expose an API**.
-2. 
+2. Select **+ Add a scope**.
+    ![Azure Add a Scope](../../images/light/azure_add_scope.png#only-light)
+    ![Azure Add a Scope](../../images/dark/azure_add_scope.png#only-dark)
+3. Enter `access_as_user` as the **Scope name**.
+4. Under **Who can consent?**, select `Admins and users`.
+5. Update the values for the rest of the fields as follows:
+   1. Enter `Teams can access the user's profile` as **Admin consent display name**.
+   2. Enter `Allows Teams to call the app's web APIs as the current user` as **Admin consent description**.
+   3. Enter `Teams can access the user profile and make requests on the user's behalf` as **User consent display name**.
+   4. Enter `Enable Teams to call this app's APIs with the same rights as the user` as **User consent description**.
+6. Ensure that **State** is set to `Enabled`.
+7. Select **Add scope**.
+    ![Azure Add a Scope Form](../../images/light/azure_add_scope_form.png#only-light)
+    ![Azure Add a Scope Form](../../images/dark/azure_add_scope_form.png#only-dark)
 
-## Azure
+### Add Client Application
 
-1. Login to [https://portal.azure.com](https://portal.azure.com) and select "Create a Resource".
-2. Use the search box to locate "Azure Bot", and select "Create".
-3. Configure the bot handle, subscription, resource group, location, data residency, pricing tier, and Type of App. For "Type of App", select "Multi Tenant".
-    !!! warning
-    You must use Multi Tenant here, this is what allows the Bot to integrate with Microsoft Teams (which is technically a different Tenant).
-4. Be sure to select the "F0" (free) pricing tier if desired. Otherwise the default is set to the "S1" paid tier.
-5. Select “Review + create”, then select "Create" and wait for the "Deployment succeeded" pop-up to appear in your browser.
-6. Click "Go to resource".
-7. In the sidebar to the left, select "Channels" and select the "Microsoft Teams" icon. All of the default settings here are fine, so just click "Save".
-8. In the sidebar to the left under “Settings”, select "Configuration".
-9. For the "Messaging endpoint", enter your service URL (`https://<server>/api/plugins/chatops/ms_teams/messages/`)
-10. On the same page, take note of the "Microsoft App ID" that is displayed. This will be needed at a later step.
-11. Click the "Manage Password" link next to the "Microsoft App ID" from step 10.
-12. Click "Certificates & secrets" on the left side menu, under section "Manage".
-13. Click "New client secret" to create a new secret. Name it something descriptive, configure the expiration setting as necessary, and click Add. Make note of this secret (Value column) as it will be needed later, and cannot be revealed again once you navigate away from this window.
+1. In the left pane, under **Manage**, select **Expose an API**.
+   Under Authorized client applications, identify the applications that you want to authorize for your app’s web application.
+2. Select **+ Add a client application**.
+3. Add Teams mobile/desktop and/or Teams web application. You can add one or both of these Client IDs.
+   1. For Teams mobile app and desktop client app: Enter the Client ID as `1fec8e78-bce4-4aaf-ab1b-5451cc387264`.
+   2. For Teams web client: Enter the Client ID as `5e3ce6c0-2b1f-4285-8d4b-75ee78787346`.
+4. Select the **Authorized Scopes** checkbox for the `api://` endpoint we just created in section [Add Application ID URI](#add-application-id-uri)
+5. Select **Add application**.
+    ![Azure Add Client Application](../../images/light/azure_add_client_application.png#only-light)
+    ![Azure Add Client Application](../../images/dark/azure_add_client_application.png#only-dark)
 
-## MS Teams Developer Portal
+## Create Azure Bot
+
+### Create an Azure Bot Resource
+
+1. Login to [https://portal.azure.com](https://portal.azure.com) and select **+ Create a Resource**.
+2. Use the search box to locate **Azure Bot**, and select **Enter**.
+3. Select **Azure Bot**
+4. Select **Create**
+    ![Azure Bot](../../images/light/azure_azure_bot.png#only-light)
+    ![Azure Bot](../../images/dark/azure_azure_bot.png#only-dark)
+5. Enter the bot name in the **Bot handle**.
+   1. This is used as an identifier in Azure Bot Framework, not what the bot is called in the MS Teams.
+6. Select your **Subscription** from the dropdown list.
+7. Select your **Resource group** from the dropdown list if you want to use an existing one. Otherwise, select the **Create New** and create a new resource group.
+8. Under **Pricing**, select **Change plan**.
+9. Be sure to select the **F0** (free) pricing tier if desired. Otherwise the default is set to the **S1** paid tier.
+10. Under the **Microsoft App ID**, select **Type of App** as **Multi Tenant**
+11. In the **Creation type**, select **Use existing app registration**.
+12. Enter the **App ID**. This is the Application ID we saved for later use in [Add App Registration](#add-app-registration)
+13. Select **Review + create**.
+14. After the validation passes, select **Create**. The bot takes a few minutes to provision.
+15. Select **Go to resource**.
+16. In the left pane, under **Settings**, select **Configuration**.
+17. Update the **Messaging endpoint** in the format: `https://<nautobot_url>/api/plugins/chatops/ms_teams/messages/`
+    ![Azure Bot Configuration](../../images/light/azure_bot_configuration.png#only-light)
+    ![Azure Bot Configuration](../../images/dark/azure_bot_configuration.png#only-dark)
+
+### Add a Teams Channel
+
+1. In the left pane, under **Settings**, select **Channels**.
+2. Under **Available Channels**, select **Microsoft Teams**.
+    ![Azure Bot Channels](../../images/light/azure_bot_channels.png#only-light)
+    ![Azure Bot Channels](../../images/dark/azure_bot_channels.png#only-dark)
+3. Select the checkbox to accept the **Terms of Service**.
+4. Select **Agree**.
+5. Select **Apply**.
+
+### Configure The Chatops App
+
+1. Download the **Nautobot_ms_teams.zip** file containing the Chatops app from the [repository](https://github.com/nautobot/nautobot-app-chatops)
+2. Unzip he contents of the **Nautobot_ms_teams.zip** file to the **Nautobot_ms_teams** directory and open the **manifest.json** file for editing.
+3. Replace the following values with your bot's Microsoft App ID that we previous saved in [Add App Registration](#add-app-registration)
+   1. `id` on line 5
+   2. `botId` in **bots** array on line 43
+   3. `webApplicationInfo.id` on line 104
+4. Save the **manifest.json** file.
+5. Zip the contents of the **Nautobot_ms_teams** directory to create **Nautobot_ms_teams.zip**.
+!!! danger "Mac OSX"
+
+    If you are on a Mac, OSX will insert hidden OSX-related files that will cause the import to fail. Instead, open **Terminal**, navigate to the extracted **Nautobot_ms_teams** folder, and run the following command:
+
+    ```bash
+    zip -r Nautobot_ms_teams.zip . -x '**/.*' -x '**/__MACOSX'
+    ```
+
+### Upload the App to MS Teams Portal
 
 1. To deploy the bot to your team, log in to the [Microsoft Developer Portal](https://dev.teams.microsoft.com/) and select “Apps” from the left-hand menu.
 2. Select "Import app" and upload the Nautobot ChatOps_ms_teams.zip file. It can be found from this directory or downloaded from GitHub [here](https://github.com/nautobot/nautobot-app-chatops/blob/develop/Nautobot_ms_teams.zip). **NOTE:** If you get an error stating “App package has errors”, you can ignore this and click on “Import” to complete the import.
 3. Under section “Configure”, select “Basic Information”. Scroll to the bottom. Under “Application (client) ID, type in the value that you took note of above in Azure step 10.
-4. Under section “Configure”, select “App features”. Select the triple dots (...) next to the “Bot” tile and select “Edit”.
-5. On the Bot Edit page, under section “Identify your bot,” select “Enter a bot ID” and type in the same App ID value used above in step 4. Click Save.
-6. Under section “Publish”, select “Publish to org.” Click the “Publish your app” button. This will need to be approved by your organization’s MS Teams administrator.
+4.  Under section “Configure”, select “App features”. Select the triple dots (...) next to the “Bot” tile and select “Edit”.
+5.  On the Bot Edit page, under section “Identify your bot,” select “Enter a bot ID” and type in the same App ID value used above in step 4. Click Save.
+6.  Under section “Publish”, select “Publish to org.” Click the “Publish your app” button. This will need to be approved by your organization’s MS Teams administrator.
 
 ## MS Teams Client
 
