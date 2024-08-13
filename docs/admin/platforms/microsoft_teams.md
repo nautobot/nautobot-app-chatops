@@ -9,6 +9,9 @@
 
 ## Register Microsoft Entra App
 
+!!! info
+    Microsoft does regular updates to their Azure Platform. Some of these updates introduce new requirements, such as the ***App Registration**. These are the current instructions to setup a chatbot for Microsoft Teams.
+
 ### Add App Registration
 
 1. Login to [https://portal.azure.com](https://portal.azure.com) and select "App registrations".  
