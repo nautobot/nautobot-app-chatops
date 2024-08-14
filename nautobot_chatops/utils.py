@@ -9,6 +9,7 @@ from django.conf import settings
 from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
 from nautobot.core.celery import nautobot_task
+from nautobot.extras.context_managers import web_request_context
 
 from nautobot_chatops.choices import AccessGrantTypeChoices, CommandStatusChoices
 from nautobot_chatops.metrics import request_command_cntr
@@ -188,7 +189,8 @@ def check_and_enqueue_command(registry, command, subcommand, params, context, di
         command_log.status = CommandStatusChoices.STATUS_BLOCKED
         command_log.details = f"Not permitted in organization {label}"
         command_log.runtime = datetime.now(timezone.utc) - command_log.start_time
-        command_log.save()
+        with web_request_context(dispatcher.user):
+            command_log.save()
         return response
 
     chan_grants = access_grants.filter(grant_type=AccessGrantTypeChoices.TYPE_CHANNEL)
@@ -215,7 +217,8 @@ def check_and_enqueue_command(registry, command, subcommand, params, context, di
         command_log.status = CommandStatusChoices.STATUS_BLOCKED
         command_log.details = f"Not permitted in channel {label}"
         command_log.runtime = datetime.now(timezone.utc) - command_log.start_time
-        command_log.save()
+        with web_request_context(dispatcher.user):
+            command_log.save()
         return response
 
     user_grants = access_grants.filter(grant_type=AccessGrantTypeChoices.TYPE_USER)
@@ -237,7 +240,8 @@ def check_and_enqueue_command(registry, command, subcommand, params, context, di
         command_log.status = CommandStatusChoices.STATUS_BLOCKED
         command_log.details = f"Not permitted by user {label}"
         command_log.runtime = datetime.now(timezone.utc) - command_log.start_time
-        command_log.save()
+        with web_request_context(dispatcher.user):
+            command_log.save()
         return response
 
     # If we made it here, we're permitted. Enqueue it for the worker

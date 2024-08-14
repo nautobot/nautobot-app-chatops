@@ -2,6 +2,8 @@
 
 from datetime import datetime, timezone
 
+from nautobot.extras.context_managers import web_request_context
+
 from nautobot_chatops.choices import CommandStatusChoices
 from nautobot_chatops.dispatchers.slack import SlackDispatcher
 from nautobot_chatops.utils import create_command_log
@@ -27,6 +29,7 @@ def clear(subcommand, params, dispatcher_class=None, context=None, **kwargs):
     dispatcher.send_markdown("Clearing..." + " \n\n" * 50 + "...Cleared!", ephemeral=True)
 
     command_log.runtime = datetime.now(timezone.utc) - command_log.start_time
-    command_log.save()
+    with web_request_context(dispatcher.user):
+        command_log.save()
 
     return CommandStatusChoices.STATUS_SUCCEEDED
