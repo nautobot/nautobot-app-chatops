@@ -1,0 +1,11 @@
+---
+# If Bot Framework is running on the same host machine and Ngrok is not configured in Bot Framework for tunneling,
+# it will tell nautobot that it is running on http://localhost:55550 (this port number can be different). The port
+# that Bot Framework utilizes is displayed in the Bot Framework Emulator Connection Monitor
+services:
+  nautobot:
+    extra_hosts:
+      - "localhost:host-gateway" # Allow Nautobot to communicate with the Bot Framework Emulator running on the host machine.
+  worker:
+    extra_hosts:
+      - "localhost:host-gateway" # Allow Nautobot to communicate with the Bot Framework Emulator running on the host machine.

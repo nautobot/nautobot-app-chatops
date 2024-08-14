@@ -15,6 +15,7 @@ from functools import wraps
 import pkg_resources
 from django.conf import settings
 from django.db.models import Q
+from nautobot.extras.context_managers import web_request_context
 
 from nautobot_chatops.choices import AccessGrantTypeChoices, CommandStatusChoices
 from nautobot_chatops.integrations.utils import ALL_INTEGRATIONS, DISABLED_INTEGRATIONS
@@ -344,7 +345,8 @@ def handle_subcommands(command, subcommand, params=(), dispatcher_class=None, co
 
             command_log.status = status
             command_log.details = details
-            command_log.save()
+            with web_request_context(dispatcher.user):
+                command_log.save()
             request_command_cntr.labels(dispatcher.platform_slug, command, subcommand, status).inc()
 
     except Exception as exc:  # pylint:disable=broad-except
@@ -353,7 +355,8 @@ def handle_subcommands(command, subcommand, params=(), dispatcher_class=None, co
         command_log.runtime = datetime.now(timezone.utc) - command_log.start_time
         command_log.status = CommandStatusChoices.STATUS_ERRORED
         command_log.details = str(exc)
-        command_log.save()
+        with web_request_context(dispatcher.user):
+            command_log.save()
         request_command_cntr.labels(
             dispatcher.platform_slug, command, subcommand, CommandStatusChoices.STATUS_ERRORED
         ).inc()
