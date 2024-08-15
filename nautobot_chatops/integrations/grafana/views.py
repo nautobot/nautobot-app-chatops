@@ -4,36 +4,37 @@ The views implemented in this module act as endpoints for various chat platforms
 to send requests and notifications to.
 """
 
-from django.shortcuts import render, reverse, redirect
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.shortcuts import redirect, render, reverse
+from nautobot.core.forms import ConfirmationForm
 from nautobot.core.views.generic import (
-    ObjectEditView,
-    ObjectDeleteView,
-    ObjectListView,
-    BulkImportView,
     BulkDeleteView,
     BulkEditView,
+    BulkImportView,
+    ObjectDeleteView,
+    ObjectEditView,
+    ObjectListView,
 )
-from nautobot.core.forms import ConfirmationForm
+
 from nautobot_chatops.integrations.grafana.diffsync.sync import run_dashboard_sync, run_panels_sync, run_variables_sync
-from nautobot_chatops.integrations.grafana.tables import PanelViewTable, DashboardViewTable, PanelVariableViewTable
-from nautobot_chatops.integrations.grafana.models import Panel, Dashboard, PanelVariable
-from nautobot_chatops.integrations.grafana.grafana import handler
 from nautobot_chatops.integrations.grafana.filters import DashboardFilter, PanelFilter, VariableFilter
 from nautobot_chatops.integrations.grafana.forms import (
-    DashboardsForm,
-    DashboardsFilterForm,
     DashboardBulkEditForm,
+    DashboardsFilterForm,
+    DashboardsForm,
+    PanelsBulkEditForm,
+    PanelsFilterForm,
     PanelsForm,
     PanelsSyncForm,
-    PanelsFilterForm,
-    PanelsBulkEditForm,
+    PanelVariablesBulkEditForm,
+    PanelVariablesFilterForm,
     PanelVariablesForm,
     PanelVariablesSyncForm,
-    PanelVariablesFilterForm,
-    PanelVariablesBulkEditForm,
 )
+from nautobot_chatops.integrations.grafana.grafana import handler
+from nautobot_chatops.integrations.grafana.models import Dashboard, Panel, PanelVariable
+from nautobot_chatops.integrations.grafana.tables import DashboardViewTable, PanelVariableViewTable, PanelViewTable
 
 # -------------------------------------------------------------------------------------
 # Dashboard Specific Views

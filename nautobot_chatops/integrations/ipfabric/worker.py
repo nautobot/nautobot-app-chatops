@@ -1,27 +1,26 @@
 """Worker functions implementing Nautobot "ipfabric" command and subcommands."""  # pylint: disable=too-many-lines
 
 import logging
-import tempfile
 import os
+import tempfile
 import uuid
 from datetime import datetime
 
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
 from ipfabric_diagrams import Unicast, icmp
+from nautobot.core.settings_funcs import is_truthy
+from nautobot.extras.models import JobResult
 from netutils.ip import is_ip
 from netutils.mac import is_valid_mac
 from pkg_resources import parse_version
 
-from nautobot.core.settings_funcs import is_truthy
-from nautobot.extras.models import JobResult
 from nautobot_chatops.choices import CommandStatusChoices
 from nautobot_chatops.dispatchers import Dispatcher
-from nautobot_chatops.workers import subcommand_of, handle_subcommands
-
-from .ipfabric_wrapper import IpFabric
+from nautobot_chatops.workers import handle_subcommands, subcommand_of
 
 from .context import get_context, set_context
+from .ipfabric_wrapper import IpFabric
 from .utils import parse_hosts
 
 BASE_CMD = "ipfabric"
@@ -450,9 +449,7 @@ def get_int_drops(dispatcher, device, snapshot_id):
 
 
 # PATH LOOKUP COMMMAND
-def submit_pathlookup(
-    dispatcher, sub_cmd, src_ip, dst_ip, protocol, src_port=None, dst_port=None, icmp_type=None
-):  # pylint: disable=too-many-arguments, too-many-locals
+def submit_pathlookup(dispatcher, sub_cmd, src_ip, dst_ip, protocol, src_port=None, dst_port=None, icmp_type=None):  # pylint: disable=too-many-arguments, too-many-locals
     """Path simulation diagram lookup between source and target IP address."""
     snapshot_id = get_user_snapshot(dispatcher)
     # diagrams for 4.0 - 4.2 are not supported due to attribute changes in 4.3+
@@ -507,9 +504,7 @@ def submit_pathlookup(
 
 
 @subcommand_of("ipfabric")
-def pathlookup(
-    dispatcher, src_ip, dst_ip, src_port, dst_port, protocol
-):  # pylint: disable=too-many-arguments, too-many-locals
+def pathlookup(dispatcher, src_ip, dst_ip, src_port, dst_port, protocol):  # pylint: disable=too-many-arguments, too-many-locals
     """Path simulation diagram lookup between source and target IP address."""
     sub_cmd = "pathlookup"
     supported_protocols = ["tcp", "udp"]
@@ -997,9 +992,7 @@ def find_host(dispatcher, filter_key=None, filter_value=None):
 
 
 @subcommand_of("ipfabric")
-def table_diff(
-    dispatcher, category, table, view, snapshot
-):  # pylint: disable=too-many-return-statements, too-many-branches
+def table_diff(dispatcher, category, table, view, snapshot):  # pylint: disable=too-many-return-statements, too-many-branches
     """Get difference of a table between the current snapshot and the specified snapshot."""
     sub_cmd = "table-diff"
 

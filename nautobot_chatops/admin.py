@@ -1,6 +1,7 @@
 """Administrative capabilities for nautobot_chatops app."""
 
 from django.contrib import admin
+
 from .models import ChatOpsAccountLink, CommandLog
 
 

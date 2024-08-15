@@ -1,32 +1,34 @@
 """Django urlpatterns declaration for nautobot_chatops.integrations.grafana app."""
+
 from django.urls import path
 from nautobot.extras.views import ObjectChangeLogView
-from nautobot_chatops.integrations.grafana.models import Dashboard, PanelVariable, Panel
+
+from nautobot_chatops.integrations.grafana.models import Dashboard, Panel, PanelVariable
 from nautobot_chatops.integrations.grafana.views import (
+    DashboardBulkEditView,
     Dashboards,
+    DashboardsBulkDeleteView,
+    DashboardsBulkImportView,
     DashboardsCreate,
     DashboardsDelete,
     DashboardsEdit,
     DashboardsSync,
-    DashboardsBulkImportView,
-    DashboardsBulkDeleteView,
-    DashboardBulkEditView,
     Panels,
-    PanelsCreate,
-    PanelsEdit,
-    PanelsSync,
-    PanelsDelete,
-    PanelsBulkImportView,
     PanelsBulkDeleteView,
     PanelsBulkEditView,
+    PanelsBulkImportView,
+    PanelsCreate,
+    PanelsDelete,
+    PanelsEdit,
+    PanelsSync,
     Variables,
-    VariablesCreate,
-    VariablesSync,
-    VariablesEdit,
-    VariablesDelete,
-    VariablesBulkImportView,
     VariablesBulkDeleteView,
     VariablesBulkEditView,
+    VariablesBulkImportView,
+    VariablesCreate,
+    VariablesDelete,
+    VariablesEdit,
+    VariablesSync,
 )
 
 urlpatterns = [

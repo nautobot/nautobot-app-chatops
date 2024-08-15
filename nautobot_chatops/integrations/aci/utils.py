@@ -1,6 +1,8 @@
 """ACI ChatOps Utilities."""
+
 import logging
 import re
+
 from prettytable import PrettyTable
 
 logger = logging.getLogger("nautobot")

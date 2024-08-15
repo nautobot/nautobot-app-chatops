@@ -12,3 +12,7 @@ nautobot_chatops:
     - "mattermost/docker-compose.yml"
     - "ansible/docker-compose.yml"
     - "docker-compose.dev.yml"
+    # Uncomment below if using Slack Socket Mode
+    # - "docker-compose.socket.yml"
+    # Uncomment below if using Microsoft Bot Framework Emulator
+    # - "docker-compose.bot-framework.yml"

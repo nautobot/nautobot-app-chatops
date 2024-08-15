@@ -1,16 +1,19 @@
 """Synchronization functions for the implemented DiffSync models."""
+
 from typing import Union
+
 from diffsync import DiffSyncFlags
+
+from nautobot_chatops.integrations.grafana.diffsync.models import (
+    GrafanaDashboard,
+    GrafanaPanel,
+    GrafanaVariable,
+    NautobotDashboard,
+    NautobotPanel,
+    NautobotVariable,
+)
 from nautobot_chatops.integrations.grafana.grafana import handler
 from nautobot_chatops.integrations.grafana.models import Dashboard, Panel, PanelVariable
-from nautobot_chatops.integrations.grafana.diffsync.models import (
-    NautobotDashboard,
-    GrafanaDashboard,
-    NautobotPanel,
-    GrafanaPanel,
-    NautobotVariable,
-    GrafanaVariable,
-)
 
 
 def run_dashboard_sync(overwrite: bool = False) -> Union[str, None]:

@@ -1,13 +1,14 @@
 """Demo meraki addition to Nautobot."""
-import os
+
 import logging
+import os
 
 from django.conf import settings
-from nautobot_chatops.workers import subcommand_of, handle_subcommands
+
 from nautobot_chatops.choices import CommandStatusChoices
+from nautobot_chatops.workers import handle_subcommands, subcommand_of
 
 from .utils import MerakiClient
-
 
 MERAKI_LOGO_PATH = "nautobot_meraki/meraki.png"
 MERAKI_LOGO_ALT = "Meraki Logo"

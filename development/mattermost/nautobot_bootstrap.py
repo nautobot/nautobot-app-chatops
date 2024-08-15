@@ -1,18 +1,17 @@
 """Bootstrap script for Nautobot to allow Mattermost integration."""
 
-
 import contextlib
+
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
 
 from nautobot_chatops.models import (
-    AccessGrantTypeChoices,
-    PlatformChoices,
     AccessGrant,
-    CommandToken,
+    AccessGrantTypeChoices,
     ChatOpsAccountLink,
+    CommandToken,
+    PlatformChoices,
 )
-
 
 User = get_user_model()
 

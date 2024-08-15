@@ -1,10 +1,12 @@
 """Worker functions implementing Nautobot "ansible" command and subcommands."""
+
 import json
 import logging
 from collections import namedtuple
 
 import yaml
 from django.conf import settings
+
 from nautobot_chatops.workers import handle_subcommands, subcommand_of
 
 from .tower import Tower

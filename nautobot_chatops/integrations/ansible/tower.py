@@ -1,10 +1,11 @@
 """All interactions with Ansible AWX/Tower."""
+
 import json
 import logging
 from urllib.parse import urlparse
 
-from django.conf import settings
 import requests
+from django.conf import settings
 
 logger = logging.getLogger(__name__)
 
@@ -92,6 +93,7 @@ class Tower:  # pylint: disable=too-many-function-args
 
         Args:
             api_path (str): API path to get data from
+            **kwargs: Additional Keyword Arguments
 
         Returns:
             (JSON): JSON data for the response
@@ -154,7 +156,7 @@ class Tower:  # pylint: disable=too-many-function-args
         """Gets hosts for a given Tower inventory.
 
         Args:
-            group (str): Group Name
+            group_id (str): Group Name
 
         Returns:
             (json): JSON data of the Tower hosts
