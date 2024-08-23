@@ -66,6 +66,8 @@ bandit = "*"
 # Pinning older pylint due to https://github.com/pylint-dev/pylint/issues/7381
 pylint = "2.13.9"
 pylint-django = "*"
+# Pinning older pycodestyle due to pip resolution issues
+pycodestyle = "2.7.0"
 pydocstyle = "*"
 prybar = "*"
 invoke = "*"
