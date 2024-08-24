@@ -1,4 +1,5 @@
 """Nautobot plugin implementing a chatbot."""
+
 try:
     from importlib import metadata
 except ImportError:
@@ -9,7 +10,6 @@ __version__ = metadata.version(__name__)
 
 from django.conf import settings
 from nautobot.extras.plugins import PluginConfig
-
 
 _CONFLICTING_APP_NAMES = [
     # App names that conflict with nautobot_chatops
@@ -141,6 +141,7 @@ class NautobotChatOpsConfig(PluginConfig):
         super().ready()
         # pylint: disable=import-outside-toplevel
         from nautobot_capacity_metrics import register_metric_func
+
         from .metrics_app import metric_commands
 
         register_metric_func(metric_commands)

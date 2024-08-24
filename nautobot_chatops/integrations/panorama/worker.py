@@ -1,4 +1,5 @@
 """Example rq worker to handle /panorama chat commands with 1 subcommand addition."""
+
 import logging
 import os
 import re
@@ -16,13 +17,13 @@ from panos.panorama import DeviceGroup
 from nautobot_chatops.choices import CommandStatusChoices
 from nautobot_chatops.integrations.panorama.utils import (
     connect_panorama,
-    get_from_pano,
-    get_rule_match,
-    start_packet_capture,
     get_all_rules,
-    split_rules,
+    get_from_pano,
     get_object,
     get_panorama_device_group_hierarchy,
+    get_rule_match,
+    split_rules,
+    start_packet_capture,
 )
 from nautobot_chatops.workers import handle_subcommands, subcommand_of
 
@@ -176,9 +177,7 @@ def get_devicegroups(dispatcher, **kwargs):
 
 
 @subcommand_of("panorama")
-def validate_rule_exists(
-    dispatcher, device, src_ip, dst_ip, protocol, dst_port
-):  # pylint:disable=too-many-arguments,too-many-locals,too-many-branches,too-many-statements
+def validate_rule_exists(dispatcher, device, src_ip, dst_ip, protocol, dst_port):  # pylint:disable=too-many-arguments,too-many-locals,too-many-branches,too-many-statements
     """Verify that the rule exists within a device, via Panorama."""
     dialog_list = [
         {
@@ -576,6 +575,7 @@ def capture_traffic(
         ip_proto (str): Protocol for destination port
         stage (str): Stage to use
         capture_seconds (str): Number of seconds to run packet capture
+        **kwargs: Addition Keyword Arguments
 
     """
     logger.info("Starting capture_traffic()")

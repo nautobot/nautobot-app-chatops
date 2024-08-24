@@ -1,15 +1,15 @@
 """Tests for Nautobot dispatcher class implementations."""
-from unittest.mock import patch, MagicMock
+
+from unittest.mock import MagicMock, patch
 
 from django.conf import settings
 from django.test import TestCase
 from slack_sdk.errors import SlackApiError
 
+from nautobot_chatops.dispatchers.mattermost import MattermostDispatcher
 from nautobot_chatops.dispatchers.ms_teams import MSTeamsDispatcher
 from nautobot_chatops.dispatchers.slack import SlackDispatcher
 from nautobot_chatops.dispatchers.webex import WebexDispatcher
-from nautobot_chatops.dispatchers.mattermost import MattermostDispatcher
-
 
 # pylint: disable=unnecessary-pass
 

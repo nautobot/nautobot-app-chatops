@@ -2,7 +2,7 @@
 
 from nautobot.utilities.filters import BaseFilterSet
 
-from nautobot_chatops.models import CommandLog, AccessGrant, CommandToken
+from nautobot_chatops.models import AccessGrant, CommandLog, CommandToken
 
 
 class CommandLogFilterSet(BaseFilterSet):

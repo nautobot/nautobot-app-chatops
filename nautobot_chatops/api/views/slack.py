@@ -13,10 +13,10 @@ from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from slack_sdk import WebClient
 
-from nautobot_chatops.workers import get_commands_registry, commands_help, parse_command_string
 from nautobot_chatops.dispatchers.slack import SlackDispatcher
-from nautobot_chatops.utils import check_and_enqueue_command
 from nautobot_chatops.metrics import signature_error_cntr
+from nautobot_chatops.utils import check_and_enqueue_command
+from nautobot_chatops.workers import commands_help, get_commands_registry, parse_command_string
 
 # pylint: disable=logging-fstring-interpolation
 

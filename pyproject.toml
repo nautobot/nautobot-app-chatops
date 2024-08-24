@@ -60,18 +60,12 @@ texttable = "^1.6.2"
 webexteamssdk = "^1.3"
 
 [tool.poetry.dev-dependencies]
-black = "*"
 yamllint = "*"
-bandit = "*"
 # Pinning older pylint due to https://github.com/pylint-dev/pylint/issues/7381
 pylint = "2.13.9"
 pylint-django = "*"
-# Pinning older pycodestyle due to pip resolution issues
-pycodestyle = "2.7.0"
-pydocstyle = "*"
 prybar = "*"
 invoke = "*"
-flake8 = "^3.9.2"
 griffe = "0.30.1"
 # Rendering docs to HTML
 mkdocs = "1.3.1"
@@ -85,6 +79,7 @@ mkdocs-version-annotations = "~1.0.0"
 # Allow Markdown files to include other files
 mkdocs-include-markdown-plugin = "~3.6.1"
 python-dotenv = "^0.21.1"
+ruff = "0.5.5"
 # Change log management and generation
 towncrier = "~22.8.0"
 coverage = "~5.4"
@@ -177,6 +172,7 @@ load-plugins="pylint_django"
 
 [tool.pylint.message_control]
 disable=""",
+    line-too-long,
     django-not-configured,
     too-few-public-methods,
     too-many-lines,
@@ -198,6 +194,48 @@ min-similarity-lines=0
 
 [tool.pylint.format]
 max-line-length=120
+
+[tool.ruff]
+line-length = 120
+target-version = "py38"
+
+[tool.ruff.lint]
+select = [
+    "D",  # pydocstyle
+    "F", "E", "W",  # flake8
+    "S",  # bandit
+    "I",  # isort
+]
+ignore = [
+    # warning: `one-blank-line-before-class` (D203) and `no-blank-line-before-class` (D211) are incompatible.
+    "D203",  # 1 blank line required before class docstring
+
+    # D212 is enabled by default in google convention, and complains if we have a docstring like:
+    # """
+    # My docstring is on the line after the opening quotes instead of on the same line as them.
+    # """
+    # We've discussed and concluded that we consider this to be a valid style choice.
+    "D212",  # Multi-line docstring summary should start at the first line
+    "D213",  # Multi-line docstring summary should start at the second line
+
+    # Produces a lot of issues in the current codebase.
+    "D401",  # First line of docstring should be in imperative mood
+    "D407",  # Missing dashed underline after section
+    "D416",  # Section name ends in colon
+    "E501",  # Line too long
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+"nautobot_chatops/migrations/*" = [
+    "D",
+]
+"nautobot_chatops/tests/*" = [
+    "D",
+    "S"
+]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

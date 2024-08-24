@@ -1,25 +1,24 @@
 """Worker functions for interacting with Nautobot."""
 
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db.models import Count
-from django.contrib.contenttypes.models import ContentType
 from django_rq import job
-
-from nautobot.dcim.models.device_components import Interface, FrontPort, RearPort
-from nautobot.circuits.models import Circuit, CircuitType, Provider, CircuitTermination
+from nautobot.circuits.models import Circuit, CircuitTermination, CircuitType, Provider
 from nautobot.dcim.choices import DeviceStatusChoices
-from nautobot.dcim.models import Device, Site, DeviceRole, DeviceType, Manufacturer, Rack, Region, Cable
-from nautobot.ipam.models import VLAN, Prefix, VLANGroup, Role
-from nautobot.tenancy.models import Tenant
+from nautobot.dcim.models import Cable, Device, DeviceRole, DeviceType, Manufacturer, Rack, Region, Site
+from nautobot.dcim.models.device_components import FrontPort, Interface, RearPort
 from nautobot.extras.models import Status
+from nautobot.ipam.models import VLAN, Prefix, Role, VLANGroup
+from nautobot.tenancy.models import Tenant
 
 from nautobot_chatops.choices import CommandStatusChoices
-from nautobot_chatops.workers import subcommand_of, handle_subcommands
+from nautobot_chatops.workers import handle_subcommands, subcommand_of
 from nautobot_chatops.workers.helper_functions import (
     add_asterisk,
+    menu_item_check,
     menu_offset_value,
     nautobot_logo,
-    menu_item_check,
     prompt_for_circuit_filter_type,
     prompt_for_device_filter_type,
     prompt_for_interface_filter_type,
@@ -123,11 +122,7 @@ def get_filtered_connections(device, interface_ct):
         status__slug="connected",
         termination_a_type=interface_ct.pk,
         termination_b_type=interface_ct.pk,
-    ).exclude(
-        _termination_b_device=None
-    ).exclude(
-        _termination_a_device=None
-    )
+    ).exclude(_termination_b_device=None).exclude(_termination_a_device=None)
 
 
 def analyze_circuit_endpoints(endpoint):

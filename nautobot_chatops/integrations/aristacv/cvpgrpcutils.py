@@ -1,12 +1,13 @@
 """Utilities for using GRPC with Cloudvision Chatbot."""
+
 import ssl
 
-import requests
-import grpc
 import arista.tag.v1 as tag
+import grpc
+import requests
 from google.protobuf import wrappers_pb2 as wrappers
-from .utils import CVAAS_ADDR
-from .utils import DEFAULT_TIMEOUT
+
+from .utils import CVAAS_ADDR, DEFAULT_TIMEOUT
 
 
 def connect_cv(settings):
@@ -24,8 +25,10 @@ def connect_cv(settings):
         if insecure:
             cert = bytes(ssl.get_server_certificate((cvp_host, 8443)), "utf-8")
             channel_creds = grpc.ssl_channel_credentials(cert)
-            response = requests.post(
-                f"https://{cvp_host}/cvpservice/login/authenticate.do", auth=(username, password), verify=False  # nosec
+            response = requests.post(  # noqa: S113
+                f"https://{cvp_host}/cvpservice/login/authenticate.do",
+                auth=(username, password),
+                verify=False,  # noqa: S501
             )
         # Otherwise, the server is expected to have a valid certificate signed by a well-known CA.
         else:

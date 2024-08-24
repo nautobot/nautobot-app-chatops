@@ -1,4 +1,5 @@
 """Test cases for Nautobot Chatops API."""
+
 try:
     from importlib import metadata
 except ImportError:
@@ -6,10 +7,9 @@ except ImportError:
     import importlib_metadata as metadata
 
 from django.urls import reverse
-
 from nautobot.utilities.testing import APITestCase, APIViewTestCases
-from nautobot_chatops.models import AccessGrant, CommandToken
 
+from nautobot_chatops.models import AccessGrant, CommandToken
 
 nautobot_version = metadata.version("nautobot")
 

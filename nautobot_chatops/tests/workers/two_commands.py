@@ -1,7 +1,8 @@
 """Test file defining two commands and their subcommands (issue #20)."""
 
 from django_rq import job
-from nautobot_chatops.workers import subcommand_of, handle_subcommands
+
+from nautobot_chatops.workers import handle_subcommands, subcommand_of
 
 
 @job("default")

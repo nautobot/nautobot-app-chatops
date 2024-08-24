@@ -6,6 +6,7 @@ from typing import Dict
 from django.conf import settings
 from django.urls import include, path
 from nautobot.core.api import OrderedDefaultRouter
+
 from nautobot_chatops.api.views.generic import AccessGrantViewSet, CommandTokenViewSet, NautobotChatopsRootView
 from nautobot_chatops.api.views.lookup import AccessLookupView
 
@@ -15,7 +16,7 @@ logger = logging.getLogger(__name__)
 urlpatterns = [path("lookup/", AccessLookupView.as_view(), name="access_lookup")]
 
 if _APP_CONFIG.get("enable_slack"):
-    from nautobot_chatops.api.views.slack import SlackSlashCommandView, SlackInteractionView, SlackEventAPIView
+    from nautobot_chatops.api.views.slack import SlackEventAPIView, SlackInteractionView, SlackSlashCommandView
 
     urlpatterns += [
         path("slack/slash_command/", SlackSlashCommandView.as_view(), name="slack_slash_command"),
@@ -38,7 +39,7 @@ if _APP_CONFIG.get("enable_webex"):
     ]
 
 if _APP_CONFIG.get("enable_mattermost"):
-    from nautobot_chatops.api.views.mattermost import MattermostSlashCommandView, MattermostInteractionView
+    from nautobot_chatops.api.views.mattermost import MattermostInteractionView, MattermostSlashCommandView
 
     urlpatterns += [
         path("mattermost/slash_command/", MattermostSlashCommandView.as_view(), name="mattermost_slash_command"),

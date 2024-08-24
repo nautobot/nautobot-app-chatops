@@ -1,8 +1,8 @@
 """Nested Serializers for ChatOps Plugin."""
 
+from nautobot.core.api import WritableNestedSerializer
 from rest_framework import serializers
 
-from nautobot.core.api import WritableNestedSerializer
 from nautobot_chatops.models import AccessGrant, CommandToken
 
 

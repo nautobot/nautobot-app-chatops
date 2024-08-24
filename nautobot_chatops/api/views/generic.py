@@ -1,10 +1,11 @@
 """API Views for Nautobot Chatops."""
-from rest_framework.routers import APIRootView
+
 from nautobot.core.api.views import ModelViewSet
+from rest_framework.routers import APIRootView
 
 from nautobot_chatops.api.serializers import AccessGrantSerializer, CommandTokenSerializer
-from nautobot_chatops.models import AccessGrant, CommandToken
 from nautobot_chatops.filters import AccessGrantFilterSet, CommandTokenFilterSet
+from nautobot_chatops.models import AccessGrant, CommandToken
 
 
 class NautobotChatopsRootView(APIRootView):

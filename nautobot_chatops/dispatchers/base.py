@@ -1,10 +1,11 @@
 """Generic base class modeling the API for sending messages to a generic chat platform."""
+
 import logging
 from typing import Dict, Optional
-from django.templatetags.static import static
-from django.core.cache import cache
-from django.conf import settings
 
+from django.conf import settings
+from django.core.cache import cache
+from django.templatetags.static import static
 from texttable import Texttable
 
 logger = logging.getLogger(__name__)
@@ -93,16 +94,16 @@ class Dispatcher:
         # TODO: this should be dynamic using entry_points
         # pylint: disable=import-outside-toplevel, unused-import, cyclic-import
         if _APP_CONFIG.get("enable_slack"):
-            from .slack import SlackDispatcher
+            pass
 
         if _APP_CONFIG.get("enable_ms_teams"):
-            from .ms_teams import MSTeamsDispatcher
+            pass
 
         if _APP_CONFIG.get("enable_webex"):
-            from .webex import WebexDispatcher
+            pass
 
         if _APP_CONFIG.get("enable_mattermost"):
-            from .mattermost import MattermostDispatcher
+            pass
 
         subclasses = set()
         classes = [cls]
@@ -268,9 +269,7 @@ class Dispatcher:
         """
         raise NotImplementedError
 
-    def prompt_from_menu(
-        self, action_id, help_text, choices, default=(None, None), confirm=False, offset=0
-    ):  # pylint: disable=too-many-arguments
+    def prompt_from_menu(self, action_id, help_text, choices, default=(None, None), confirm=False, offset=0):  # pylint: disable=too-many-arguments
         """Prompt the user to make a selection from a menu of choices.
 
         Args:
@@ -330,7 +329,7 @@ class Dispatcher:
         Args:
           action_id (str): Identifying string to associate with this element
           choices (list): List of (display, value) tuples
-          default (tuple: Default (display, value) to preselect
+          default (tuple): Default (display, value) to preselect
           confirm (bool): If true (and the platform supports it), prompt the user to confirm their selection
         """
         raise NotImplementedError
