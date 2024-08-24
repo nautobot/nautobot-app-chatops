@@ -173,7 +173,6 @@ load-plugins="pylint_django"
 [tool.pylint.message_control]
 disable=""",
     line-too-long,
-    django-not-configured,
     too-few-public-methods,
     too-many-lines,
     """
