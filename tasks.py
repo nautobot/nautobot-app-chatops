@@ -647,6 +647,8 @@ def tests(context, failfast=False):
         print("Starting Docker Containers...")
         start(context)
     # Sorted loosely from fastest to slowest
+    print("Running ruff...")
+    ruff(context)
     print("Running yamllint...")
     yamllint(context)
     print("Running pylint...")
