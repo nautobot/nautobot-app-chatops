@@ -13,10 +13,12 @@ limitations under the License.
 """
 
 import os
+import re
 from pathlib import Path
 from time import sleep
 
 from invoke.collection import Collection
+from invoke.exceptions import Exit
 from invoke.tasks import task as invoke_task
 
 
@@ -48,7 +50,7 @@ namespace = Collection("nautobot_chatops")
 namespace.configure(
     {
         "nautobot_chatops": {
-            "nautobot_ver": "2.0.0",
+            "nautobot_ver": "2.3.1",
             "project_name": "nautobot-chatops",
             "python_ver": "3.11",
             "local": False,
@@ -72,7 +74,9 @@ def _is_compose_included(context, name):
 
 
 def _await_healthy_service(context, service):
-    container_id = docker_compose(context, f"ps -q -- {service}", pty=False, echo=False, hide=True).stdout.strip()
+    container_id = docker_compose(
+        context, f"ps -q -- {service}", pty=False, echo=False, hide=True
+    ).stdout.strip()
     _await_healthy_container(context, container_id)
 
 
@@ -132,7 +136,9 @@ def docker_compose(context, command, **kwargs):
     ]
 
     for compose_file in context.nautobot_chatops.compose_files:
-        compose_file_path = os.path.join(context.nautobot_chatops.compose_dir, compose_file)
+        compose_file_path = os.path.join(
+            context.nautobot_chatops.compose_dir, compose_file
+        )
         compose_command_tokens.append(f' -f "{compose_file_path}"')
 
     compose_command_tokens.append(command)
@@ -171,7 +177,9 @@ def run_command(context, command, **kwargs):
         if "nautobot" in results.stdout:
             compose_command = f"exec{command_env_args} nautobot {command}"
         else:
-            compose_command = f"run{command_env_args} --rm --entrypoint='{command}' nautobot"
+            compose_command = (
+                f"run{command_env_args} --rm --entrypoint='{command}' nautobot"
+            )
 
         pty = kwargs.pop("pty", True)
 
@@ -207,17 +215,63 @@ def generate_packages(context):
     run_command(context, command)
 
 
+def _get_docker_nautobot_version(context, nautobot_ver=None, python_ver=None):
+    """Extract Nautobot version from base docker image."""
+    if nautobot_ver is None:
+        nautobot_ver = context.nautobot_chatops.nautobot_ver
+    if python_ver is None:
+        python_ver = context.nautobot_chatops.python_ver
+    dockerfile_path = os.path.join(context.nautobot_chatops.compose_dir, "Dockerfile")
+    base_image = (
+        context.run(f"grep --max-count=1 '^FROM ' {dockerfile_path}", hide=True)
+        .stdout.strip()
+        .split(" ")[1]
+    )
+    base_image = base_image.replace(r"${NAUTOBOT_VER}", nautobot_ver).replace(
+        r"${PYTHON_VER}", python_ver
+    )
+    pip_nautobot_ver = context.run(
+        f"docker run --rm --entrypoint '' {base_image} pip show nautobot", hide=True
+    )
+    match_version = re.search(
+        r"^Version: (.+)$", pip_nautobot_ver.stdout.strip(), flags=re.MULTILINE
+    )
+    if match_version:
+        return match_version.group(1)
+    else:
+        raise Exit(f"Nautobot version not found in Docker base image {base_image}.")
+
+
 @task(
     help={
         "check": (
             "If enabled, check for outdated dependencies in the poetry.lock file, "
             "instead of generating a new one. (default: disabled)"
-        )
+        ),
+        "constrain_nautobot_ver": (
+            "Run 'poetry add nautobot@[version] --lock' to generate the lockfile, "
+            "where [version] is the version installed in the Dockerfile's base image. "
+            "Generally intended to be used in CI and not for local development. (default: disabled)"
+        ),
+        "constrain_python_ver": (
+            "When using `constrain_nautobot_ver`, further constrain the nautobot version "
+            "to python_ver so that poetry doesn't complain about python version incompatibilities. "
+            "Generally intended to be used in CI and not for local development. (default: disabled)"
+        ),
     }
 )
-def lock(context, check=False):
-    """Generate poetry.lock inside the Nautobot container."""
-    run_command(context, f"poetry {'check' if check else 'lock --no-update'}")
+def lock(
+    context, check=False, constrain_nautobot_ver=False, constrain_python_ver=False
+):
+    """Generate poetry.lock file."""
+    if constrain_nautobot_ver:
+        docker_nautobot_version = _get_docker_nautobot_version(context)
+        command = f"poetry add --lock nautobot@{docker_nautobot_version}"
+        if constrain_python_ver:
+            command += f" --python {context.nautobot_chatops.python_ver}"
+    else:
+        command = f"poetry {'check' if check else 'lock --no-update'}"
+    run_command(context, command)
 
 
 # ------------------------------------------------------------------------------
@@ -248,7 +302,9 @@ def restart(context, service=""):
 def stop(context, service=""):
     """Stop specified or all services, if service is not specified, remove all containers."""
     print("Stopping Nautobot...")
-    docker_compose(context, "stop" if service else "down --remove-orphans", service=service)
+    docker_compose(
+        context, "stop" if service else "down --remove-orphans", service=service
+    )
 
 
 @task(
@@ -267,7 +323,9 @@ def destroy(context, volumes=True, import_db_file=""):
         return
 
     if not volumes:
-        raise ValueError("Cannot specify `--no-volumes` and `--import-db-file` arguments at the same time.")
+        raise ValueError(
+            "Cannot specify `--no-volumes` and `--import-db-file` arguments at the same time."
+        )
 
     print(f"Importing database file: {import_db_file}...")
 
@@ -284,12 +342,16 @@ def destroy(context, volumes=True, import_db_file=""):
         "db",
     ]
 
-    container_id = docker_compose(context, " ".join(command), pty=False, echo=False, hide=True).stdout.strip()
+    container_id = docker_compose(
+        context, " ".join(command), pty=False, echo=False, hide=True
+    ).stdout.strip()
     _await_healthy_container(context, container_id)
     print("Stopping database container...")
     context.run(f"docker stop {container_id}", pty=False, echo=False, hide=True)
 
-    print("Database import complete, you can start Nautobot with the following command:")
+    print(
+        "Database import complete, you can start Nautobot with the following command:"
+    )
     print("invoke start")
 
 
@@ -461,7 +523,9 @@ def dbshell(context, db_name="", input_file="", output_file="", query=""):
     if input_file and query:
         raise ValueError("Cannot specify both, `input_file` and `query` arguments")
     if output_file and not (input_file or query):
-        raise ValueError("`output_file` argument requires `input_file` or `query` argument")
+        raise ValueError(
+            "`output_file` argument requires `input_file` or `query` argument"
+        )
 
     env = {}
     if query:
@@ -599,7 +663,9 @@ def backup_db(context, db_name="", output_file="dump.sql", readable=True):
     docker_compose(context, " ".join(command), pty=False)
 
     print(50 * "=")
-    print("The database backup has been successfully completed and saved to the following file:")
+    print(
+        "The database backup has been successfully completed and saved to the following file:"
+    )
     print(output_file)
     print("You can import this database backup with the following command:")
     print(f"invoke import-db --input-file '{output_file}'")
@@ -838,51 +904,3 @@ def validate_app_config(context):
         file="development/app_config_schema.py",
         env={"APP_CONFIG_SCHEMA_COMMAND": "validate"},
     )
-
-
-# ------------------------------------------------------------------------------
-# APP CUSTOM
-# ------------------------------------------------------------------------------
-@task
-def bootstrap_mattermost(context):
-    """Bootstrap Nautobot data to be used with Mattermost."""
-    nbshell(context, file="development/mattermost/nautobot_bootstrap.py")
-
-
-@task
-def backup_mattermost(context):
-    """Export Mattermost data to the SQL file. Certain tables are ignored."""
-    output = "./development/mattermost/dump.sql"
-
-    command = [
-        "exec",
-        "--",
-        "mattermost",
-        "bash",
-        "-c",
-        "'",
-        "pg_dump",
-        "--inserts",
-        "--user=$POSTGRES_USER",
-        "--dbname=$POSTGRES_DB",
-        "'",
-        f"> {output}",
-    ]
-
-    docker_compose(context, " ".join(command))
-
-
-@task
-def connect_awx_container(context, container_name="tools_awx_1"):
-    """Connect nautobot and celery containers to awx container.
-
-    Bridge network is defined in `development/ansible/docker-compose.yaml`.
-    To run testing awx instance, follow [instructions]
-    (https://github.com/ansible/awx/tree/devel/tools/docker-compose#getting-started)
-    Before running `make docker-compose` comment out `- 8080:8080` port mapping in file
-    `tools/docker-compose/ansible/roles/sources/templates/docker-compose.yml.j2` to avoid port conflict with nautobot.
-    After setting up awx, cd back to chatops repo and run `invoke connect-awx-container`.
-    """
-    bridge_network = f"{context.nautobot_chatops.project_name}_awx"
-    context.run(f"docker network connect --alias awx {bridge_network} {container_name}")
-    print(f"Container {container_name} connected to {bridge_network} network")

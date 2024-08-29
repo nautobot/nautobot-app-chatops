@@ -1,6 +1,6 @@
 ---
 dev_addr: "127.0.0.1:8001"
-edit_uri: "edit/main/nautobot-app-chatops/docs"
+edit_uri: "edit/main/docs"
 site_dir: "nautobot_chatops/static/nautobot_chatops/docs"
 site_name: "Nautobot ChatOps App Documentation"
 site_url: "https://docs.nautobot.com/projects/chatops/en/latest/"
