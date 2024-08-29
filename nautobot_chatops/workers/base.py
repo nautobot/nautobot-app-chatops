@@ -2,12 +2,13 @@
 
 Obsolete - contents of this file have been migrated to other modules.
 """
+
 import warnings
 
 # For backwards compatibility -- these used to be defined in this file
 # pylint: disable=unused-import
-from nautobot_chatops.utils import create_command_log
-from nautobot_chatops.workers import subcommand_of, handle_subcommands
+from nautobot_chatops.utils import create_command_log  # noqa: F401
+from nautobot_chatops.workers import subcommand_of, handle_subcommands  # noqa: F401
 
 warnings.warn(
     """Importing from `nautobot_chatops.workers.base` has been deprecated, please use `nautobot_chatops.workers`

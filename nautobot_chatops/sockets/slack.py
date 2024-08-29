@@ -6,13 +6,13 @@ import shlex
 
 from django.conf import settings
 from slack_sdk.socket_mode.aiohttp import SocketModeClient
-from slack_sdk.socket_mode.response import SocketModeResponse
 from slack_sdk.socket_mode.request import SocketModeRequest
+from slack_sdk.socket_mode.response import SocketModeResponse
 from slack_sdk.web.async_client import AsyncWebClient
 
-from nautobot_chatops.workers import get_commands_registry, commands_help, parse_command_string
 from nautobot_chatops.dispatchers.slack import SlackDispatcher
 from nautobot_chatops.utils import socket_check_and_enqueue_command
+from nautobot_chatops.workers import commands_help, get_commands_registry, parse_command_string
 
 
 async def main():  # pylint: disable=too-many-statements

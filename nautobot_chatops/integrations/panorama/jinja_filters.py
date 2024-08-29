@@ -1,4 +1,5 @@
 """Custom Django Jinja filters."""
+
 from django_jinja import library
 
 

@@ -1,4 +1,5 @@
 """Test of utils.py."""
+
 import unittest
 from unittest.mock import patch
 

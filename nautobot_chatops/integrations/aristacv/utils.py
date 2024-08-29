@@ -1,12 +1,14 @@
 """Utilities for cloudvision chatbot."""
+
 import os
 import ssl
 from datetime import datetime
+
 import requests
-from google.protobuf.timestamp_pb2 import Timestamp  # pylint: disable=no-name-in-module
 from cloudvision.Connector.grpc_client import GRPCClient, create_query
 from cvprac.cvp_client import CvpClient
 from django.conf import settings
+from google.protobuf.timestamp_pb2 import Timestamp  # pylint: disable=no-name-in-module
 
 fullpath = os.path.abspath(__file__)
 directory = os.path.dirname(fullpath)
@@ -43,7 +45,7 @@ CVP_PASSWORD = CONFIG["cvp_password"]
 CVP_HOST = CONFIG["cvp_host"]
 CVP_INSECURE = CONFIG["cvp_insecure"]
 ON_PREM = CONFIG["on_prem"]
-CVP_TOKEN_PATH = "token.txt"  # nosec
+CVP_TOKEN_PATH = "token.txt"  # noqa: S105
 CRT_FILE_PATH = "cvp.crt"
 
 
@@ -85,7 +87,7 @@ def connect_cvp():
         clnt.connect([CVP_HOST], CVP_USERNAME, CVP_PASSWORD)
     else:
         clnt = CvpClient()
-        clnt.connect([cvaas_url], username="", password="", is_cvaas=True, api_token=CVAAS_TOKEN)  # nosec
+        clnt.connect([cvaas_url], username="", password="", is_cvaas=True, api_token=CVAAS_TOKEN)
     return clnt
 
 
@@ -556,10 +558,10 @@ def check_on_prem():
 def get_token_crt():
     """Writes cert and user token to files for onprem GRPClient use."""
     if CVP_INSECURE.lower() == "true":
-        request = requests.post(
+        request = requests.post(  # noqa: S113
             f"https://{CVP_HOST}/cvpservice/login/authenticate.do",
             auth=(CVP_USERNAME, CVP_PASSWORD),
-            verify=False,  # nosec
+            verify=False,  # noqa: S501
         )
     else:
         request = requests.post(

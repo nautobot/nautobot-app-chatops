@@ -1,8 +1,10 @@
 """Tests for ChatOps models."""
-import datetime
-from django.test import TestCase
-from nautobot_chatops.choices import CommandStatusChoices
 
+import datetime
+
+from django.test import TestCase
+
+from nautobot_chatops.choices import CommandStatusChoices
 from nautobot_chatops.models import CommandLog
 
 

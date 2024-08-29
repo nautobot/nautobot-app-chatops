@@ -1,15 +1,17 @@
 """This module is intended to handle grafana requests generically perhaps outside of nautobot."""
+
 import datetime
 import logging
 import urllib.parse
-from typing import Union, Tuple, List
-import requests
-import isodate
+from typing import List, Tuple, Union
 
+import isodate
+import requests
 from django.conf import settings
 from pydantic import BaseModel  # pylint: disable=no-name-in-module
 from requests.exceptions import RequestException
 from typing_extensions import Literal
+
 from nautobot_chatops.integrations.grafana.models import Panel, PanelVariable
 
 LOGGER = logging.getLogger("nautobot.plugin.grafana")

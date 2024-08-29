@@ -1,10 +1,11 @@
 """Dispatcher implementation for sending content to Webex."""
-import logging
 
+import logging
 from typing import Optional
+
+from texttable import Texttable
 from webexteamssdk import WebexTeamsAPI
 from webexteamssdk.exceptions import ApiError
-from texttable import Texttable
 
 from nautobot_chatops.metrics import backend_action_sum
 from nautobot_chatops.utils import get_app_config_part

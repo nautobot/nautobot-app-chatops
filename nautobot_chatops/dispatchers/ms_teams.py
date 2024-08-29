@@ -1,12 +1,14 @@
 """Dispatcher implementation for sending content to Microsoft Teams."""
-import os
-import logging
-from typing import Optional
-import requests
 
+import logging
+import os
+from typing import Optional
+
+import requests
 from django.conf import settings
 
 from nautobot_chatops.metrics import backend_action_sum
+
 from .adaptive_cards import AdaptiveCardsDispatcher
 
 logger = logging.getLogger(__name__)

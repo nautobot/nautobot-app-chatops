@@ -1,8 +1,7 @@
 """API Serializers for ChatOps Plugin."""
 
-from rest_framework import serializers
-
 from nautobot.core.api import ValidatedModelSerializer
+from rest_framework import serializers
 
 from nautobot_chatops.models import AccessGrant, CommandToken
 

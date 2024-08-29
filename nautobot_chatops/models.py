@@ -2,31 +2,28 @@
 
 from django.core.exceptions import ValidationError
 from django.db import models
-
-from nautobot.utilities.fields import ColorField
-from nautobot.extras.models.change_logging import ChangeLoggedModel
 from nautobot.core.models import BaseModel
+from nautobot.extras.models.change_logging import ChangeLoggedModel
+from nautobot.utilities.fields import ColorField
 
 from .choices import AccessGrantTypeChoices, CommandStatusChoices, CommandTokenPlatformChoices
-
-from .integrations.grafana.models import Dashboard as GrafanaDashboard
-from .integrations.grafana.models import Panel as GrafanaPanel
-from .integrations.grafana.models import PanelVariable as GrafanaPanelVariable
-
 from .constants import (
-    COMMAND_LOG_USER_NAME_HELP_TEXT,
-    COMMAND_LOG_USER_ID_HELP_TEXT,
-    COMMAND_LOG_PLATFORM_HELP_TEXT,
-    COMMAND_LOG_COMMAND_TEXT,
-    COMMAND_LOG_SUBCOMMAND_HELP_TEXT,
-    COMMAND_LOG_PARAMS_HELP_TEXT,
     ACCESS_GRANT_COMMAND_HELP_TEXT,
-    ACCESS_GRANT_SUBCOMMAND_HELP_TEXT,
     ACCESS_GRANT_NAME_HELP_TEXT,
+    ACCESS_GRANT_SUBCOMMAND_HELP_TEXT,
     ACCESS_GRANT_VALUE_HELP_TEXT,
+    COMMAND_LOG_COMMAND_TEXT,
+    COMMAND_LOG_PARAMS_HELP_TEXT,
+    COMMAND_LOG_PLATFORM_HELP_TEXT,
+    COMMAND_LOG_SUBCOMMAND_HELP_TEXT,
+    COMMAND_LOG_USER_ID_HELP_TEXT,
+    COMMAND_LOG_USER_NAME_HELP_TEXT,
     COMMAND_TOKEN_COMMENT_HELP_TEXT,
     COMMAND_TOKEN_TOKEN_HELP_TEXT,
 )
+from .integrations.grafana.models import Dashboard as GrafanaDashboard
+from .integrations.grafana.models import Panel as GrafanaPanel
+from .integrations.grafana.models import PanelVariable as GrafanaPanelVariable
 
 
 class CommandLog(BaseModel):

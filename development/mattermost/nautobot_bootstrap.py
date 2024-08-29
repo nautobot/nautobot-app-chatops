@@ -1,6 +1,6 @@
 """Bootstrap script for Nautobot to allow Mattermost integration."""
 
-from nautobot_chatops.models import AccessGrantTypeChoices, CommandTokenPlatformChoices, AccessGrant, CommandToken
+from nautobot_chatops.models import AccessGrant, AccessGrantTypeChoices, CommandToken, CommandTokenPlatformChoices
 
 for grant_type in AccessGrantTypeChoices.values():
     AccessGrant.objects.update_or_create(

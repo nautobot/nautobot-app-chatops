@@ -1,10 +1,11 @@
 """All interactions with Ansible AWX/Tower."""
+
 import json
 import logging
 from urllib.parse import urlparse
 
-from django.conf import settings
 import requests
+from django.conf import settings
 
 logger = logging.getLogger("rq.worker")
 
@@ -73,12 +74,12 @@ class Tower:  # pylint: disable=too-many-function-args
         url = f"{self.uri}/api/v2/job_templates/{template_name}/launch/"
         logger.info("Launch URL: %s", url)
         logger.info("Launch Extra Vars: %s", extra_vars)
-        response = requests.post(
+        response = requests.post(  # noqa: S113
             url,
             auth=requests.auth.HTTPBasicAuth(self.username, self.password),
             headers=self.headers,
             data=json.dumps({"extra_vars": extra_vars}),
-            verify=self.tower_verify_ssl,  # nosec
+            verify=self.tower_verify_ssl,
         )
         response.raise_for_status()
         logger.info("Job submission to Ansible Tower:")
@@ -91,15 +92,16 @@ class Tower:  # pylint: disable=too-many-function-args
 
         Args:
             api_path (str): API path to get data from
+            **kwargs: Additional Keyword Arguments
 
         Returns:
             (JSON): JSON data for the response
         """
-        response = requests.get(
+        response = requests.get(  # noqa: S113
             f"{self.uri}/api/v2/{api_path}",
             auth=(self.username, self.password),
             **kwargs,
-            verify=self.tower_verify_ssl,  # nosec
+            verify=self.tower_verify_ssl,
         )
         return response.json()
 
@@ -152,7 +154,7 @@ class Tower:  # pylint: disable=too-many-function-args
         """Gets hosts for a given Tower inventory.
 
         Args:
-            group (str): Group Name
+            group_id (str): Group Name
 
         Returns:
             (json): JSON data of the Tower hosts

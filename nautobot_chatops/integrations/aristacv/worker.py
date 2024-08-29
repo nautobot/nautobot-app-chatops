@@ -1,38 +1,41 @@
 """Cloudvision chatops."""
+
 import logging
-from datetime import datetime, timedelta
 import os
+from datetime import datetime, timedelta
+
 from django_rq import job
-from nautobot_chatops.workers import subcommand_of, handle_subcommands  # pylint: disable=import-error
+
 from nautobot_chatops.choices import CommandStatusChoices  # pylint: disable=import-error
+from nautobot_chatops.workers import handle_subcommands, subcommand_of  # pylint: disable=import-error
+
 from .cvpgrpcutils import get_device_tags
 from .utils import (
     CONFIG,
-    prompt_for_events_filter,
-    prompt_for_device_or_container,
-    get_cloudvision_container_devices,
-    get_cloudvision_containers,
-    get_cloudvision_configlets_names,
-    get_configlet_config,
-    get_cloudvision_devices_all,
-    get_cloudvision_devices_all_resource,
-    get_cloudvision_devices_by_sn,
-    get_device_id_from_hostname,
-    get_device_running_configuration,
-    get_cloudvision_tasks,
-    get_cloudvision_task_logs,
-    get_container_id_by_name,
-    get_applied_configlets_container_id,
-    get_applied_configlets_device_id,
-    get_severity_choices,
     get_active_events_data,
     get_active_events_data_filter,
     get_active_severity_types,
-    get_device_bugs_data,
-    get_bug_info,
+    get_applied_configlets_container_id,
+    get_applied_configlets_device_id,
     get_bug_device_report,
+    get_bug_info,
+    get_cloudvision_configlets_names,
+    get_cloudvision_container_devices,
+    get_cloudvision_containers,
+    get_cloudvision_devices_all,
+    get_cloudvision_devices_all_resource,
+    get_cloudvision_devices_by_sn,
+    get_cloudvision_task_logs,
+    get_cloudvision_tasks,
+    get_configlet_config,
+    get_container_id_by_name,
+    get_device_bugs_data,
+    get_device_id_from_hostname,
+    get_device_running_configuration,
+    get_severity_choices,
+    prompt_for_device_or_container,
+    prompt_for_events_filter,
 )
-
 
 logger = logging.getLogger("rq.worker")
 dir_path = os.path.dirname(os.path.realpath(__file__))

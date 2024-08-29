@@ -1,5 +1,6 @@
 """Navigation for Circuit Maintenance."""
-from nautobot.extras.plugins import PluginMenuItem, PluginMenuButton, ButtonColorChoices
+
+from nautobot.extras.plugins import ButtonColorChoices, PluginMenuButton, PluginMenuItem
 
 menu_items = (
     PluginMenuItem(

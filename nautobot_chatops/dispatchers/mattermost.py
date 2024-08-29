@@ -4,12 +4,13 @@ import json
 import logging
 import time
 from typing import Dict, Optional
+
 import requests
+from django.conf import settings
 from requests.exceptions import HTTPError
 
-from django.conf import settings
-
 from nautobot_chatops.metrics import backend_action_sum
+
 from .base import Dispatcher
 
 logger = logging.getLogger(__name__)
@@ -476,9 +477,7 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
         # In Mattermost, a textentry element can ONLY be sent in a modal Interactive dialog
         return self.send_blocks(blocks, callback_id=action_id, ephemeral=False, modal=True, title=title)
 
-    def prompt_from_menu(
-        self, action_id, help_text, choices, default=(None, None), confirm=False, offset=0
-    ):  # pylint: disable=too-many-arguments
+    def prompt_from_menu(self, action_id, help_text, choices, default=(None, None), confirm=False, offset=0):  # pylint: disable=too-many-arguments
         """Prompt the user for a selection from a menu.
 
         Args:
@@ -643,7 +642,7 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
         Args:
           action_id (str): Identifying string to associate with this element
           choices (list): List of (display, value) tuples
-          default (tuple: Default (display, value) to preselect
+          default (tuple): Default (display, value) to preselect
           confirm (bool): If true (and the platform supports it), prompt the user to confirm their selection
           optional (bool): If set to True, the field will return NoneType is not specified.
 
