@@ -13,3 +13,8 @@ nautobot_chatops:
 #     - "docker-compose.redis.yml"
 #     - "docker-compose.mysql.yml"
 #     - "docker-compose.dev.yml"
+
+# Add the below line to compose_files if using Slack Socket Mode.
+# - "docker-compose.socket.yml"
+# Add the below line to compose_files if using Microsoft Bot Framework Emulator
+# - "docker-compose.bot-framework.yml"
