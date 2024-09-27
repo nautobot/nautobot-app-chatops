@@ -1,0 +1,2 @@
+Update Pydantic to ^2.0.0.
+Update Schema Enforcer to ^1.4.0 to support Pydantic V2
