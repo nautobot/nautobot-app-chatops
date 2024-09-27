@@ -3,13 +3,15 @@
 import json
 import logging
 import time
+from http import HTTPStatus
 from typing import Dict, Optional
+
 import requests
+from django.conf import settings
 from requests.exceptions import HTTPError
 
-from django.conf import settings
-
 from nautobot_chatops.metrics import backend_action_sum
+
 from .base import Dispatcher
 
 logger = logging.getLogger(__name__)
@@ -77,33 +79,33 @@ def error_report(function):
         try:
             return function(*args, **kwargs)
         except HTTPError as err:
-            if err.response.status_code == 400:
+            if err.response.status_code == HTTPStatus.BAD_REQUEST:
                 raise BadRequestException(f"Malformatted requests: {err.response.text}")
-            if err.response.status_code == 401:
+            if err.response.status_code == HTTPStatus.UNAUTHORIZED:
                 raise UnauthorizedException(f"Invalid credentials provided or account is locked: {err.response.text}")
-            if err.response.status_code == 403:
+            if err.response.status_code == HTTPStatus.FORBIDDEN:
                 raise ForbiddenException(
                     f"Insufficient permissions to execute request (ie, any POST method as a regular user): {err.response.text}"
                 )
-            if err.response.status_code == 404:
+            if err.response.status_code == HTTPStatus.NOT_FOUND:
                 raise NotFoundException(f"Attempting to access an endpoint that does not exist: {err.response.text}")
-            if err.response.status_code == 405:
+            if err.response.status_code == HTTPStatus.METHOD_NOT_ALLOWED:
                 raise MethodNotAllowedException(
                     f"Wrong request type for target endpoint (ie, POSTing data to a GET endpoint): {err.response.text}"
                 )
-            if err.response.status_code == 406:
+            if err.response.status_code == HTTPStatus.NOT_ACCEPTABLE:
                 raise NotAcceptableException(
                     f"Content Type of the data returned does not match the Accept header of the request: {err.response.text}"
                 )
-            if err.response.status_code == 415:
+            if err.response.status_code == HTTPStatus.UNSUPPORTED_MEDIA_TYPE:
                 raise UnsupportedMediaTypeException(f"Attempting to POST data in incorrect format: {err.response.text}")
-            if err.response.status_code == 429:
+            if err.response.status_code == HTTPStatus.TOO_MANY_REQUESTS:
                 raise MMRateLimit(
                     f"You have exceeded the max number of requests per 1-minute period: {err.response.text}"
                 )
-            if err.response.status_code == 500:
+            if err.response.status_code == HTTPStatus.INTERNAL_SERVER_ERROR:
                 raise InternalServerErrorException(f"Contact support if you see this error type: {err.response.text}")
-            if err.response.status_code == 503:
+            if err.response.status_code == HTTPStatus.SERVICE_UNAVAILABLE:
                 raise ServiceUnavailableException(
                     f"The Mattermost API is currently in maintenance mode: {err.response.text}"
                 )
@@ -493,9 +495,7 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
         # In Mattermost, a textentry element can ONLY be sent in a modal Interactive dialog
         return self.send_blocks(blocks, callback_id=action_id, ephemeral=False, modal=True, title=title)
 
-    def prompt_from_menu(
-        self, action_id, help_text, choices, default=(None, None), confirm=False, offset=0
-    ):  # pylint: disable=too-many-arguments
+    def prompt_from_menu(self, action_id, help_text, choices, default=(None, None), confirm=False, offset=0):  # pylint: disable=too-many-arguments
         """Prompt the user for a selection from a menu.
 
         Args:
@@ -659,7 +659,7 @@ class MattermostDispatcher(Dispatcher):  # pylint: disable=too-many-public-metho
         Args:
           action_id (str): Identifying string to associate with this element
           choices (list): List of (display, value) tuples
-          default (tuple: Default (display, value) to preselect
+          default (tuple): Default (display, value) to preselect
           confirm (bool): If true (and the platform supports it), prompt the user to confirm their selection
           optional (bool): If set to True, the field will return NoneType is not specified.
 

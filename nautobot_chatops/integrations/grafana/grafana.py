@@ -1,15 +1,18 @@
 """This module is intended to handle grafana requests generically perhaps outside of nautobot."""
+
 import datetime
 import logging
 import urllib.parse
-from typing import Union, Tuple, List
-import requests
-import isodate
+from http import HTTPStatus
+from typing import List, Tuple, Union
 
+import isodate
+import requests
 from django.conf import settings
 from pydantic import BaseModel  # pylint: disable=no-name-in-module
 from requests.exceptions import RequestException
 from typing_extensions import Literal
+
 from nautobot_chatops.integrations.grafana.models import Panel, PanelVariable
 
 LOGGER = logging.getLogger("nautobot.plugin.grafana")
@@ -209,7 +212,7 @@ class GrafanaHandler:
             LOGGER.error("An error occurred while accessing the url: %s Exception: %s", url, exc)
             return None
 
-        if results.status_code == 200:
+        if results.status_code == HTTPStatus.OK:
             LOGGER.debug("Request returned %s", results.status_code)
             return results.content
 
@@ -270,7 +273,7 @@ class GrafanaHandler:
             LOGGER.error("An error occurred while accessing the url: %s Exception: %s", url, exc)
             return []
 
-        if results.status_code == 200:
+        if results.status_code == HTTPStatus.OK:
             LOGGER.debug("Request returned %s", results.status_code)
             return results.json()
 
@@ -295,7 +298,7 @@ class GrafanaHandler:
             LOGGER.error("An error occurred while accessing the url: %s Exception: %s", url, exc)
             return []
 
-        if results.status_code != 200:
+        if results.status_code != HTTPStatus.OK:
             LOGGER.error("Request returned %s for %s", results.status_code, url)
             return []
 
@@ -329,7 +332,7 @@ class GrafanaHandler:
             LOGGER.error("An error occurred while accessing the url: %s Exception: %s", url, exc)
             return []
 
-        if results.status_code != 200:
+        if results.status_code != HTTPStatus.OK:
             LOGGER.error("Request returned %s for %s", results.status_code, url)
             return []
 

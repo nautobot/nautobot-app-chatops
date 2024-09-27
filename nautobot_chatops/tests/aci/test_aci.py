@@ -1,7 +1,9 @@
 """Tests for integrations.aci.aci."""
+
 # pylint: disable=invalid-name
 import unittest
-from unittest.mock import patch, Mock
+from unittest.mock import Mock, patch
+
 from nautobot_chatops.integrations.aci.aci import NautobotPluginChatopsAci, RequestHTTPError
 
 
@@ -312,9 +314,7 @@ class TestAciMethods(unittest.TestCase):
         mock_response.ok = False
         mocked_login.return_value = self.mock_login
         mocked_handle_request.return_value = mock_response
-        self.assertRaises(
-            RequestHTTPError, self.aci_obj.get_static_path, "test-tenant-1", "test-ap", "test-epg"
-        )  # nosec
+        self.assertRaises(RequestHTTPError, self.aci_obj.get_static_path, "test-tenant-1", "test-ap", "test-epg")  # nosec
 
     @patch.object(NautobotPluginChatopsAci, "get_static_path")
     @patch.object(NautobotPluginChatopsAci, "get_contract_filters")

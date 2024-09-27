@@ -3,7 +3,7 @@
 import logging
 
 from ipfabric import IPFClient
-
+from ipfabric_diagrams import IPFDiagram
 
 logger = logging.getLogger("nautobot")
 

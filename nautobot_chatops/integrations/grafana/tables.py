@@ -1,11 +1,12 @@
 """Django table classes for Nautobot."""
 
-from django_tables2 import TemplateColumn, Column, BooleanColumn
-from nautobot.core.tables import BaseTable, ToggleColumn, ButtonsColumn
-from nautobot_chatops.integrations.grafana.models import Panel, Dashboard, PanelVariable
+from django_tables2 import BooleanColumn, Column, TemplateColumn
+from nautobot.core.tables import BaseTable, ButtonsColumn, ToggleColumn
+
+from nautobot_chatops.integrations.grafana.models import Dashboard, Panel, PanelVariable
 
 
-class DashboardViewTable(BaseTable):
+class DashboardViewTable(BaseTable):  # pylint: disable=nb-sub-class-name
     """Table for rendering panels for dashboards in the grafana app."""
 
     pk = ToggleColumn()
@@ -19,7 +20,7 @@ class DashboardViewTable(BaseTable):
         fields = ("pk", "dashboard_slug", "dashboard_uid", "friendly_name", "actions")
 
 
-class PanelViewTable(BaseTable):
+class PanelViewTable(BaseTable):  # pylint: disable=nb-sub-class-name
     """Table for rendering panels for dashboards in the grafana app."""
 
     pk = ToggleColumn()
@@ -39,7 +40,7 @@ class PanelViewTable(BaseTable):
         fields = ("pk", "chat_command", "command_name", "friendly_name", "panel_id", "dashboard", "active", "actions")
 
 
-class PanelVariableViewTable(BaseTable):
+class PanelVariableViewTable(BaseTable):  # pylint: disable=nb-sub-class-name
     """Table for rendering panel variables for dashboards in the grafana app."""
 
     pk = ToggleColumn()

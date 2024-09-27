@@ -1,9 +1,9 @@
 """Banner to alert Staff to use Admin site if trying to add/edit Account Links for other Users."""
+
 from typing import Optional
 
 from django.urls import reverse
 from django.utils.html import format_html
-
 from nautobot.extras.choices import BannerClassChoices
 from nautobot.extras.plugins import PluginBanner
 

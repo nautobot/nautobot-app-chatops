@@ -1,9 +1,10 @@
 """Import a panels.yml file into the Grafana object models in Nautobot."""
-import yaml
 
-from termcolor import colored
+import yaml
 from django.core.management.base import BaseCommand
 from pydantic import ValidationError
+from termcolor import colored
+
 from nautobot_chatops.integrations.grafana.helpers import validate
 from nautobot_chatops.integrations.grafana.models import Dashboard, Panel, PanelVariable
 

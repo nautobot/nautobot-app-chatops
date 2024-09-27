@@ -1,26 +1,31 @@
 """Worker function for /net commands in Slack."""
-import tempfile
+
 import argparse
 import os
+import tempfile
 from datetime import datetime
-from typing import NoReturn, List, Union, Dict
+from typing import Dict, List, NoReturn, Union
+
+from django.core.exceptions import FieldError, MultipleObjectsReturned, ObjectDoesNotExist
 from isodate import ISO8601Error, parse_duration
 from jinja2 import Template
 from django.core.exceptions import FieldError, ObjectDoesNotExist, MultipleObjectsReturned
 from pydantic import ValidationError
 from nautobot.core.models.querysets import RestrictedQuerySet
+from pydantic.error_wrappers import ValidationError  # pylint: disable=no-name-in-module
+
 from nautobot_chatops.dispatchers import Dispatcher
-from nautobot_chatops.workers import handle_subcommands, add_subcommand
-from nautobot_chatops.integrations.grafana.models import Panel, PanelVariable, VALID_MODELS
+from nautobot_chatops.integrations.grafana.exceptions import DefaultArgsError, MultipleOptionsError, PanelError
 from nautobot_chatops.integrations.grafana.grafana import (
-    SLASH_COMMAND,
-    LOGGER,
-    GRAFANA_LOGO_PATH,
     GRAFANA_LOGO_ALT,
+    GRAFANA_LOGO_PATH,
+    LOGGER,
     REQUEST_TIMEOUT_SEC,
+    SLASH_COMMAND,
     handler,
 )
-from nautobot_chatops.integrations.grafana.exceptions import DefaultArgsError, PanelError, MultipleOptionsError
+from nautobot_chatops.integrations.grafana.models import VALID_MODELS, Panel, PanelVariable
+from nautobot_chatops.workers import add_subcommand, handle_subcommands
 
 
 def grafana_logo(dispatcher):
@@ -68,6 +73,7 @@ def chat_get_panel(dispatcher: Dispatcher, *args) -> bool:  # pylint: disable=to
 
     Args:
         dispatcher (nautobot_chatops.dispatchers.Dispatcher): Abstracted dispatcher class for chat-ops.
+        *args: Grafana Panel Arguments.
 
     Returns:
         bool: ChatOps response pass or fail.
@@ -119,6 +125,7 @@ def chat_parse_args(panel_vars: List[PanelVariable], *args) -> Union[dict, bool]
 
     Args:
         panel_vars (List[nautobot_chatops.models.GrafanaPanelVariable]): List of PanelVariable objects.
+        *args: Grafana Panel arguments.
 
     Returns:
         parsed_args: dict of the arguments from the user's raw input

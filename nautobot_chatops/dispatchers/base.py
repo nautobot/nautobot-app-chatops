@@ -1,16 +1,17 @@
 """Generic base class modeling the API for sending messages to a generic chat platform."""
+
 import logging
 from typing import Dict, Optional
-from django.templatetags.static import static
+
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
-from django.conf import settings
+from django.templatetags.static import static
 from nautobot.apps.config import get_app_settings_or_config
 from texttable import Texttable
 
 from nautobot_chatops.models import ChatOpsAccountLink
-
 
 logger = logging.getLogger(__name__)
 
@@ -118,16 +119,16 @@ class Dispatcher:
         # TODO: this should be dynamic using entry_points
         # pylint: disable=import-outside-toplevel, unused-import, cyclic-import
         if get_app_settings_or_config("nautobot_chatops", "enable_slack"):
-            from .slack import SlackDispatcher
+            from .slack import SlackDispatcher  # noqa: F401
 
         if get_app_settings_or_config("nautobot_chatops", "enable_ms_teams"):
-            from .ms_teams import MSTeamsDispatcher
+            from .ms_teams import MSTeamsDispatcher  # noqa: F401
 
         if get_app_settings_or_config("nautobot_chatops", "enable_webex"):
-            from .webex import WebexDispatcher
+            from .webex import WebexDispatcher  # noqa: F401
 
         if get_app_settings_or_config("nautobot_chatops", "enable_mattermost"):
-            from .mattermost import MattermostDispatcher
+            from .mattermost import MattermostDispatcher  # noqa: F401
 
         subclasses = set()
         classes = [cls]
@@ -304,9 +305,7 @@ class Dispatcher:
         """
         raise NotImplementedError
 
-    def prompt_from_menu(
-        self, action_id, help_text, choices, default=(None, None), confirm=False, offset=0
-    ):  # pylint: disable=too-many-arguments
+    def prompt_from_menu(self, action_id, help_text, choices, default=(None, None), confirm=False, offset=0):  # pylint: disable=too-many-arguments
         """Prompt the user to make a selection from a menu of choices.
 
         Args:

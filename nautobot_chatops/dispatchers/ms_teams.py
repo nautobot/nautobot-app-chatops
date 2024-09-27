@@ -1,9 +1,10 @@
 """Dispatcher implementation for sending content to Microsoft Teams."""
-import os
-import logging
-from typing import Optional
-import requests
 
+import logging
+import os
+from typing import Optional
+
+import requests
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
@@ -11,6 +12,7 @@ from nautobot.apps.config import get_app_settings_or_config
 
 from nautobot_chatops.metrics import backend_action_sum
 from nautobot_chatops.models import ChatOpsAccountLink
+
 from .adaptive_cards import AdaptiveCardsDispatcher
 
 logger = logging.getLogger(__name__)

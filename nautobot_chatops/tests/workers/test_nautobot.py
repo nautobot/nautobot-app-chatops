@@ -1,13 +1,14 @@
 """Tests for the /nautobot chatops commands."""
+
 from unittest.mock import MagicMock
 
 from django.contrib.contenttypes.models import ContentType
 from django.test import TestCase
 from nautobot.dcim.models import Location, LocationType
-from nautobot.ipam.models import VLAN
 from nautobot.extras.models import Status
-from nautobot_chatops.choices import CommandStatusChoices
+from nautobot.ipam.models import VLAN
 
+from nautobot_chatops.choices import CommandStatusChoices
 from nautobot_chatops.dispatchers import Dispatcher
 from nautobot_chatops.workers.nautobot import get_vlans
 
