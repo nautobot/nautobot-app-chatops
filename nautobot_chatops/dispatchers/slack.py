@@ -262,7 +262,7 @@ class SlackDispatcher(Dispatcher):
                         ephemeral=ephemeral,
                     )
             else:
-                self.slack_client.files_upload(
+                self.slack_client.files_upload_v2(
                     channels=channels, content=text, title=title, thread_ts=self.context.get("thread_ts")
                 )
         except SlackClientError as slack_error:
@@ -290,7 +290,7 @@ class SlackDispatcher(Dispatcher):
             channels = [self.context.get("channel_id")]
         channels = ",".join(channels)
         logger.info("Sending image %s to %s", image_path, channels)
-        self.slack_client.files_upload(channels=channels, file=image_path, thread_ts=self.context.get("thread_ts"))
+        self.slack_client.files_upload_v2(channels=channels, file=image_path, thread_ts=self.context.get("thread_ts"))
 
     def send_warning(self, message):
         """Send a warning message to the user/channel specified by the context."""
