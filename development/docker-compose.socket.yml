@@ -1,5 +1,4 @@
 ---
-version: "3.8"
 services:
   socket:
     image: "nautobot-chatops/nautobot:${NAUTOBOT_VER}-py${PYTHON_VER}"
