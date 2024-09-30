@@ -18,10 +18,11 @@ Here is a compatibility matrix and the minimum versions required to run this app
 
 | IP Fabric | Python | Nautobot | chatops | chatops-ipfabric | [python-ipfabric](https://github.com/community-fabric/python-ipfabric) | [python-ipfabric-diagrams](https://github.com/community-fabric/python-ipfabric-diagrams) |
 |-----------|--------|----------|---------|------------------|------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
-| 4.4 | 3.7.1 | 1.1.0 | 1.1.0 | 1.2.0 | 0.11.0 | 1.2.7 |
-| 5.0.1 | 3.7.1 | 1.1.0 | 1.1.0 | 1.3.0 | 5.0.4 | 5.0.2 |
-| 6.0 | 3.7.1 | 1.4.0 | 1.1.0 | 3.0.0 | 6.0.9 | 6.0.2
-| 6.0 | 3.7.2 | 1.4.0 | 1.3.0 | DISABLE | 6.0.9 | 6.0.2
+| 4.4       | 3.7.1  | 1.1.0    | 1.1.0   | 1.2.0            | 0.11.0                                                                 | 1.2.7                                                                                    |
+| 5.0.1     | 3.7.1  | 1.1.0    | 1.1.0   | 1.3.0            | 5.0.4                                                                  | 5.0.2                                                                                    |
+| 6.0       | 3.7.1  | 1.4.0    | 1.1.0   | 3.0.0            | 6.0.9                                                                  | 6.0.2                                                                                    |
+| 6.0       | 3.7.2  | 1.4.0    | 1.3.0   | DISABLE          | 6.0.9                                                                  | 6.0.2                                                                                    |
+| 6.6       | 3.8    | ?        | ?       | DISABLE          | 6.6.2                                                                  | DISABLE                                                                                  |
 
 ## Command Setup
 

@@ -10,7 +10,7 @@ from django.core.exceptions import FieldError, MultipleObjectsReturned, ObjectDo
 from isodate import ISO8601Error, parse_duration
 from jinja2 import Template
 from nautobot.core.models.querysets import RestrictedQuerySet
-from pydantic.error_wrappers import ValidationError  # pylint: disable=no-name-in-module
+from pydantic import ValidationError
 
 from nautobot_chatops.dispatchers import Dispatcher
 from nautobot_chatops.integrations.grafana.exceptions import DefaultArgsError, MultipleOptionsError, PanelError
