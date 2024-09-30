@@ -1,11 +1,12 @@
 """Worker functions implementing Nautobot "nso" command and subcommands."""
+
 from django.core.exceptions import ObjectDoesNotExist
-from nautobot.dcim.models import Device
 from nautobot.core.settings_funcs import is_truthy
+from nautobot.dcim.models import Device
 
 from nautobot_chatops.choices import CommandStatusChoices
+from nautobot_chatops.integrations.nso.nso import REQUEST_TIMEOUT_SEC, SLASH_COMMAND, NSOClient
 from nautobot_chatops.workers import handle_subcommands, subcommand_of
-from nautobot_chatops.integrations.nso.nso import NSOClient, REQUEST_TIMEOUT_SEC, SLASH_COMMAND
 
 
 def nso_logo(dispatcher):

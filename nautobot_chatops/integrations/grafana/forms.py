@@ -1,17 +1,18 @@
 """Forms for Nautobot."""
 
+from django.core.serializers.json import DjangoJSONEncoder
 from django.forms import (
-    ModelForm,
+    BooleanField,
     CharField,
     IntegerField,
-    BooleanField,
     JSONField,
     ModelChoiceField,
+    ModelForm,
     ModelMultipleChoiceField,
     MultipleHiddenInput,
 )
-from django.core.serializers.json import DjangoJSONEncoder
 from nautobot.core.forms import BootstrapMixin, BulkEditForm
+
 from nautobot_chatops.integrations.grafana.models import Dashboard, Panel, PanelVariable
 
 

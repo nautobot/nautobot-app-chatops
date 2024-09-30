@@ -1,22 +1,20 @@
 """Views to receive inbound notifications from Microsoft Teams, parse them, and enqueue worker actions."""
 
 import json
-import re
 import logging
+import re
 
-import requests
 import jwt
-
+import requests
 from django.conf import settings
 from django.http import HttpResponse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 
-from nautobot_chatops.workers import get_commands_registry, commands_help, parse_command_string
 from nautobot_chatops.dispatchers.ms_teams import MSTeamsDispatcher
 from nautobot_chatops.utils import check_and_enqueue_command
-
+from nautobot_chatops.workers import commands_help, get_commands_registry, parse_command_string
 
 logger = logging.getLogger(__name__)
 
@@ -82,11 +80,11 @@ def verify_jwt_token(request_headers, request_json):
             key=public_keys[kid],
             algorithms=algorithms,
             # 3. The token contains an "issuer" claim with value of https://api.botframework.com (for the real thing)
-            # or https://login.microsoftonline.com/d6d49420-f39b-4df7-a1dc-d59a935871db/v2.0 (for the emulator)
+            # or https://sts.windows.net/d6d49420-f39b-4df7-a1dc-d59a935871db/ (for the emulator)
             issuer=(
                 "https://api.botframework.com"
                 if real_connector
-                else "https://login.microsoftonline.com/d6d49420-f39b-4df7-a1dc-d59a935871db/v2.0"
+                else "https://sts.windows.net/d6d49420-f39b-4df7-a1dc-d59a935871db/"
             ),
             # 4. The token contains an "audience" claim with a value equal to the bot's Microsoft App ID.
             audience=APP_ID,
@@ -150,9 +148,13 @@ class MSTeamsMessagesView(View):
             "bot_role": body["recipient"].get("role"),
             "message_id": body["id"],
             "service_url": body["serviceUrl"].rstrip("/"),
-            "tenant_id": body["channelData"]["tenant"]["id"],
             "is_group": body["conversation"].get("isGroup", False),
         }
+        try:
+            context["tenant_id"] = body["channelData"]["tenant"]["id"]
+        except KeyError:
+            # Tenant ID is missing when using Bot Emulator, even when Configuring Directory ID
+            context["tenant_id"] = ""
 
         logger.debug("DEBUG: post context %s", context)
 

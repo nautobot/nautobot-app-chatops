@@ -1,13 +1,12 @@
 """Forms for Nautobot."""
 
 from django import forms
-
 from nautobot.core.forms import BootstrapMixin, StaticSelect2Multiple
 from nautobot.extras.forms import NautobotFilterForm
 
-from .models import AccessGrant, CommandLog, CommandToken, ChatOpsAccountLink
 from .choices import AccessGrantTypeChoices, PlatformChoices
 from .constants import ACCESS_GRANT_COMMAND_HELP_TEXT, COMMAND_TOKEN_TOKEN_HELP_TEXT
+from .models import AccessGrant, ChatOpsAccountLink, CommandLog, CommandToken
 
 BLANK_CHOICE = (("", "--------"),)
 

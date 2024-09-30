@@ -2,9 +2,7 @@
 
 import logging
 
-from ipfabric_diagrams import IPFDiagram
 from ipfabric import IPFClient
-
 
 logger = logging.getLogger("nautobot")
 
@@ -443,13 +441,7 @@ class IpFabric:
         """
         self.client = IPFClient(
             base_url=base_url,
-            token=token,
-            verify=verify,
-            timeout=timeout,
-        )
-        self.diagram = IPFDiagram(
-            base_url=base_url,
-            token=token,
+            auth=token,
             verify=verify,
             timeout=timeout,
         )

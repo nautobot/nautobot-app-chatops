@@ -1,4 +1,5 @@
 """Dispatcher subclass for chat platforms that use Adaptive Cards (https://adaptivecards.io/)."""
+
 from .base import Dispatcher
 
 # pylint: disable=abstract-method
@@ -152,9 +153,7 @@ class AdaptiveCardsDispatcher(Dispatcher):
         blocks = [self.markdown_block(help_text), self.actions_block("TODO", [textentry, buttons])]
         return self.send_blocks(blocks, ephemeral=True, title=title)
 
-    def prompt_from_menu(
-        self, action_id, help_text, choices, default=(None, None), confirm=False, offset=0
-    ):  # pylint: disable=too-many-arguments
+    def prompt_from_menu(self, action_id, help_text, choices, default=(None, None), confirm=False, offset=0):  # noqa: PLR0913, pylint: disable=too-many-arguments
         """Prompt the user to make a selection from a menu of choices.
 
         Args:

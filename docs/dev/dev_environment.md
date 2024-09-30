@@ -131,10 +131,7 @@ Each command can be executed with `invoke <command>`. All commands support the a
 #### Testing
 
 ```
-  bandit           Run bandit to validate basic static code security analysis.
-  black            Run black to check that Python files adhere to its style standards.
-  flake8           Run flake8 to check that Python files adhere to its style standards.
-  ruff             Run ruff to validate docstring formatting adheres to NTC defined standards.
+  ruff             Run ruff to perform code formatting and/or linting.
   pylint           Run pylint code analysis.
   tests            Run all tests for this app.
   unittest         Run Django unit tests for the app.
@@ -462,7 +459,7 @@ This is the same as running:
 
 ### Tests
 
-To run tests against your code, you can run all the tests that GitHub CI runs against any new PR with:
+To run tests against your code, you can run all of the tests that the CI runs against any new PR with:
 
 ```bash
 ➜ invoke tests
@@ -472,9 +469,6 @@ To run an individual test, you can run any or all of the following:
 
 ```bash
 ➜ invoke unittest
-➜ invoke bandit
-➜ invoke black
-➜ invoke flake8
 ➜ invoke ruff
 ➜ invoke pylint
 ```
@@ -496,3 +490,53 @@ invoke generate-app-config-schema
 ```
 
 This command can only guess the schema, so it's up to the developer to manually update the schema as needed.
+
+## Using Bot Framework Emulator (Optional)
+
+[Bot Framework Emulator](https://aka.ms/botemulator) is a desktop application that allows users to locally test and debug chat bots built with the Bot Framework SDK.
+
+This option is limited to testing an Azure bot, but allows you to test the bot's functionality without the need to create, publish and deploy the bot app into the MS Teams infrastructure.
+
+There are a few requirements to get this up and running, the steps are provided below to help a user get started.
+
+1. Follow the instructions on setting up the [Azure bot](../../admin/platforms/microsoft_teams/#azure).
+
+    !!! note
+        You can skip the `messaging endpoint` definition while testing in the Bot Emulator.
+
+    !!! note
+        You can also skip adding MS Teams to the channels list.
+
+    ![example-azure-bot](../images/light/azurebot.png#only-light)
+    ![example-azure-bot](../images/dark/azurebot.png#only-dark)
+
+2. Now that your Azure bot is created, and you've followed all the steps to capture the `Microsoft App ID` and the `Value` from your `Client Secret Key` you can setup your local development environment. Please follow the standard steps outlined in the [Full Docker Development Environment](#full-docker-development-environment) section.
+
+3. In order for this to work while running on the same host machine you'll need to add the `extra_hosts` option to the `nautobot` and `worker` docker compose services. This configuration is provided in the `development/docker-compose.bot-framework.yml` file. Add the following to the end of your `invoke.yml` to include this file in your docker compose project. Alternatively, you can configure [Bot Framework to use ngrok](https://github.com/microsoft/BotFramework-Emulator/wiki/Tunneling-%28ngrok%29).
+
+    ```yaml
+        ---
+        nautobot_chatops:
+        ...
+        compose_files:
+            ...
+            - "docker-compose.bot-framework.yml"
+    ```
+
+4. Install Bot Framework Emulator. Based on the OS download and install from GitHub [releases](https://github.com/microsoft/BotFramework-Emulator?tab=readme-ov-file#download)
+
+5. Once you install the Bot Framework Emulator, click on `Open Bot` in the center of the home page.  Fill in the `Open a Bot` with the details. In order for authentication to work the `Microsoft App ID` and `Microsoft App password` must be filled out based on the Azure bot steps that were previously captured.
+
+    ![open a bot](../images/open-a-bot.png)
+
+6. Click `connect` and the debugging pane will show that its connecting to the endpoint provided. This step is doing the authentication for the bot.
+
+    ![bot-connect](../images/connect-a-bot.png)
+
+7. Type `nautobot` and the responses will be similar to what you'd expect if you were interacting with the bot directly from MS Teams client. An example is shown below.
+
+    ![bot-test-command](../images/test-a-bot.png)
+
+    As shown below the commands do operate as expected.
+
+    ![bot-test-command2](../images/test-a-bot2.png)

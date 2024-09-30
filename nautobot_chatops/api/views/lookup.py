@@ -1,7 +1,8 @@
 """API views for dynamic lookup of platform-specific data."""
 
 import contextlib
-from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseNotFound
+
+from django.http import HttpResponseBadRequest, HttpResponseNotFound, JsonResponse
 from django.views import View
 
 from nautobot_chatops.dispatchers import Dispatcher

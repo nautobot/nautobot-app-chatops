@@ -1,14 +1,14 @@
 """All interactions with aci."""
 
-import sys
 import logging
-from datetime import datetime
-from datetime import timedelta
 import re
+import sys
+from datetime import datetime, timedelta
+
 import requests
 import urllib3
-from .utils import tenant_from_dn, ap_from_dn
 
+from .utils import ap_from_dn, tenant_from_dn
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 

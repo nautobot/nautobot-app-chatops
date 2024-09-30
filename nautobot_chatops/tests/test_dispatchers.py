@@ -1,15 +1,15 @@
 """Tests for Nautobot dispatcher class implementations."""
-from unittest.mock import patch, MagicMock
+
+from unittest.mock import MagicMock, patch
 
 from django.conf import settings
 from django.test import TestCase
 from slack_sdk.errors import SlackApiError
 
+from nautobot_chatops.dispatchers.mattermost import MattermostDispatcher
 from nautobot_chatops.dispatchers.ms_teams import MSTeamsDispatcher
 from nautobot_chatops.dispatchers.slack import SlackDispatcher
 from nautobot_chatops.dispatchers.webex import WebexDispatcher
-from nautobot_chatops.dispatchers.mattermost import MattermostDispatcher
-
 
 # pylint: disable=unnecessary-pass
 
@@ -123,7 +123,7 @@ class TestSlackDispatcher(TestCase):
 
     def test_send_snippet_no_title(self):
         """Make sure files_upload is called with no title."""
-        with patch.object(self.dispatcher.slack_client, "files_upload") as mocked_files_upload:
+        with patch.object(self.dispatcher.slack_client, "files_upload_v2") as mocked_files_upload:
             self.dispatcher.send_snippet("Testing files upload.")
             mocked_files_upload.assert_called_with(
                 channels="456def", content="Testing files upload.", title=None, thread_ts=None
@@ -131,7 +131,7 @@ class TestSlackDispatcher(TestCase):
 
     def test_send_snippet_title(self):
         """Make sure files_upload is called with title."""
-        with patch.object(self.dispatcher.slack_client, "files_upload") as mocked_files_upload:
+        with patch.object(self.dispatcher.slack_client, "files_upload_v2") as mocked_files_upload:
             self.dispatcher.send_snippet("Testing files upload.", "Testing files upload title.")
             mocked_files_upload.assert_called_with(
                 channels="456def", content="Testing files upload.", title="Testing files upload title.", thread_ts=None
