@@ -29,6 +29,9 @@
         "microsoft_app_password": {
             "$ref": "#/definitions/secret"
         },
+        "microsoft_tenant_id": {
+            "$ref": "#/definitions/secret"
+        },
         "mattermost_api_token": {
             "$ref": "#/definitions/secret"
         },
@@ -40,6 +43,10 @@
         },
         "webex_signing_secret": {
             "$ref": "#/definitions/secret"
+        },
+        "webex_msg_char_limit": {
+            "type": "integer",
+            "default": 7439
         },
         "primary": {
             "type": "array",
@@ -88,6 +95,10 @@
                     "label": "Microsoft App Password"
                 },
                 {
+                    "name": "microsoft_tenant_id",
+                    "label": "Microsoft Tenant Id"
+                },
+                {
                     "name": "mattermost_api_token",
                     "label": "Mattermost API Token"
                 },
@@ -102,6 +113,10 @@
                 {
                     "name": "webex_signing_secret",
                     "label": "Webex Signing Secret"
+                },
+                {
+                    "name": "webex_msg_char_limit",
+                    "label": "Webex Message Character Limit"
                 }
             ]
         }
@@ -126,7 +141,7 @@
                 "required": ["enable_ms_teams"]
             },
             "then": {
-                "required": ["microsoft_app_id", "microsoft_app_password"]
+                "required": ["microsoft_app_id", "microsoft_app_password", "microsoft_tenant_id"]
             }
         },
         {
