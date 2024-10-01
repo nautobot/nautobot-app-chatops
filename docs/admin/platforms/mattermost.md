@@ -25,7 +25,7 @@
    - Copy the displayed url matching the Server you want to add the chatbot to.
      - Make sure to include the `http://` or `https://`.
      - If shown, make sure to include the port. Ex. `https://example.com:8065`
-6. Proceed to the [Install Guide](../install.md#Install-Guide) section.
+6. Proceed to the [Install Guide](../install.md#install-guide) section.
 
 **Note:** For every Slash Command created for Mattermost, a separate token will be generated.
 
