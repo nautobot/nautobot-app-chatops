@@ -28,7 +28,6 @@ files = [
 
 [[package]]
 name = "aiohttp"
-version = "3.10.6"
 version = "3.10.8"
 description = "Async http client/server framework (asyncio)"
 optional = false
