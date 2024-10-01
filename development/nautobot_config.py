@@ -1,4 +1,5 @@
 """Nautobot development configuration file."""
+
 import os
 import sys
 
@@ -9,7 +10,7 @@ from nautobot.core.settings_funcs import is_truthy, parse_redis_connection
 # Debug
 #
 
-DEBUG = is_truthy(os.getenv("NAUTOBOT_DEBUG", False))
+DEBUG = is_truthy(os.getenv("NAUTOBOT_DEBUG", "false"))
 _TESTING = len(sys.argv) > 1 and sys.argv[1] == "test"
 
 if DEBUG and not _TESTING:
@@ -47,9 +48,10 @@ DATABASES = {
         "PASSWORD": os.getenv("NAUTOBOT_DB_PASSWORD", ""),  # Database password
         "HOST": os.getenv("NAUTOBOT_DB_HOST", "localhost"),  # Database server
         "PORT": os.getenv(
-            "NAUTOBOT_DB_PORT", default_db_settings[nautobot_db_engine]["NAUTOBOT_DB_PORT"]
+            "NAUTOBOT_DB_PORT",
+            default_db_settings[nautobot_db_engine]["NAUTOBOT_DB_PORT"],
         ),  # Database port, default to postgres
-        "CONN_MAX_AGE": int(os.getenv("NAUTOBOT_DB_TIMEOUT", 300)),  # Database timeout
+        "CONN_MAX_AGE": int(os.getenv("NAUTOBOT_DB_TIMEOUT", "300")),  # Database timeout
         "ENGINE": nautobot_db_engine,
     }
 }
@@ -74,9 +76,6 @@ CACHES = {
     }
 }
 
-# Redis Cacheops
-CACHEOPS_REDIS = parse_redis_connection(redis_database=1)
-
 #
 # Celery settings are not defined here because they can be overloaded with
 # environment variables. By default they use `CACHES["default"]["LOCATION"]`.
@@ -95,11 +94,11 @@ if not _TESTING:
         "disable_existing_loggers": False,
         "formatters": {
             "normal": {
-                "format": "%(asctime)s.%(msecs)03d %(levelname)-7s %(name)s :\n  %(message)s",
+                "format": "%(asctime)s.%(msecs)03d %(levelname)-7s %(name)s : %(message)s",
                 "datefmt": "%H:%M:%S",
             },
             "verbose": {
-                "format": "%(asctime)s.%(msecs)03d %(levelname)-7s %(name)-20s %(filename)-15s %(funcName)30s() :\n  %(message)s",
+                "format": "%(asctime)s.%(msecs)03d %(levelname)-7s %(name)-20s %(filename)-15s %(funcName)30s() : %(message)s",
                 "datefmt": "%H:%M:%S",
             },
         },
@@ -174,7 +173,7 @@ PLUGINS_CONFIG = {
         "tower_password": os.getenv("NAUTOBOT_TOWER_PASSWORD"),
         "tower_uri": os.getenv("NAUTOBOT_TOWER_URI"),
         "tower_username": os.getenv("NAUTOBOT_TOWER_USERNAME"),
-        "tower_verify_ssl": is_truthy(os.getenv("NAUTOBOT_TOWER_VERIFY_SSL", True)),
+        "tower_verify_ssl": is_truthy(os.getenv("NAUTOBOT_TOWER_VERIFY_SSL", "true")),
         # - Arista CloudVision ---------------
         "enable_aristacv": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_ARISTACV")),
         "aristacv_cvaas_url": os.environ.get("ARISTACV_CVAAS_URL"),
@@ -208,6 +207,12 @@ PLUGINS_CONFIG = {
         "panorama_host": os.environ.get("PANORAMA_HOST"),
         "panorama_password": os.environ.get("PANORAMA_PASSWORD"),
         "panorama_user": os.environ.get("PANORAMA_USER"),
+        # - Cisco NSO ------------------------
+        "enable_nso": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_NSO")),
+        "nso_url": os.environ.get("NSO_URL"),
+        "nso_username": os.environ.get("NSO_USERNAME"),
+        "nso_password": os.environ.get("NSO_PASSWORD"),
+        "nso_request_timeout": os.environ.get("NSO_REQUEST_TIMEOUT", 60),
     },
 }
 

@@ -4,15 +4,16 @@ import json
 import logging
 import os
 import time
-
 from typing import Optional
+
 from django.conf import settings
 from django.templatetags.static import static
 from slack_sdk import WebClient
-from slack_sdk.webhook.client import WebhookClient
 from slack_sdk.errors import SlackApiError, SlackClientError
+from slack_sdk.webhook.client import WebhookClient
 
 from nautobot_chatops.metrics import backend_action_sum
+
 from .base import Dispatcher
 
 logger = logging.getLogger(__name__)
@@ -261,7 +262,7 @@ class SlackDispatcher(Dispatcher):
                         ephemeral=ephemeral,
                     )
             else:
-                self.slack_client.files_upload(
+                self.slack_client.files_upload_v2(
                     channels=channels, content=text, title=title, thread_ts=self.context.get("thread_ts")
                 )
         except SlackClientError as slack_error:
@@ -289,7 +290,7 @@ class SlackDispatcher(Dispatcher):
             channels = [self.context.get("channel_id")]
         channels = ",".join(channels)
         logger.info("Sending image %s to %s", image_path, channels)
-        self.slack_client.files_upload(channels=channels, file=image_path, thread_ts=self.context.get("thread_ts"))
+        self.slack_client.files_upload_v2(channels=channels, file=image_path, thread_ts=self.context.get("thread_ts"))
 
     def send_warning(self, message):
         """Send a warning message to the user/channel specified by the context."""
@@ -371,9 +372,7 @@ class SlackDispatcher(Dispatcher):
                 choices.append(("Next...", f"menu_offset-{new_offset}"))
         return choices
 
-    def prompt_from_menu(
-        self, action_id, help_text, choices, default=(None, None), confirm=False, offset=0
-    ):  # pylint: disable=too-many-arguments
+    def prompt_from_menu(self, action_id, help_text, choices, default=(None, None), confirm=False, offset=0):  # pylint: disable=too-many-arguments
         """Prompt the user for a selection from a menu.
 
         Args:

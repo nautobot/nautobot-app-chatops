@@ -1,11 +1,11 @@
 """Test cases for the Nautobot workers module."""
-from django.test import SimpleTestCase
 
+from django.test import SimpleTestCase
 from prybar import dynamic_entrypoint
 
-from nautobot_chatops.workers import convert_smart_quotes, parse_command_string, get_commands_registry, add_subcommand
-from nautobot_chatops.tests.workers.dynamic_commands import dynamic_command, dynamic_subcommand
 import nautobot_chatops.workers
+from nautobot_chatops.tests.workers.dynamic_commands import dynamic_command, dynamic_subcommand
+from nautobot_chatops.workers import add_subcommand, convert_smart_quotes, get_commands_registry, parse_command_string
 
 
 class TestFunctions(SimpleTestCase):
@@ -128,11 +128,11 @@ class TestFunctions(SimpleTestCase):
         """Verify Convert Smart Quotes."""
         self.assertEqual(convert_smart_quotes("''"), "''")
         self.assertEqual(convert_smart_quotes(""), "")
-        self.assertEqual(convert_smart_quotes("\u201C\u201D"), "''")
+        self.assertEqual(convert_smart_quotes("\u201c\u201d"), "''")
         self.assertEqual(convert_smart_quotes("\u2018\u2019"), "''")
-        self.assertEqual(convert_smart_quotes("\u201C"), "'")
-        self.assertEqual(convert_smart_quotes("\u201D"), "'")
+        self.assertEqual(convert_smart_quotes("\u201c"), "'")
+        self.assertEqual(convert_smart_quotes("\u201d"), "'")
         self.assertEqual(convert_smart_quotes("\u2018"), "'")
         self.assertEqual(convert_smart_quotes("\u2019"), "'")
-        self.assertEqual(convert_smart_quotes("\u201CLas Vegas\u201D"), "'Las Vegas'")
+        self.assertEqual(convert_smart_quotes("\u201cLas Vegas\u201d"), "'Las Vegas'")
         self.assertEqual(convert_smart_quotes("\u2018Las Vegas\u2019"), "'Las Vegas'")

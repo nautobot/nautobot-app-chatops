@@ -1,18 +1,19 @@
 """Utility functions for API view implementations."""
 
-from datetime import datetime, timezone
 import logging
 import sys
+from datetime import datetime, timezone
 
 from asgiref.sync import sync_to_async
 from django.conf import settings
 from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
 from nautobot.core.celery import nautobot_task
+from nautobot.extras.context_managers import web_request_context
 
 from nautobot_chatops.choices import AccessGrantTypeChoices, CommandStatusChoices
-from nautobot_chatops.models import AccessGrant, CommandLog
 from nautobot_chatops.metrics import request_command_cntr
+from nautobot_chatops.models import AccessGrant, CommandLog
 
 logger = logging.getLogger(__name__)
 
@@ -118,9 +119,7 @@ def socket_check_and_enqueue_command(*args, **kwargs):
     return check_and_enqueue_command(*args, **kwargs)
 
 
-def check_and_enqueue_command(
-    registry, command, subcommand, params, context, dispatcher_class
-):  # pylint:disable=too-many-statements
+def check_and_enqueue_command(registry, command, subcommand, params, context, dispatcher_class):  # noqa: PLR0915 pylint:disable=too-many-statements
     """Check whether the given command is permitted by any access grants, and enqueue it if permitted.
 
     For a command/subcommand to be permitted, we must have:
@@ -190,7 +189,8 @@ def check_and_enqueue_command(
         command_log.status = CommandStatusChoices.STATUS_BLOCKED
         command_log.details = f"Not permitted in organization {label}"
         command_log.runtime = datetime.now(timezone.utc) - command_log.start_time
-        command_log.save()
+        with web_request_context(dispatcher.user):
+            command_log.save()
         return response
 
     chan_grants = access_grants.filter(grant_type=AccessGrantTypeChoices.TYPE_CHANNEL)
@@ -217,7 +217,8 @@ def check_and_enqueue_command(
         command_log.status = CommandStatusChoices.STATUS_BLOCKED
         command_log.details = f"Not permitted in channel {label}"
         command_log.runtime = datetime.now(timezone.utc) - command_log.start_time
-        command_log.save()
+        with web_request_context(dispatcher.user):
+            command_log.save()
         return response
 
     user_grants = access_grants.filter(grant_type=AccessGrantTypeChoices.TYPE_USER)
@@ -239,7 +240,8 @@ def check_and_enqueue_command(
         command_log.status = CommandStatusChoices.STATUS_BLOCKED
         command_log.details = f"Not permitted by user {label}"
         command_log.runtime = datetime.now(timezone.utc) - command_log.start_time
-        command_log.save()
+        with web_request_context(dispatcher.user):
+            command_log.save()
         return response
 
     # If we made it here, we're permitted. Enqueue it for the worker

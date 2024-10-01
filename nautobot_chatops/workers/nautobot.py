@@ -1,24 +1,28 @@
 """Worker functions for interacting with Nautobot."""
 
+import json
+import time
+
+from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db.models import Count
-from django.contrib.contenttypes.models import ContentType
 from django.utils.text import slugify
-
-from nautobot.dcim.models.device_components import Interface, FrontPort, RearPort
-from nautobot.circuits.models import Circuit, CircuitType, Provider, CircuitTermination
-from nautobot.dcim.models import Device, DeviceType, Location, LocationType, Manufacturer, Rack, Cable
+from nautobot.circuits.models import Circuit, CircuitTermination, CircuitType, Provider
+from nautobot.dcim.models import Cable, Device, DeviceType, Location, LocationType, Manufacturer, Rack
+from nautobot.dcim.models.device_components import FrontPort, Interface, RearPort
+from nautobot.extras.choices import JobResultStatusChoices
+from nautobot.extras.jobs import get_job
+from nautobot.extras.models import Job, JobResult, Role, Status
 from nautobot.ipam.models import VLAN, Prefix, VLANGroup
 from nautobot.tenancy.models import Tenant
-from nautobot.extras.models import Role, Status
 
 from nautobot_chatops.choices import CommandStatusChoices
-from nautobot_chatops.workers import subcommand_of, handle_subcommands
+from nautobot_chatops.workers import handle_subcommands, subcommand_of
 from nautobot_chatops.workers.helper_functions import (
     add_asterisk,
+    menu_item_check,
     menu_offset_value,
     nautobot_logo,
-    menu_item_check,
     prompt_for_circuit_filter_type,
     prompt_for_device_filter_type,
     prompt_for_interface_filter_type,
@@ -129,11 +133,7 @@ def get_filtered_connections(device, interface):
         status__name="Connected",
         termination_a_type=interface.pk,
         termination_b_type=interface.pk,
-    ).exclude(
-        _termination_b_device=None
-    ).exclude(
-        _termination_a_device=None
-    )
+    ).exclude(_termination_b_device=None).exclude(_termination_a_device=None)
 
 
 def analyze_circuit_endpoints(endpoint):
@@ -1043,6 +1043,350 @@ def get_circuit_providers(dispatcher, *args):
 
     dispatcher.send_large_table(header, rows)
     return CommandStatusChoices.STATUS_SUCCEEDED
+
+
+@subcommand_of("nautobot")
+def filter_jobs(dispatcher, job_filters: str = ""):  # We can use a Literal["enabled", "installed"] here instead
+    """Get a filtered list of jobs from Nautobot that the request user have view permissions for.
+
+    Args:
+        dispatcher (object): Chatops app dispatcher object
+        job_filters (str): Filter job results by literals in a comma-separated string.
+                           Available filters are: enabled, installed.
+    """
+    # Check for filters in user supplied input
+    job_filters_list = [item.strip() for item in job_filters.split(",")] if isinstance(job_filters, str) else ""
+    filters = ["enabled", "installed"]
+    if any(key in job_filters for key in filters):
+        filter_args = {key: True for key in filters if key in job_filters_list}
+        jobs = Job.objects.restrict(dispatcher.user, "view").filter(**filter_args)  # enabled=True, installed=True
+    else:
+        jobs = Job.objects.restrict(dispatcher.user, "view").all()
+
+    header = ["Name", "ID", "Enabled"]
+    rows = [
+        (
+            str(job.name),
+            str(job.id),
+            str(job.enabled),
+        )
+        for job in jobs
+    ]
+
+    dispatcher.send_large_table(header, rows)
+
+    return CommandStatusChoices.STATUS_SUCCEEDED
+
+
+@subcommand_of("nautobot")
+def get_jobs(dispatcher, kwargs: str = ""):
+    """Get all jobs from Nautobot that the requesting user have view permissions for.
+
+    Args:
+        dispatcher (object): Chatops app dispatcher object
+        kwargs (str): JSON-string array of header items to be exported. (Optional, default export is: name, id, enabled)
+    """
+    # Confirm kwargs is valid JSON
+    json_args = ["name", "id", "enabled"]
+    try:
+        if kwargs:
+            json_args = json.loads(kwargs)
+    except json.JSONDecodeError:
+        dispatcher.send_error(f"Invalid JSON-string, cannot decode: {kwargs}")
+        return (CommandStatusChoices.STATUS_FAILED, f"Invalid JSON-string, cannot decode: {kwargs}")
+
+    # Confirm `name` is always present in export
+    name_key = json_args.get("name") or json_args.get("Name")
+    if not name_key:
+        json_args.append("name")
+
+    jobs = Job.objects.restrict(dispatcher.user, "view").all()
+
+    # Check if all items in json_args are valid keys (assuming all keys of job object are valid)
+    valid_keys = [attr for attr in dir(Job) if not callable(getattr(Job, attr)) and not attr.startswith("_")]
+    for item in json_args:
+        if item.lower() not in valid_keys:
+            dispatcher.send_error(f"Invalid item provided: {item.lower()}")
+            return (CommandStatusChoices.STATUS_FAILED, f"Invalid item provided: {item.lower()}")
+
+    # TODO: Check json_args are all valid keys
+    header = [item.capitalize() for item in json_args]
+    rows = [(tuple(str(getattr(job, item, "")) for item in json_args)) for job in jobs]
+
+    dispatcher.send_large_table(header, rows)
+
+    return CommandStatusChoices.STATUS_SUCCEEDED
+
+
+@subcommand_of("nautobot")
+def run_job(dispatcher, *args, job_name: str = "", json_string_kwargs: str = ""):  # pylint: disable=too-many-locals
+    """Initiate a job in Nautobot by job name.
+
+    Args:
+        dispatcher (object): Chatops app dispatcher object
+        *args (tuple): Dispatcher form will pass job args as tuple.
+        job_name (str): Name of Nautobot job to run.
+        json_string_kwargs (str): JSON-string dictionary for input keyword arguments for job run.
+    """
+    # Prompt the user to pick a job if they did not specify one
+    if not job_name:
+        return prompt_for_job(dispatcher, "nautobot run-job")
+
+    if args:
+        json_string_kwargs = "{}"
+
+    # Confirm kwargs is valid JSON
+    json_args = {}
+    try:
+        if json_string_kwargs:
+            json_args = json.loads(json_string_kwargs)
+    except json.JSONDecodeError:
+        dispatcher.send_error(f"Invalid JSON-string, cannot decode: {json_string_kwargs}")
+        return (CommandStatusChoices.STATUS_FAILED, f"Invalid JSON-string, cannot decode: {json_string_kwargs}")
+
+    profile = False
+    if json_args.get("profile") and json_args["profile"] is True:
+        profile = True
+
+    # Get the job model instance using job name
+    try:
+        job_model = Job.objects.restrict(dispatcher.user, "view").get(name=job_name)
+    except Job.DoesNotExist:
+        dispatcher.send_error(f"Job {job_name} not found")
+        return (CommandStatusChoices.STATUS_FAILED, f'Job "{job_name}" was not found')
+
+    if not job_model.enabled:
+        dispatcher.send_error(f"The requested job {job_name} is not enabled")
+        return (CommandStatusChoices.STATUS_FAILED, f'Job "{job_name}" is not enabled')
+
+    form_class = get_job(job_model.class_path).as_form()
+
+    # Parse base form fields from job class
+    form_fields = []
+    for field_name, _ in form_class.base_fields.items():  # pylint: disable=unused-variable
+        if field_name.startswith("_"):
+            continue
+        form_fields.append(f"{field_name}")
+
+    # Basic logic check with what we know, we should expect run-job-form vs run-job to parse the same base fields
+    if len(form_fields) != len(args):
+        dispatcher.send_error("The form class fields and the passed run-job args do not match.")
+        return (
+            CommandStatusChoices.STATUS_FAILED,
+            "The form class fields and the passed run-job args do not match.",
+        )
+
+    form_item_kwargs = {}
+    for index, _ in enumerate(form_fields):  # pylint: disable=unused-variable
+        # Check request input (string-type) is also valid JSON
+        if args[index][0] == "{":
+            try:
+                json_arg = json.loads(args[index])
+                if not json_arg.get("id"):
+                    dispatcher.send_error("Form field arg is JSON dictionary, and has no `id` key.")
+                    return (
+                        CommandStatusChoices.STATUS_FAILED,
+                        "Form field arg is JSON dictionary, and has no `id` key.",
+                    )
+                form_item_kwargs[form_fields[index]] = json_arg.get("id")
+                continue
+            except json.JSONDecodeError:
+                form_item_kwargs[form_fields[index]] = args[index]
+                continue
+        form_item_kwargs[form_fields[index]] = args[index]
+
+    job_result = JobResult.enqueue_job(
+        job_model=job_model,
+        user=dispatcher.user,
+        profile=profile,
+        **form_item_kwargs,
+    )
+
+    # Wait on the job to finish
+    max_wait_iterations = 60
+    while job_result.status not in JobResultStatusChoices.READY_STATES:
+        max_wait_iterations -= 1
+        if not max_wait_iterations:
+            dispatcher.send_error(f"The requested job {job_name} failed to reach ready state.")
+            return (CommandStatusChoices.STATUS_FAILED, f'Job "{job_name}" failed to reach ready state.')
+        time.sleep(1)
+        job_result.refresh_from_db()
+
+    if job_result and job_result.status == "FAILURE":
+        dispatcher.send_error(f"The requested job {job_name} was initiated but failed. Result: {job_result.result}")
+        return (
+            CommandStatusChoices.STATUS_FAILED,
+            f'Job "{job_name}" was initiated but failed. Result: {job_result.result}',
+        )  # pylint: disable=line-too-long
+
+    job_url = (
+        f"{dispatcher.context['request_scheme']}://{dispatcher.context['request_host']}{job_result.get_absolute_url()}"
+    )
+    blocks = [
+        dispatcher.markdown_block(
+            f"The requested job {job_model.class_path} was initiated! [`click here`]({job_url}) to open the job."
+        ),
+    ]
+
+    dispatcher.send_blocks(blocks)
+
+    return CommandStatusChoices.STATUS_SUCCEEDED
+
+
+@subcommand_of("nautobot")
+def run_job_form(dispatcher, job_name: str = ""):
+    """Send job form as a multi-input dialog. On form submit it initiates the job with the form arguments.
+
+    Args:
+        dispatcher (object): Chatops app dispatcher object
+        job_name (str): Name of Nautobot job to run.
+    """
+    # Prompt the user to pick a job if they did not specify one
+    if not job_name:
+        return prompt_for_job(dispatcher, "nautobot run-job-form")
+
+    # Get jobs available to user
+    try:
+        job = Job.objects.restrict(dispatcher.user, "view").get(name=job_name)
+    except Job.DoesNotExist:
+        blocks = [
+            dispatcher.markdown_block(
+                f"Job {job_name} does not exist or {dispatcher.user} does not have permissions to run job."  # pylint: disable=line-too-long
+            ),
+        ]
+        dispatcher.send_blocks(blocks)
+        return CommandStatusChoices.STATUS_SUCCEEDED
+
+    except Job.MultipleObjectsReturned:
+        blocks = [
+            dispatcher.markdown_block(f"Multiple jobs found by name {job_name}."),
+        ]
+        dispatcher.send_blocks(blocks)
+        return CommandStatusChoices.STATUS_SUCCEEDED
+
+    if not job.enabled:
+        blocks = [
+            dispatcher.markdown_block(f"Job {job_name} is not enabled. The job must be enabled to be ran."),
+        ]
+        dispatcher.send_blocks(blocks)
+        return CommandStatusChoices.STATUS_SUCCEEDED
+
+    form_class = get_job(job.class_path).as_form()
+
+    # Parse base form fields from job class
+    form_items = {}
+    for field_name, field in form_class.base_fields.items():
+        if field_name.startswith("_"):
+            continue
+        form_items[field_name] = field
+
+    form_item_dialogs = []
+    for field_name, field in form_items.items():
+        try:
+            field_type = field.widget.input_type
+        except AttributeError:
+            # Some widgets (eg: textarea) do have the `input_type` attribute
+            field_type = field.widget.template_name.split("/")[-1].split(".")[0]
+
+        if field_type == "select":
+            if not hasattr(field, "choices"):
+                blocks = [
+                    dispatcher.markdown_block(f"Job {job_name} field {field} has no attribute `choices`."),
+                ]
+                dispatcher.send_blocks(blocks)
+                return CommandStatusChoices.STATUS_SUCCEEDED
+
+            query_result_items = []
+            for choice, value in field.choices:
+                query_result_items.append(
+                    (value, f'{{"field_name": "{field_name}", "value": "{value}", "id": "{str(choice)}"}}')
+                )
+
+            if len(query_result_items) == 0 and field.required:
+                blocks = [
+                    dispatcher.markdown_block(
+                        f"Job {job_name} for {field_name} is required, however no choices populated for dialog choices."
+                    ),
+                ]
+                dispatcher.send_blocks(blocks)
+                return CommandStatusChoices.STATUS_SUCCEEDED
+
+            form_item_dialogs.append(
+                {
+                    "type": field_type,
+                    "label": f"{field_name}: {field.help_text}",
+                    "choices": query_result_items,
+                    "default": query_result_items[0] if query_result_items else ("", ""),
+                    "confirm": False,
+                }
+            )
+
+        elif field_type == "text":
+            default_value = field.initial
+            form_item_dialogs.append(
+                {
+                    "type": field_type,
+                    "label": f"{field_name}: {field.help_text}",
+                    "default": default_value,
+                    "confirm": False,
+                }
+            )
+
+        elif field_type == "number":
+            # TODO: Can we enforce numeric-character mask for widget input without JavaScript?
+            default_value = field.initial
+            form_item_dialogs.append(
+                {
+                    "type": "text",
+                    "label": f"{field_name}: {field.help_text} *integer values only*",
+                    "default": default_value,
+                    "confirm": False,
+                }
+            )
+
+        elif field_type == "checkbox":
+            # TODO: Is there a checkbox widget?
+            default_value = ("False", "false")
+            if field.initial:
+                default_value = ("True", "true")
+            form_item_dialogs.append(
+                {
+                    "type": "select",
+                    "label": f"{field_name}: {field.help_text}",
+                    "choices": [("True", "true"), ("False", "false")],
+                    "default": default_value,
+                    "confirm": False,
+                }
+            )
+
+        elif field_type == "textarea":
+            # TODO: Is there a multi-line text input widget
+            default_value = field.initial
+            form_item_dialogs.append(
+                {
+                    "type": "text",
+                    "label": f"{field_name}: {field.help_text}",
+                    "default": default_value,
+                    "confirm": False,
+                }
+            )
+
+    # TODO: BUG: Single inputs will present but not submit properly with multi_input_dialog
+    dispatcher.multi_input_dialog(
+        command="nautobot",
+        sub_command=f"run-job {job_name} {{}}",
+        dialog_title=f"job {job_name} form input",
+        dialog_list=form_item_dialogs,
+    )
+
+    return CommandStatusChoices.STATUS_SUCCEEDED
+
+
+def prompt_for_job(dispatcher, command):
+    """Prompt the user to select a Nautobot Job."""
+    jobs = Job.objects.restrict(dispatcher.user, "view").all()
+    dispatcher.prompt_from_menu(command, "Select a Nautobot Job", [(job.name, job.name) for job in jobs])
+    return False
 
 
 @subcommand_of("nautobot")

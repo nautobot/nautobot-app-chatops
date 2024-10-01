@@ -1,15 +1,18 @@
 """This module is intended to handle grafana requests generically perhaps outside of nautobot."""
+
 import datetime
 import logging
 import urllib.parse
-from typing import Union, Tuple, List
-import requests
-import isodate
+from http import HTTPStatus
+from typing import List, Tuple, Union
 
+import isodate
+import requests
 from django.conf import settings
 from pydantic import BaseModel  # pylint: disable=no-name-in-module
 from requests.exceptions import RequestException
 from typing_extensions import Literal
+
 from nautobot_chatops.integrations.grafana.models import Panel, PanelVariable
 
 LOGGER = logging.getLogger("nautobot.plugin.grafana")
@@ -35,13 +38,19 @@ class GrafanaConfigSettings(BaseModel):  # pylint: disable=too-few-public-method
 
 
 def _get_settings_from_chatops(config: dict) -> GrafanaConfigSettings:
+    try:
+        # See: https://docs.pydantic.dev/2.6/api/standard_library_types/#datetimetimedelta
+        default_timespan = int(config["grafana_default_timespan"])
+    except ValueError:
+        default_timespan = config["grafana_default_timespan"]
+
     return GrafanaConfigSettings(
         grafana_url=config["grafana_url"],
         grafana_api_key=config["grafana_api_key"],
         default_width=config["grafana_default_width"],
         default_height=config["grafana_default_height"],
         default_theme=config["grafana_default_theme"],
-        default_timespan=config["grafana_default_timespan"],
+        default_timespan=default_timespan,
         grafana_org_id=config["grafana_org_id"],
         default_tz=config["grafana_default_tz"],
     )
@@ -203,7 +212,7 @@ class GrafanaHandler:
             LOGGER.error("An error occurred while accessing the url: %s Exception: %s", url, exc)
             return None
 
-        if results.status_code == 200:
+        if results.status_code == HTTPStatus.OK:
             LOGGER.debug("Request returned %s", results.status_code)
             return results.content
 
@@ -264,7 +273,7 @@ class GrafanaHandler:
             LOGGER.error("An error occurred while accessing the url: %s Exception: %s", url, exc)
             return []
 
-        if results.status_code == 200:
+        if results.status_code == HTTPStatus.OK:
             LOGGER.debug("Request returned %s", results.status_code)
             return results.json()
 
@@ -289,7 +298,7 @@ class GrafanaHandler:
             LOGGER.error("An error occurred while accessing the url: %s Exception: %s", url, exc)
             return []
 
-        if results.status_code != 200:
+        if results.status_code != HTTPStatus.OK:
             LOGGER.error("Request returned %s for %s", results.status_code, url)
             return []
 
@@ -323,7 +332,7 @@ class GrafanaHandler:
             LOGGER.error("An error occurred while accessing the url: %s Exception: %s", url, exc)
             return []
 
-        if results.status_code != 200:
+        if results.status_code != HTTPStatus.OK:
             LOGGER.error("Request returned %s for %s", results.status_code, url)
             return []
 

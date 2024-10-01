@@ -1,10 +1,9 @@
 """Django table classes for Nautobot."""
 
-from django_tables2 import TemplateColumn, LinkColumn
-
+from django_tables2 import LinkColumn, TemplateColumn
 from nautobot.core.tables import BaseTable, ButtonsColumn, ToggleColumn
 
-from .models import CommandLog, AccessGrant, CommandToken, ChatOpsAccountLink
+from .models import AccessGrant, ChatOpsAccountLink, CommandLog, CommandToken
 
 
 class CommandLogTable(BaseTable):

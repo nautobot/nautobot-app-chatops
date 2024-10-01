@@ -1,11 +1,12 @@
 """Schema Enforcer wrapper used to mimic the validate cli functionality."""
+
 from typing import List
-from termcolor import colored
 
 from schema_enforcer import config
-from schema_enforcer.schemas.manager import SchemaManager
-from schema_enforcer.instances.file import InstanceFileManager
 from schema_enforcer.exceptions import InvalidJSONSchema
+from schema_enforcer.instances.file import InstanceFileManager
+from schema_enforcer.schemas.manager import SchemaManager
+from termcolor import colored
 
 SPECIAL_CHAR = {
     "%": "percent",

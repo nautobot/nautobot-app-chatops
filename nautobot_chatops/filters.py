@@ -4,7 +4,7 @@ import django_filters
 from nautobot.apps.filters import BaseFilterSet, NautobotFilterSet, SearchFilter
 
 from nautobot_chatops.choices import PlatformChoices
-from nautobot_chatops.models import CommandLog, AccessGrant, ChatOpsAccountLink, CommandToken
+from nautobot_chatops.models import AccessGrant, ChatOpsAccountLink, CommandLog, CommandToken
 
 
 class CommandLogFilterSet(BaseFilterSet):

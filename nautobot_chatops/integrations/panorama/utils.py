@@ -1,19 +1,19 @@
 """Functions used for interacting with Panroama."""
+
 import logging
 import time
 from typing import List
+
 import defusedxml.ElementTree as ET
 import requests
-
 from netmiko import ConnectHandler
 from panos.errors import PanDeviceXapiError
 from panos.firewall import Firewall
-from panos.panorama import Panorama, DeviceGroup, PanoramaDeviceGroupHierarchy
+from panos.panorama import DeviceGroup, Panorama, PanoramaDeviceGroupHierarchy
 from panos.policies import PostRulebase, PreRulebase, Rulebase, SecurityRule
 from requests.exceptions import RequestException
 
 from .constant import DEFAULT_TIMEOUT, PLUGIN_CFG
-
 
 logger = logging.getLogger(__name__)
 
@@ -31,10 +31,11 @@ def get_api_key_api(url: str = PLUGIN_CFG["panorama_host"]) -> str:
 
     params = {"type": "keygen", "user": PLUGIN_CFG["panorama_user"], "password": PLUGIN_CFG["panorama_password"]}
 
+    # TODO: The Verify option should be configurable.
     response = requests.get(
         f"https://{url}/api/",
         params=params,
-        verify=False,  # nosec
+        verify=False,  # noqa: S501
         timeout=DEFAULT_TIMEOUT,
     )
     if response.status_code != 200:
@@ -82,6 +83,8 @@ def get_from_pano(connection: Panorama, devices: bool = False, groups: bool = Fa
 
     Args:
         connection (Panorama): Connection object to Panorama.
+        devices (bool): Get Devices from Panorama.
+        groups (bool): Get Groups from Panorama.
 
     Returns:
         dict: Dictionary of all devices attached to Panorama.
@@ -181,12 +184,12 @@ def start_packet_capture(capture_filename: str, ip_address: str, filters: dict):
     if filters["dport"] and filters["dport"] != "any":
         command += f" destination-port {filters['dport']}"
 
-    if filters["dnet"] != "0.0.0.0":  # nosec
+    if filters["dnet"] != "0.0.0.0":  # noqa: S104
         command += f" destination {filters['dnet']}"
         if filters["dcidr"] != "0":
             command += f" destination-netmask {filters['dcidr']}"
 
-    if filters["snet"] != "0.0.0.0":  # nosec
+    if filters["snet"] != "0.0.0.0":  # noqa: S104
         command += f" source {filters['snet']}"
         if filters["scidr"] != "0":
             command += f" source-netmask {filters['scidr']}"
@@ -223,10 +226,11 @@ def _get_pcap(capture_filename: str, ip_address: str):
 
     params = {"key": get_api_key_api(), "type": "export", "category": "filters-pcap", "from": "1.pcap"}
 
+    # TODO: The Verify option should be configurable.
     respone = requests.get(
         url,
         params=params,
-        verify=False,  # nosec
+        verify=False,  # noqa S501 # nosec
         timeout=DEFAULT_TIMEOUT,
     )
 

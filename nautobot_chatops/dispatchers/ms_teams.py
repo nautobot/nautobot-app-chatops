@@ -1,9 +1,10 @@
 """Dispatcher implementation for sending content to Microsoft Teams."""
-import os
-import logging
-from typing import Optional
-import requests
 
+import logging
+import os
+from typing import Optional
+
+import requests
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ObjectDoesNotExist
@@ -11,6 +12,7 @@ from nautobot.apps.config import get_app_settings_or_config
 
 from nautobot_chatops.metrics import backend_action_sum
 from nautobot_chatops.models import ChatOpsAccountLink
+
 from .adaptive_cards import AdaptiveCardsDispatcher
 
 logger = logging.getLogger(__name__)
@@ -39,6 +41,7 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
         """Dispatcher property containing the Nautobot User that is linked to the Chat User."""
         if self.context.get("user_ad_id"):
             try:
+                logger.debug("DEBUG: user() - Found ChatOps user - %s", self.context["user_name"])
                 return ChatOpsAccountLink.objects.get(
                     platform=self.platform_slug, user_id=self.context["user_ad_id"]
                 ).nautobot_user
@@ -135,6 +138,7 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
 
     def _send(self, content, content_type="message"):
         """Publish content back to Microsoft Teams."""
+        logger.debug("DEBUG: _send() - updating content with %s", self.context)
         content = content.copy()
         content.update(
             {
@@ -154,12 +158,22 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
                 "replyToId": self.context["message_id"],
             }
         )
+        logger.debug("DEBUG: _send() - Sending response back to MSTeams")
+        logger.debug("DEBUG: _send() - Sending content with %s", content)
+        logger.debug(
+            "DEBUG: _send() - Sending to URL %s/v3/conversations/%s/activities",
+            self.context["service_url"],
+            self.context["conversation_id"],
+        )
         response = requests.post(
             f"{self.context['service_url']}/v3/conversations/{self.context['conversation_id']}/activities",
             headers={"Authorization": f"Bearer {self.get_token()}"},
             json=content,
             timeout=15,
         )
+        logger.debug("DEBUG: _send() response %s", response.status_code)
+        logger.debug("DEBUG: _send() reason %s", response.reason)
+        response.raise_for_status()
         return response
 
     def send_large_table(self, header, rows, title=None):
@@ -222,11 +236,13 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
     @BACKEND_ACTION_MARKDOWN.time()
     def send_markdown(self, message, ephemeral=None):
         """Send a markdown-formatted text message to the user/channel specified by the context."""
+        logger.debug("DEBUG: send_markdown() Sending message =  %s", message)
         self._send({"text": message, "textFormat": "markdown"})
 
     @BACKEND_ACTION_BLOCKS.time()
     def send_blocks(self, blocks, callback_id=None, modal=False, ephemeral=None, title=None):
         """Send a series of formatting blocks to the user/channel specified by the context."""
+        logger.debug("DEBUG: send_blocks() Sending Blocks = %s", blocks)
         if title and title not in str(blocks[0]):
             blocks.insert(0, self.markdown_element(self.bold(title)))
         self._send(

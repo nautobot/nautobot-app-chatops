@@ -71,7 +71,12 @@ Set up your chosen chat platform:
 !!! warning
     Follow the [Nautobot App Installation Instructions](https://nautobot.readthedocs.io/en/stable/plugins/#installing-plugins) for complete and most recent guidelines.
 
-The App is a Python package available on PyPI, installable with `pip`:
+## Install Guide
+
+!!! note
+    Apps can be installed from the [Python Package Index](https://pypi.org/) or locally. See the [Nautobot documentation](https://docs.nautobot.com/projects/core/en/stable/user-guide/administration/installation/app-install/) for more details. The pip package name for this app is [`nautobot-chatops`](https://pypi.org/project/nautobot-chatops/).
+
+The app is available as a Python package via PyPI and can be installed with `pip`:
 
 ```shell
 pip install nautobot-chatops
@@ -154,4 +159,5 @@ Set up integrations using the specific guides:
 - [Grafana](./integrations/grafana.md)
 - [IPFabric](./integrations/ipfabric.md)
 - [Cisco Meraki](./integrations/meraki.md)
+- [Cisco NSO](./integrations/nso.md)
 - [Palo Alto Panorama](./integrations/panorama.md)

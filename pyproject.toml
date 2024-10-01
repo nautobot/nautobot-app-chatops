@@ -1,13 +1,14 @@
 [tool.poetry]
 name = "nautobot-chatops"
-version = "3.0.1"
+version = "3.1.1a0"
 description = "A app providing chatbot capabilities for Nautobot"
 authors = ["Network to Code, LLC <opensource@networktocode.com>"]
 license = "Apache-2.0"
 readme = "README.md"
-homepage = "https://github.com/nautobot/nautobot-app-chatops/"
-repository = "https://github.com/nautobot/nautobot-app-chatops/"
-keywords = ["nautobot", "nautobot-plugin", "nautobot-app"]
+homepage = "https://github.com/nautobot/nautobot-app-chatops"
+repository = "https://github.com/nautobot/nautobot-app-chatops"
+documentation = "https://docs.nautobot.com/projects/chatops/en/latest/"
+keywords = ["nautobot", "nautobot-app", "nautobot-plugin"]
 classifiers = [
     "Intended Audience :: Developers",
     "Development Status :: 5 - Production/Stable",
@@ -16,27 +17,32 @@ classifiers = [
     "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
-]
-include = [
-    "LICENSE",
-    "README.md",
+    "Programming Language :: Python :: 3.12",
 ]
 packages = [
     { include = "nautobot_chatops" },
+]
+include = [
+    # Poetry by default will exclude files that are in .gitignore
+    "nautobot_chatops/static/nautobot_chatops/docs/**/*",
 ]
 
 [tool.poetry.plugins."nautobot.workers"]
 "aci" = "nautobot_chatops.integrations.aci.worker:aci"
 "ansible" = "nautobot_chatops.integrations.ansible.worker:ansible"
 "clear" = "nautobot_chatops.workers.clear:clear"
-"cloudvision" = "nautobot_chatops.integrations.aristacv.worker:cloudvision"
+"cloudvision" = "nautobot_chatops.integrations.cloudvision.worker:cloudvision"
 "grafana" = "nautobot_chatops.integrations.grafana.worker:grafana"
 "ipfabric" = "nautobot_chatops.integrations.ipfabric.worker:ipfabric"
 "meraki" = "nautobot_chatops.integrations.meraki.worker:cisco_meraki"
 "nautobot" = "nautobot_chatops.workers.nautobot:nautobot"
 "panorama" = "nautobot_chatops.integrations.panorama.worker:panorama"
+"nso" = "nautobot_chatops.integrations.nso.worker:nso"
 
 [tool.poetry.dependencies]
+python = ">=3.8,<3.13"
+# Used for local development
+nautobot = "^2.0.0"
 Markdown = "!=3.3.5"
 PyJWT = "^2.1.0"
 PyYAML = { version = "^6.0", optional = true }
@@ -49,49 +55,52 @@ cvprac = { version = "^1.0.6", optional = true }
 defusedxml = { version = "^0.7.1", optional = true }
 diffsync = { version = "^1.3.0", optional = true }
 ipaddr = { version = "^2.2.0", optional = true }
-ipfabric = { version = "~6.0.9", optional = true }
-ipfabric-diagrams = { version = "~6.0.2", optional = true }
+ipfabric = { version = "~6.6.2", optional = true }
 isodate =  { version = "^0.6.1", optional = true }
-meraki = { version = "^1.7.2", optional = true }
-nautobot = "^2.0.0"
+meraki = { version = ">=1.7.2,<=1.45.0", optional = true }
 nautobot-capacity-metrics = "^3.0.0"
 netmiko = { version = "^4.0.0", optional = true }
 netutils = { version = "^1.1.0", optional = true }
 pan-os-python = { version = "^1.3.0", optional = true }
 prettytable = { version = "^2.1.0", optional = true }
 protobuf = { version = "^3.17", optional = true }
-pydantic = { version = "^1.8.2", optional = true }
-python = ">=3.8,<3.12"
+pydantic = { version = "^2.0.0", optional = true }
 requests = ">=2.25.1"
-schema-enforcer = { version = "^1.2.1", optional = true }
+schema-enforcer = { version = "^1.4.0", optional = true }
 slack-sdk = "^3.4.2"
 termcolor = { version = "1.1.0", optional = true }
 texttable = "^1.6.2"
 webexteamssdk = "^1.3"
 
 [tool.poetry.group.dev.dependencies]
-bandit = "*"
-black = "*"
-coverage = "~5.4"
+coverage = "*"
 django-debug-toolbar = "*"
-flake8 = "*"
 invoke = "*"
 ipython = "*"
-mkdocs = "1.5.2"
-mkdocs-material = "9.1.15"
-mkdocs-version-annotations = "1.0.0"
-mkdocstrings = "0.22.0"
-mkdocstrings-python = "1.5.2"
+Markdown = "*"
+# Render custom markdown for version added/changed/remove notes
+markdown-version-annotations = "1.0.1"
+# Rendering docs to HTML
+mkdocs = "1.6.0"
+# Material for MkDocs theme
+mkdocs-material = "9.5.32"
+# Automatic documentation from sources, for MkDocs
+mkdocstrings = "0.25.2"
+mkdocstrings-python = "1.10.8"
+griffe = "1.1.1"
+towncrier = "~23.6.0"
+to-json-schema = "*"
+jsonschema = "*"
+responses = "^0.24.0"
 mkdocs-include-markdown-plugin = "6.0.3"
 prybar = "*"
-pydocstyle = "*"
 pylint = "*"
 pylint-django = "*"
-pylint-nautobot = "^0.2.0"
+pylint-nautobot = "*"
 requests-mock = "^1.9.3"
-toml = "*"
-towncrier = "~22.8.0"
+ruff = "0.5.5"
 yamllint = "*"
+toml = "*"
 
 [tool.poetry.extras]
 all = [
@@ -103,7 +112,6 @@ all = [
     "diffsync",
     "ipaddr",
     "ipfabric",
-    "ipfabric-diagrams",
     "isodate",
     "meraki",
     "netmiko",
@@ -136,7 +144,6 @@ grafana = [
 ]
 ipfabric = [
     "ipfabric",
-    "ipfabric-diagrams",
     "netutils",
 ]
 meraki = [
@@ -151,41 +158,16 @@ panorama = [
 ]
 nautobot = ["nautobot"]
 
-[tool.black]
-line-length = 120
-target-version = ['py38', 'py39', 'py310', 'py311']
-include = '\.pyi?$'
-exclude = '''
-(
-  /(
-      \.eggs         # exclude a few common directories in the
-    | \.git          # root of the project
-    | \.hg
-    | \.mypy_cache
-    | \.tox
-    | \.venv
-    | _build
-    | buck-out
-    | build
-    | dist
-  )/
-  | settings.py     # This is where you define files that should not be stylized by black
-                     # the root of the project
-)
-'''
-
 [tool.pylint.master]
 # Include the pylint_django plugin to avoid spurious warnings about Django patterns
-load-plugins="pylint_django, pylint_nautobot"
-ignore=".venv"
+load-plugins = "pylint_django, pylint_nautobot"
+ignore = ".venv"
 
 [tool.pylint.basic]
 # No docstrings required for private methods (Pylint default), or for test_ functions, or for inner Meta classes.
-no-docstring-rgx="^(_|test_|Meta$)"
+no-docstring-rgx = "^(_|test_|Meta$)"
 
 [tool.pylint.messages_control]
-# Line length is enforced by Black, so pylint doesn't need to check it.
-# Pylint and Black disagree about how to format multi-line arrays; Black wins.
 disable = [
     "line-too-long",
     "nb-incorrect-base-class",
@@ -211,18 +193,101 @@ supported_nautobot_versions = [
     "2.0.0"
 ]
 
-[tool.pydocstyle]
+[tool.ruff]
+line-length = 120
+target-version = "py38"
+
+[tool.ruff.lint]
+select = [
+    "D",  # pydocstyle
+    "F", "E", "W",  # flake8
+    "S",  # bandit
+    "I",  # isort
+]
+ignore = [
+    # warning: `one-blank-line-before-class` (D203) and `no-blank-line-before-class` (D211) are incompatible.
+    "D203", # 1 blank line required before class docstring
+
+    # D212 is enabled by default in google convention, and complains if we have a docstring like:
+    # """
+    # My docstring is on the line after the opening quotes instead of on the same line as them.
+    # """
+    # We've discussed and concluded that we consider this to be a valid style choice.
+    "D212", # Multi-line docstring summary should start at the first line
+    "D213", # Multi-line docstring summary should start at the second line
+
+    # Produces a lot of issues in the current codebase.
+    "D401", # First line of docstring should be in imperative mood
+    "D407", # Missing dashed underline after section
+    "D416", # Section name ends in colon
+    "E501", # Line too long
+]
+
+[tool.ruff.lint.pydocstyle]
 convention = "google"
-inherit = false
-match = "(?!__init__).*\\.py"
-match-dir = "(?!tests|migrations|development)[^\\.].*"
-# D212 is enabled by default in google convention, and complains if we have a docstring like:
-# """
-# My docstring is on the line after the opening quotes instead of on the same line as them.
-# """
-# We've discussed and concluded that we consider this to be a valid style choice.
-add_ignore = "D212"
+
+[tool.ruff.lint.per-file-ignores]
+"nautobot_chatops/migrations/*" = [
+    "D",
+]
+"nautobot_chatops/tests/*" = [
+    "D",
+    "S"
+]
 
 [build-system]
 requires = ["poetry_core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.towncrier]
+package = "nautobot_chatops"
+directory = "changes"
+filename = "docs/admin/release_notes/version_X.Y.md"
+template = "development/towncrier_template.j2"
+start_string = "<!-- towncrier release notes start -->"
+issue_format = "[#{issue}](https://github.com/nautobot/nautobot-app-chatops/issues/{issue})"
+
+[[tool.towncrier.type]]
+directory = "security"
+name = "Security"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "added"
+name = "Added"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "changed"
+name = "Changed"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "deprecated"
+name = "Deprecated"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "removed"
+name = "Removed"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "fixed"
+name = "Fixed"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "dependencies"
+name = "Dependencies"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "documentation"
+name = "Documentation"
+showcontent = true
+
+[[tool.towncrier.type]]
+directory = "housekeeping"
+name = "Housekeeping"
+showcontent = true
