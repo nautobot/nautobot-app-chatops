@@ -1,0 +1,1 @@
+Fixed slack-sdk to version ^3.23.0 for `files_upload_v2`.
