@@ -202,7 +202,7 @@
 4. Open your MS Teams client and select **Apps** at the bottom of the left-side menu.
 5. Select **Built for your org** to see the new Nautobot app.
 6. Select the new app and click the blue **Add** button.
-7. Proceed to the [Install Guide](../install.md#Install-Guide) section.
+7. Proceed to the [Install Guide](../install.md#install-guide) section.
 
 ## Nautobot Config
 
