@@ -499,7 +499,7 @@ This option is limited to testing an Azure bot, but allows you to test the bot's
 
 There are a few requirements to get this up and running, the steps are provided below to help a user get started.
 
-1. Follow the instructions on setting up the [Azure bot](../../admin/platforms/microsoft_teams/#azure).
+1. Follow the instructions on setting up the [Azure bot](../admin/platforms/microsoft_teams.md#create-azure-bot).
 
     !!! note
         You can skip the `messaging endpoint` definition while testing in the Bot Emulator.

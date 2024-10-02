@@ -138,7 +138,7 @@ PLUGINS_CONFIG = {
 
 ![slack integration invite](../../images/add_nautobot.png)
 
-Once these steps are completed, you can proceed to the [Install Guide](../install.md#Install-Guide) section.
+Once these steps are completed, you can proceed to the [Install Guide](../install.md#install-guide) section.
 
 ## Configuring Multiple Chatbots in a Workspace
 
