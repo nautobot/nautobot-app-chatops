@@ -22,6 +22,7 @@ class NautobotChatOpsAppConfig(NautobotAppConfig):
     max_version = "2.9999"
     default_settings = {}
     caching_config = {}
+    docs_view_name = "plugins:nautobot_chatops:docs"
 
 
 config = NautobotChatOpsAppConfig  # pylint:disable=invalid-name
