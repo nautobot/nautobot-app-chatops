@@ -4,7 +4,7 @@
   <img src="https://raw.githubusercontent.com/nautobot/nautobot-app-chatops/develop/docs/assets/icon-ChatOps.png" alt="ChatOps Logo" class="logo" height="200px">
   <br>
   <a href="https://github.com/nautobot/nautobot-app-chatops/actions"><img src="https://github.com/nautobot/nautobot-app-chatops/actions/workflows/ci.yml/badge.svg?branch=main"></a>
-  <a href="https://docs.nautobot.com/projects/chatops/en/latest/"><img src="https://readthedocs.org/projects/nautobot-app-chatops/badge/"></a>
+  <a href="https://docs.nautobot.com/projects/chatops/en/latest/"><img src="https://readthedocs.org/projects/nautobot-plugin-chatops/badge/"></a>
   <a href="https://pypi.org/project/nautobot-chatops/"><img src="https://img.shields.io/pypi/v/nautobot-chatops"></a>
   <a href="https://pypi.org/project/nautobot-chatops/"><img src="https://img.shields.io/pypi/dm/nautobot-chatops"></a>
   <br>
