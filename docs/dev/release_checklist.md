@@ -1,70 +1,52 @@
 # Release Checklist
 
-This document is intended for Nautobot ChatOps maintainers and covers the steps to perform when releasing new versions.
+This document is intended for app maintainers and outlines the steps to perform when releasing a new version of the app.
+
+!!! important
+    Before starting, make sure your **local** `develop`, `main`, and (if applicable) the current LTM branch are all up to date with upstream!
+
+    ```
+    git fetch
+    git switch develop && git pull # and repeat for main/ltm
+    ```
+
+Choose your own adventure:
+
+- LTM release? Jump [here](#ltm-releases).
+- Patch release from `develop`? Jump [here](#all-releases-from-develop).
+- Minor release? Continue with [Minor Version Bumps](#minor-version-bumps) and then [All Releases from `develop`](#all-releases-from-develop).
 
 ## Minor Version Bumps
 
 ### Update Requirements
 
-Required Python packages are maintained in two files: `pyproject.toml` and `poetry.lock`.
-
-#### The `pyproject.toml` file
-
-Python packages are defined inside `pyproject.toml`. The `[tool.poetry.dependencies]` section of this file contains a list of all the packages required by Nautobot ChatOps.
-
-Where possible, we use [tilde requirements](https://python-poetry.org/docs/dependency-specification/#tilde-requirements) to specify a minimal version with some ability to update, for example:
-
-```toml
-# REST API framework
-djangorestframework = "~3.12.2"
-```
-
-This would allow Poetry to install `djangorestframework` versions `>=3.12.2` but `<3.13.0`.
-
-#### The `poetry.lock` file
-
-The other file is `poetry.lock`, which is managed by Poetry and contains package names, versions, and other metadata.
-
-Each of the required packages pinned to its current stable version. When Nautobot is installed, this file is used to resolve and install all dependencies listed in `pyproject.toml`, but Poetry will use the exact versions found in `poetry.lock` to ensure that a new release of a dependency doesn't break Nautobot ChatOps.
-
-!!! warning
-    You must never directly edit this file. You will use `poetry update` commands to manage it.
-
-#### Run `poetry update`
-
 Every minor version release should refresh `poetry.lock`, so that it lists the most recent stable release of each package. To do this:
 
+0. Run `poetry update --dry-run` to have Poetry automatically tell you what package updates are available and the versions it would upgrade to. This requires an existing environment created from the lock file (i.e. via `poetry install`).
 1. Review each requirement's release notes for any breaking or otherwise noteworthy changes.
 2. Run `poetry update <package>` to update the package versions in `poetry.lock` as appropriate.
 3. If a required package requires updating to a new release not covered in the version constraints for a package as defined in `pyproject.toml`, (e.g. `Django ~3.1.7` would never install `Django >=4.0.0`), update it manually in `pyproject.toml`.
 4. Run `poetry install` to install the refreshed versions of all required packages.
-5. Run all tests and check that the UI and API function as expected.
+5. Run all tests (`poetry run invoke tests`) and check that the UI and API function as expected.
 
-!!! hint
-    You may use `poetry update --dry-run` to have Poetry automatically tell you what package updates are available and the versions it would upgrade.
+### Update Documentation
 
-### Link to the Release Notes Page
+If there are any changes to the compatibility matrix (such as a bump in the minimum supported Nautobot version), update it accordingly.
 
-Add the release notes (`docs/release-notes/X.Y.md`) to the table of contents within `mkdocs.yml`, and point `index.md` to the new file.
+Commit any resulting changes from the following sections to the documentation before proceeding with the release.
 
-### Verify and Revise the Installation Documentation
+!!! tip
+    Fire up the documentation server in your development environment with `poetry run mkdocs serve`! This allows you to view the documentation site locally (the link is in the output of the command) and automatically rebuilds it as you make changes.
 
-Follow the [installation instructions](../admin/install.md) to perform a new production installation of Nautobot ChatOps.
+### Verify the Installation and Upgrade Steps
+
+Follow the [installation instructions](../admin/install.md) to perform a new production installation of the app. If possible, also test the [upgrade process](../admin/upgrade.md) from the previous released version.
 
 The goal of this step is to walk through the entire install process *as documented* to make sure nothing there needs to be changed or updated, to catch any errors or omissions in the documentation, and to ensure that it is current with each release.
 
-!!! tip
-    Fire up `mkdocs serve` in your development environment to start the documentation server! This allows you to view the documentation locally and automatically rebuilds the documents as you make changes.
-
-Commit any necessary changes to the documentation before proceeding with the release.
-
-### Close the Release Milestone
-
-Close the release milestone on GitHub after ensuring there are no remaining open issues associated with it.
-
 ---
 
-## All Releases
+## All Releases from `develop`
 
 ### Verify CI Build Status
 
@@ -72,42 +54,42 @@ Ensure that continuous integration testing on the `develop` branch is completing
 
 ### Bump the Version
 
-Update the package version using `poetry version`. This command shows the current version of the project or bumps the version of the project and writes the new version back to `pyproject.toml` if a valid bump rule is provided.
+Update the package version using `poetry version` if necessary. This command shows the current version of the project or bumps the version of the project and writes the new version back to `pyproject.toml` if a valid bump rule is provided.
 
-The new version should ideally be a valid semver string or a valid bump rule: `patch`, `minor`, `major`, `prepatch`, `preminor`, `premajor`, `prerelease`. Always try to use a bump rule when you can.
+The new version must be a valid semver string or a valid bump rule: `patch`, `minor`, `major`, `prepatch`, `preminor`, `premajor`, `prerelease`. Always try to use a bump rule when you can.
 
 Display the current version with no arguments:
 
 ```no-highlight
-$ poetry version
-nautobot 1.0.0-beta.2
+> poetry version
+nautobot-chatops 1.0.0-beta.2
 ```
 
 Bump pre-release versions using `prerelease`:
 
 ```no-highlight
-$ poetry version prerelease
+> poetry version prerelease
 Bumping version from 1.0.0-beta.2 to 1.0.0-beta.3
 ```
 
 For major versions, use `major`:
 
 ```no-highlight
-$ poetry version major
+> poetry version major
 Bumping version from 1.0.0-beta.2 to 1.0.0
 ```
 
 For patch versions, use `minor`:
 
 ```no-highlight
-$ poetry version minor
+> poetry version minor
 Bumping version from 1.0.0 to 1.1.0
 ```
 
 And lastly, for patch versions, you guessed it, use `patch`:
 
 ```no-highlight
-$ poetry version patch
+> poetry version patch
 Bumping version from 1.1.0 to 1.1.1
 ```
 
@@ -115,49 +97,118 @@ Please see the [official Poetry documentation on `version`](https://python-poetr
 
 ### Update the Changelog
 
-!!! note
-    This example uses 1.4.3, but change the version number to match your version.
-
-Create a release branch off of `develop` (`git checkout -b release-1.4.3 develop`)
-
-Generate release notes with `towncrier build --version 1.4.3` and answer `yes` to the prompt `Is it okay if I remove those files? [Y/n]:`. This will update the release notes in `docs/admin/release_notes/version_1.4.md`, stage that file in git, and `git rm` all the fragments that have now been incorporated into the release notes.
-
-!!! note
-    There is now an invoke task to generate release notes
-    `invoke generate-release-notes --version 2.1.0`
-
-Run `invoke markdownlint` to make sure the generated release notes pass the linter checks.
-
-Check the git diff to verify the changes are correct (`git diff --cached`).
-
-Commit and push the staged changes.
-
 !!! important
     The changelog must adhere to the [Keep a Changelog](https://keepachangelog.com/) style guide.
 
-### Submit Pull Requests
+This guide uses `1.4.2` as the new version in its examples, so change it to match the version you bumped to in the previous step! Every. single. time. you. copy/paste commands :)
 
-Submit a pull request to merge your release branch into `develop`. Once merged, submit another pull request titled `**"Release vX.Y.Z"**` to merge the `develop` branch into `main`. Copy the documented release notes into the pull request's body.
+First, create a release branch off of `develop` (`git switch -c release-1.4.2 develop`).
+
+> You will need to have the project's poetry environment built at this stage, as the towncrier command runs **locally only**. If you don't have it, run `poetry install` first.
+
+Generate release notes with `invoke generate-release-notes --version 1.4.2` and answer `yes` to the prompt `Is it okay if I remove those files? [Y/n]:`. This will update the release notes in `docs/admin/release_notes/version_X.Y.md`, stage that file in git, and `git rm` all the fragments that have now been incorporated into the release notes.
+
+There are two possibilities:
+
+1. If you're releasing a new major or minor version, rename the `version_X.Y.md` file accordingly (e.g. rename to `docs/admin/release_notes/version_1.4.md`). Update the `Release Overview` and add this new page to the table of contents within `mkdocs.yml`.
+2. If you're releasing a patch version, copy your version's section from the `version_X.Y.md` file into the already existing `docs/admin/release_notes/version_1.4.md` file. Delete the `version_X.Y.md` file.
+
+Stage all the changes (`git add`) and check the diffs to verify all of the changes are correct (`git diff --cached`).
+
+Commit `git commit -m "Release v1.4.2"` and `git push` the staged changes.
+
+### Submit Release Pull Request
+
+Submit a pull request titled `Release v1.4.2` to merge your release branch into `main`. Copy the documented release notes into the pull request's body.
+
+!!! important
+    Do not squash merge this branch into `main`. Make sure to select `Create a merge commit` when merging in GitHub.
 
 Once CI has completed on the PR, merge it.
 
-### Create a New Release
+### Create a New Release in GitHub
 
 Draft a [new release](https://github.com/nautobot/nautobot-app-chatops/releases/new) with the following parameters.
 
-* **Tag:** Current version (e.g. `v1.0.0`)
+* **Tag:** Input current version (e.g. `v1.4.2`) and select `Create new tag: v1.4.2 on publish`
 * **Target:** `main`
-* **Title:** Version and date (e.g. `v1.0.0 - 2021-06-01`)
+* **Title:** Version and date (e.g. `v1.4.2 - 2024-04-02`)
 
-Copy the description from the pull request to the release.
+Click "Generate Release Notes" and edit the auto-generated content as follows:
 
-### Bump the Development Version
+- Change the entries generated by GitHub to only the usernames of the contributors. e.g. `* Updated dockerfile by @nautobot_user in https://github.com/nautobot/nautobot-app-chatops/pull/123` -> `* @nautobot_user`.
+    - This should give you the list for the new `Contributors` section.
+    - Make sure there are no duplicated entries.
+- Replace the content of the `What's Changed` section with the description of changes from the release PR (what towncrier generated).
+- If it exists, leave the `New Contributors` list as it is.
 
-Use `poetry version patch` to bump the version to the next release and commit it to the `develop` branch.
+The release notes should look as follows:
 
-For example, if you just released `v1.1.0`:
+```markdown
+## What's Changed
+
+**Towncrier generated Changed/Fixed/Housekeeping etc. sections here**
+
+## Contributors
+
+* @alice
+* @bob
+
+## New Contributors
+
+* @bob
+
+**Full Changelog**: https://github.com/nautobot/nautobot-app-chatops/compare/v1.4.1...v1.4.2
+```
+
+Publish the release!
+
+### Create a PR from `main` back to `develop`
+
+First, sync your `main` branch with upstream changes: `git switch main && git pull`.
+
+Create a new branch from `main` called `release-1.4.2-to-develop` and use `poetry version prepatch` to bump the development version to the next release.
+
+For example, if you just released `v1.4.2`:
 
 ```no-highlight
-$ poetry version patch
-Bumping version from 1.1.0 to 1.1.1
+> git switch -c release-1.4.2-to-develop main
+Switched to a new branch 'release-1.4.2-to-develop'
+
+> poetry version prepatch
+Bumping version from 1.4.2 to 1.4.3a1
+
+> git add pyproject.toml && git commit -m "Bump version"
+
+> git push
 ```
+
+!!! important
+    Do not squash merge this branch into `develop`. Make sure to select `Create a merge commit` when merging in GitHub.
+
+Open a new PR from `release-1.4.2-to-develop` against `develop`, wait for CI to pass, and merge it.
+
+### Final checks
+
+At this stage, the CI should be running or finished for the `v1.4.2` tag and a package successfully published to PyPI and added into the GitHub Release. Double check that's the case.
+
+Documentation should also have been built for the tag on ReadTheDocs and if you're reading this page online, refresh it and look for the new version in the little version fly-out menu down at the bottom right of the page.
+
+All done!
+
+
+## LTM Releases
+
+For projects maintaining a Nautobot LTM compatible release, all development and release management is done through the `ltm-x.y` branch. The `x.y` relates to the LTM version of Nautobot it's compatible with, for example `1.6`.
+
+The process is similar to releasing from `develop`, but there is no need for post-release branch syncing because you'll release directly from the LTM branch:
+
+1. Make sure your `ltm-1.6` branch is passing CI.
+2. Create a release branch from the `ltm-1.6` branch: `git switch -c release-1.2.3 ltm-1.6`.
+3. Bump up the patch version `poetry version patch`. If you're backporting a feature instead of bugfixes, bump the minor version instead with `poetry version minor`.
+4. Generate the release notes: `invoke generate-release-notes --version 1.2.3`.
+5. Move the release notes from the generated `docs/admin/release_notes/version_X.Y.md` to `docs/admin/release_notes/version_1.2.md`.
+6. Add all the changes and `git commit -m "Release v1.2.3"`, then `git push`.
+7. Open a new PR against `ltm-1.6`. Once CI is passing in the PR, `Create a merge commit` (don't squash!).
+8. Create a New Release in GitHub - use the same steps documented [here](#create-a-new-release-in-github).
+9. Open a separate PR against `develop` to synchronize all LTM release changelogs into the latest version of the docs for visibility.
