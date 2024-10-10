@@ -253,7 +253,6 @@ def lock(context, check=False, constrain_nautobot_ver=False, constrain_python_ve
         if constrain_python_ver:
             command += f" --python {context.nautobot_chatops.python_ver}"
         try:
-            run_command(context, command, hide=True)
             output = run_command(context, command, hide=True)
             print(output.stdout, end="")
             print(output.stderr, file=sys.stderr, end="")
