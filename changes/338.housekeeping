@@ -1,1 +1,1 @@
-Remove --config option from make-migrations check.
+Fixed `invoke check-migrations`.
