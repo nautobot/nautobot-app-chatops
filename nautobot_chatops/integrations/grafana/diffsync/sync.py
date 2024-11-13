@@ -27,6 +27,9 @@ def run_dashboard_sync(overwrite: bool = False) -> Union[str, None]:
 
     Args:
         overwrite (bool): Overwrite Nautobot data and delete records that are no longer in Grafana.
+
+    Raises:
+        ImportError: If DiffSync is not installed.
     """
     if not DIFFSYNC_INSTALLED:
         raise ImportError("DiffSync is not installed. Please install DiffSync to use the grafana integration.")
@@ -60,6 +63,9 @@ def run_panels_sync(dashboard: Dashboard, overwrite: bool = False) -> Union[str,
     Args:
         dashboard (nautobot_chatops.integrations.grafana.models.Dashboard): The dashboard we are going to do a diffsync with.
         overwrite (bool): Overwrite Nautobot data and delete records that are no longer in Grafana.
+
+    Raises:
+        ImportError: If DiffSync is not installed.
     """
     if not DIFFSYNC_INSTALLED:
         raise ImportError("DiffSync is not installed. Please install DiffSync to use the grafana integration.")
@@ -93,6 +99,9 @@ def run_variables_sync(dashboard: Dashboard, overwrite: bool = False) -> Union[s
     Args:
         dashboard (nautobot_chatops.integrations.grafana.models.Dashboard): The dashboard we are going to do a diffsync with.
         overwrite (bool): Overwrite Nautobot data and delete records that are no longer in Grafana.
+
+    Raises:
+        ImportError: If DiffSync is not installed.
     """
     if not DIFFSYNC_INSTALLED:
         raise ImportError("DiffSync is not installed. Please install DiffSync to use the grafana integration.")
