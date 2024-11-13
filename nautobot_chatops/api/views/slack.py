@@ -9,13 +9,14 @@ import shlex
 from django.conf import settings
 from django.http import HttpResponse
 from django.utils.decorators import method_decorator
+from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from slack_sdk import WebClient
 
 from nautobot_chatops.dispatchers.slack import SlackDispatcher
 from nautobot_chatops.metrics import signature_error_cntr
 from nautobot_chatops.utils import check_and_enqueue_command
-from nautobot_chatops.views import SettingsControlledView
+from nautobot_chatops.views import SettingsControlledViewMixin
 from nautobot_chatops.workers import commands_help, get_commands_registry, parse_command_string
 
 # pylint: disable=logging-fstring-interpolation
@@ -65,7 +66,7 @@ def verify_signature(request):
     return True, "Signature is valid"
 
 
-class SlackView(SettingsControlledView):
+class SlackView(SettingsControlledViewMixin, View):
     """Base class for Slack views."""
 
     enable_view_setting = "enable_slack"
