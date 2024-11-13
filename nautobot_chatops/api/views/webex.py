@@ -9,13 +9,13 @@ import re
 from django.conf import settings
 from django.http import HttpResponse
 from django.utils.decorators import method_decorator
-from django.views import View
 from django.views.decorators.csrf import csrf_exempt
 from webexteamssdk import WebexTeamsAPI
 from webexteamssdk.exceptions import AccessTokenError, ApiError
 
 from nautobot_chatops.dispatchers.webex import WEBEX_CONFIG, WebexDispatcher
 from nautobot_chatops.utils import check_and_enqueue_command
+from nautobot_chatops.views import SettingsControlledView
 from nautobot_chatops.workers import commands_help, get_commands_registry, parse_command_string
 
 logger = logging.getLogger(__name__)
@@ -76,9 +76,10 @@ def verify_signature(request):
 
 
 @method_decorator(csrf_exempt, name="dispatch")
-class WebexView(View):
+class WebexView(SettingsControlledView):
     """Handle all supported inbound notifications from Webex."""
 
+    enable_view_setting = "enable_webex"
     http_method_names = ["post"]
 
     # pylint: disable=too-many-locals,too-many-return-statements,too-many-branches

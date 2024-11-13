@@ -1,13 +1,11 @@
 """Django urlpatterns declaration for nautobot_chatops app."""
 
-import logging
-
 from django.templatetags.static import static
 from django.urls import path
 from django.views.generic import RedirectView
-from nautobot.apps.config import get_app_settings_or_config
 from nautobot.extras.views import ObjectChangeLogView, ObjectNotesView
 
+from nautobot_chatops.integrations.grafana.urls import urlpatterns as grafana_urlpatterns
 from nautobot_chatops.models import AccessGrant, ChatOpsAccountLink, CommandLog, CommandToken
 from nautobot_chatops.views import (
     AccessGrantBulkDeleteView,
@@ -24,19 +22,6 @@ from nautobot_chatops.views import (
     CommandTokenListView,
     CommandTokenView,
 )
-
-if get_app_settings_or_config("nautobot_chatops", "enable_grafana"):
-    try:
-        from nautobot_chatops.integrations.grafana.urls import urlpatterns as grafana_urlpatterns
-    # pylint: disable-next=broad-except
-    except Exception:
-        grafana_urlpatterns = []
-        logger = logging.getLogger(__name__)
-        logger.warning("Grafana ChatOps integration is not available.", exc_info=True)
-else:
-    grafana_urlpatterns = []
-    logger = logging.getLogger(__name__)
-    logger.warning("Grafana ChatOps integration is not available.", exc_info=True)
 
 urlpatterns = [
     path("", CommandLogListView.as_view(), name="commandlog_list"),

@@ -7,6 +7,9 @@ to send requests and notifications to.
 from django.contrib import messages
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.shortcuts import redirect, render, reverse
+from django.template.response import TemplateResponse
+from django.views.generic import View
+from nautobot.apps.config import get_app_settings_or_config
 from nautobot.core.forms import ConfirmationForm
 from nautobot.core.views.generic import (
     BulkDeleteView,
@@ -33,21 +36,39 @@ from nautobot_chatops.integrations.grafana.forms import (
     PanelVariablesSyncForm,
 )
 from nautobot_chatops.integrations.grafana.grafana import handler
-from nautobot_chatops.integrations.grafana.models import Dashboard, Panel, PanelVariable
-from nautobot_chatops.integrations.grafana.tables import DashboardViewTable, PanelVariableViewTable, PanelViewTable
+from nautobot_chatops.integrations.grafana.models import GrafanaDashboard, GrafanaPanel, GrafanaPanelVariable
+from nautobot_chatops.integrations.grafana.tables import (
+    GrafanaDashboardTable,
+    GrafanaPanelTable,
+    GrafanaPanelVariableTable,
+)
 
 # -------------------------------------------------------------------------------------
 # Dashboard Specific Views
 # -------------------------------------------------------------------------------------
 
 
-class Dashboards(ObjectListView):
+class GrafanaView(View):
+    """Base view for Grafana views to toggle views based on constance setting."""
+
+    def dispatch(self, request, *args, **kwargs):
+        """Dispatch method for Grafana views."""
+        if not get_app_settings_or_config("nautobot_chatops", "enable_grafana"):
+            return TemplateResponse(
+                request=self.request,
+                template="nautobot_chatops_grafana/grafana_disabled.html",
+                context={},
+            )
+        return super().dispatch(request, *args, **kwargs)
+
+
+class Dashboards(GrafanaView, ObjectListView):
     """View for showing dashboard configuration."""
 
-    queryset = Dashboard.objects.all()
+    queryset = GrafanaDashboard.objects.all()
     filterset = DashboardFilter
     filterset_form = DashboardsFilterForm
-    table = DashboardViewTable
+    table = GrafanaDashboardTable
     action_buttons = ("add", "import")
     template_name = "nautobot_chatops_grafana/dashboard_list.html"
 
@@ -56,14 +77,14 @@ class Dashboards(ObjectListView):
         return "nautobot_chatops.dashboard_read"
 
 
-class DashboardsCreate(PermissionRequiredMixin, ObjectEditView):
+class DashboardsCreate(GrafanaView, PermissionRequiredMixin, ObjectEditView):
     """View for creating a new Dashboard."""
 
     permission_required = "nautobot_chatops.dashboard_add"
-    model = Dashboard
-    queryset = Dashboard.objects.all()
+    model = GrafanaDashboard
+    queryset = GrafanaDashboard.objects.all()
     model_form = DashboardsForm
-    default_return_url = "plugins:nautobot_chatops:grafanadashboards"
+    default_return_url = "plugins:nautobot_chatops:grafanadashboard_list"
 
 
 class DashboardsEdit(DashboardsCreate):
@@ -72,11 +93,11 @@ class DashboardsEdit(DashboardsCreate):
     permission_required = "nautobot_chatops.dashboard_edit"
 
 
-class DashboardsSync(PermissionRequiredMixin, ObjectDeleteView):
+class DashboardsSync(GrafanaView, PermissionRequiredMixin, ObjectDeleteView):
     """View for syncing Grafana Dashboards with the Grafana API."""
 
     permission_required = "nautobot_chatops.dashboard_sync"
-    default_return_url = "plugins:nautobot_chatops:grafanadashboards"
+    default_return_url = "plugins:nautobot_chatops:grafanadashboard_list"
 
     def get(self, request, **kwargs):
         """Get request for the Dashboard Sync view."""
@@ -86,7 +107,7 @@ class DashboardsSync(PermissionRequiredMixin, ObjectDeleteView):
             {
                 "form": ConfirmationForm(initial=request.GET),
                 "grafana_url": handler.config.grafana_url,
-                "return_url": reverse("plugins:nautobot_chatops:grafanadashboards"),
+                "return_url": reverse("plugins:nautobot_chatops:grafanadashboard_list"),
             },
         )
 
@@ -104,44 +125,44 @@ class DashboardsSync(PermissionRequiredMixin, ObjectDeleteView):
             else:
                 messages.success(request, "Grafana Dashboards synchronization complete!")
 
-        return redirect(reverse("plugins:nautobot_chatops:grafanadashboards"))
+        return redirect(reverse("plugins:nautobot_chatops:grafanadashboard_list"))
 
 
-class DashboardsDelete(PermissionRequiredMixin, ObjectDeleteView):
+class DashboardsDelete(GrafanaView, PermissionRequiredMixin, ObjectDeleteView):
     """View for deleting one or more Dashboard records."""
 
-    queryset = Dashboard.objects.all()
+    queryset = GrafanaDashboard.objects.all()
     permission_required = "nautobot_chatops.dashboard_delete"
-    default_return_url = "plugins:nautobot_chatops:grafanadashboards"
+    default_return_url = "plugins:nautobot_chatops:grafanadashboard_list"
 
 
-class DashboardsBulkImportView(BulkImportView):
+class DashboardsBulkImportView(GrafanaView, BulkImportView):
     """View for bulk import of eox notices."""
 
-    queryset = Dashboard.objects.all()
-    table = DashboardViewTable
-    default_return_url = "plugins:nautobot_chatops:grafanadashboards"
+    queryset = GrafanaDashboard.objects.all()
+    table = GrafanaDashboardTable
+    default_return_url = "plugins:nautobot_chatops:grafanadashboard_list"
 
 
-class DashboardsBulkDeleteView(BulkDeleteView):
+class DashboardsBulkDeleteView(GrafanaView, BulkDeleteView):
     """View for deleting one or more Dashboard records."""
 
-    queryset = Dashboard.objects.all()
-    table = DashboardViewTable
+    queryset = GrafanaDashboard.objects.all()
+    table = GrafanaDashboardTable
     bulk_delete_url = "plugins:nautobot_chatops:grafanadashboard_bulk_delete"
-    default_return_url = "plugins:nautobot_chatops:grafanadashboards"
+    default_return_url = "plugins:nautobot_chatops:grafanadashboard_list"
 
     def get_required_permission(self):
         """Return required delete permission."""
         return "nautobot_chatops.dashboard_delete"
 
 
-class DashboardBulkEditView(BulkEditView):
+class DashboardBulkEditView(GrafanaView, BulkEditView):
     """View for editing one or more Dashboard records."""
 
-    queryset = Dashboard.objects.all()
+    queryset = GrafanaDashboard.objects.all()
     filterset = DashboardFilter
-    table = DashboardViewTable
+    table = GrafanaDashboardTable
     form = DashboardBulkEditForm
     bulk_edit_url = "plugins:nautobot_chatops:grafanadashboard_bulk_edit"
 
@@ -155,13 +176,13 @@ class DashboardBulkEditView(BulkEditView):
 # -------------------------------------------------------------------------------------
 
 
-class Panels(ObjectListView):
+class Panels(GrafanaView, ObjectListView):
     """View for showing panels configuration."""
 
-    queryset = Panel.objects.all()
+    queryset = GrafanaPanel.objects.all()
     filterset = PanelFilter
     filterset_form = PanelsFilterForm
-    table = PanelViewTable
+    table = GrafanaPanelTable
     action_buttons = ("add", "import")
     template_name = "nautobot_chatops_grafana/panel_list.html"
 
@@ -170,14 +191,14 @@ class Panels(ObjectListView):
         return "nautobot_chatops.panel_read"
 
 
-class PanelsCreate(PermissionRequiredMixin, ObjectEditView):
+class PanelsCreate(GrafanaView, PermissionRequiredMixin, ObjectEditView):
     """View for creating a new Panel."""
 
     permission_required = "nautobot_chatops.panel_add"
-    model = Panel
-    queryset = Panel.objects.all()
+    model = GrafanaPanel
+    queryset = GrafanaPanel.objects.all()
     model_form = PanelsForm
-    default_return_url = "plugins:nautobot_chatops:grafanapanel"
+    default_return_url = "plugins:nautobot_chatops:grafanapanel_list"
 
 
 class PanelsEdit(PanelsCreate):
@@ -186,15 +207,15 @@ class PanelsEdit(PanelsCreate):
     permission_required = "nautobot_chatops.panel_edit"
 
 
-class PanelsSync(PermissionRequiredMixin, ObjectEditView):
+class PanelsSync(GrafanaView, PermissionRequiredMixin, ObjectEditView):
     """View for synchronizing data between the Grafana Dashboard Panels and Nautobot."""
 
     permission_required = "nautobot_chatops.panel_sync"
-    model = Panel
-    queryset = Panel.objects.all()
+    model = GrafanaPanel
+    queryset = GrafanaPanel.objects.all()
     model_form = PanelsSyncForm
     template_name = "nautobot_chatops_grafana/panels_sync.html"
-    default_return_url = "plugins:nautobot_chatops:grafanapanel"
+    default_return_url = "plugins:nautobot_chatops:grafanapanel_list"
 
     def get_permission_required(self):
         """Permissions over-rride for the Panels Sync view."""
@@ -205,9 +226,9 @@ class PanelsSync(PermissionRequiredMixin, ObjectEditView):
         dashboard_pk = request.POST.get("dashboard")
         if not dashboard_pk:
             messages.error(request, "Unable to determine Grafana Dashboard!")
-            return redirect(reverse("plugins:nautobot_chatops:grafanapanel"))
+            return redirect(reverse("plugins:nautobot_chatops:grafanapanel_list"))
 
-        dashboard = Dashboard.objects.get(pk=dashboard_pk)
+        dashboard = GrafanaDashboard.objects.get(pk=dashboard_pk)
 
         sync_data = run_panels_sync(dashboard, request.POST.get("delete") == "true")
         if not sync_data:
@@ -215,44 +236,44 @@ class PanelsSync(PermissionRequiredMixin, ObjectEditView):
         else:
             messages.success(request, "Grafana Dashboards synchronization complete!")
 
-        return redirect(reverse("plugins:nautobot_chatops:grafanapanel"))
+        return redirect(reverse("plugins:nautobot_chatops:grafanapanel_list"))
 
 
-class PanelsDelete(PermissionRequiredMixin, ObjectDeleteView):
+class PanelsDelete(GrafanaView, PermissionRequiredMixin, ObjectDeleteView):
     """View for deleting one or more Panel records."""
 
-    queryset = Panel.objects.all()
+    queryset = GrafanaPanel.objects.all()
     permission_required = "nautobot_chatops.panel_delete"
-    default_return_url = "plugins:nautobot_chatops:grafanapanel"
+    default_return_url = "plugins:nautobot_chatops:grafanapanel_list"
 
 
-class PanelsBulkImportView(BulkImportView):
+class PanelsBulkImportView(GrafanaView, BulkImportView):
     """View for bulk import of Panels."""
 
-    queryset = Panel.objects.all()
-    table = PanelViewTable
-    default_return_url = "plugins:nautobot_chatops:grafanapanel"
+    queryset = GrafanaPanel.objects.all()
+    table = GrafanaPanelTable
+    default_return_url = "plugins:nautobot_chatops:grafanapanel_list"
 
 
-class PanelsBulkDeleteView(BulkDeleteView):
+class PanelsBulkDeleteView(GrafanaView, BulkDeleteView):
     """View for deleting one or more Panels records."""
 
-    queryset = Panel.objects.all()
-    table = PanelViewTable
+    queryset = GrafanaPanel.objects.all()
+    table = GrafanaPanelTable
     bulk_delete_url = "plugins:nautobot_chatops:grafanapanel_bulk_delete"
-    default_return_url = "plugins:nautobot_chatops:grafanapanel"
+    default_return_url = "plugins:nautobot_chatops:grafanapanel_list"
 
     def get_required_permission(self):
         """Return required delete permission."""
         return "nautobot_chatops.panel_delete"
 
 
-class PanelsBulkEditView(BulkEditView):
+class PanelsBulkEditView(GrafanaView, BulkEditView):
     """View for editing one or more Panels records."""
 
-    queryset = Panel.objects.all()
+    queryset = GrafanaPanel.objects.all()
     filterset = PanelsFilterForm
-    table = PanelViewTable
+    table = GrafanaPanelTable
     form = PanelsBulkEditForm
     bulk_edit_url = "plugins:nautobot_chatops:grafanapanel_bulk_edit"
 
@@ -266,13 +287,13 @@ class PanelsBulkEditView(BulkEditView):
 # -------------------------------------------------------------------------------------
 
 
-class Variables(ObjectListView):
+class Variables(GrafanaView, ObjectListView):
     """View for showing panel-variables configuration."""
 
-    queryset = PanelVariable.objects.all()
+    queryset = GrafanaPanelVariable.objects.all()
     filterset = VariableFilter
     filterset_form = PanelVariablesFilterForm
-    table = PanelVariableViewTable
+    table = GrafanaPanelVariableTable
     action_buttons = ("add", "import")
     template_name = "nautobot_chatops_grafana/variable_list.html"
 
@@ -281,14 +302,14 @@ class Variables(ObjectListView):
         return "nautobot_chatops.panelvariable_read"
 
 
-class VariablesCreate(PermissionRequiredMixin, ObjectEditView):
+class VariablesCreate(GrafanaView, PermissionRequiredMixin, ObjectEditView):
     """View for creating a new Variable."""
 
     permission_required = "nautobot_chatops.panelvariable_add"
-    model = PanelVariable
-    queryset = PanelVariable.objects.all()
+    model = GrafanaPanelVariable
+    queryset = GrafanaPanelVariable.objects.all()
     model_form = PanelVariablesForm
-    default_return_url = "plugins:nautobot_chatops:grafanapanelvariables"
+    default_return_url = "plugins:nautobot_chatops:grafanapanelvariable_list"
 
 
 class VariablesEdit(VariablesCreate):
@@ -297,41 +318,41 @@ class VariablesEdit(VariablesCreate):
     permission_required = "nautobot_chatops.panelvariable_edit"
 
 
-class VariablesDelete(PermissionRequiredMixin, ObjectDeleteView):
+class VariablesDelete(GrafanaView, PermissionRequiredMixin, ObjectDeleteView):
     """View for deleting one or more Variable records."""
 
-    queryset = PanelVariable.objects.all()
+    queryset = GrafanaPanelVariable.objects.all()
     permission_required = "nautobot_chatops.panelvariable_delete"
-    default_return_url = "plugins:nautobot_chatops:grafanapanelvariables"
+    default_return_url = "plugins:nautobot_chatops:grafanapanelvariable_list"
 
 
-class VariablesBulkImportView(BulkImportView):
+class VariablesBulkImportView(GrafanaView, BulkImportView):
     """View for bulk import of Variables."""
 
-    queryset = PanelVariable.objects.all()
-    table = PanelVariableViewTable
-    default_return_url = "plugins:nautobot_chatops:grafanapanelvariables"
+    queryset = GrafanaPanelVariable.objects.all()
+    table = GrafanaPanelVariableTable
+    default_return_url = "plugins:nautobot_chatops:grafanapanelvariable_list"
 
 
-class VariablesBulkDeleteView(BulkDeleteView):
+class VariablesBulkDeleteView(GrafanaView, BulkDeleteView):
     """View for deleting one or more Variable records."""
 
-    queryset = PanelVariable.objects.all()
-    table = PanelVariableViewTable
+    queryset = GrafanaPanelVariable.objects.all()
+    table = GrafanaPanelVariableTable
     bulk_delete_url = "plugins:nautobot_chatops:grafanapanelvariable_bulk_delete"
-    default_return_url = "plugins:nautobot_chatops:grafanapanelvariables"
+    default_return_url = "plugins:nautobot_chatops:grafanapanelvariable_list"
 
     def get_required_permission(self):
         """Return required delete permission."""
         return "nautobot_chatops.panelvariable_delete"
 
 
-class VariablesBulkEditView(BulkEditView):
+class VariablesBulkEditView(GrafanaView, BulkEditView):
     """View for editing one or more Variable records."""
 
-    queryset = PanelVariable.objects.all()
+    queryset = GrafanaPanelVariable.objects.all()
     filterset = PanelVariablesFilterForm
-    table = PanelVariableViewTable
+    table = GrafanaPanelVariableTable
     form = PanelVariablesBulkEditForm
     bulk_edit_url = "plugins:nautobot_chatops:grafanapanelvariable_bulk_edit"
 
@@ -340,15 +361,15 @@ class VariablesBulkEditView(BulkEditView):
         return "nautobot_chatops.panelvariable_edit"
 
 
-class VariablesSync(PermissionRequiredMixin, ObjectEditView):
+class VariablesSync(GrafanaView, PermissionRequiredMixin, ObjectEditView):
     """View for synchronizing data between the Grafana Dashboard Variables and Nautobot."""
 
     permission_required = "nautobot_chatops.panelvariable_sync"
-    model = PanelVariable
-    queryset = PanelVariable.objects.all()
+    model = GrafanaPanelVariable
+    queryset = GrafanaPanelVariable.objects.all()
     model_form = PanelVariablesSyncForm
     template_name = "nautobot_chatops_grafana/variables_sync.html"
-    default_return_url = "plugins:nautobot_chatops:grafanapanelvariables"
+    default_return_url = "plugins:nautobot_chatops:grafanapanelvariable_list"
 
     def get_permission_required(self):
         """Permissions over-ride for the Panels Sync view."""
@@ -359,9 +380,9 @@ class VariablesSync(PermissionRequiredMixin, ObjectEditView):
         dashboard_pk = request.POST.get("dashboard")
         if not dashboard_pk:
             messages.error(request, "Unable to determine Grafana Dashboard!")
-            return redirect(reverse("plugins:nautobot_chatops:grafanapanelvariables"))
+            return redirect(reverse("plugins:nautobot_chatops:grafanapanelvariable_list"))
 
-        dashboard = Dashboard.objects.get(pk=dashboard_pk)
+        dashboard = GrafanaDashboard.objects.get(pk=dashboard_pk)
 
         sync_data = run_variables_sync(dashboard, request.POST.get("delete") == "true")
         if not sync_data:
@@ -369,4 +390,4 @@ class VariablesSync(PermissionRequiredMixin, ObjectEditView):
         else:
             messages.success(request, "Grafana Dashboard Variable synchronization complete!")
 
-        return redirect(reverse("plugins:nautobot_chatops:grafanapanelvariables"))
+        return redirect(reverse("plugins:nautobot_chatops:grafanapanelvariable_list"))
