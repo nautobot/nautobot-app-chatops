@@ -4,7 +4,7 @@ The views implemented in this module act as endpoints for various chat platforms
 to send requests and notifications to.
 """
 
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.exceptions import ImproperlyConfigured
 from django.http import Http404
 from django.shortcuts import render
@@ -24,7 +24,7 @@ from nautobot_chatops.models import AccessGrant, ChatOpsAccountLink, CommandLog,
 from nautobot_chatops.tables import AccessGrantTable, ChatOpsAccountLinkTable, CommandLogTable, CommandTokenTable
 
 
-class SettingsControlledViewMixin(LoginRequiredMixin):
+class SettingsControlledViewMixin:
     """View mixin to enable or disable views based on constance settings."""
 
     enable_view_setting = None
@@ -35,8 +35,6 @@ class SettingsControlledViewMixin(LoginRequiredMixin):
             raise ImproperlyConfigured(
                 "Property `enable_view_setting` must be defined on the view to use SettingsControlledView."
             )
-        if not request.user.is_authenticated:
-            return self.handle_no_permission()
         if not get_app_settings_or_config("nautobot_chatops", self.enable_view_setting):
             raise Http404
         return super().dispatch(request, *args, **kwargs)

@@ -1,5 +1,4 @@
 Fixed django-constance not being upgradable due to this app accessing the database before migrations could run.
 Removed conditional logic for adding grafana navigation menu items.
 Fixed Nautobot v2.3 incompatibility caused by saved views not being able to determine the models' table classes.
-Fixed mattermost, msteams, slack and webex integration API views that were not requiring the user to be logged in.
 Added exception handling for cases where diffsync is not installed, since it's marked as optional.
