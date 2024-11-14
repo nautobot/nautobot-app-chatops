@@ -4,6 +4,8 @@ The views implemented in this module act as endpoints for various chat platforms
 to send requests and notifications to.
 """
 
+import logging
+
 from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.shortcuts import redirect, render, reverse
@@ -19,7 +21,6 @@ from nautobot.core.views.generic import (
     ObjectListView,
 )
 
-from nautobot_chatops.integrations.grafana.diffsync.sync import run_dashboard_sync, run_panels_sync, run_variables_sync
 from nautobot_chatops.integrations.grafana.filters import DashboardFilter, PanelFilter, VariableFilter
 from nautobot_chatops.integrations.grafana.forms import (
     DashboardBulkEditForm,
@@ -34,13 +35,31 @@ from nautobot_chatops.integrations.grafana.forms import (
     PanelVariablesForm,
     PanelVariablesSyncForm,
 )
-from nautobot_chatops.integrations.grafana.grafana import handler
 from nautobot_chatops.integrations.grafana.models import GrafanaDashboard, GrafanaPanel, GrafanaPanelVariable
 from nautobot_chatops.integrations.grafana.tables import (
     GrafanaDashboardTable,
     GrafanaPanelTable,
     GrafanaPanelVariableTable,
 )
+
+logger = logging.getLogger(__name__)
+
+
+try:
+    from nautobot_chatops.integrations.grafana.diffsync.sync import (
+        run_dashboard_sync,
+        run_panels_sync,
+        run_variables_sync,
+    )
+    from nautobot_chatops.integrations.grafana.grafana import handler
+
+    GRAFANA_DEPENDENCIES_INSTALLED = True
+    GRAFANA_DEPENDENCIES_EXCEPTION = None
+except ImportError as exc:
+    logger.warning("Grafana integration dependencies are missing. Grafana views will be disabled.")
+    GRAFANA_DEPENDENCIES_INSTALLED = False
+    GRAFANA_DEPENDENCIES_EXCEPTION = exc
+
 
 # -------------------------------------------------------------------------------------
 # Dashboard Specific Views
@@ -60,6 +79,9 @@ class GrafanaViewMixin(LoginRequiredMixin):
                 template="nautobot_chatops_grafana/grafana_disabled.html",
                 context={},
             )
+        if not GRAFANA_DEPENDENCIES_INSTALLED:
+            logger.error("Grafana integration dependencies are missing. Grafana views will be disabled.")
+            raise GRAFANA_DEPENDENCIES_EXCEPTION
         return super().dispatch(request, *args, **kwargs)
 
 
