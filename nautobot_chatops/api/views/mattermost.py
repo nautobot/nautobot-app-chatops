@@ -15,6 +15,7 @@ from nautobot_chatops.dispatchers.mattermost import Driver, MattermostDispatcher
 from nautobot_chatops.metrics import signature_error_cntr
 from nautobot_chatops.models import CommandToken
 from nautobot_chatops.utils import check_and_enqueue_command
+from nautobot_chatops.views import SettingsControlledViewMixin
 from nautobot_chatops.workers import commands_help, get_commands_registry, parse_command_string
 
 # pylint: disable=logging-fstring-interpolation
@@ -67,8 +68,14 @@ def verify_signature(request):
     return True, "Signature is valid"
 
 
+class MattermostView(SettingsControlledViewMixin, View):
+    """Base class for Mattermost views."""
+
+    enable_view_setting = "enable_mattermost"
+
+
 @method_decorator(csrf_exempt, name="dispatch")
-class MattermostSlashCommandView(View):
+class MattermostSlashCommandView(MattermostView):
     """Handle notifications from a Mattermost /command."""
 
     http_method_names = ["post"]
@@ -117,7 +124,7 @@ class MattermostSlashCommandView(View):
 
 
 @method_decorator(csrf_exempt, name="dispatch")
-class MattermostInteractionView(View):
+class MattermostInteractionView(MattermostView):
     """Handle notifications resulting from a Mattermost interactive block."""
 
     http_method_names = ["post"]

@@ -18,7 +18,6 @@ from django.db.models import Q
 from nautobot.extras.context_managers import web_request_context
 
 from nautobot_chatops.choices import AccessGrantTypeChoices, CommandStatusChoices
-from nautobot_chatops.integrations.utils import ALL_INTEGRATIONS, DISABLED_INTEGRATIONS
 from nautobot_chatops.metrics import command_histogram, request_command_cntr
 from nautobot_chatops.models import AccessGrant
 from nautobot_chatops.utils import create_command_log
@@ -58,6 +57,11 @@ _commands_registry = {
 
 def get_commands_registry():
     """Populate and return the _commands_registry dictionary with all known commands, subcommands, and workers."""
+    from nautobot_chatops.integrations.utils import (  # pylint: disable=import-outside-toplevel
+        ALL_INTEGRATIONS,
+        DISABLED_INTEGRATIONS,
+    )
+
     global _commands_registry  # pylint: disable=global-variable-not-assigned
     global _registry_initialized  # pylint: disable=global-statement
     if _registry_initialized:

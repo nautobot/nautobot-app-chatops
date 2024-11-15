@@ -1,0 +1,1 @@
+Added a "grafana disabled" view in case a user clicks on a grafana nav menu item when the grafana integration is disabled.

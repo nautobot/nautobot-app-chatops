@@ -3,6 +3,13 @@
 from django_tables2 import LinkColumn, TemplateColumn
 from nautobot.core.tables import BaseTable, ButtonsColumn, ToggleColumn
 
+# pylint: disable=W0611
+from nautobot_chatops.integrations.grafana.tables import (  # noqa: F401 unused-import these imports are required for list views to work
+    GrafanaDashboardTable,
+    GrafanaPanelTable,
+    GrafanaPanelVariableTable,
+)
+
 from .models import AccessGrant, ChatOpsAccountLink, CommandLog, CommandToken
 
 

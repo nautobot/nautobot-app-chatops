@@ -146,36 +146,29 @@ PLUGINS_CONFIG = {
         # | `session_cache_timeout` | Controls session cache | No | `86400` |
         # = Chat Platforms ===================
         # - Mattermost -----------------------
-        "enable_mattermost": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_MATTERMOST")),
         "mattermost_api_token": os.environ.get("MATTERMOST_API_TOKEN"),
         "mattermost_url": os.environ.get("MATTERMOST_URL"),
         # - Microsoft Teams ------------------
-        "enable_ms_teams": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_MS_TEAMS")),
         "microsoft_app_id": os.environ.get("MICROSOFT_APP_ID"),
         "microsoft_app_password": os.environ.get("MICROSOFT_APP_PASSWORD"),
         # - Slack ----------------------------
-        "enable_slack": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_SLACK")),
         "slack_api_token": os.environ.get("SLACK_API_TOKEN"),
         "slack_app_token": os.environ.get("SLACK_APP_TOKEN"),
         "slack_signing_secret": os.environ.get("SLACK_SIGNING_SECRET"),
         "slack_slash_command_prefix": os.environ.get("SLACK_SLASH_COMMAND_PREFIX", "/"),
         # - Cisco Webex ----------------------
-        "enable_webex": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_WEBEX")),
         "webex_msg_char_limit": int(os.getenv("WEBEX_MSG_CHAR_LIMIT", "7439")),
         "webex_signing_secret": os.environ.get("WEBEX_SIGNING_SECRET"),
         "webex_token": os.environ.get("WEBEX_ACCESS_TOKEN"),
         # = Integrations =====================
         # - Cisco ACI ------------------------
-        "enable_aci": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_ACI")),
         "aci_creds": {x: os.environ[x] for x in os.environ if "APIC" in x},
         # - AWX / Ansible Tower --------------
-        "enable_ansible": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_ANSIBLE")),
         "tower_password": os.getenv("NAUTOBOT_TOWER_PASSWORD"),
         "tower_uri": os.getenv("NAUTOBOT_TOWER_URI"),
         "tower_username": os.getenv("NAUTOBOT_TOWER_USERNAME"),
         "tower_verify_ssl": is_truthy(os.getenv("NAUTOBOT_TOWER_VERIFY_SSL", "true")),
         # - Arista CloudVision ---------------
-        "enable_aristacv": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_ARISTACV")),
         "aristacv_cvaas_url": os.environ.get("ARISTACV_CVAAS_URL"),
         "aristacv_cvaas_token": os.environ.get("ARISTACV_CVAAS_TOKEN"),
         "aristacv_cvp_host": os.environ.get("ARISTACV_CVP_HOST"),
@@ -184,7 +177,6 @@ PLUGINS_CONFIG = {
         "aristacv_cvp_username": os.environ.get("ARISTACV_CVP_USERNAME"),
         "aristacv_on_prem": is_truthy(os.environ.get("ARISTACV_ON_PREM")),
         # - Grafana --------------------------
-        "enable_grafana": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_GRAFANA")),
         "grafana_url": os.environ.get("GRAFANA_URL", ""),
         "grafana_api_key": os.environ.get("GRAFANA_API_KEY", ""),
         "grafana_default_width": 0,
@@ -194,26 +186,48 @@ PLUGINS_CONFIG = {
         "grafana_org_id": 1,
         "grafana_default_tz": "America/Denver",
         # - IPFabric --------------------------
-        "enable_ipfabric": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_IPFABRIC")),
         "ipfabric_api_token": os.environ.get("IPFABRIC_API_TOKEN"),
         "ipfabric_host": os.environ.get("IPFABRIC_HOST"),
         "ipfabric_timeout": os.environ.get("IPFABRIC_TIMEOUT", 15),
         "ipfabric_verify": is_truthy(os.environ.get("IPFABRIC_VERIFY", True)),
         # - Cisco Meraki ---------------------
-        "enable_meraki": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_MERAKI")),
         "meraki_dashboard_api_key": os.environ.get("MERAKI_API_KEY"),
         # - Palo Alto Panorama ---------------
-        "enable_panorama": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_PANORAMA")),
         "panorama_host": os.environ.get("PANORAMA_HOST"),
         "panorama_password": os.environ.get("PANORAMA_PASSWORD"),
         "panorama_user": os.environ.get("PANORAMA_USER"),
         # - Cisco NSO ------------------------
-        "enable_nso": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_NSO")),
         "nso_url": os.environ.get("NSO_URL"),
         "nso_username": os.environ.get("NSO_USERNAME"),
         "nso_password": os.environ.get("NSO_PASSWORD"),
         "nso_request_timeout": os.environ.get("NSO_REQUEST_TIMEOUT", 60),
     },
 }
+if os.getenv("NAUTOBOT_CHATOPS_ENABLE_MATTERMOST", "") != "":
+    PLUGINS_CONFIG["nautobot_chatops"]["enable_mattermost"] = (
+        is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_MATTERMOST")),
+    )
+if os.getenv("NAUTOBOT_CHATOPS_ENABLE_MS_TEAMS", "") != "":
+    PLUGINS_CONFIG["nautobot_chatops"]["enable_ms_teams"] = is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_MS_TEAMS"))
+if os.getenv("NAUTOBOT_CHATOPS_ENABLE_SLACK", "") != "":
+    PLUGINS_CONFIG["nautobot_chatops"]["enable_slack"] = is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_SLACK"))
+if os.getenv("NAUTOBOT_CHATOPS_ENABLE_WEBEX", "") != "":
+    PLUGINS_CONFIG["nautobot_chatops"]["enable_webex"] = is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_WEBEX"))
+if os.getenv("NAUTOBOT_CHATOPS_ENABLE_ACI", "") != "":
+    PLUGINS_CONFIG["nautobot_chatops"]["enable_aci"] = is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_ACI"))
+if os.getenv("NAUTOBOT_CHATOPS_ENABLE_ANSIBLE", "") != "":
+    PLUGINS_CONFIG["nautobot_chatops"]["enable_ansible"] = is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_ANSIBLE"))
+if os.getenv("NAUTOBOT_CHATOPS_ENABLE_ARISTACV", "") != "":
+    PLUGINS_CONFIG["nautobot_chatops"]["enable_aristacv"] = is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_ARISTACV"))
+if os.getenv("NAUTOBOT_CHATOPS_ENABLE_GRAFANA", "") != "":
+    PLUGINS_CONFIG["nautobot_chatops"]["enable_grafana"] = is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_GRAFANA"))
+if os.getenv("NAUTOBOT_CHATOPS_ENABLE_IPFABRIC", "") != "":
+    PLUGINS_CONFIG["nautobot_chatops"]["enable_ipfabric"] = is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_IPFABRIC"))
+if os.getenv("NAUTOBOT_CHATOPS_ENABLE_MERAKI", "") != "":
+    PLUGINS_CONFIG["nautobot_chatops"]["enable_meraki"] = is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_MERAKI"))
+if os.getenv("NAUTOBOT_CHATOPS_ENABLE_PANORAMA", "") != "":
+    PLUGINS_CONFIG["nautobot_chatops"]["enable_panorama"] = is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_PANORAMA"))
+if os.getenv("NAUTOBOT_CHATOPS_ENABLE_NSO", "") != "":
+    PLUGINS_CONFIG["nautobot_chatops"]["enable_nso"] = is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_NSO"))
 
 METRICS_ENABLED = is_truthy(os.getenv("NAUTOBOT_METRICS_ENABLED"))
