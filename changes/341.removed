@@ -1,1 +1,0 @@
-Removed all grafana integration API files since there we no API views provided by grafana integration.

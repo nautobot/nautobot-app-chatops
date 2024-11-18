@@ -5687,10 +5687,9 @@ aristacv = ["certifi", "cloudvision", "cvprac", "protobuf"]
 grafana = ["diffsync", "isodate", "pydantic", "schema-enforcer", "termcolor"]
 ipfabric = ["ipfabric", "netutils"]
 meraki = ["meraki"]
-nautobot = ["nautobot"]
 panorama = ["defusedxml", "ipaddr", "netmiko", "netutils", "pan-os-python"]
 
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.13"
-content-hash = "5b6c4aa8fc1e0118c781d057256b14222689eb001d10e070281a241bd5033a92"
+content-hash = "ad68c716ef369fde92f50ce853a1ae1da4a0eadc4dd65a25e97b2e65f7df4e62"
