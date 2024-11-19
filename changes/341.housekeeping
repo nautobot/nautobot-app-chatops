@@ -1,1 +1,0 @@
-Fixed dev environment nautobot_config.py to fall back to constance if environment variable is not used.

@@ -2,6 +2,37 @@
 # v3.1 Release Notes
 
 <!-- towncrier release notes start -->
+## [v3.1.1 (2024-11-18)](https://github.com/nautobot/nautobot-app-chatops/releases/tag/v3.1.1)
+
+### Added
+
+- [#341](https://github.com/nautobot/nautobot-app-chatops/issues/341) - Added a "grafana disabled" view in case a user clicks on a grafana nav menu item when the grafana integration is disabled.
+
+### Removed
+
+- [#341](https://github.com/nautobot/nautobot-app-chatops/issues/341) - Removed all grafana integration API files since there are no API views provided by grafana integration.
+
+### Fixed
+
+- [#341](https://github.com/nautobot/nautobot-app-chatops/issues/341) - Fixed django-constance not being upgradable due to this app accessing the database before migrations could run.
+- [#341](https://github.com/nautobot/nautobot-app-chatops/issues/341) - Removed conditional logic for adding grafana navigation menu items.
+- [#341](https://github.com/nautobot/nautobot-app-chatops/issues/341) - Fixed Nautobot v2.3 incompatibility caused by saved views not being able to determine the models' table classes.
+- [#341](https://github.com/nautobot/nautobot-app-chatops/issues/341) - Added exception handling for cases where diffsync is not installed, since it's marked as optional.
+
+### Dependencies
+
+- [#333](https://github.com/nautobot/nautobot-app-chatops/issues/333) - Fixed slack-sdk to version ^3.19.0 for `files_upload_v2`.
+
+### Documentation
+
+- [#331](https://github.com/nautobot/nautobot-app-chatops/issues/331) - Fix unrecognized relative link and anchors.
+
+### Housekeeping
+
+- [#0](https://github.com/nautobot/nautobot-app-chatops/issues/0) - Rebaked from the cookie `nautobot-app-v2.4.0`.
+- [#339](https://github.com/nautobot/nautobot-app-chatops/issues/339) - Changed model_class_name in .cookiecutter.json to a valid model to help with drift management.
+- [#341](https://github.com/nautobot/nautobot-app-chatops/issues/341) - Fixed dev environment nautobot_config.py to fall back to constance if environment variable is not used.
+
 ## [v3.1.0 (2024-09-30)](https://github.com/nautobot/nautobot-app-chatops/releases/tag/v3.1.0)
 
 ### Added
