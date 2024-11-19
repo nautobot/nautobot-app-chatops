@@ -23,9 +23,7 @@ from .constants import (
     COMMAND_TOKEN_COMMENT_HELP_TEXT,
     COMMAND_TOKEN_TOKEN_HELP_TEXT,
 )
-from .integrations.grafana.models import Dashboard as GrafanaDashboard
-from .integrations.grafana.models import Panel as GrafanaPanel
-from .integrations.grafana.models import PanelVariable as GrafanaPanelVariable
+from .integrations.grafana.models import GrafanaDashboard, GrafanaPanel, GrafanaPanelVariable
 
 
 class CommandLog(PrimaryModel):  # pylint: disable=nb-string-field-blank-null

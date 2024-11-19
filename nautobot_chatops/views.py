@@ -5,7 +5,10 @@ to send requests and notifications to.
 """
 
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.core.exceptions import ImproperlyConfigured
+from django.http import Http404
 from django.shortcuts import render
+from nautobot.apps.config import get_app_settings_or_config
 from nautobot.core.forms import restrict_form_fields
 from nautobot.core.utils.requests import normalize_querydict
 from nautobot.core.views.generic import BulkDeleteView, ObjectDeleteView, ObjectEditView, ObjectListView, ObjectView
@@ -19,6 +22,22 @@ from nautobot_chatops.filters import (
 )
 from nautobot_chatops.models import AccessGrant, ChatOpsAccountLink, CommandLog, CommandToken
 from nautobot_chatops.tables import AccessGrantTable, ChatOpsAccountLinkTable, CommandLogTable, CommandTokenTable
+
+
+class SettingsControlledViewMixin:
+    """View mixin to enable or disable views based on constance settings."""
+
+    enable_view_setting = None
+
+    def dispatch(self, request, *args, **kwargs):
+        """Return a 404 if the view is not enabled in the settings."""
+        if not getattr(self, "enable_view_setting", None):
+            raise ImproperlyConfigured(
+                "Property `enable_view_setting` must be defined on the view to use SettingsControlledView."
+            )
+        if not get_app_settings_or_config("nautobot_chatops", self.enable_view_setting):
+            raise Http404
+        return super().dispatch(request, *args, **kwargs)
 
 
 class CommandLogListView(PermissionRequiredMixin, ObjectListView):

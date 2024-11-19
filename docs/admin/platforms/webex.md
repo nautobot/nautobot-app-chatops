@@ -28,7 +28,7 @@
      - secret: (enter a secret string that you don't mind having passed around as plaintext)
    - Change the `resource` to "attachmentActions" and run the API call again to create a second webhook.
 4. Configure the `webex_signing_secret` in your `.creds.env` to match the Webhook secret string that you selected above.
-5. Proceed to the [Installation Guide](../install.md#Install-Guide) section.
+5. Proceed to the [Installation Guide](../install.md#install-guide) section.
 
 ## Deprecation Warning
 

@@ -1,13 +1,8 @@
 """App additions to the Nautobot navigation menu."""
 
-from nautobot.apps.config import get_app_settings_or_config
 from nautobot.apps.ui import NavMenuAddButton, NavMenuGroup, NavMenuItem, NavMenuTab
 
-if get_app_settings_or_config("nautobot_chatops", "enable_grafana"):
-    from .integrations.grafana.navigation import items as grafana_items
-else:
-    grafana_items = ()
-
+from nautobot_chatops.integrations.grafana.navigation import items as grafana_items
 
 items = [
     NavMenuItem(

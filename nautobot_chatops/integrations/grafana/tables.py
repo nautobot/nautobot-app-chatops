@@ -3,29 +3,29 @@
 from django_tables2 import BooleanColumn, Column, TemplateColumn
 from nautobot.core.tables import BaseTable, ButtonsColumn, ToggleColumn
 
-from nautobot_chatops.integrations.grafana.models import Dashboard, Panel, PanelVariable
+from nautobot_chatops.integrations.grafana.models import GrafanaDashboard, GrafanaPanel, GrafanaPanelVariable
 
 
-class DashboardViewTable(BaseTable):  # pylint: disable=nb-sub-class-name
+class GrafanaDashboardTable(BaseTable):  # pylint: disable=nb-sub-class-name
     """Table for rendering panels for dashboards in the grafana app."""
 
     pk = ToggleColumn()
 
-    actions = ButtonsColumn(Dashboard, buttons=("changelog", "edit", "delete"))
+    actions = ButtonsColumn(GrafanaDashboard, buttons=("changelog", "edit", "delete"))
 
     class Meta(BaseTable.Meta):  # pylint: disable=too-few-public-methods
         """Meta for class DashboardViewTable."""
 
-        model = Dashboard
+        model = GrafanaDashboard
         fields = ("pk", "dashboard_slug", "dashboard_uid", "friendly_name", "actions")
 
 
-class PanelViewTable(BaseTable):  # pylint: disable=nb-sub-class-name
+class GrafanaPanelTable(BaseTable):  # pylint: disable=nb-sub-class-name
     """Table for rendering panels for dashboards in the grafana app."""
 
     pk = ToggleColumn()
 
-    actions = ButtonsColumn(Panel, buttons=("changelog", "edit", "delete"))
+    actions = ButtonsColumn(GrafanaPanel, buttons=("changelog", "edit", "delete"))
 
     chat_command = TemplateColumn(
         template_code="<span class='text-muted'><i>/grafana get-{{ record.command_name }}</i></span>",
@@ -36,16 +36,16 @@ class PanelViewTable(BaseTable):  # pylint: disable=nb-sub-class-name
     class Meta(BaseTable.Meta):  # pylint: disable=too-few-public-methods
         """Meta for class PanelViewTable."""
 
-        model = Panel
+        model = GrafanaPanel
         fields = ("pk", "chat_command", "command_name", "friendly_name", "panel_id", "dashboard", "active", "actions")
 
 
-class PanelVariableViewTable(BaseTable):  # pylint: disable=nb-sub-class-name
+class GrafanaPanelVariableTable(BaseTable):  # pylint: disable=nb-sub-class-name
     """Table for rendering panel variables for dashboards in the grafana app."""
 
     pk = ToggleColumn()
 
-    actions = ButtonsColumn(PanelVariable, buttons=("changelog", "edit", "delete"))
+    actions = ButtonsColumn(GrafanaPanelVariable, buttons=("changelog", "edit", "delete"))
     value = TemplateColumn(
         template_code=(
             "{% if record.value %}<pre class='small'>{{ record.value }}</pre>{% else %}{{ record.value}}{% endif %}"
@@ -58,7 +58,7 @@ class PanelVariableViewTable(BaseTable):  # pylint: disable=nb-sub-class-name
     class Meta(BaseTable.Meta):  # pylint: disable=too-few-public-methods
         """Meta for class PanelVariableViewTable."""
 
-        model = PanelVariable
+        model = GrafanaPanelVariable
         fields = [
             "pk",
             "panel",

@@ -16,6 +16,7 @@ from webexteamssdk.exceptions import AccessTokenError, ApiError
 
 from nautobot_chatops.dispatchers.webex import WEBEX_CONFIG, WebexDispatcher
 from nautobot_chatops.utils import check_and_enqueue_command
+from nautobot_chatops.views import SettingsControlledViewMixin
 from nautobot_chatops.workers import commands_help, get_commands_registry, parse_command_string
 
 logger = logging.getLogger(__name__)
@@ -76,9 +77,10 @@ def verify_signature(request):
 
 
 @method_decorator(csrf_exempt, name="dispatch")
-class WebexView(View):
+class WebexView(SettingsControlledViewMixin, View):
     """Handle all supported inbound notifications from Webex."""
 
+    enable_view_setting = "enable_webex"
     http_method_names = ["post"]
 
     # pylint: disable=too-many-locals,too-many-return-statements,too-many-branches
