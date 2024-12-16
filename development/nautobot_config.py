@@ -201,6 +201,11 @@ PLUGINS_CONFIG = {
         "nso_username": os.environ.get("NSO_USERNAME"),
         "nso_password": os.environ.get("NSO_PASSWORD"),
         "nso_request_timeout": os.environ.get("NSO_REQUEST_TIMEOUT", 60),
+        # - Slurpit --------------------------
+        "enable_slurpit": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_SLURPIT")),
+        "slurpit_host": os.environ.get("SLURPIT_HOST"),
+        "slurpit_token": os.environ.get("SLURPIT_API_TOKEN"),
+        "slurpit_verify": is_truthy(os.environ.get("SLURPIT_VERIFY", True)),
     },
 }
 if os.getenv("NAUTOBOT_CHATOPS_ENABLE_MATTERMOST", "") != "":
@@ -229,5 +234,7 @@ if os.getenv("NAUTOBOT_CHATOPS_ENABLE_PANORAMA", "") != "":
     PLUGINS_CONFIG["nautobot_chatops"]["enable_panorama"] = is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_PANORAMA"))
 if os.getenv("NAUTOBOT_CHATOPS_ENABLE_NSO", "") != "":
     PLUGINS_CONFIG["nautobot_chatops"]["enable_nso"] = is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_NSO"))
+if os.getenv("NAUTOBOT_CHATOPS_ENABLE_SLURPIT", "") != "":
+    PLUGINS_CONFIG["nautobot_chatops"]["enable_slurpit"] = is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_SLURPIT"))
 
 METRICS_ENABLED = is_truthy(os.getenv("NAUTOBOT_METRICS_ENABLED"))

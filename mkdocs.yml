@@ -117,6 +117,7 @@ nav:
           - "user/integrations/meraki.md"
           - "user/integrations/panorama.md"
           - "user/integrations/nso.md"
+          - "user/integrations/slurpit.md"
   - Administrator Guide:
       - Install and Configure: "admin/install.md"
       - Platforms:
@@ -133,6 +134,7 @@ nav:
           - "admin/integrations/meraki.md"
           - "admin/integrations/panorama.md"
           - "admin/integrations/nso.md"
+          - "admin/integrations/slurpit.md"
       - Upgrade: "admin/upgrade.md"
       - Uninstall: "admin/uninstall.md"
       - Compatibility Matrix: "admin/compatibility_matrix.md"
