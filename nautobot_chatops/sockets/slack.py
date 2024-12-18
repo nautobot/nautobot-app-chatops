@@ -4,6 +4,7 @@ import asyncio
 import json
 import shlex
 
+from asgiref.sync import sync_to_async
 from django.conf import settings
 from slack_sdk.socket_mode.aiohttp import SocketModeClient
 from slack_sdk.socket_mode.request import SocketModeRequest
@@ -71,7 +72,7 @@ async def main():
             client.logger.error("%s", err)
             return
 
-        registry = get_commands_registry()
+        registry = await sync_to_async(get_commands_registry)()
 
         if command not in registry:
             SlackDispatcher(context).send_markdown(commands_help(prefix=SLASH_PREFIX))
@@ -210,7 +211,7 @@ async def main():
 
         client.logger.info(f"command: {command}, subcommand: {subcommand}, params: {params}")
 
-        registry = get_commands_registry()
+        registry = await sync_to_async(get_commands_registry)()
 
         if command not in registry:
             SlackDispatcher(context).send_markdown(commands_help(prefix=SLASH_PREFIX))
@@ -241,7 +242,7 @@ async def main():
             client.logger.error("%s", err)
             return
 
-        registry = get_commands_registry()
+        registry = await sync_to_async(get_commands_registry)()
 
         if command not in registry:
             SlackDispatcher(context).send_markdown(commands_help(prefix=SLASH_PREFIX))
