@@ -1,0 +1,1 @@
+Resolve the issue of a synchronous function running in the async sockets.
