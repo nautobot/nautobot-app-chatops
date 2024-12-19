@@ -2,6 +2,12 @@
 # v3.1 Release Notes
 
 <!-- towncrier release notes start -->
+## [v3.1.2 (2024-12-19)](https://github.com/nautobot/nautobot-app-chatops/releases/tag/v3.1.2)
+
+### Fixed
+
+- [#348](https://github.com/nautobot/nautobot-app-chatops/issues/348) - Fixed failure when running slack socket mode.
+
 ## [v3.1.1 (2024-11-18)](https://github.com/nautobot/nautobot-app-chatops/releases/tag/v3.1.1)
 
 ### Added
