@@ -36,7 +36,7 @@ class DatabaseSyncToAsync(SyncToAsync):
 
 
 # The class is TitleCased, but we want to encourage use as a callable/decorator
-database_sync_to_async = DatabaseSyncToAsync
+database_sync_to_async = DatabaseSyncToAsync  # pylint: disable=invalid-name
 
 
 def get_app_config_part(prefix: str) -> dict:
