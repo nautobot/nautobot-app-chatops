@@ -22,10 +22,12 @@ logger = logging.getLogger(__name__)
 class DatabaseSyncToAsync(SyncToAsync):
     """
     SyncToAsync version that cleans up old database connections when it exits.
+
     Sourced from Channels, see NOTICE file for license information.
     """
 
     def thread_handler(self, loop, *args, **kwargs):
+        """Run the handler in a thread, closing old database connections before and after."""
         close_old_connections()
         try:
             return super().thread_handler(loop, *args, **kwargs)
@@ -35,6 +37,7 @@ class DatabaseSyncToAsync(SyncToAsync):
 
 # The class is TitleCased, but we want to encourage use as a callable/decorator
 database_sync_to_async = DatabaseSyncToAsync
+
 
 def get_app_config_part(prefix: str) -> dict:
     """Get part of the app config.
