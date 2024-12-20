@@ -4,7 +4,7 @@ import logging
 import sys
 from datetime import datetime, timezone
 
-from asgiref.sync import sync_to_async
+from channels.db import database_sync_to_async
 from django.conf import settings
 from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
@@ -113,7 +113,7 @@ def create_command_log(dispatcher, registry, command, subcommand, params=()):
     )
 
 
-@sync_to_async
+@database_sync_to_async
 def socket_check_and_enqueue_command(*args, **kwargs):
     """Calls check_and_enqueue_command() when in Socket mode."""
     return check_and_enqueue_command(*args, **kwargs)
