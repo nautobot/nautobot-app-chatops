@@ -2,6 +2,12 @@
 # v3.1 Release Notes
 
 <!-- towncrier release notes start -->
+## [v3.1.3 (2024-12-20)](https://github.com/nautobot/nautobot-app-chatops/releases/tag/v3.1.3)
+
+### Fixed
+
+- [#355](https://github.com/nautobot/nautobot-app-chatops/issues/355) - Fixed "Server has gone away" error in Slack Socket Mode.
+
 ## [v3.1.2 (2024-12-19)](https://github.com/nautobot/nautobot-app-chatops/releases/tag/v3.1.2)
 
 ### Fixed
