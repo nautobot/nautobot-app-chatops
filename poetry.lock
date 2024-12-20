@@ -636,25 +636,6 @@ files = [
 pycparser = "*"
 
 [[package]]
-name = "channels"
-version = "4.2.0"
-description = "Brings async, event-driven capabilities to Django."
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "channels-4.2.0-py3-none-any.whl", hash = "sha256:6b75bc8d6888fb7236e7e7bf1948520b72d296ad08216a242fc56b1db0ffde1a"},
-    {file = "channels-4.2.0.tar.gz", hash = "sha256:d9e707487431ba5dbce9af982970dab3b0efd786580fadb99e45dca5e39fdd59"},
-]
-
-[package.dependencies]
-asgiref = ">=3.6.0,<4"
-Django = ">=4.2"
-
-[package.extras]
-daphne = ["daphne (>=4.0.0)"]
-tests = ["async-timeout", "coverage (>=4.5,<5.0)", "pytest", "pytest-asyncio", "pytest-django"]
-
-[[package]]
 name = "charset-normalizer"
 version = "3.4.0"
 description = "The Real First Universal Charset Detector. Open, modern and actively maintained alternative to Chardet."
@@ -5711,4 +5692,4 @@ panorama = ["defusedxml", "ipaddr", "netmiko", "netutils", "pan-os-python"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<3.13"
-content-hash = "c71adb8f4527879e3b5b78f33b41dbe4f1fb8b06c721ba6bf40a7dce2e3ce1e9"
+content-hash = "ad68c716ef369fde92f50ce853a1ae1da4a0eadc4dd65a25e97b2e65f7df4e62"
