@@ -161,3 +161,4 @@ Set up integrations using the specific guides:
 - [Cisco Meraki](./integrations/meraki.md)
 - [Cisco NSO](./integrations/nso.md)
 - [Palo Alto Panorama](./integrations/panorama.md)
+- [Slurpit](./integrations/slurpit.md)
