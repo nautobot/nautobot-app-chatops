@@ -4,8 +4,9 @@ import logging
 import sys
 from datetime import datetime, timezone
 
-from asgiref.sync import sync_to_async
+from asgiref.sync import SyncToAsync
 from django.conf import settings
+from django.db import close_old_connections
 from django.db.models import Q
 from django.http import HttpResponse, JsonResponse
 from nautobot.core.celery import nautobot_task
@@ -16,6 +17,26 @@ from nautobot_chatops.metrics import request_command_cntr
 from nautobot_chatops.models import AccessGrant, CommandLog
 
 logger = logging.getLogger(__name__)
+
+
+class DatabaseSyncToAsync(SyncToAsync):
+    """
+    SyncToAsync version that cleans up old database connections when it exits.
+
+    Sourced from Channels, see NOTICE file for license information.
+    """
+
+    def thread_handler(self, loop, *args, **kwargs):
+        """Run the handler in a thread, closing old database connections before and after."""
+        close_old_connections()
+        try:
+            return super().thread_handler(loop, *args, **kwargs)
+        finally:
+            close_old_connections()
+
+
+# The class is TitleCased, but we want to encourage use as a callable/decorator
+database_sync_to_async = DatabaseSyncToAsync  # pylint: disable=invalid-name
 
 
 def get_app_config_part(prefix: str) -> dict:
@@ -113,7 +134,7 @@ def create_command_log(dispatcher, registry, command, subcommand, params=()):
     )
 
 
-@sync_to_async
+@database_sync_to_async
 def socket_check_and_enqueue_command(*args, **kwargs):
     """Calls check_and_enqueue_command() when in Socket mode."""
     return check_and_enqueue_command(*args, **kwargs)
