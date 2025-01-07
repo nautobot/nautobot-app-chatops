@@ -1,40 +1,18 @@
-"""API Serializers for ChatOps App."""
+"""API serializers for nautobot_chatops."""
 
-from nautobot.core.api import NautobotModelSerializer
-from rest_framework import serializers
+from nautobot.apps.api import NautobotModelSerializer, TaggedModelSerializerMixin
 
-from nautobot_chatops.models import AccessGrant, CommandLog, CommandToken
+from nautobot_chatops import models
 
 
-class CommandTokenSerializer(NautobotModelSerializer):
-    """API serializer for interacting with CommandToken objects."""
-
-    url = serializers.HyperlinkedIdentityField(view_name="plugins-api:nautobot_chatops-api:commandtoken-detail")
+class CommandLogSerializer(NautobotModelSerializer, TaggedModelSerializerMixin):  # pylint: disable=too-many-ancestors
+    """CommandLog Serializer."""
 
     class Meta:
-        """Meta for CommandToken Serializer."""
+        """Meta attributes."""
 
-        model = CommandToken
+        model = models.CommandLog
         fields = "__all__"
 
-
-class AccessGrantSerializer(NautobotModelSerializer):
-    """API serializer for interacting with AccessGrant objects."""
-
-    url = serializers.HyperlinkedIdentityField(view_name="plugins-api:nautobot_chatops-api:accessgrant-detail")
-
-    class Meta:
-        """Meta for AccessGrant Serializer."""
-
-        model = AccessGrant
-        fields = "__all__"
-
-
-class CommandLogSerializer(NautobotModelSerializer):
-    """API serializer for interacting with CommandLog objects."""
-
-    class Meta:
-        """Meta for CommandLog Serializer."""
-
-        model = CommandLog
-        fields = "__all__"
+        # Option for disabling write for certain fields:
+        # read_only_fields = []
