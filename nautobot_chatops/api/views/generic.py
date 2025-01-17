@@ -1,19 +1,10 @@
 """API Views for Nautobot Chatops."""
 
 from nautobot.apps.api import NautobotModelViewSet
-from rest_framework.routers import APIRootView
 
 from nautobot_chatops.api.serializers import AccessGrantSerializer, CommandLogSerializer, CommandTokenSerializer
 from nautobot_chatops.filters import AccessGrantFilterSet, CommandLogFilterSet, CommandTokenFilterSet
 from nautobot_chatops.models import AccessGrant, CommandLog, CommandToken
-
-
-class NautobotChatopsRootView(APIRootView):
-    """Nautobot Chatops API root view."""
-
-    def get_view_name(self):
-        """Return name for the Nautobot Chatops API Root."""
-        return "Nautobot Chatops"
 
 
 class CommandTokenViewSet(NautobotModelViewSet):  # pylint: disable=too-many-ancestors
