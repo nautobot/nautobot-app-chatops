@@ -14,9 +14,6 @@ class CommandLogSerializer(NautobotModelSerializer, TaggedModelSerializerMixin):
         model = models.CommandLog
         fields = "__all__"
 
-        # Option for disabling write for certain fields:
-        # read_only_fields = []
-
 
 class CommandTokenSerializer(NautobotModelSerializer, TaggedModelSerializerMixin):  # pylint: disable=too-many-ancestors
     """CommandToken Serializer."""
@@ -27,9 +24,6 @@ class CommandTokenSerializer(NautobotModelSerializer, TaggedModelSerializerMixin
         model = models.CommandToken
         fields = "__all__"
 
-        # Option for disabling write for certain fields:
-        # read_only_fields = []
-
 
 class AccessGrantSerializer(NautobotModelSerializer, TaggedModelSerializerMixin):  # pylint: disable=too-many-ancestors
     """AccessGrant Serializer."""
@@ -39,6 +33,3 @@ class AccessGrantSerializer(NautobotModelSerializer, TaggedModelSerializerMixin)
 
         model = models.AccessGrant
         fields = "__all__"
-
-        # Option for disabling write for certain fields:
-        # read_only_fields = []
