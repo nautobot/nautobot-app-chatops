@@ -1,40 +1,35 @@
-"""API Serializers for ChatOps App."""
+"""API serializers for nautobot_chatops."""
 
-from nautobot.core.api import NautobotModelSerializer
-from rest_framework import serializers
+from nautobot.apps.api import NautobotModelSerializer, TaggedModelSerializerMixin
 
-from nautobot_chatops.models import AccessGrant, CommandLog, CommandToken
+from nautobot_chatops import models
 
 
-class CommandTokenSerializer(NautobotModelSerializer):
-    """API serializer for interacting with CommandToken objects."""
-
-    url = serializers.HyperlinkedIdentityField(view_name="plugins-api:nautobot_chatops-api:commandtoken-detail")
+class CommandLogSerializer(NautobotModelSerializer, TaggedModelSerializerMixin):  # pylint: disable=too-many-ancestors
+    """CommandLog Serializer."""
 
     class Meta:
-        """Meta for CommandToken Serializer."""
+        """Meta attributes."""
 
-        model = CommandToken
+        model = models.CommandLog
         fields = "__all__"
 
 
-class AccessGrantSerializer(NautobotModelSerializer):
-    """API serializer for interacting with AccessGrant objects."""
-
-    url = serializers.HyperlinkedIdentityField(view_name="plugins-api:nautobot_chatops-api:accessgrant-detail")
+class CommandTokenSerializer(NautobotModelSerializer, TaggedModelSerializerMixin):  # pylint: disable=too-many-ancestors
+    """CommandToken Serializer."""
 
     class Meta:
-        """Meta for AccessGrant Serializer."""
+        """Meta attributes."""
 
-        model = AccessGrant
+        model = models.CommandToken
         fields = "__all__"
 
 
-class CommandLogSerializer(NautobotModelSerializer):
-    """API serializer for interacting with CommandLog objects."""
+class AccessGrantSerializer(NautobotModelSerializer, TaggedModelSerializerMixin):  # pylint: disable=too-many-ancestors
+    """AccessGrant Serializer."""
 
     class Meta:
-        """Meta for CommandLog Serializer."""
+        """Meta attributes."""
 
-        model = CommandLog
+        model = models.AccessGrant
         fields = "__all__"
