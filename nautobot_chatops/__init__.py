@@ -122,6 +122,10 @@ class NautobotChatOpsConfig(NautobotAppConfig):
         "nso_username": "",
         "nso_password": "",
         "nso_request_timeout": "",
+        # - Slurpit --------------------------
+        "slurpit_host": "",
+        "slurpit_token": "",
+        "slurpit_verify": True,
     }
     constance_config = {
         "fallback_chatops_user": ConstanceConfigItem(default="chatbot", help_text="Enable Mattermost Chat Platform."),
@@ -149,6 +153,7 @@ class NautobotChatOpsConfig(NautobotAppConfig):
             default=False, help_text="Enable Panorama Integration.", field_type=bool
         ),
         "enable_nso": ConstanceConfigItem(default=False, help_text="Enable NSO Integration.", field_type=bool),
+        "enable_slurpit": ConstanceConfigItem(default=False, help_text="Enable Slurpit Integration.", field_type=bool),
     }
 
     caching_config = {}
