@@ -8,4 +8,5 @@ router = OrderedDefaultRouter()
 # add the name of your api endpoint, usually hyphenated model name in plural, e.g. "my-model-classes"
 router.register("commandlog", views.CommandLogViewSet)
 
+app_name = "nautobot_chatops-api"
 urlpatterns = router.urls
