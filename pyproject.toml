@@ -103,7 +103,6 @@ requests-mock = "^1.9.3"
 ruff = "0.5.5"
 yamllint = "*"
 toml = "*"
-mkdocs-autorefs = "1.2.0"
 
 [tool.poetry.extras]
 all = [
