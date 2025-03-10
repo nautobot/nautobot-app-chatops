@@ -33,5 +33,4 @@ router.register("accessgrant", AccessGrantViewSet)
 router.register("commandlog", CommandLogViewSet)
 
 app_name = "nautobot_chatops-api"
-
 urlpatterns += router.urls
