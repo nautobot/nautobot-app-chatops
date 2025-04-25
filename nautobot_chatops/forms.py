@@ -13,10 +13,7 @@ class CommandLogForm(NautobotModelForm):  # pylint: disable=too-many-ancestors
         """Meta attributes."""
 
         model = models.CommandLog
-        fields = [
-            "name",
-            "description",
-        ]
+        fields = "__all__"
 
 
 class CommandLogBulkEditForm(TagsBulkEditFormMixin, NautobotBulkEditForm):  # pylint: disable=too-many-ancestors
@@ -42,6 +39,6 @@ class CommandLogFilterForm(NautobotFilterForm):
     q = forms.CharField(
         required=False,
         label="Search",
-        help_text="Search within Name or Slug.",
+        help_text="Search within Name.",
     )
     name = forms.CharField(required=False, label="Name")

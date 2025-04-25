@@ -12,7 +12,9 @@ from nautobot_chatops import views
 app_name = "nautobot_chatops"
 router = NautobotUIViewSetRouter()
 
-router.register("commandlog", views.CommandLogUIViewSet)
+# The standard is for the route to be the hyphenated version of the model class name plural.
+# for example, ExampleModel would be example-models.
+router.register("command-logs", views.CommandLogUIViewSet)
 
 
 urlpatterns = [

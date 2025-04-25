@@ -1,16 +1,22 @@
 """Test CommandLog Filter."""
 
-from django.test import TestCase
+from nautobot.apps.testing import FilterTestCases
 
 from nautobot_chatops import filters, models
 from nautobot_chatops.tests import fixtures
 
 
-class CommandLogFilterTestCase(TestCase):
+class CommandLogFilterTestCase(FilterTestCases.FilterTestCase):
     """CommandLog Filter Test Case."""
 
     queryset = models.CommandLog.objects.all()
     filterset = filters.CommandLogFilterSet
+    generic_filter_tests = (
+        ("id",),
+        ("created",),
+        ("last_updated",),
+        ("name",),
+    )
 
     @classmethod
     def setUpTestData(cls):

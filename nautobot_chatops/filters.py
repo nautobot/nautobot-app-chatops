@@ -5,7 +5,7 @@ from nautobot.apps.filters import NameSearchFilterSet, NautobotFilterSet
 from nautobot_chatops import models
 
 
-class CommandLogFilterSet(NautobotFilterSet, NameSearchFilterSet):  # pylint: disable=too-many-ancestors
+class CommandLogFilterSet(NameSearchFilterSet, NautobotFilterSet):  # pylint: disable=too-many-ancestors
     """Filter for CommandLog."""
 
     class Meta:
@@ -14,4 +14,4 @@ class CommandLogFilterSet(NautobotFilterSet, NameSearchFilterSet):  # pylint: di
         model = models.CommandLog
 
         # add any fields from the model that you would like to filter your searches by using those
-        fields = ["id", "name", "description"]
+        fields = "__all__"
