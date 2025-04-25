@@ -28,9 +28,7 @@ urlpatterns = [
 
 router = OrderedDefaultRouter()
 # add the name of your api endpoint, usually hyphenated model name in plural, e.g. "my-model-classes"
-router.register("commandtoken", CommandTokenViewSet)
-router.register("accessgrant", AccessGrantViewSet)
-router.register("commandlog", CommandLogViewSet)
+router.register("command-logs", views.CommandLogViewSet)
 
 app_name = "nautobot_chatops-api"
 urlpatterns += router.urls

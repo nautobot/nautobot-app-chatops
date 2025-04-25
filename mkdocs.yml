@@ -46,12 +46,6 @@ theme:
 extra_css:
   - "assets/extra.css"
 
-# needed for RTD version flyout menu
-# jquery is not (yet) injected by RTD automatically and it might be dropped
-# as a dependency in the future
-extra_javascript:
-  - "https://code.jquery.com/jquery-3.6.0.min.js"
-
 extra:
   generator: false
   ntc_sponsor: true
@@ -102,22 +96,21 @@ plugins:
 watch:
   - "README.md"
 
+validation:
+  omitted_files: "warn"
+  absolute_links: "warn"
+  unrecognized_links: "warn"
+  anchors: "warn"
+
 nav:
   - Overview: "index.md"
   - User Guide:
       - App Overview: "user/app_overview.md"
       - Getting Started: "user/app_getting_started.md"
       - Frequently Asked Questions: "user/faq.md"
-      - Integrations:
-          - "user/integrations/aci.md"
-          - "user/integrations/ansible.md"
-          - "user/integrations/aristacv.md"
-          - "user/integrations/grafana.md"
-          - "user/integrations/ipfabric.md"
-          - "user/integrations/meraki.md"
-          - "user/integrations/panorama.md"
-          - "user/integrations/nso.md"
-          - "user/integrations/slurpit.md"
+      - External Interactions: "user/external_interactions.md"
+      - Data Models:
+          - Command Log: "models/commandlog.md"
   - Administrator Guide:
       - Install and Configure: "admin/install.md"
       - Platforms:

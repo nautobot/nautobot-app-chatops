@@ -22,18 +22,34 @@ class AccessGrantFilterForm(BootstrapMixin, forms.ModelForm):
     class Meta:
         """Metaclass attributes of AccessGrantFilterForm."""
 
-        model = AccessGrant
-
-        fields = ("command", "subcommand", "grant_type")
+        model = models.CommandLog
+        fields = "__all__"
 
 
 class AccessGrantForm(BootstrapMixin, forms.ModelForm):
     """Form for creating or editing an AccessGrant instance."""
 
-    command = forms.CharField(
-        max_length=64,
-        help_text=ACCESS_GRANT_COMMAND_HELP_TEXT,
-        widget=forms.TextInput(attrs={"autofocus": True}),
+    pk = forms.ModelMultipleChoiceField(queryset=models.CommandLog.objects.all(), widget=forms.MultipleHiddenInput)
+    description = forms.CharField(required=False)
+
+    class Meta:
+        """Meta attributes."""
+
+        nullable_fields = [
+            "description",
+        ]
+
+
+class CommandLogFilterForm(NautobotFilterForm):
+    """Filter form to filter searches."""
+
+    model = models.CommandLog
+    field_order = ["q", "name"]
+
+    q = forms.CharField(
+        required=False,
+        label="Search",
+        help_text="Search within Name.",
     )
     grant_type = forms.ChoiceField(choices=BLANK_CHOICE + AccessGrantTypeChoices.CHOICES)
 

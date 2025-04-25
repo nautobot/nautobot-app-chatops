@@ -7,8 +7,8 @@ from nautobot_chatops.choices import PlatformChoices
 from nautobot_chatops.models import AccessGrant, ChatOpsAccountLink, CommandLog, CommandToken
 
 
-class CommandLogFilterSet(BaseFilterSet):
-    """FilterSet for filtering a set of CommandLog objects."""
+class CommandLogFilterSet(NameSearchFilterSet, NautobotFilterSet):  # pylint: disable=too-many-ancestors
+    """Filter for CommandLog."""
 
     class Meta:
         """Metaclass attributes of CommandLogFilterSet."""
@@ -26,40 +26,5 @@ class CommandLogFilterSet(BaseFilterSet):
             "details",
         ]
 
-
-class AccessGrantFilterSet(BaseFilterSet):
-    """FilterSet for filtering a set of AccessGrant objects."""
-
-    class Meta:
-        """Metaclass attributes of AccessGrantFilterSet."""
-
-        model = AccessGrant
-        fields = ["command", "subcommand", "grant_type", "value"]
-
-
-class ChatOpsAccountLinkFilterSet(NautobotFilterSet):
-    """FilterSet for filtering the ChatOps Account Links."""
-
-    q = SearchFilter(
-        filter_predicates={
-            "user_id": "icontains",
-            "platform": "icontains",
-        }
-    )
-    platform = django_filters.MultipleChoiceFilter(choices=PlatformChoices)
-
-    class Meta:
-        """Metaclass attributes of ChatOpsAccountLinkFilterSet."""
-
-        model = ChatOpsAccountLink
+        # add any fields from the model that you would like to filter your searches by using those
         fields = "__all__"
-
-
-class CommandTokenFilterSet(BaseFilterSet):
-    """FilterSet for filtering a set of CommandToken objects."""
-
-    class Meta:
-        """Metaclass attributes of CommandTokenFilterSet."""
-
-        model = CommandToken
-        fields = ["comment", "platform"]
