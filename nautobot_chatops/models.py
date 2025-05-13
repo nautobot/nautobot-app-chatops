@@ -7,16 +7,27 @@ from django.urls import reverse
 from nautobot.core.models.fields import ColorField
 from nautobot.core.models.generics import PrimaryModel
 
-# Nautobot imports
-from nautobot.apps.models import PrimaryModel, extras_features
+from .choices import AccessGrantTypeChoices, CommandStatusChoices, PlatformChoices
+from .constants import (
+    ACCESS_GRANT_COMMAND_HELP_TEXT,
+    ACCESS_GRANT_NAME_HELP_TEXT,
+    ACCESS_GRANT_SUBCOMMAND_HELP_TEXT,
+    ACCESS_GRANT_VALUE_HELP_TEXT,
+    CHATOPS_USER_ID_HELP_TEXT,
+    COMMAND_LOG_COMMAND_TEXT,
+    COMMAND_LOG_PARAMS_HELP_TEXT,
+    COMMAND_LOG_PLATFORM_HELP_TEXT,
+    COMMAND_LOG_SUBCOMMAND_HELP_TEXT,
+    COMMAND_LOG_USER_ID_HELP_TEXT,
+    COMMAND_LOG_USER_NAME_HELP_TEXT,
+    COMMAND_TOKEN_COMMENT_HELP_TEXT,
+    COMMAND_TOKEN_TOKEN_HELP_TEXT,
+)
+from .integrations.grafana.models import GrafanaDashboard, GrafanaPanel, GrafanaPanelVariable
 
-# If you want to choose a specific model to overload in your class declaration, please reference the following documentation:
-# how to chose a database model: https://docs.nautobot.com/projects/core/en/stable/plugins/development/#database-models
-# If you want to use the extras_features decorator please reference the following documentation
-# https://docs.nautobot.com/projects/core/en/stable/development/core/model-checklist/#extras-features
-@extras_features("custom_links", "custom_validators", "export_templates", "graphql", "webhooks")
-class CommandLog(PrimaryModel):  # pylint: disable=too-many-ancestors
-    """Base model for Nautobot ChatOps App app."""
+
+class CommandLog(PrimaryModel):  # pylint: disable=nb-string-field-blank-null
+    """Record of a single fully-executed Nautobot command.
 
     Incomplete commands (those requiring additional user input) should not be recorded,
     nor should any "help" commands or invalid command entries.

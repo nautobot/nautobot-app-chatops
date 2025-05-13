@@ -79,12 +79,6 @@ coverage = "*"
 django-debug-toolbar = "*"
 invoke = "*"
 ipython = "*"
-pylint = "*"
-pylint-django = "*"
-pylint-nautobot = "*"
-ruff = "0.5.5"
-yamllint = "*"
-toml = "*"
 # Python implementation of markdownlint
 pymarkdownlnt = [
     {version = "0.9.26", python = "~3.8.0"},
