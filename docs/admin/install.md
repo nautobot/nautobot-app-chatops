@@ -3,15 +3,15 @@
 This guide outlines the process of enabling Nautobot ChatOps, which includes:
 
 - [Nautobot ChatOps Installation Guide](#nautobot-chatops-installation-guide)
-  - [Prerequisites](#prerequisites)
-    - [Potential Apps Conflicts](#potential-apps-conflicts)
-  - [Chat Platforms Configuration](#chat-platforms-configuration)
-  - [Installation Guide](#installation-guide)
-  - [Configuration Guide](#configuration-guide)
-  - [Granting Access to the Chat Platform](#granting-access-to-the-chat-platform)
-  - [Link Nautobot Account](#link-nautobot-account)
-  - [Test Your Chatbot](#test-your-chatbot)
-  - [Integrations Configuration](#integrations-configuration)
+    - [Prerequisites](#prerequisites)
+        - [Potential Apps Conflicts](#potential-apps-conflicts)
+    - [Chat Platforms Configuration](#chat-platforms-configuration)
+    - [Installation Guide](#installation-guide)
+    - [Configuration Guide](#configuration-guide)
+    - [Granting Access to the Chat Platform](#granting-access-to-the-chat-platform)
+    - [Link Nautobot Account](#link-nautobot-account)
+    - [Test Your Chatbot](#test-your-chatbot)
+    - [Integrations Configuration](#integrations-configuration)
 
 {% include-markdown '../glossary.md' heading-offset=1 %}
 
