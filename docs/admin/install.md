@@ -40,6 +40,7 @@ Conflicting Apps list:
 - `nautobot_plugin_chatops_grafana`
 - `nautobot_plugin_chatops_meraki`
 - `nautobot_plugin_chatops_panorama`
+- `nautobot_plugin_chatops_nautobotgpt`
 
 To prevent conflicts during `nautobot-chatops` upgrade:
 
@@ -162,3 +163,4 @@ Set up integrations using the specific guides:
 - [Cisco NSO](./integrations/nso.md)
 - [Palo Alto Panorama](./integrations/panorama.md)
 - [Slurpit](./integrations/slurpit.md)
+- [NautobotGPT](./integrations/nautobotgpt.md)
