@@ -61,3 +61,4 @@ The `nautobot-chatops` package includes multiple integrations. Each integration 
 - [Cisco NSO](./integrations/nso.md)
 - [Palo Alto Panorama](./integrations/panorama.md)
 - [Slurpit](./integrations/slurpit.md)
+- [NautobotGPT](./integrations/nautobotgpt.md)
