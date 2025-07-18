@@ -160,7 +160,9 @@ class NautobotChatOpsConfig(NautobotAppConfig):
         ),
         "enable_nso": ConstanceConfigItem(default=False, help_text="Enable NSO Integration.", field_type=bool),
         "enable_slurpit": ConstanceConfigItem(default=False, help_text="Enable Slurpit Integration.", field_type=bool),
-        "enable_nautobotgpt": ConstanceConfigItem(default=False, help_text="Enable NautobotGPT Integration.", field_type=bool),
+        "enable_nautobotgpt": ConstanceConfigItem(
+            default=False, help_text="Enable NautobotGPT Integration.", field_type=bool
+        ),
     }
 
     caching_config = {}

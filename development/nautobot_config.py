@@ -234,6 +234,8 @@ if os.getenv("NAUTOBOT_CHATOPS_ENABLE_NSO", "") != "":
 if os.getenv("NAUTOBOT_CHATOPS_ENABLE_SLURPIT", "") != "":
     PLUGINS_CONFIG["nautobot_chatops"]["enable_slurpit"] = is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_SLURPIT"))
 if os.getenv("NAUTOBOT_CHATOPS_ENABLE_NAUTOBOTGPT", "") != "":
-    PLUGINS_CONFIG["nautobot_chatops"]["enable_nautobotgpt"] = is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_NAUTOBOTGPT"))
+    PLUGINS_CONFIG["nautobot_chatops"]["enable_nautobotgpt"] = is_truthy(
+        os.getenv("NAUTOBOT_CHATOPS_ENABLE_NAUTOBOTGPT")
+    )
 
 METRICS_ENABLED = is_truthy(os.getenv("NAUTOBOT_METRICS_ENABLED"))
