@@ -18,6 +18,7 @@ _CONFLICTING_APP_NAMES = [
     "nautobot_plugin_chatops_ipfabric",
     "nautobot_plugin_chatops_meraki",
     "nautobot_plugin_chatops_panorama",
+    "nautobot_plugin_chatops_nautobotgpt",
 ]
 
 
@@ -126,6 +127,11 @@ class NautobotChatOpsConfig(NautobotAppConfig):
         "slurpit_host": "",
         "slurpit_token": "",
         "slurpit_verify": True,
+        # - NautobotGPT ---------------------
+        "nautobotgpt_url": "",
+        "nautobotgpt_username": "",
+        "nautobotgpt_password": "",
+        "nautobotgpt_model": "nautobotgpt",
     }
     constance_config = {
         "fallback_chatops_user": ConstanceConfigItem(default="chatbot", help_text="Enable Mattermost Chat Platform."),
@@ -154,6 +160,7 @@ class NautobotChatOpsConfig(NautobotAppConfig):
         ),
         "enable_nso": ConstanceConfigItem(default=False, help_text="Enable NSO Integration.", field_type=bool),
         "enable_slurpit": ConstanceConfigItem(default=False, help_text="Enable Slurpit Integration.", field_type=bool),
+        "enable_nautobotgpt": ConstanceConfigItem(default=False, help_text="Enable NautobotGPT Integration.", field_type=bool),
     }
 
     caching_config = {}
