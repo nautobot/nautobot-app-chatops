@@ -71,7 +71,7 @@ class NautobotGPT:  # pylint: disable=too-many-function-args
         self.headers["Authorization"] = f"Bearer {data.get('token')}"
 
     def ask(self, user_prompt: str, chat_id: str = "00000000-0000-0000-0000-000000000000") -> str:
-        """ "Ask a question to NautobotGPT and return the response.
+        """Ask a question to NautobotGPT and return the response.
 
         Args:
             user_prompt (str): The question or prompt to send to NautobotGPT.
