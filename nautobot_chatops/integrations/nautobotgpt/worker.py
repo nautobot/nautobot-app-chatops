@@ -39,7 +39,7 @@ def ask(dispatcher, *args):
         dispatcher.send_markdown("Please provide a question to ask NautobotGPT.")
         return CommandStatusChoices.STATUS_FAILED
 
-    question = ' '.join(''.join(word) for word in args).strip()
+    question = " ".join("".join(word) for word in args).strip()
     dispatcher.send_markdown(f"*Question:* {question}\nThinking...", ephemeral=True)
 
     response = nbgpt.ask(question)

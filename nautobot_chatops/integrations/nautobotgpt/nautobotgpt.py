@@ -55,7 +55,9 @@ class NautobotGPT:  # pylint: disable=too-many-function-args
         self.model = model
         self.headers = {"Content-Type": "application/json"}
         if not self.url or not self.username or not self.password:
-            raise ValueError("Missing required parameters for NautobotGPT access - check environment and app configuration")
+            raise ValueError(
+                "Missing required parameters for NautobotGPT access - check environment and app configuration"
+            )
         self.login_open_webui()
         self.template: str = "Format your response in markdown formatting. Use a single * for bold text, a single _ for italic text, and a single ` for inline code. For code blocks, use three backticks (```) before and after the code block. For example:\n\n```python\nprint('Hello, World!')\n```\n\n"
 
@@ -68,8 +70,8 @@ class NautobotGPT:  # pylint: disable=too-many-function-args
         data = response.json()
         self.headers["Authorization"] = f"Bearer {data.get('token')}"
 
-    def ask(self, user_prompt: str, chat_id: str="00000000-0000-0000-0000-000000000000") -> str:
-        """"Ask a question to NautobotGPT and return the response.
+    def ask(self, user_prompt: str, chat_id: str = "00000000-0000-0000-0000-000000000000") -> str:
+        """ "Ask a question to NautobotGPT and return the response.
 
         Args:
             user_prompt (str): The question or prompt to send to NautobotGPT.
