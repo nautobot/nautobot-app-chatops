@@ -42,7 +42,7 @@ class TestFunctions(SimpleTestCase):
                 ["Las Vegas", "Dallas", "Orlando"],
             ),
             ("command sub-command ar'g1", "command", "sub-command", ["ar'g1"]),
-            ("command sub-command arg1 arg\"2", "command", "sub-command", ["arg1", "arg\"2"]),
+            ('command sub-command arg1 arg"2', "command", "sub-command", ["arg1", 'arg"2']),
         ):
             command, subcommand, params = parse_command_string(string)
             self.assertEqual(command, exp_cmd)
