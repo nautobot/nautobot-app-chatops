@@ -1,7 +1,6 @@
 """Worker functions implementing Nautobot "NautobotGPT" command and subcommands."""
 
 import logging
-from collections import namedtuple
 
 from django.conf import settings
 
