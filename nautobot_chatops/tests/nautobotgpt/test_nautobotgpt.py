@@ -12,10 +12,20 @@ HERE = path.abspath(path.dirname(__file__))
 
 API_CALLS = [
     {
-        "url": "https://mockgpt/api/v1/chat/completions",
+        "url": "http://mockgpt/api/v1/auths/signin",
+        "fixture": f"{HERE}/fixtures/00_auth.json",
+        "method": "post",
+    },
+    {
+        "url": "https://mockgpt/api/v1/auths/signin",
+        "fixture": f"{HERE}/fixtures/00_auth.json",
+        "method": "post",
+    },
+    {
+        "url": "https://mockgpt/api/chat/completions",
         "fixture": f"{HERE}/fixtures/01_ask.json",
-        "method": "get",
-    }
+        "method": "post",
+    },
 ]
 
 MODEL = "nautobotgpt"
@@ -111,5 +121,4 @@ class TestFunctions(SimpleTestCase):
 
             test_nbgpt = NautobotGPT(nautobotgpt_url="https://mockgpt", username="mock", password="mock", model=MODEL)
             response = test_nbgpt.ask("What is the meaning of life?")
-            self.assertEqual(response["choices"][0]["message"]["content"], "The meaning of life is 42.")
-            self.assertEqual(response["model"], MODEL)
+            self.assertEqual(response, "The meaning of life is 42.")
