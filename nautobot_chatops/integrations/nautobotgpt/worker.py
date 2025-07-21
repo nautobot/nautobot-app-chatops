@@ -15,8 +15,6 @@ NAUTOBOTGPT_URL = settings.PLUGINS_CONFIG["nautobot_chatops"]["nautobotgpt_url"]
 NAUTOBOTGPT_LOGO_PATH = "nautobotgpt/NautobotGPT.png"
 NAUTOBOTGPT_LOGO_ALT = "NautobotGPT Logo"
 
-Origin = namedtuple("Origin", ["name", "slug"])
-
 LOGGER = logging.getLogger("nautobot_chatops.integrations.nautobotgpt")
 
 
