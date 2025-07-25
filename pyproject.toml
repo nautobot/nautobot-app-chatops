@@ -41,9 +41,9 @@ include = [
 "nautobotgpt" = "nautobot_chatops.integrations.nautobotgpt.worker:nautobotgpt"
 
 [tool.poetry.dependencies]
-python = ">=3.9.2,<3.13"
+python = ">=3.8,<3.13"
 # Used for local development
-nautobot = "^2.4.0"
+nautobot = "^2.3.5"
 Markdown = "!=3.3.5"
 PyJWT = "^2.1.0"
 PyYAML = { version = "^6.0", optional = true }
@@ -80,7 +80,10 @@ django-debug-toolbar = "<6.0.0"
 invoke = "*"
 ipython = "*"
 # Python implementation of markdownlint
-pymarkdownlnt = "~0.9.29"
+pymarkdownlnt = [
+    {version = "0.9.26", python = "~3.8.0"},
+    {version = "~0.9.29", python = ">=3.9,<3.13"},
+]
 Markdown = "*"
 responses = "^0.24.0"
 prybar = "*"
