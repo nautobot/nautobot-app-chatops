@@ -1,0 +1,42 @@
+{
+    "id": "00000000-0000-0000-0000-000000000000",
+    "email": "nautobotgpt@networktocode.com",
+    "name": "NautobotGPT",
+    "role": "user",
+    "profile_image_url": "/user.png",
+    "token": "abc.def.ghi",
+    "token_type": "Bearer",
+    "expires_at": null,
+    "permissions": {
+        "workspace": {
+            "models": false,
+            "knowledge": false,
+            "prompts": false,
+            "tools": false
+        },
+        "sharing": {
+            "public_models": false,
+            "public_knowledge": false,
+            "public_prompts": false,
+            "public_tools": false
+        },
+        "chat": {
+            "controls": false,
+            "file_upload": true,
+            "delete": true,
+            "edit": true,
+            "stt": true,
+            "tts": true,
+            "call": true,
+            "multiple_models": true,
+            "temporary": false,
+            "temporary_enforced": false
+        },
+        "features": {
+            "direct_tool_servers": false,
+            "web_search": true,
+            "image_generation": true,
+            "code_interpreter": true
+        }
+    }
+}

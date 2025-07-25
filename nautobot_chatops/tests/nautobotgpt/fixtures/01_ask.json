@@ -1,0 +1,17 @@
+{
+    "id": "nautobotgpt-00000000-0000-0000-0000-000000000000",
+    "created": 1922637014,
+    "model": "nautobotgpt",
+    "choices": [
+        {
+            "index": 0,
+            "logprobs": null,
+            "finish_reason": "stop",
+            "message": {
+                "content": "The meaning of life is 42.",
+                "role": "assistant"
+            }
+        }
+    ],
+    "object": "chat.completion"
+}
