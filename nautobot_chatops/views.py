@@ -12,8 +12,16 @@ from nautobot.apps.config import get_app_settings_or_config
 from nautobot.core.forms import restrict_form_fields
 from nautobot.core.utils.requests import normalize_querydict
 from nautobot.core.views.generic import BulkDeleteView, ObjectDeleteView, ObjectEditView, ObjectListView, ObjectView
+from nautobot.core.views.mixins import (
+    ObjectBulkDestroyViewMixin,
+    ObjectChangeLogViewMixin,
+    ObjectEditViewMixin,
+    ObjectListViewMixin,
+    ObjectNotesViewMixin,
+)
 
 from nautobot_chatops import forms
+from nautobot_chatops.api import serializers
 from nautobot_chatops.filters import (
     AccessGrantFilterSet,
     ChatOpsAccountLinkFilterSet,
@@ -57,49 +65,29 @@ class CommandLogListView(PermissionRequiredMixin, ObjectListView):
         }
 
 
-class AccessGrantListView(PermissionRequiredMixin, ObjectListView):
-    """View for listing all extant AccessGrants."""
+class AccessGrantUIViewSet(
+    ObjectBulkDestroyViewMixin,
+    ObjectChangeLogViewMixin,
+    ObjectEditViewMixin,
+    ObjectListViewMixin,
+    ObjectNotesViewMixin,
+):
+    """ViewSet for AccessGrants."""
 
-    # Set the action buttons to correspond to what there are views. If import/export are added, this should be updated
-    action_buttons = ("add",)
-    permission_required = "nautobot_chatops.view_accessgrant"
     queryset = AccessGrant.objects.all().order_by("command")
-    filterset = AccessGrantFilterSet
-    filterset_form = forms.AccessGrantFilterForm
-    table = AccessGrantTable
+    filterset_class = AccessGrantFilterSet
+    filterset_form_class = forms.AccessGrantFilterForm
+    table_class = AccessGrantTable
+    form_class = forms.AccessGrantForm
+    serializer_class = serializers.AccessGrantSerializer
+    table_class = AccessGrantTable
+    action_buttons = ("add",)
 
     def extra_context(self):
         """Add extra context for Access Grant List View."""
         return {
             "title": "Nautobot Access Grants",
         }
-
-
-class AccessGrantCreateView(PermissionRequiredMixin, ObjectEditView):
-    """View for creating a new AccessGrant."""
-
-    permission_required = "nautobot_chatops.add_accessgrant"
-    model = AccessGrant
-    queryset = AccessGrant.objects.all()
-    model_form = forms.AccessGrantForm
-    template_name = "nautobot_chatops/access_grant_edit.html"
-    default_return_url = "plugins:nautobot_chatops:accessgrant_list"
-
-
-# pylint: disable=too-many-ancestors
-class AccessGrantView(AccessGrantCreateView):
-    """View for editing an existing AccessGrant."""
-
-    permission_required = "nautobot_chatops.change_accessgrant"
-
-
-class AccessGrantBulkDeleteView(PermissionRequiredMixin, BulkDeleteView):
-    """View for deleting one or more AccessGrant records."""
-
-    permission_required = "nautobot_chatops.delete_accessgrant"
-    queryset = AccessGrant.objects.filter()
-    table = AccessGrantTable
-    default_return_url = "plugins:nautobot_chatops:accessgrant_list"
 
 
 class CommandTokenListView(PermissionRequiredMixin, ObjectListView):

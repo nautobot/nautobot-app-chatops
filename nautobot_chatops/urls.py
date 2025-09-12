@@ -3,15 +3,13 @@
 from django.templatetags.static import static
 from django.urls import path
 from django.views.generic import RedirectView
+from nautobot.apps.urls import NautobotUIViewSetRouter
 from nautobot.extras.views import ObjectChangeLogView, ObjectNotesView
 
 from nautobot_chatops.integrations.grafana.urls import urlpatterns as grafana_urlpatterns
-from nautobot_chatops.models import AccessGrant, ChatOpsAccountLink, CommandLog, CommandToken
+from nautobot_chatops.models import ChatOpsAccountLink, CommandLog, CommandToken
 from nautobot_chatops.views import (
-    AccessGrantBulkDeleteView,
-    AccessGrantCreateView,
-    AccessGrantListView,
-    AccessGrantView,
+    AccessGrantUIViewSet,
     ChatOpsAccountLinkDeleteView,
     ChatOpsAccountLinkEditView,
     ChatOpsAccountLinkListView,
@@ -23,7 +21,12 @@ from nautobot_chatops.views import (
     CommandTokenView,
 )
 
-urlpatterns = [
+app_name = "nautobot_chatops"
+router = NautobotUIViewSetRouter()
+router.register("access", viewset=AccessGrantUIViewSet)
+urlpatterns = router.urls
+
+urlpatterns += [
     path("", CommandLogListView.as_view(), name="commandlog_list"),
     path(
         "commandlog/<uuid:pk>/changelog/",
@@ -37,22 +40,6 @@ urlpatterns = [
         name="commandlog_notes",
         kwargs={"model": CommandLog},
     ),
-    path("access/", AccessGrantListView.as_view(), name="accessgrant_list"),
-    path(
-        "access/<uuid:pk>/changelog/",
-        ObjectChangeLogView.as_view(),
-        name="accessgrant_changelog",
-        kwargs={"model": AccessGrant},
-    ),
-    path(
-        "access/<uuid:pk>/notes/",
-        ObjectNotesView.as_view(),
-        name="accessgrant_notes",
-        kwargs={"model": AccessGrant},
-    ),
-    path("access/<uuid:pk>/edit/", AccessGrantView.as_view(), name="accessgrant_edit"),
-    path("access/add/", AccessGrantCreateView.as_view(), name="accessgrant_add"),
-    path("access/delete/", AccessGrantBulkDeleteView.as_view(), name="accessgrant_bulk_delete"),
     path("tokens/", CommandTokenListView.as_view(), name="commandtoken_list"),
     path(
         "tokens/<uuid:pk>/changelog/",
@@ -89,5 +76,3 @@ urlpatterns = [
     *grafana_urlpatterns,
     path("docs/", RedirectView.as_view(url=static("nautobot_chatops/docs/index.html")), name="docs"),
 ]
-
-app_name = "nautobot_chatops"
