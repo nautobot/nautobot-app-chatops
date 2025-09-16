@@ -17,6 +17,7 @@ This guide outlines the process of enabling Nautobot ChatOps, which includes:
 
 ## Prerequisites
 
+<<<<<<< HEAD
 Ensure the following before beginning the installation:
 
 - Nautobot 1.5.4 or higher is installed.
@@ -64,6 +65,10 @@ Set up your chosen chat platform:
 - [Cisco Webex](./platforms/webex.md)
 
 ## Installation Guide
+=======
+- The app is compatible with Nautobot 2.4.2 and higher.
+- Databases supported: PostgreSQL, MySQL
+>>>>>>> 99fef36 (Cookie updated by NetworkToCode Cookie Drift Manager Tool)
 
 !!! note
     Install the App manually or via Python's `pip`. For detailed information, visit the [Nautobot documentation](https://nautobot.readthedocs.io/en/latest/plugins/#install-the-package). The pip package for this App is [`nautobot-chatops`](https://pypi.org/project/nautobot-chatops/).

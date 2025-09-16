@@ -7,6 +7,7 @@ from django.urls import reverse
 from nautobot.core.models.fields import ColorField
 from nautobot.core.models.generics import PrimaryModel
 
+<<<<<<< HEAD
 from .choices import AccessGrantTypeChoices, CommandStatusChoices, PlatformChoices
 from .constants import (
     ACCESS_GRANT_COMMAND_HELP_TEXT,
@@ -24,10 +25,21 @@ from .constants import (
     COMMAND_TOKEN_TOKEN_HELP_TEXT,
 )
 from .integrations.grafana.models import GrafanaDashboard, GrafanaPanel, GrafanaPanelVariable
+=======
+# Nautobot imports
+from nautobot.apps.constants import CHARFIELD_MAX_LENGTH
+from nautobot.apps.models import PrimaryModel, extras_features
+>>>>>>> 99fef36 (Cookie updated by NetworkToCode Cookie Drift Manager Tool)
 
 
+<<<<<<< HEAD
 class CommandLog(PrimaryModel):  # pylint: disable=nb-string-field-blank-null
     """Record of a single fully-executed Nautobot command.
+=======
+    name = models.CharField(max_length=CHARFIELD_MAX_LENGTH, unique=True)
+    description = models.CharField(max_length=CHARFIELD_MAX_LENGTH, blank=True)
+    # additional model fields
+>>>>>>> 99fef36 (Cookie updated by NetworkToCode Cookie Drift Manager Tool)
 
     Incomplete commands (those requiring additional user input) should not be recorded,
     nor should any "help" commands or invalid command entries.

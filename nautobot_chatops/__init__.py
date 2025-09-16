@@ -47,6 +47,7 @@ class NautobotChatOpsConfig(NautobotAppConfig):
     """
     base_url = "chatops"
     required_settings = []
+<<<<<<< HEAD
     default_settings = {
         # = Common Settings ==================
         # Should menus, text input fields, etc. be deleted from the chat history after the user makes a selection?
@@ -156,8 +157,12 @@ class NautobotChatOpsConfig(NautobotAppConfig):
         "enable_slurpit": ConstanceConfigItem(default=False, help_text="Enable Slurpit Integration.", field_type=bool),
     }
 
+=======
+    default_settings = {}
+>>>>>>> 99fef36 (Cookie updated by NetworkToCode Cookie Drift Manager Tool)
     caching_config = {}
     docs_view_name = "plugins:nautobot_chatops:docs"
+    searchable_models = ["commandlog"]
 
     def ready(self):
         """Function invoked after all apps have been loaded."""
