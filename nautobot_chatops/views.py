@@ -80,14 +80,14 @@ class AccessGrantUIViewSet(
     table_class = AccessGrantTable
     form_class = forms.AccessGrantForm
     serializer_class = serializers.AccessGrantSerializer
-    table_class = AccessGrantTable
     action_buttons = ("add",)
 
-    def extra_context(self):
+    def get_extra_context(self, request, instance):
         """Add extra context for Access Grant List View."""
-        return {
-            "title": "Nautobot Access Grants",
-        }
+        context = super().get_extra_context(request, instance)
+        if self.action == "list":
+            context["title"] = "Nautobot Access Grants"
+        return context
 
 
 class CommandTokenListView(PermissionRequiredMixin, ObjectListView):

@@ -397,7 +397,7 @@ namespace.configure(
     {
         "nautobot_chatops": {
             ...
-            "python_ver": "3.11",
+            "python_ver": "3.12",
 	    ...
         }
     }
@@ -416,7 +416,7 @@ namespace.configure(
     {
         "nautobot_chatops": {
             ...
-            "nautobot_ver": "2.0.0",
+            "nautobot_ver": "2.4.16",
 	    ...
         }
     }
