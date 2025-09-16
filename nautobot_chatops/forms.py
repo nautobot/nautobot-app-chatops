@@ -1,6 +1,7 @@
 """Forms for nautobot_chatops."""
 
 from django import forms
+from nautobot.apps.constants import CHARFIELD_MAX_LENGTH
 from nautobot.apps.forms import NautobotBulkEditForm, NautobotFilterForm, NautobotModelForm, TagsBulkEditFormMixin
 
 from nautobot_chatops import models
@@ -20,7 +21,7 @@ class CommandLogBulkEditForm(TagsBulkEditFormMixin, NautobotBulkEditForm):  # py
     """CommandLog bulk edit form."""
 
     pk = forms.ModelMultipleChoiceField(queryset=models.CommandLog.objects.all(), widget=forms.MultipleHiddenInput)
-    description = forms.CharField(required=False)
+    description = forms.CharField(required=False, max_length=CHARFIELD_MAX_LENGTH)
 
     class Meta:
         """Meta attributes."""
