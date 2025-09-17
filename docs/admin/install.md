@@ -2,6 +2,7 @@
 
 This guide outlines the process of enabling Nautobot ChatOps, which includes:
 
+<!--- pyml disable list-anchored-indent --->
 - [Nautobot ChatOps Installation Guide](#nautobot-chatops-installation-guide)
   - [Prerequisites](#prerequisites)
     - [Potential Apps Conflicts](#potential-apps-conflicts)
@@ -13,6 +14,7 @@ This guide outlines the process of enabling Nautobot ChatOps, which includes:
   - [Link Nautobot Account](#link-nautobot-account)
   - [Test Your Chatbot](#test-your-chatbot)
   - [Integrations Configuration](#integrations-configuration)
+<!--- pyml enable list-anchored-indent --->
 
 {% include-markdown '../glossary.md' heading-offset=1 %}
 
