@@ -5,6 +5,16 @@ from nautobot.apps.api import NautobotModelSerializer, TaggedModelSerializerMixi
 from nautobot_chatops import models
 
 
+class ChatOpsAccountLinkSerializer(NautobotModelSerializer, TaggedModelSerializerMixin):
+    """ChatOpsAccountLink Serializer."""
+
+    class Meta:
+        """Meta attributes."""
+
+        model = models.ChatOpsAccountLink
+        fields = "__all__"
+
+
 class CommandLogSerializer(NautobotModelSerializer, TaggedModelSerializerMixin):  # pylint: disable=too-many-ancestors
     """CommandLog Serializer."""
 

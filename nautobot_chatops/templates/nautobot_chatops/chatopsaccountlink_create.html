@@ -1,0 +1,68 @@
+{% extends 'generic/object_edit.html' %}
+{% load static %}
+{% load form_helpers %}
+
+{% block form %}
+<div class="panel panel-default">
+    <div class="panel-body">
+        {% render_field form.email %}
+        {% render_field form.platform %}
+        <div class="form-group">
+            <label class="col-md-3 control-label"></label>
+            <div class="col-md-9 pull-right">
+                <button type="button" class="btn btn-primary" id="user-id-lookup">Look up User ID from Email</button>
+                <img id="lookup-loader" src="{% static 'img/ajax-loader.gif' %}" height="20" style="display: none;">
+            </div>
+        </div>
+        {% render_field form.user_id %}
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+$(document).ready(function() {
+    $("#user-id-lookup").click(function() {
+        let platform = $("#id_platform").val();
+        if (!platform) {
+            alert("Please select a platform");
+            return;
+        }
+        let email = $("#id_email").val();
+        if (!email) {
+            alert("Please enter an email to look up the value for");
+            return;
+        }
+
+        $("img#lookup-loader").show();
+
+        $.ajax({
+            url: "{% url 'plugins-api:nautobot_chatops-api:email_lookup' %}",
+            method: "GET",
+            headers: { "X-CSRFToken": "{{ csrf_token }" },
+            dataType: "json",
+            context: this,
+            data: {
+                email: email,
+                platform: platform,
+            },
+            success: function(data) {
+                $("#id_user_id").val(data.user_id);
+                $("img#lookup-loader").hide();
+            },
+            error: function(data) {
+                $("img#lookup-loader").hide();
+                $("#id_value").val("");
+                if (data.status == "404") {
+                    alert("No User ID found for " + email);
+                } else if (data.status == "501") {
+                    alert("Unable to look up User ID with " + email + " - sorry!");
+                } else {
+                    alert("Error " + data.status);
+                }
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

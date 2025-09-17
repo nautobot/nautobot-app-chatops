@@ -7,14 +7,13 @@ to send requests and notifications to.
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.exceptions import ImproperlyConfigured
 from django.http import Http404
-from django.shortcuts import render
 from nautobot.apps.config import get_app_settings_or_config
-from nautobot.core.forms import restrict_form_fields
-from nautobot.core.utils.requests import normalize_querydict
-from nautobot.core.views.generic import BulkDeleteView, ObjectDeleteView, ObjectEditView, ObjectListView, ObjectView
+from nautobot.core.views.generic import BulkDeleteView, ObjectEditView, ObjectListView
 from nautobot.core.views.mixins import (
     ObjectBulkDestroyViewMixin,
     ObjectChangeLogViewMixin,
+    ObjectDestroyViewMixin,
+    ObjectDetailViewMixin,
     ObjectEditViewMixin,
     ObjectListViewMixin,
     ObjectNotesViewMixin,
@@ -66,10 +65,10 @@ class CommandLogListView(PermissionRequiredMixin, ObjectListView):
 
 
 class AccessGrantUIViewSet(
+    ObjectListViewMixin,
+    ObjectEditViewMixin,
     ObjectBulkDestroyViewMixin,
     ObjectChangeLogViewMixin,
-    ObjectEditViewMixin,
-    ObjectListViewMixin,
     ObjectNotesViewMixin,
 ):
     """ViewSet for AccessGrants."""
@@ -135,67 +134,43 @@ class CommandTokenBulkDeleteView(PermissionRequiredMixin, BulkDeleteView):
     default_return_url = "plugins:nautobot_chatops:commandtoken_list"
 
 
-class ChatOpsAccountLinkListView(ObjectListView):
-    """View for listing the ChatOps Account Link objects for the user browsing."""
+class ChatOpsAccountLinkUIViewSet(
+    ObjectDetailViewMixin,
+    ObjectListViewMixin,
+    ObjectEditViewMixin,
+    ObjectDestroyViewMixin,
+    ObjectChangeLogViewMixin,
+    ObjectNotesViewMixin,
+):
+    """ViewSet for ChatOpsAccountLink."""
 
     queryset = ChatOpsAccountLink.objects.all()
+    filterset_class = ChatOpsAccountLinkFilterSet
+    filterset_form_class = forms.ChatOpsAccountLinkFilterForm
+    table_class = ChatOpsAccountLinkTable
+    form_class = forms.ChatOpsAccountLinkForm
+    serializer_class = serializers.ChatOpsAccountLinkSerializer
     action_buttons = ("add",)
-    table = ChatOpsAccountLinkTable
-    filterset = ChatOpsAccountLinkFilterSet
-    filterset_form = forms.ChatOpsAccountLinkFilterForm
 
-    def extra_context(self):
+    def get_extra_context(self, request, instance):
         """Restrict the Accounts Links that are shown to the user."""
-        user = self.request.user
-        table = self.table(self.queryset.filter(nautobot_user=user), user=user)
-        return {
-            "table": table,
-        }
+        context = super().get_extra_context(request, instance)
+        if self.action == "list":
+            user = request.user
+            table = self.table_class(self.queryset.filter(nautobot_user=user), user=user)
+            context.update(
+                {
+                    "table": table,
+                }
+            )
+        return context
 
-
-class ChatOpsAccountLinkView(ObjectView):
-    """Detail view for Account Links."""
-
-    queryset = ChatOpsAccountLink.objects.all()
-
-
-class ChatOpsAccountLinkEditView(ObjectEditView):
-    """Edit view for Account Links."""
-
-    queryset = ChatOpsAccountLink.objects.all()
-    model_form = forms.ChatOpsAccountLinkForm
-    template_name = "nautobot_chatops/chatops_account_link_edit.html"
-
-    def alter_obj(self, obj, request, url_args, url_kwargs):
-        """Store the request user on the object."""
-        obj.nautobot_user = request.user
-        return super().alter_obj(obj, request, url_args, url_kwargs)
-
-    def get(self, request, *args, **kwargs):
-        """Add the users email to the form automatically, this can be overriden by the user."""
-        obj = self.alter_obj(self.get_object(kwargs), request, args, kwargs)
-
-        initial_data = normalize_querydict(request.GET)
-        if not initial_data.get("email") and request.user.is_authenticated:
-            initial_data["email"] = request.user.email
-        form = self.model_form(instance=obj, initial=initial_data)
-        restrict_form_fields(form, request.user)
-
-        return render(
-            request,
-            self.template_name,
-            {
-                "obj": obj,
-                "obj_type": self.queryset.model._meta.verbose_name,
-                "form": form,
-                "return_url": self.get_return_url(request, obj),
-                "editing": obj.present_in_database,
-                **self.get_extra_context(request, obj),
-            },
-        )
-
-
-class ChatOpsAccountLinkDeleteView(ObjectDeleteView):
-    """Delete view for Account Links."""
-
-    queryset = ChatOpsAccountLink.objects.all()
+    def get_object(self):
+        """Set `nautobot_user` and prefill `email` on new objects."""
+        obj = super().get_object()
+        if not obj.present_in_database:
+            obj.nautobot_user = self.request.user
+            obj.email = self.request.GET.get("email") or (
+                self.request.user.email if self.request.user.is_authenticated else None
+            )
+        return obj

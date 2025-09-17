@@ -1,0 +1,72 @@
+{% extends 'generic/object_edit.html' %}
+{% load static %}
+{% load form_helpers %}
+
+<h1>{% block title %}{% if obj.present_in_database %}Editing{% else %}Add a new{% endif %} Nautobot Access Grant{% endblock %}</h1>
+
+{% block form %}
+<div class="panel panel-default">
+    <div class="panel-body">
+        {% render_field form.command %}
+        {% render_field form.subcommand %}
+        {% render_field form.grant_type %}
+        {% render_field form.name %}
+        <div class="form-group">
+            <label class="col-md-3 control-label"></label>
+            <div class="col-md-9 pull-right">
+                <button type="button" class="btn btn-primary" id="name-lookup">Look up Value from Name</button>
+                <img id="lookup-loader" src="{% static 'img/ajax-loader.gif' %}" height="20" style="display: none;">
+            </div>
+        </div>
+        {% render_field form.value %}
+    </div>
+</div>
+{% endblock %}
+
+{% block javascript %}
+<script type="text/javascript">
+$(document).ready(function() {
+    $("#name-lookup").click(function() {
+        let grant_type = $("#id_grant_type").val();
+        if (!grant_type) {
+            alert("Please select a grant type");
+            return;
+        }
+        let name = $("#id_name").val();
+        if (!name) {
+            alert("Please enter a name to look up the value for");
+            return;
+        }
+
+        $("img#lookup-loader").show();
+
+        $.ajax({
+            url: "{% url 'plugins-api:nautobot_chatops-api:access_lookup' %}",
+            method: "GET",
+            headers: { "X-CSRFToken": "{{ csrf_token }" },
+            dataType: "json",
+            context: this,
+            data: {
+                grant_type: grant_type,
+                name: name,
+            },
+            success: function(data) {
+                $("#id_value").val(data.value);
+                $("img#lookup-loader").hide();
+            },
+            error: function(data) {
+                $("img#lookup-loader").hide();
+                $("#id_value").val("");
+                if (data.status == "404") {
+                    alert("No value found for " + grant_type + ' "' + name + '"');
+                } else if (data.status == "501") {
+                    alert("Unable to look up values for " + grant_type + " - sorry!");
+                } else {
+                    alert("Error " + data.status);
+                }
+            }
+        });
+    });
+});
+</script>
+{% endblock %}
