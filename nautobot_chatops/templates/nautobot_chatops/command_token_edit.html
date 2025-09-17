@@ -1,8 +1,8 @@
-{% extends 'generic/object_edit.html' %}
+{% extends "generic/object_edit.html" %}
 {% load static %}
 {% load form_helpers %}
 
-<h1>{% block title %}{% if obj.present_in_database %}Editing{% else %}Add a new{% endif %} Nautobot Command Token{% endblock %}</h1>
+<h1>{% block title %}{% if obj.present_in_database %}Editing{% else %}Add a new{% endif %} Nautobot Command Token{% endblock title %}</h1>
 
 {% block form %}
 <div class="panel panel-default">
@@ -12,4 +12,4 @@
         {% render_field form.token %}
     </div>
 </div>
-{% endblock %}
+{% endblock form %}
