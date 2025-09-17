@@ -1,13 +1,7 @@
 """Forms for Nautobot."""
 
 from django import forms
-<<<<<<< HEAD
-from nautobot.core.forms import BootstrapMixin, StaticSelect2Multiple
-from nautobot.extras.forms import NautobotFilterForm
-=======
-from nautobot.apps.constants import CHARFIELD_MAX_LENGTH
-from nautobot.apps.forms import NautobotBulkEditForm, NautobotFilterForm, NautobotModelForm, TagsBulkEditFormMixin
->>>>>>> 99fef36 (Cookie updated by NetworkToCode Cookie Drift Manager Tool)
+from nautobot.apps.forms import BootstrapMixin, NautobotFilterForm, StaticSelect2Multiple
 
 from .choices import AccessGrantTypeChoices, PlatformChoices
 from .constants import ACCESS_GRANT_COMMAND_HELP_TEXT, COMMAND_TOKEN_TOKEN_HELP_TEXT
@@ -35,17 +29,12 @@ class AccessGrantFilterForm(BootstrapMixin, forms.ModelForm):
 class AccessGrantForm(BootstrapMixin, forms.ModelForm):
     """Form for creating or editing an AccessGrant instance."""
 
-<<<<<<< HEAD
     command = forms.CharField(
         max_length=64,
         help_text=ACCESS_GRANT_COMMAND_HELP_TEXT,
         widget=forms.TextInput(attrs={"autofocus": True}),
     )
     grant_type = forms.ChoiceField(choices=BLANK_CHOICE + AccessGrantTypeChoices.CHOICES)
-=======
-    pk = forms.ModelMultipleChoiceField(queryset=models.CommandLog.objects.all(), widget=forms.MultipleHiddenInput)
-    description = forms.CharField(required=False, max_length=CHARFIELD_MAX_LENGTH)
->>>>>>> 99fef36 (Cookie updated by NetworkToCode Cookie Drift Manager Tool)
 
     class Meta:
         """Metaclass attributes of AccessGrantForm."""

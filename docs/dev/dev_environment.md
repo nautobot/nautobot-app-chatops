@@ -36,12 +36,7 @@ This project is managed by [Python Poetry](https://python-poetry.org/) and has a
 Once you have Poetry and Docker installed you can run the following commands (in the root of the repository) to install all other development dependencies in an isolated Python virtual environment:
 
 ```shell
-<<<<<<< HEAD
-git clone git@github.com:nautobot/nautobot-app-chatops.git
-cd nautobot-plugin-chatops
-=======
 poetry self add poetry-plugin-shell
->>>>>>> 99fef36 (Cookie updated by NetworkToCode Cookie Drift Manager Tool)
 poetry shell
 poetry install
 invoke build
