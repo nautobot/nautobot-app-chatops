@@ -8,7 +8,7 @@ from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.exceptions import ImproperlyConfigured
 from django.http import Http404
 from nautobot.apps.config import get_app_settings_or_config
-from nautobot.core.views.generic import BulkDeleteView, ObjectEditView, ObjectListView
+from nautobot.core.views.generic import ObjectListView
 from nautobot.core.views.mixins import (
     ObjectBulkDestroyViewMixin,
     ObjectChangeLogViewMixin,
@@ -89,49 +89,29 @@ class AccessGrantUIViewSet(
         return context
 
 
-class CommandTokenListView(PermissionRequiredMixin, ObjectListView):
-    """View for listing all extant CommandTokens."""
+class CommandTokenUIViewSet(
+    ObjectListViewMixin,
+    ObjectEditViewMixin,
+    ObjectBulkDestroyViewMixin,
+    ObjectChangeLogViewMixin,
+    ObjectNotesViewMixin,
+):
+    """ViewSet for CommandToken."""
 
-    # Set the action buttons to correspond to what there are views. If import/export are added, this should be updated
-    action_buttons = ("add",)
-    permission_required = "nautobot_chatops.view_commandtoken"
     queryset = CommandToken.objects.all().order_by("platform")
-    filterset = CommandTokenFilterSet
-    filterset_form = forms.CommandTokenFilterForm
-    table = CommandTokenTable
+    filterset_class = CommandTokenFilterSet
+    filterset_form_class = forms.CommandTokenFilterForm
+    table_class = CommandTokenTable
+    serializer_class = serializers.CommandTokenSerializer
+    form_class = forms.CommandTokenForm
+    action_buttons = ("add",)
 
-    def extra_context(self):
-        """Add extra context for Command Token List View."""
-        return {
-            "title": "Nautobot Command Tokens",
-        }
-
-
-class CommandTokenCreateView(PermissionRequiredMixin, ObjectEditView):
-    """View for creating a new CommandToken."""
-
-    permission_required = "nautobot_chatops.add_commandtoken"
-    model = CommandToken
-    queryset = CommandToken.objects.all()
-    model_form = forms.CommandTokenForm
-    template_name = "nautobot_chatops/command_token_edit.html"
-    default_return_url = "plugins:nautobot_chatops:commandtoken_list"
-
-
-# pylint: disable=too-many-ancestors
-class CommandTokenView(CommandTokenCreateView):
-    """View for editing an existing CommandToken."""
-
-    permission_required = "nautobot_chatops.change_commandtoken"
-
-
-class CommandTokenBulkDeleteView(PermissionRequiredMixin, BulkDeleteView):
-    """View for deleting one or more CommandToken records."""
-
-    permission_required = "nautobot_chatops.delete_commandtoken"
-    queryset = CommandToken.objects.filter()
-    table = CommandTokenTable
-    default_return_url = "plugins:nautobot_chatops:commandtoken_list"
+    def get_extra_context(self, request, instance):
+        """Add extra context for Access Grant List View."""
+        context = super().get_extra_context(request, instance)
+        if self.action == "list":
+            context["title"] = "Nautobot Command Tokens"
+        return context
 
 
 class ChatOpsAccountLinkUIViewSet(
