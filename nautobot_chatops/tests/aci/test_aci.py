@@ -328,7 +328,7 @@ class TestAciMethods(unittest.TestCase):
         mocked_get_bd_subnet,
         mocked_get_contract_filters,
         mocked_get_static_path,
-    ):
+    ):  # pylint: disable=too-many-positional-arguments
         """Test get_epg_details method."""
         mocked_epg = Mock()
         mocked_epg.json.return_value = {

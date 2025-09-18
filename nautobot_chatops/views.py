@@ -45,7 +45,27 @@ class SettingsControlledViewMixin:
         return super().dispatch(request, *args, **kwargs)
 
 
+class ProcessViewMixin:
+    """Common base for UI ViewSets with optional customization."""
+
+    def _process_bulk_create_form(self, form):
+        pass
+
+    def _process_bulk_destroy_form(self, form):
+        pass
+
+    def _process_bulk_update_form(self, form):
+        pass
+
+    def _process_create_or_update_form(self, form):
+        pass
+
+    def _process_destroy_form(self, form):
+        pass
+
+
 class CommandLogUIViewSet(
+    ProcessViewMixin,
     ObjectListViewMixin,
     ObjectChangeLogViewMixin,
     ObjectNotesViewMixin,
@@ -59,7 +79,7 @@ class CommandLogUIViewSet(
     table_class = CommandLogTable
     serializer_class = serializers.CommandLogSerializer
 
-    def get_extra_context(self, request, instance):
+    def get_extra_context(self, request, instance=None):
         """Add extra context for Command Usage List View."""
         context = super().get_extra_context(request, instance)
         if self.action == "list":
@@ -68,6 +88,7 @@ class CommandLogUIViewSet(
 
 
 class AccessGrantUIViewSet(
+    ProcessViewMixin,
     ObjectListViewMixin,
     ObjectEditViewMixin,
     ObjectBulkDestroyViewMixin,
@@ -84,7 +105,7 @@ class AccessGrantUIViewSet(
     serializer_class = serializers.AccessGrantSerializer
     action_buttons = ("add",)
 
-    def get_extra_context(self, request, instance):
+    def get_extra_context(self, request, instance=None):
         """Add extra context for Access Grant List View."""
         context = super().get_extra_context(request, instance)
         if self.action == "list":
@@ -93,6 +114,7 @@ class AccessGrantUIViewSet(
 
 
 class CommandTokenUIViewSet(
+    ProcessViewMixin,
     ObjectListViewMixin,
     ObjectEditViewMixin,
     ObjectBulkDestroyViewMixin,
@@ -109,7 +131,7 @@ class CommandTokenUIViewSet(
     form_class = forms.CommandTokenForm
     action_buttons = ("add",)
 
-    def get_extra_context(self, request, instance):
+    def get_extra_context(self, request, instance=None):
         """Add extra context for Access Grant List View."""
         context = super().get_extra_context(request, instance)
         if self.action == "list":
@@ -118,6 +140,7 @@ class CommandTokenUIViewSet(
 
 
 class ChatOpsAccountLinkUIViewSet(
+    ProcessViewMixin,
     ObjectDetailViewMixin,
     ObjectListViewMixin,
     ObjectEditViewMixin,
@@ -135,7 +158,7 @@ class ChatOpsAccountLinkUIViewSet(
     serializer_class = serializers.ChatOpsAccountLinkSerializer
     action_buttons = ("add",)
 
-    def get_extra_context(self, request, instance):
+    def get_extra_context(self, request, instance=None):
         """Restrict the Accounts Links that are shown to the user."""
         context = super().get_extra_context(request, instance)
         if self.action == "list":
