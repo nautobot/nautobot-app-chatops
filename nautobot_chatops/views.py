@@ -4,11 +4,9 @@ The views implemented in this module act as endpoints for various chat platforms
 to send requests and notifications to.
 """
 
-from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.exceptions import ImproperlyConfigured
 from django.http import Http404
 from nautobot.apps.config import get_app_settings_or_config
-from nautobot.core.views.generic import ObjectListView
 from nautobot.core.views.mixins import (
     ObjectBulkDestroyViewMixin,
     ObjectChangeLogViewMixin,
@@ -47,21 +45,26 @@ class SettingsControlledViewMixin:
         return super().dispatch(request, *args, **kwargs)
 
 
-class CommandLogListView(PermissionRequiredMixin, ObjectListView):
+class CommandLogUIViewSet(
+    ObjectListViewMixin,
+    ObjectChangeLogViewMixin,
+    ObjectNotesViewMixin,
+):
     """View for listing all extant Command Logs."""
 
     action_buttons = ("export",)
-    permission_required = "nautobot_chatops.view_commandlog"
     queryset = CommandLog.objects.all().order_by("-start_time")
-    filterset = CommandLogFilterSet
-    filterset_form = forms.CommandLogFilterForm
-    table = CommandLogTable
+    filterset_class = CommandLogFilterSet
+    filterset_form_class = forms.CommandLogFilterForm
+    table_class = CommandLogTable
+    serializer_class = serializers.CommandLogSerializer
 
-    def extra_context(self):
+    def get_extra_context(self, request, instance):
         """Add extra context for Command Usage List View."""
-        return {
-            "title": "Nautobot Command Usage Records",
-        }
+        context = super().get_extra_context(request, instance)
+        if self.action == "list":
+            context["title"] = "Nautobot Command Usage Records"
+        return context
 
 
 class AccessGrantUIViewSet(
