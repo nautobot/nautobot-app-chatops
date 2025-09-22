@@ -1,11 +1,11 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% load buttons %}
 
 {% block header %}
     <div class="pull-right noprint">
         {% export_button %}
     </div>
-    <h1>{% block title %}Nautobot Command Usage Records{% endblock %}</h1>
+    <h1>{% block title %}Nautobot Command Usage Records{% endblock title %}</h1>
 {% endblock header %}
 
 {% block content %}
@@ -54,7 +54,7 @@
                 <a class="pull-right" href="?">Clear filters</a>
                 <strong>Command History</strong>
             </div>
-                {% include 'inc/table.html' %}
+                {% include "inc/table.html" %}
         </div>
     </div>
 </div>
