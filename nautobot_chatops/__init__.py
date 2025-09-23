@@ -158,6 +158,7 @@ class NautobotChatOpsConfig(NautobotAppConfig):
 
     caching_config = {}
     docs_view_name = "plugins:nautobot_chatops:docs"
+    searchable_models = ["commandlog"]
 
     def ready(self):
         """Function invoked after all apps have been loaded."""
