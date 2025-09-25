@@ -15,7 +15,7 @@ from nautobot_chatops.views import (
 
 router = NautobotUIViewSetRouter()
 router.register("", viewset=CommandLogUIViewSet)
-router.register("access", viewset=AccessGrantUIViewSet)
+router.register("access-grant", viewset=AccessGrantUIViewSet)
 router.register("account-link", viewset=ChatOpsAccountLinkUIViewSet)
 router.register("tokens", viewset=CommandTokenUIViewSet)
 

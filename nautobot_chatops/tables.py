@@ -16,6 +16,7 @@ from .models import AccessGrant, ChatOpsAccountLink, CommandLog, CommandToken
 class CommandLogTable(BaseTable):
     """Table for rendering a listing of CommandLog entries."""
 
+    pk = ToggleColumn()
     runtime = TemplateColumn(template_code="{{ record.runtime | shorter_timedelta }}")
 
     # pylint: disable=line-too-long

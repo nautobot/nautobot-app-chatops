@@ -7,26 +7,16 @@ to send requests and notifications to.
 from django.core.exceptions import ImproperlyConfigured
 from django.http import Http404
 from nautobot.apps.config import get_app_settings_or_config
+from nautobot.apps.views import NautobotUIViewSet
 from nautobot.core.views.mixins import (
-    ObjectBulkDestroyViewMixin,
     ObjectChangeLogViewMixin,
-    ObjectDestroyViewMixin,
-    ObjectDetailViewMixin,
-    ObjectEditViewMixin,
     ObjectListViewMixin,
     ObjectNotesViewMixin,
 )
 
-from nautobot_chatops import forms
+from nautobot_chatops import filters, forms, tables
 from nautobot_chatops.api import serializers
-from nautobot_chatops.filters import (
-    AccessGrantFilterSet,
-    ChatOpsAccountLinkFilterSet,
-    CommandLogFilterSet,
-    CommandTokenFilterSet,
-)
 from nautobot_chatops.models import AccessGrant, ChatOpsAccountLink, CommandLog, CommandToken
-from nautobot_chatops.tables import AccessGrantTable, ChatOpsAccountLinkTable, CommandLogTable, CommandTokenTable
 
 
 class SettingsControlledViewMixin:
@@ -45,8 +35,26 @@ class SettingsControlledViewMixin:
         return super().dispatch(request, *args, **kwargs)
 
 
-class ProcessViewMixin:
-    """Common base for UI ViewSets with optional customization."""
+class CommandLogUIViewSet(
+    ObjectListViewMixin,
+    ObjectChangeLogViewMixin,
+    ObjectNotesViewMixin,
+):
+    """View for listing all extant Command Logs."""
+
+    action_buttons = ("export",)
+    queryset = CommandLog.objects.all().order_by("-start_time")
+    filterset_class = filters.CommandLogFilterSet
+    filterset_form_class = forms.CommandLogFilterForm
+    table_class = tables.CommandLogTable
+    serializer_class = serializers.CommandLogSerializer
+
+    def get_extra_context(self, request, instance=None):
+        """Add extra context for Command Usage List View."""
+        context = super().get_extra_context(request, instance)
+        if self.action == "list":
+            context["title"] = "Nautobot Command Usage Records"
+        return context
 
     def _process_bulk_create_form(self, form):
         pass
@@ -64,46 +72,18 @@ class ProcessViewMixin:
         pass
 
 
-class CommandLogUIViewSet(
-    ProcessViewMixin,
-    ObjectListViewMixin,
-    ObjectChangeLogViewMixin,
-    ObjectNotesViewMixin,
-):
-    """View for listing all extant Command Logs."""
-
-    action_buttons = ("export",)
-    queryset = CommandLog.objects.all().order_by("-start_time")
-    filterset_class = CommandLogFilterSet
-    filterset_form_class = forms.CommandLogFilterForm
-    table_class = CommandLogTable
-    serializer_class = serializers.CommandLogSerializer
-
-    def get_extra_context(self, request, instance=None):
-        """Add extra context for Command Usage List View."""
-        context = super().get_extra_context(request, instance)
-        if self.action == "list":
-            context["title"] = "Nautobot Command Usage Records"
-        return context
-
-
 class AccessGrantUIViewSet(
-    ProcessViewMixin,
-    ObjectListViewMixin,
-    ObjectEditViewMixin,
-    ObjectBulkDestroyViewMixin,
-    ObjectChangeLogViewMixin,
-    ObjectNotesViewMixin,
+    NautobotUIViewSet,
 ):
     """ViewSet for AccessGrants."""
 
+    bulk_update_form_class = forms.AccessGrantBulkEditForm
     queryset = AccessGrant.objects.all().order_by("command")
-    filterset_class = AccessGrantFilterSet
+    filterset_class = filters.AccessGrantFilterSet
     filterset_form_class = forms.AccessGrantFilterForm
-    table_class = AccessGrantTable
+    table_class = tables.AccessGrantTable
     form_class = forms.AccessGrantForm
     serializer_class = serializers.AccessGrantSerializer
-    action_buttons = ("add",)
 
     def get_extra_context(self, request, instance=None):
         """Add extra context for Access Grant List View."""
@@ -113,23 +93,16 @@ class AccessGrantUIViewSet(
         return context
 
 
-class CommandTokenUIViewSet(
-    ProcessViewMixin,
-    ObjectListViewMixin,
-    ObjectEditViewMixin,
-    ObjectBulkDestroyViewMixin,
-    ObjectChangeLogViewMixin,
-    ObjectNotesViewMixin,
-):
+class CommandTokenUIViewSet(NautobotUIViewSet):
     """ViewSet for CommandToken."""
 
+    bulk_update_form_class = forms.CommandTokenBulkEditForm
     queryset = CommandToken.objects.all().order_by("platform")
-    filterset_class = CommandTokenFilterSet
+    filterset_class = filters.CommandTokenFilterSet
     filterset_form_class = forms.CommandTokenFilterForm
-    table_class = CommandTokenTable
+    table_class = tables.CommandTokenTable
     serializer_class = serializers.CommandTokenSerializer
     form_class = forms.CommandTokenForm
-    action_buttons = ("add",)
 
     def get_extra_context(self, request, instance=None):
         """Add extra context for Access Grant List View."""
@@ -139,37 +112,16 @@ class CommandTokenUIViewSet(
         return context
 
 
-class ChatOpsAccountLinkUIViewSet(
-    ProcessViewMixin,
-    ObjectDetailViewMixin,
-    ObjectListViewMixin,
-    ObjectEditViewMixin,
-    ObjectDestroyViewMixin,
-    ObjectChangeLogViewMixin,
-    ObjectNotesViewMixin,
-):
+class ChatOpsAccountLinkUIViewSet(NautobotUIViewSet):
     """ViewSet for ChatOpsAccountLink."""
 
+    bulk_update_form_class = forms.ChatOpsAccountLinkBulkEditForm
     queryset = ChatOpsAccountLink.objects.all()
-    filterset_class = ChatOpsAccountLinkFilterSet
+    filterset_class = filters.ChatOpsAccountLinkFilterSet
     filterset_form_class = forms.ChatOpsAccountLinkFilterForm
-    table_class = ChatOpsAccountLinkTable
+    table_class = tables.ChatOpsAccountLinkTable
     form_class = forms.ChatOpsAccountLinkForm
     serializer_class = serializers.ChatOpsAccountLinkSerializer
-    action_buttons = ("add",)
-
-    def get_extra_context(self, request, instance=None):
-        """Restrict the Accounts Links that are shown to the user."""
-        context = super().get_extra_context(request, instance)
-        if self.action == "list":
-            user = request.user
-            table = self.table_class(self.queryset.filter(nautobot_user=user), user=user)
-            context.update(
-                {
-                    "table": table,
-                }
-            )
-        return context
 
     def get_object(self):
         """Set `nautobot_user` and prefill `email` on new objects."""
