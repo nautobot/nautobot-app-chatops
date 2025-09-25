@@ -1,1 +1,1 @@
-Refactored AccessGrant model related UI views to use `NautobotUIViewSet`.
+Refactored AccessGrant model, ChatOpsAccountLink, CommandLog, CommandToken related UI views to use `NautobotUIViewSet`.
