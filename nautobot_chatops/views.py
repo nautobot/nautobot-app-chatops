@@ -123,6 +123,13 @@ class ChatOpsAccountLinkUIViewSet(NautobotUIViewSet):
     form_class = forms.ChatOpsAccountLinkForm
     serializer_class = serializers.ChatOpsAccountLinkSerializer
 
+    def get_queryset(self):
+        """Limit list view to only the user's own account links."""
+        queryset = super().get_queryset()
+        if self.action == "list":
+            queryset = queryset.filter(nautobot_user=self.request.user)
+        return queryset
+
     def get_object(self):
         """Set `nautobot_user` and prefill `email` on new objects."""
         obj = super().get_object()
