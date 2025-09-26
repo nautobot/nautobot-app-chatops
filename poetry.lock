@@ -6662,4 +6662,4 @@ slurpit = ["slurpit-sdk"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.9.2,<3.13"
-content-hash = "3bc006f9edc6dcf1932f89d7d48022a4719041663e322018e8bfe487200b95ce"
+content-hash = "8983909dba237d1f62628f6abc75eb0402f9d4ffde1f089c51758ca7c706c47a"

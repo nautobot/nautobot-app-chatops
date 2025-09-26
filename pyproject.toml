@@ -76,7 +76,7 @@ slurpit-sdk = { version = ">=0.9.55", python = ">=3.8,<=3.13", optional = true }
 
 [tool.poetry.group.dev.dependencies]
 coverage = "*"
-django-debug-toolbar = "5.2.0"
+django-debug-toolbar = "<6.0.0"
 invoke = "*"
 ipython = "*"
 # Python implementation of markdownlint

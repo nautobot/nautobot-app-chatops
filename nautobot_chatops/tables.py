@@ -74,15 +74,7 @@ class AccessGrantTable(BaseTable):
 
     value = TemplateColumn(template_code='<span style="font-family: monospace">{{ record.value }}</span>')
 
-    actions = TemplateColumn(
-        template_code="""
-<a href="{% url 'plugins:nautobot_chatops:accessgrant_changelog' pk=record.pk %}" class="btn btn-default btn-xs" title="Change log"><span class="mdi mdi-history"></span></a>
-{% if perms.nautobot_chatops.change_accessgrant %}
-<a href="{% url 'plugins:nautobot_chatops:accessgrant_edit' pk=record.pk %}" class="btn btn-xs btn-warning"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
-{% endif %}""",
-        attrs={"td": {"class": "text-right noprint"}},
-        verbose_name="",
-    )
+    actions = ButtonsColumn(AccessGrant)
 
     class Meta(BaseTable.Meta):
         """Metaclass attributes of AccessGrantTable."""
@@ -103,15 +95,7 @@ class CommandTokenTable(BaseTable):
 
     comment = TemplateColumn(template_code='<span style="font-family: monospace">{{ record.comment }}</span>')
 
-    actions = TemplateColumn(
-        template_code="""
-<a href="{% url 'plugins:nautobot_chatops:commandtoken_changelog' pk=record.pk %}" class="btn btn-default btn-xs" title="Change log"><span class="mdi mdi-history"></span></a>
-{% if perms.nautobot_chatops.change_commandtoken %}
-<a href="{% url 'plugins:nautobot_chatops:commandtoken_edit' pk=record.pk %}" class="btn btn-xs btn-warning"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
-{% endif %}""",
-        attrs={"td": {"class": "text-right noprint"}},
-        verbose_name="",
-    )
+    actions = ButtonsColumn(CommandToken)
 
     class Meta(BaseTable.Meta):
         """Metaclass attributes of CommandTokenTable."""

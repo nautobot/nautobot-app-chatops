@@ -39,7 +39,7 @@ class CommandLogUIViewSet(
     ObjectListViewMixin,
     ObjectChangeLogViewMixin,
     ObjectNotesViewMixin,
-):
+):  # pylint: disable=abstract-method
     """View for listing all extant Command Logs."""
 
     action_buttons = ("export",)
