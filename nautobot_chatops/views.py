@@ -145,6 +145,27 @@ class ChatOpsAccountLinkUIViewSet(NautobotUIViewSet):
     form_class = forms.ChatOpsAccountLinkForm
     serializer_class = serializers.ChatOpsAccountLinkSerializer
 
+    class ChatOpsAccountLinkObjectFieldsPanel(ObjectFieldsPanel):
+        """Custom ObjectFieldsPanel to override key rendering."""
+
+        def render_key(self, key, value, context):
+            """Override key rendering for nautobot_user and user_id fields."""
+            if key == "nautobot_user":
+                return "Nautobot User"
+            if key == "user_id":
+                return "ChatOps User"
+            return super().render_key(key, value, context)
+
+    object_detail_content = ObjectDetailContent(
+        panels=(
+            ChatOpsAccountLinkObjectFieldsPanel(
+                section=SectionChoices.LEFT_HALF,
+                weight=100,
+                fields="__all__",
+            ),
+        )
+    )
+
     def get_queryset(self):
         """Limit list view to only the user's own account links."""
         queryset = super().get_queryset()
