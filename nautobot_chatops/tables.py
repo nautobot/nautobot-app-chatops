@@ -73,6 +73,7 @@ class AccessGrantTable(BaseTable):
     grant_type = TemplateColumn(template_code='<span class="label label-success">{{ record.grant_type }}</span>')
 
     value = TemplateColumn(template_code='<span style="font-family: monospace">{{ record.value }}</span>')
+    name = LinkColumn()
 
     actions = ButtonsColumn(AccessGrant)
 
@@ -89,7 +90,12 @@ class CommandTokenTable(BaseTable):
 
     pk = ToggleColumn()
 
-    platform = TemplateColumn(template_code='<span style="font-family: monospace">{{ record.platform }}</span>')
+    platform = TemplateColumn(
+        template_code="""
+        <span style="font-family: monospace">
+        <a href="{% url "plugins:nautobot_chatops:commandtoken" pk=record.pk %}">{{ record.platform}}</a></span>
+        """
+    )
 
     token = TemplateColumn(template_code='<span style="font-family: monospace">{{ record.token }}</span>')
 

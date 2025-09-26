@@ -8,6 +8,8 @@ from django.core.exceptions import ImproperlyConfigured
 from django.http import Http404
 from nautobot.apps.config import get_app_settings_or_config
 from nautobot.apps.views import NautobotUIViewSet
+from nautobot.core.ui.choices import SectionChoices
+from nautobot.core.ui.object_detail import ObjectDetailContent, ObjectFieldsPanel
 from nautobot.core.views.mixins import (
     ObjectChangeLogViewMixin,
     ObjectListViewMixin,
@@ -85,6 +87,16 @@ class AccessGrantUIViewSet(
     form_class = forms.AccessGrantForm
     serializer_class = serializers.AccessGrantSerializer
 
+    object_detail_content = ObjectDetailContent(
+        panels=(
+            ObjectFieldsPanel(
+                section=SectionChoices.LEFT_HALF,
+                weight=100,
+                fields="__all__",
+            ),
+        )
+    )
+
     def get_extra_context(self, request, instance=None):
         """Add extra context for Access Grant List View."""
         context = super().get_extra_context(request, instance)
@@ -103,6 +115,16 @@ class CommandTokenUIViewSet(NautobotUIViewSet):
     table_class = tables.CommandTokenTable
     serializer_class = serializers.CommandTokenSerializer
     form_class = forms.CommandTokenForm
+
+    object_detail_content = ObjectDetailContent(
+        panels=(
+            ObjectFieldsPanel(
+                section=SectionChoices.LEFT_HALF,
+                weight=100,
+                fields="__all__",
+            ),
+        )
+    )
 
     def get_extra_context(self, request, instance=None):
         """Add extra context for Access Grant List View."""
