@@ -1,6 +1,6 @@
 """Django table classes for Nautobot."""
 
-from django_tables2 import LinkColumn, TemplateColumn
+from django_tables2 import Column, LinkColumn, TemplateColumn
 from nautobot.core.tables import BaseTable, ButtonsColumn, ToggleColumn
 
 # pylint: disable=W0611
@@ -73,7 +73,7 @@ class AccessGrantTable(BaseTable):
     grant_type = TemplateColumn(template_code='<span class="label label-success">{{ record.grant_type }}</span>')
 
     value = TemplateColumn(template_code='<span style="font-family: monospace">{{ record.value }}</span>')
-    name = LinkColumn()
+    name = Column(linkify=True)
 
     actions = ButtonsColumn(AccessGrant)
 
