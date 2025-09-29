@@ -18,6 +18,14 @@ This document describes all new features and changes in the release. The format 
 
 - [#368](https://github.com/nautobot/nautobot-app-chatops/issues/368) - Fixed "Error: No closing quotation'" error.
 
+### Changed
+
+- Raised minimum Nautobot version to 2.4.2.
+
+### Removed
+
+- Dropped support for Python 3.8.
+
 ### Housekeeping
 
 - Rebaked from the cookie `nautobot-app-v2.4.1`.
