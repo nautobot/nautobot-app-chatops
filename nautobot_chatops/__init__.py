@@ -157,14 +157,11 @@ class NautobotChatOpsConfig(NautobotAppConfig):
 
         from .metrics_app import metric_commands
 
-        def _check_for_conflicting_apps():
-            intersection = set(_CONFLICTING_APP_NAMES).intersection(set(settings.PLUGINS))
-            if intersection:
-                raise RuntimeError(
-                    f"The following apps are installed and conflict with `nautobot-chatops`: {', '.join(intersection)}."
-                )
-
-        _check_for_conflicting_apps()
+        intersection = set(_CONFLICTING_APP_NAMES).intersection(set(settings.PLUGINS))
+        if intersection:
+            raise RuntimeError(
+                f"The following apps are installed and conflict with `nautobot-chatops`: {', '.join(intersection)}."
+            )
         register_metric_func(metric_commands)
 
 
