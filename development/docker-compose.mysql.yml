@@ -14,8 +14,15 @@ services:
       - "development.env"
       - "creds.env"
       - "development_mysql.env"
+  beat:
+    environment:
+      - "NAUTOBOT_DB_ENGINE=django.db.backends.mysql"
+    env_file:
+      - "development.env"
+      - "creds.env"
+      - "development_mysql.env"
   db:
-    image: "mysql:8"
+    image: "mysql:lts"
     command:
       - "--max_connections=1000"
     env_file:

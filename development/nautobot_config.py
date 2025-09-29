@@ -4,7 +4,7 @@ import os
 import sys
 
 from nautobot.core.settings import *  # noqa: F403  # pylint: disable=wildcard-import,unused-wildcard-import
-from nautobot.core.settings_funcs import is_truthy, parse_redis_connection
+from nautobot.core.settings_funcs import is_truthy
 
 #
 # Debug
@@ -65,16 +65,8 @@ if DATABASES["default"]["ENGINE"] == "django.db.backends.mysql":
 #
 
 # The django-redis cache is used to establish concurrent locks using Redis.
-CACHES = {
-    "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": parse_redis_connection(redis_database=0),
-        "TIMEOUT": 300,
-        "OPTIONS": {
-            "CLIENT_CLASS": "django_redis.client.DefaultClient",
-        },
-    }
-}
+# Inherited from nautobot.core.settings
+# CACHES = {....}
 
 #
 # Celery settings are not defined here because they can be overloaded with
@@ -201,6 +193,11 @@ PLUGINS_CONFIG = {
         "nso_username": os.environ.get("NSO_USERNAME"),
         "nso_password": os.environ.get("NSO_PASSWORD"),
         "nso_request_timeout": os.environ.get("NSO_REQUEST_TIMEOUT", 60),
+        # - Slurpit --------------------------
+        "enable_slurpit": is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_SLURPIT")),
+        "slurpit_host": os.environ.get("SLURPIT_HOST"),
+        "slurpit_token": os.environ.get("SLURPIT_API_TOKEN"),
+        "slurpit_verify": is_truthy(os.environ.get("SLURPIT_VERIFY", True)),
     },
 }
 if os.getenv("NAUTOBOT_CHATOPS_ENABLE_MATTERMOST", "") != "":
@@ -229,5 +226,7 @@ if os.getenv("NAUTOBOT_CHATOPS_ENABLE_PANORAMA", "") != "":
     PLUGINS_CONFIG["nautobot_chatops"]["enable_panorama"] = is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_PANORAMA"))
 if os.getenv("NAUTOBOT_CHATOPS_ENABLE_NSO", "") != "":
     PLUGINS_CONFIG["nautobot_chatops"]["enable_nso"] = is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_NSO"))
+if os.getenv("NAUTOBOT_CHATOPS_ENABLE_SLURPIT", "") != "":
+    PLUGINS_CONFIG["nautobot_chatops"]["enable_slurpit"] = is_truthy(os.getenv("NAUTOBOT_CHATOPS_ENABLE_SLURPIT"))
 
 METRICS_ENABLED = is_truthy(os.getenv("NAUTOBOT_METRICS_ENABLED"))

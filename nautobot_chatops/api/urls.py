@@ -1,6 +1,4 @@
-"""Django urlpatterns declaration for nautobot_chatops app."""
-
-import logging
+"""Django API urlpatterns declaration for nautobot_chatops app."""
 
 from django.urls import path
 from nautobot.apps.api import OrderedDefaultRouter
@@ -9,7 +7,6 @@ from nautobot_chatops.api.views.generic import (
     AccessGrantViewSet,
     CommandLogViewSet,
     CommandTokenViewSet,
-    NautobotChatopsRootView,
 )
 from nautobot_chatops.api.views.lookup import AccessLookupView, UserEmailLookupView
 from nautobot_chatops.api.views.mattermost import MattermostInteractionView, MattermostSlashCommandView
@@ -17,7 +14,6 @@ from nautobot_chatops.api.views.ms_teams import MSTeamsMessagesView
 from nautobot_chatops.api.views.slack import SlackEventAPIView, SlackInteractionView, SlackSlashCommandView
 from nautobot_chatops.api.views.webex import WebexView
 
-logger = logging.getLogger(__name__)
 urlpatterns = [
     path("lookup/", AccessLookupView.as_view(), name="access_lookup"),
     path("email-lookup/", UserEmailLookupView.as_view(), name="email_lookup"),
@@ -31,11 +27,10 @@ urlpatterns = [
 ]
 
 router = OrderedDefaultRouter()
-router.APIRootView = NautobotChatopsRootView
+# add the name of your api endpoint, usually hyphenated model name in plural, e.g. "my-model-classes"
 router.register("commandtoken", CommandTokenViewSet)
 router.register("accessgrant", AccessGrantViewSet)
 router.register("commandlog", CommandLogViewSet)
 
 app_name = "nautobot_chatops-api"
-
 urlpatterns += router.urls

@@ -3,7 +3,6 @@
 # Metadata is inherited from Nautobot. If not including Nautobot in the environment, this should be added
 from importlib import metadata
 
-from django.conf import settings
 from nautobot.apps import ConstanceConfigItem, NautobotAppConfig
 
 __version__ = metadata.version(__name__)
@@ -19,17 +18,6 @@ _CONFLICTING_APP_NAMES = [
     "nautobot_plugin_chatops_meraki",
     "nautobot_plugin_chatops_panorama",
 ]
-
-
-def _check_for_conflicting_apps():
-    intersection = set(_CONFLICTING_APP_NAMES).intersection(set(settings.PLUGINS))
-    if intersection:
-        raise RuntimeError(
-            f"The following apps are installed and conflict with `nautobot-chatops`: {', '.join(intersection)}."
-        )
-
-
-_check_for_conflicting_apps()
 
 
 class NautobotChatOpsConfig(NautobotAppConfig):
@@ -122,6 +110,10 @@ class NautobotChatOpsConfig(NautobotAppConfig):
         "nso_username": "",
         "nso_password": "",
         "nso_request_timeout": "",
+        # - Slurpit --------------------------
+        "slurpit_host": "",
+        "slurpit_token": "",
+        "slurpit_verify": True,
     }
     constance_config = {
         "fallback_chatops_user": ConstanceConfigItem(default="chatbot", help_text="Enable Mattermost Chat Platform."),
@@ -149,19 +141,27 @@ class NautobotChatOpsConfig(NautobotAppConfig):
             default=False, help_text="Enable Panorama Integration.", field_type=bool
         ),
         "enable_nso": ConstanceConfigItem(default=False, help_text="Enable NSO Integration.", field_type=bool),
+        "enable_slurpit": ConstanceConfigItem(default=False, help_text="Enable Slurpit Integration.", field_type=bool),
     }
 
     caching_config = {}
     docs_view_name = "plugins:nautobot_chatops:docs"
+    searchable_models = ["commandlog"]
 
     def ready(self):
         """Function invoked after all apps have been loaded."""
         super().ready()
         # pylint: disable=import-outside-toplevel
+        from django.conf import settings
         from nautobot_capacity_metrics import register_metric_func
 
         from .metrics_app import metric_commands
 
+        intersection = set(_CONFLICTING_APP_NAMES).intersection(set(settings.PLUGINS))
+        if intersection:
+            raise RuntimeError(
+                f"The following apps are installed and conflict with `nautobot-chatops`: {', '.join(intersection)}."
+            )
         register_metric_func(metric_commands)
 
 

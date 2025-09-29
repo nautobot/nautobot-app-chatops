@@ -1,4 +1,4 @@
-{% extends 'generic/object_edit.html' %}
+{% extends "generic/object_edit.html" %}
 {% load static %}
 {% load form_helpers %}
 
@@ -17,7 +17,7 @@
         {% render_field form.user_id %}
     </div>
 </div>
-{% endblock %}
+{% endblock form %}
 
 {% block javascript %}
 <script type="text/javascript">
@@ -65,4 +65,4 @@ $(document).ready(function() {
     });
 });
 </script>
-{% endblock %}
+{% endblock javascript %}

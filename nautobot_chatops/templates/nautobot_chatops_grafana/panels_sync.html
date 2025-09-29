@@ -1,9 +1,9 @@
-{% extends 'nautobot_chatops_grafana/sync.html' %}
+{% extends "nautobot_chatops_grafana/sync.html" %}
 {% load static %}
 {% load form_helpers %}
 
 
-<h1>{% block title %}Synchronize a Grafana Dashboards Panels{% endblock %}</h1>
+<h1>{% block title %}Synchronize a Grafana Dashboards Panels{% endblock title %}</h1>
 
 {% block form %}
 <div class="panel panel-default">
@@ -14,4 +14,4 @@
         {% render_field form.dashboard %}
     </div>
 </div>
-{% endblock %}
+{% endblock form %}
