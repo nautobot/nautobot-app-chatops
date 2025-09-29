@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% load form_helpers %}
 {% load helpers %}
 
@@ -18,9 +18,9 @@
                     </button>
                 </div>
                 {% endif %}
-                {% block title %}Synchronize {{ obj_type }} data{% endblock %}
+                {% block title %}Synchronize {{ obj_type }} data{% endblock title %}
             </h3>
-            {% block tabs %}{% endblock %}
+            {% block tabs %}{% endblock tabs %}
             {% if form.non_field_errors %}
             <div class="panel panel-danger">
                 <div class="panel-heading"><strong>Errors</strong></div>
@@ -35,11 +35,11 @@
                 <div class="panel-body">
                     {% block form_fields %}
                     {% render_form form %}
-                    {% endblock %}
+                    {% endblock form_fields %}
                 </div>
             </div>
-            {% include 'inc/extras_features_edit_form_fields.html' %}
-            {% endblock %}
+            {% include "inc/extras_features_edit_form_fields.html" %}
+            {% endblock form %}
         </div>
     </div>
     <div class="row">
@@ -47,12 +47,12 @@
             {% block buttons %}
             <button type="submit" name="_create" class="btn btn-warning"><span class="mdi mdi-database-sync-outline"></span>Sync</button>
             <a href="{{ return_url }}" class="btn btn-default">Cancel</a>
-            {% endblock %}
+            {% endblock buttons %}
         </div>
     </div>
 </form>
 {% if obj and settings.DOCS_ROOT %}
-{% include 'inc/modal.html' with name='docs' content=obj|get_docs_url %}
+{% include "inc/modal.html" with name="docs" content=obj|get_docs_url %}
 {% endif %}
-{% endblock %}
+{% endblock content %}
 

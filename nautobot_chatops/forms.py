@@ -1,8 +1,7 @@
 """Forms for Nautobot."""
 
 from django import forms
-from nautobot.core.forms import BootstrapMixin, StaticSelect2Multiple
-from nautobot.extras.forms import NautobotFilterForm
+from nautobot.apps.forms import BootstrapMixin, NautobotFilterForm, StaticSelect2Multiple
 
 from .choices import AccessGrantTypeChoices, PlatformChoices
 from .constants import ACCESS_GRANT_COMMAND_HELP_TEXT, COMMAND_TOKEN_TOKEN_HELP_TEXT
