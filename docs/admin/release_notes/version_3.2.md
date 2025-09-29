@@ -5,8 +5,8 @@ This document describes all new features and changes in the release. The format 
 
 ## Release Overview
 
-- Major features or milestones
-- Changes to compatibility with Nautobot and/or other apps, libraries etc.
+- Dropped support for Python 3.8.
+- Raised minimum Nautobot version to 2.4.2.
 
 ## [v3.2.0 (2025-09-29)](https://github.com/nautobot/nautobot-app-chatops/releases/tag/v3.2.0)
 
