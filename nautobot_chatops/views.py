@@ -58,21 +58,6 @@ class CommandLogUIViewSet(
             context["title"] = "Nautobot Command Usage Records"
         return context
 
-    def _process_bulk_create_form(self, form):
-        pass
-
-    def _process_bulk_destroy_form(self, form):
-        pass
-
-    def _process_bulk_update_form(self, form):
-        pass
-
-    def _process_create_or_update_form(self, form):
-        pass
-
-    def _process_destroy_form(self, form):
-        pass
-
 
 class AccessGrantUIViewSet(
     NautobotUIViewSet,
@@ -145,20 +130,9 @@ class ChatOpsAccountLinkUIViewSet(NautobotUIViewSet):
     form_class = forms.ChatOpsAccountLinkForm
     serializer_class = serializers.ChatOpsAccountLinkSerializer
 
-    class ChatOpsAccountLinkObjectFieldsPanel(ObjectFieldsPanel):
-        """Custom ObjectFieldsPanel to override key rendering."""
-
-        def render_key(self, key, value, context):
-            """Override key rendering for nautobot_user and user_id fields."""
-            if key == "nautobot_user":
-                return "Nautobot User"
-            if key == "user_id":
-                return "ChatOps User"
-            return super().render_key(key, value, context)
-
     object_detail_content = ObjectDetailContent(
         panels=(
-            ChatOpsAccountLinkObjectFieldsPanel(
+            ObjectFieldsPanel(
                 section=SectionChoices.LEFT_HALF,
                 weight=100,
                 fields="__all__",
