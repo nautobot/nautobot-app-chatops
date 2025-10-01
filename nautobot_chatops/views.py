@@ -51,13 +51,6 @@ class CommandLogUIViewSet(
     table_class = tables.CommandLogTable
     serializer_class = serializers.CommandLogSerializer
 
-    def get_extra_context(self, request, instance=None):
-        """Add extra context for Command Usage List View."""
-        context = super().get_extra_context(request, instance)
-        if self.action == "list":
-            context["title"] = "Nautobot Command Usage Records"
-        return context
-
 
 class AccessGrantUIViewSet(
     NautobotUIViewSet,
@@ -82,13 +75,6 @@ class AccessGrantUIViewSet(
         )
     )
 
-    def get_extra_context(self, request, instance=None):
-        """Add extra context for Access Grant List View."""
-        context = super().get_extra_context(request, instance)
-        if self.action == "list":
-            context["title"] = "Nautobot Access Grants"
-        return context
-
 
 class CommandTokenUIViewSet(NautobotUIViewSet):
     """ViewSet for CommandToken."""
@@ -110,13 +96,6 @@ class CommandTokenUIViewSet(NautobotUIViewSet):
             ),
         )
     )
-
-    def get_extra_context(self, request, instance=None):
-        """Add extra context for Access Grant List View."""
-        context = super().get_extra_context(request, instance)
-        if self.action == "list":
-            context["title"] = "Nautobot Command Tokens"
-        return context
 
 
 class ChatOpsAccountLinkUIViewSet(NautobotUIViewSet):

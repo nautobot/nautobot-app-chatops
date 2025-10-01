@@ -6,6 +6,7 @@ from nautobot.apps.forms import (
     NautobotFilterForm,
     NautobotModelForm,
     StaticSelect2Multiple,
+    add_blank_choice,
 )
 
 from .choices import AccessGrantTypeChoices, CommandStatusChoices, PlatformChoices
@@ -92,7 +93,7 @@ class CommandLogFilterForm(NautobotFilterForm):
     platform = forms.ChoiceField(choices=PlatformChoices.CHOICES, required=False, widget=StaticSelect2Multiple())
     command = forms.CharField(required=False)
     subcommand = forms.CharField(required=False)
-    status = forms.ChoiceField(choices=BLANK_CHOICE + CommandStatusChoices.CHOICES, required=False)
+    status = forms.ChoiceField(choices=add_blank_choice(CommandStatusChoices.CHOICES), required=False)
     details = forms.CharField(required=False)
     model = CommandLog
 
