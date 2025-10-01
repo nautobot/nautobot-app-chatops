@@ -207,7 +207,7 @@ min-similarity-lines = 0
 
 [tool.pylint-nautobot]
 supported_nautobot_versions = [
-    "2"
+    "3"
 ]
 
 [tool.ruff]

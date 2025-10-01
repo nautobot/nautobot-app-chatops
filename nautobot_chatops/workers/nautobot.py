@@ -138,6 +138,7 @@ def get_filtered_connections(device, interface):
 
 def analyze_circuit_endpoints(endpoint):
     """Analyzes a circuit's endpoint and returns info about what object the endpoint connects to."""
+    info = ""
     if isinstance(endpoint, (Interface, FrontPort, RearPort)):
         # Put into format: object.device_name
         info = f"Device: {endpoint.device.name}  {endpoint.__class__.__name__}: {endpoint.name}"
@@ -169,6 +170,7 @@ def examine_termination_endpoints(circuit):
 def get_vlans(dispatcher, filter_type=None, filter_value_1=None):
     """Return a filtered list of VLANs based on filter type and/or `filter_value_1`."""
     content_type = ContentType.objects.get_for_model(VLAN)
+    choices = []
     # pylint: disable=no-else-return
     if not filter_type:
         prompt_for_vlan_filter_type("nautobot get-vlans", "select a vlan filter", dispatcher)
