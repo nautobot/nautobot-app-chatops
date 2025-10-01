@@ -4,8 +4,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
-from nautobot.core.models.fields import ColorField
-from nautobot.core.models.generics import PrimaryModel
+from nautobot.apps.models import ColorField, PrimaryModel
 
 from .choices import AccessGrantTypeChoices, CommandStatusChoices, PlatformChoices
 from .constants import (

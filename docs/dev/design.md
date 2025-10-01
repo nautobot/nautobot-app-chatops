@@ -17,13 +17,11 @@ The design goal of this app is to be able to write chatbot commands once and hav
 
 1. input
     1. Webhooks (`nautobot_chatops.views`)
-       - Each module in this layer provides the HTTP endpoint(s) that a given chat platform requires for a chatbot.
-        For example, `nautobot_chatops.views.slack` provides 2 such endpoints:
-
-           1. for inbound slash-commands (invoked by `/command`)
-           2. for inbound interactive actions (invoked by blocks or modal dialogs)
-
-           Different chat platforms may require more or fewer such endpoints.
+        - Each module in this layer provides the HTTP endpoint(s) that a given chat platform requires for a chatbot. For example, `nautobot_chatops.views.slack` provides 2 such endpoints:
+            1. for inbound slash-commands (invoked by `/command`)
+            2. for inbound interactive actions (invoked by blocks or modal dialogs)
+        
+            Different chat platforms may require more or fewer such endpoints.
 
     2. WebSockets (`nautobot_chatops.sockets`)
         - Each module in this layer provides the WebSocket connection and listeners to a given chat platform for a chatbot. For example, `nautobot_chatops.sockets.slack` provides 2 listeners:
@@ -32,53 +30,21 @@ The design goal of this app is to be able to write chatbot commands once and hav
 
             Different chat platforms may require more or fewer listeners.
 
-    - Each endpoint view or listener is responsible for pulling relevant data (command, sub-command, parameters) out of the
-     provided chat-platform-specific encoding or data structures (form-encoded, JSON, XML, whatever) and enqueuing
-     the extracted data into `celery` for the worker that handles a given command.
-
-    - In addition to enqueuing the command parameters for the worker, the queue also requires a `Dispatcher` class
-     (see below) and any additional `context` that the dispatcher requires (such as user_id, channel_id, tokens, etc.)
-
-    - Support for additional chat platform endpoints can be implemented as additional modules in this app,
-     or could be delivered as an entirely separate Nautobot app if desired.
-
+    - Each endpoint view or listener is responsible for pulling relevant data (command, sub-command, parameters) out of the provided chat-platform-specific encoding or data structures (form-encoded, JSON, XML, whatever) and enqueuing the extracted data into `celery` for the worker that handles a given command.
+    - In addition to enqueuing the command parameters for the worker, the queue also requires a `Dispatcher` class (see below) and any additional `context` that the dispatcher requires (such as user_id, channel_id, tokens, etc.)
+    - Support for additional chat platform endpoints can be implemented as additional modules in this app, or could be delivered as an entirely separate Nautobot app if desired.
 2. worker (`nautobot_chatops.workers`)
-
-    - This layer is _completely ignorant_ of chat platforms. All code in this layer does not know or care about the
-     difference between Slack, Cisco Webex, Microsoft Teams, or any other platform we may support in the future.
-
-    - Each `job` worker function acts on the provided parameters, then invokes generic methods on its provided
-     `Dispatcher` class to post to the channel, prompt the user for more information, or whatever other user-facing
-     action is desired.
-
+    - This layer is _completely ignorant_ of chat platforms. All code in this layer does not know or care about the difference between Slack, Cisco Webex, Microsoft Teams, or any other platform we may support in the future.
+    - Each `job` worker function acts on the provided parameters, then invokes generic methods on its provided `Dispatcher` class to post to the channel, prompt the user for more information, or whatever other user-facing action is desired.
     - Each module in this layer would provide a different top-level command, such as `nautobot`, `grafana`, or `ansible`.
-
-    - This layer is designed to be extensible through Python's packaging `entry_points` functionality (`plugins` in
-     Poetry's terminology). A Python package (Nautobot App) can register any worker functions under the `nautobot.workers` entry point,
-     and the worker(s) will automatically be added to the client's capabilities.
-
+    - This layer is designed to be extensible through Python's packaging `entry_points` functionality (`plugins` in Poetry's terminology). A Python package (Nautobot App) can register any worker functions under the `nautobot.workers` entry point, and the worker(s) will automatically be added to the client's capabilities.
 3. output (`nautobot_chatops.dispatchers`)
-
     - This layer handles all presentation of information back to the end user via the chat platform.
-
-    - The base `nautobot_chatops.dispatchers.Dispatcher` class defines the interface to which all chat-platform-specific
-     subclasses must implement. Fundamentally this interface provides a set of building blocks for common patterns,
-     such as direct-messaging a user, posting a message to a channel, prompting the user to select from a drop-down,
-     and so forth.
-
-    - It may also be extended to provide more complex/specific APIs if the presentation of a particular
-     set of information needs to differ significantly between chat platforms in ways not provided for by the basic
-     building blocks.
-
-    - This interface must by necessity remain generic as, again, the worker layer has no knowledge of what chat platform
-     is in use, but it knows what it wants to do.
-
-    - Each module in this layer provides the `Dispatcher` subclass for a specific chat platform, such as
-     `nautobot_chatops.dispatchers.slack.SlackDispatcher`. Therefore, there is typically a one-to-one mapping between
-     `views` submodules and `dispatchers` submodules.
-
-    - As with the `views` layer, the `Dispatcher` for a new chat platform could be implemented as a new submodule for
-     this app, or could be delivered as part of a separate Nautobot App.
+    - The base `nautobot_chatops.dispatchers.Dispatcher` class defines the interface to which all chat-platform-specific subclasses must implement. Fundamentally this interface provides a set of building blocks for common patterns, such as direct-messaging a user, posting a message to a channel, prompting the user to select from a drop-down, and so forth.
+    - It may also be extended to provide more complex/specific APIs if the presentation of a particular set of information needs to differ significantly between chat platforms in ways not provided for by the basic building blocks.
+    - This interface must by necessity remain generic as, again, the worker layer has no knowledge of what chat platform is in use, but it knows what it wants to do.
+    - Each module in this layer provides the `Dispatcher` subclass for a specific chat platform, such as `nautobot_chatops.dispatchers.slack.SlackDispatcher`. Therefore, there is typically a one-to-one mapping between `views` submodules and `dispatchers` submodules.
+    - As with the `views` layer, the `Dispatcher` for a new chat platform could be implemented as a new submodule for this app, or could be delivered as part of a separate Nautobot App.
 
 ## Information flow
 

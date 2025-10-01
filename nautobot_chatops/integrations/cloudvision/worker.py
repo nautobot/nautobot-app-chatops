@@ -226,6 +226,8 @@ def get_applied_configlets(dispatcher, filter_type=None, filter_value=None):
     if not check_credentials(dispatcher):
         return CommandStatusChoices.STATUS_FAILED
 
+    applied_configlets = []
+
     device_list = get_cloudvision_devices_all()
 
     if not filter_type:

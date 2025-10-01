@@ -65,23 +65,23 @@ While there are sufficient ways of securing inbound API requests from the public
 1. Log in to [https://api.slack.com/apps](https://api.slack.com/apps) and select "Create New App". Select "From an app manifest."
 2. Select your preferred Slack workspace for your app.
 3. In the window titled "Enter app manifest below," select the "YAML" formatting tab and copy/paste the contents of file [nautobot_slack_manifest.yml](https://github.com/nautobot/nautobot-app-chatops/blob/develop/setup_files/nautobot_slack_manifest.yml) from this repo. Update the below settings, then click Next.
-   - On line 5, you can change the name of the Chatbot here. By default it is set to `Nautobot`
-   - If using Socket mode:
-      - On line 34, update `socket_mode_enabled` to `true`
-   - If not using Socket mode:
-      - On line 12, under setting `features/slash_commands/url`, update `<your-URL>` with a publicly accessible URL to your Nautobot server. Note: The trailing `/api/plugins/...` are required.
-      - Repeat this for line 30, under setting `settings/request_url/request_url`
-      - Repeat this for line 35, under setting `settings/interactivity/request_url`
-      - On line 34, verify `socket_mode_enabled` is set to `false`
+    - On line 5, you can change the name of the Chatbot here. By default it is set to `Nautobot`
+    - If using Socket mode:
+        - On line 34, update `socket_mode_enabled` to `true`
+    - If not using Socket mode:
+        - On line 12, under setting `features/slash_commands/url`, update `<your-URL>` with a publicly accessible URL to your Nautobot server. Note: The trailing `/api/plugins/...` are required.
+        - Repeat this for line 30, under setting `settings/request_url/request_url`
+        - Repeat this for line 35, under setting `settings/interactivity/request_url`
+        - On line 34, verify `socket_mode_enabled` is set to `false`
 4. Review the summarized settings on the next window and click Create.
 5. On the General --> Basic Information page, note the `Signing Secret` near the bottom, under App Credentials. This will be needed later for setting `SLACK_SIGNING_SECRET`.
 6. On this same Basic Information page, select `Install to Workspace`. Select a channel to allow the app to post to (e.g. #general), and click `Allow`.
-   - If you are not a Slack admin, this step will require approval first from an Slack admin in your company.
+    - If you are not a Slack admin, this step will require approval first from an Slack admin in your company.
 7. If using Socket mode:
-   - Under Settings --> Basic Information, scroll down to section "App-Level Tokens" and click `Generate Token and Scopes` to generate an API token.
-      - **Token Name**: This can be anything you want.
-      - **Scopes**: Click `Add Scope` and select the option `connections:write`.
-   - Click `Generate`. Copy this API token. This will be needed later for setting `SLACK_APP_TOKEN`.
+    - Under Settings --> Basic Information, scroll down to section "App-Level Tokens" and click `Generate Token and Scopes` to generate an API token.
+        - **Token Name**: This can be anything you want.
+        - **Scopes**: Click `Add Scope` and select the option `connections:write`.
+    - Click `Generate`. Copy this API token. This will be needed later for setting `SLACK_APP_TOKEN`.
 8. Under Settings --> Install App, copy the `Bot User OAuth Token` here. This will be needed later for setting `SLACK_API_TOKEN`.
 9. Continue with below section "Post App-Creation Steps"
 
@@ -248,56 +248,42 @@ sudo systemctl enable --now nautobot-chatops-slack-socket
 While this method is still possible, we recommend using the App Manifest method (described above) to install your Slack App.
 
 1. Log in to [https://api.slack.com/apps](https://api.slack.com/apps) and select "Create New App".
-   - Select "From scratch"
-   - Enter "Nautobot ChatOps" as the "App Name"
-   - Select your preferred Slack workspace for your app
-   - Click "Create App"
+    - Select "From scratch"
+    - Enter "Nautobot ChatOps" as the "App Name"
+    - Select your preferred Slack workspace for your app
+    - Click "Create App"
 2. On the "Basic Information" page for your app, under "Add features and functionality", select "Interactive Components"
-   - Set the toggle to "On"
-   - Enter the HTTPS URL of the Slack `interaction` endpoint for your Nautobot installation - it should be something
-     like `https://<server>/api/plugins/chatops/slack/interaction/` (note the trailing slash)
-   - Select "Save Changes"
+    - Set the toggle to "On"
+    - Enter the HTTPS URL of the Slack `interaction` endpoint for your Nautobot installation - it should be something like `https://<server>/api/plugins/chatops/slack/interaction/` (note the trailing slash)
+    - Select "Save Changes"
 3. On the "Basic Information" page for your app, under "Add features and functionality", select "Slash Commands"
-   - Decide now whether your setup requires a slack slash command prefix to disambiguate this bot's commands from those understood
-     by other bots (such as if you have multiple older Nautobot ChatOps versions also enabled), such as `/nautobot-` or `/network2-`
-   - This part is a bit tedious, but for each supported command (e.g. `/nautobot`, `/grafana`) you will need to:
-     - Select "Create New Command"
-     - Enter the command text, the request URL (`https://<server>/api/plugins/chatops/slack/slash_command/` in all cases),
-       and the description and usage hints
-     - Select "Save"
-   - It's up to you whether to configure only the top-level commands (`/nautobot`, etc.) or whether
-     you wish to configure all of the sub-commands as slash-commands as well (`/nautobot-get-devices`, `/nautobot-get-facts`,
-     etc.). The sub-commands can always be entered as parameters to the top-level commands in any case
-     (`/nautobot get-devices`) whether or not you also define them as first-class slash-commands in their own right.
-   - TODO: we need a helper script that could be easily run to generate a full listing of subcommands so that a new
-     deployer can know what all they need to set up!
+    - Decide now whether your setup requires a slack slash command prefix to disambiguate this bot's commands from those understood by other bots (such as if you have multiple older Nautobot ChatOps versions also enabled), such as `/nautobot-` or `/network2-`
+    - This part is a bit tedious, but for each supported command (e.g. `/nautobot`, `/grafana`) you will need to:
+        - Select "Create New Command"
+        - Enter the command text, the request URL (`https://<server>/api/plugins/chatops/slack/slash_command/` in all cases), and the description and usage hints
+        - Select "Save"
+    - It's up to you whether to configure only the top-level commands (`/nautobot`, etc.) or whether you wish to configure all of the sub-commands as slash-commands as well (`/nautobot-get-devices`, `/nautobot-get-facts`, etc.). The sub-commands can always be entered as parameters to the top-level commands in any case (`/nautobot get-devices`) whether or not you also define them as first-class slash-commands in their own right.
+    - TODO: we need a helper script that could be easily run to generate a full listing of subcommands so that a new deployer can know what all they need to set up!
 
 > Note: if you want to interact with Nautobot to retrieve data without doing any custom code development, your slash command must
 > be `/nautobot` or end with `nautobot` following the configured slack_slash_command_prefix. For example, the
 > `/network2-nautobot` command would have a `slack_slash_command_prefix` of `/network2-`
 
-4. On the "Basic Information" page for your app, under "App Credentials", find the "Signing Secret" and click "Show".
-   You will need to configure this value for the app as the `slack_signing_secret` value, such as through an
-   `.env` file. If this value is not correctly configured, the bot will be unable to validate that inbound
-   notifications it receives have been properly signed by the Slack server.
+4. On the "Basic Information" page for your app, under "App Credentials", find the "Signing Secret" and click "Show". You will need to configure this value for the app as the `slack_signing_secret` value, such as through an `.env` file. If this value is not correctly configured, the bot will be unable to validate that inbound notifications it receives have been properly signed by the Slack server.
 5. In the sidebar to the left, select "OAuth & Permissions".
-   - Under "Scopes", select "Add an OAuth Scope", and add the following scopes:
-     - `chat:write`
-     - `commands`
-     - `channels:read`
-     - `files:write`
-     - `incoming-webhook`
-     - `users:read`
-     - `users:read.email`
-     - `app_mentions:read`
-     - `groups:read`
-     - `im:read`
-     - `mpim:read`
-   - At the top of this page, select "Install App to Workspace" and confirm it.
-   - There should now be a "Bot User OAuth Access Token" displayed, typically a string starting with `xoxb-`.
-     You will need to configure this value for the app as the `slack_api_token` value, either directly or through an
-     `.env` file. If this value is not properly configured, the bot will be unable to send content to the user.
-6. Returning to the "Basic Information" page for your app, under "Display Information", you can specify the name,
-   description, icon, and accent/background color for the app. You can use the `nautobot_logo.png` from this
-   directory if desired.
+    - Under "Scopes", select "Add an OAuth Scope", and add the following scopes:
+        - `chat:write`
+        - `commands`
+        - `channels:read`
+        - `files:write`
+        - `incoming-webhook`
+        - `users:read`
+        - `users:read.email`
+        - `app_mentions:read`
+        - `groups:read`
+        - `im:read`
+        - `mpim:read`
+    - At the top of this page, select "Install App to Workspace" and confirm it.
+    - There should now be a "Bot User OAuth Access Token" displayed, typically a string starting with `xoxb-`. You will need to configure this value for the app as the `slack_api_token` value, either directly or through an `.env` file. If this value is not properly configured, the bot will be unable to send content to the user.
+6. Returning to the "Basic Information" page for your app, under "Display Information", you can specify the name, description, icon, and accent/background color for the app. You can use the `nautobot_logo.png` from this directory if desired.
 7. Continue with below section "Post App-Creation Steps"

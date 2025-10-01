@@ -104,10 +104,10 @@
 3. Enter `access_as_user` as the **Scope name**.
 4. Under **Who can consent?**, select `Admins and users`.
 5. Update the values for the rest of the fields as follows:
-   1. Enter `Teams can access the user's profile` as **Admin consent display name**.
-   2. Enter `Allows Teams to call the app's web APIs as the current user` as **Admin consent description**.
-   3. Enter `Teams can access the user profile and make requests on the user's behalf` as **User consent display name**.
-   4. Enter `Enable Teams to call this app's APIs with the same rights as the user` as **User consent description**.
+    1. Enter `Teams can access the user's profile` as **Admin consent display name**.
+    2. Enter `Allows Teams to call the app's web APIs as the current user` as **Admin consent description**.
+    3. Enter `Teams can access the user profile and make requests on the user's behalf` as **User consent display name**.
+    4. Enter `Enable Teams to call this app's APIs with the same rights as the user` as **User consent description**.
 6. Ensure that **State** is set to `Enabled`.
 7. Select **Add scope**.
     ![Azure Add a Scope Form](../../images/light/azure_add_scope_form.png#only-light)
@@ -119,8 +119,8 @@
    Under Authorized client applications, identify the applications that you want to authorize for your app’s web application.
 2. Select **+ Add a client application**.
 3. Add Teams mobile/desktop and/or Teams web application. You can add one or both of these Client IDs.
-   1. For Teams mobile app and desktop client app: Enter the Client ID as `1fec8e78-bce4-4aaf-ab1b-5451cc387264`.
-   2. For Teams web client: Enter the Client ID as `5e3ce6c0-2b1f-4285-8d4b-75ee78787346`.
+    1. For Teams mobile app and desktop client app: Enter the Client ID as `1fec8e78-bce4-4aaf-ab1b-5451cc387264`.
+    2. For Teams web client: Enter the Client ID as `5e3ce6c0-2b1f-4285-8d4b-75ee78787346`.
 4. Select the **Authorized Scopes** checkbox for the `api://` endpoint we just created in section [Add Application ID URI](#add-application-id-uri)
 5. Select **Add application**.
     ![Azure Add Client Application](../../images/light/azure_add_client_application.png#only-light)
@@ -137,7 +137,7 @@
     ![Azure Bot](../../images/light/azure_azure_bot.png#only-light)
     ![Azure Bot](../../images/dark/azure_azure_bot.png#only-dark)
 5. Enter the bot name in the **Bot handle**.
-   1. This is used as an identifier in Azure Bot Framework, not what the bot is called in the MS Teams.
+    1. This is used as an identifier in Azure Bot Framework, not what the bot is called in the MS Teams.
 6. Select your **Subscription** from the dropdown list.
 7. Select your **Resource group** from the dropdown list if you want to use an existing one. Otherwise, select the **Create New** and create a new resource group.
 8. Under **Pricing**, select **Change plan**.
@@ -168,9 +168,9 @@
 1. Download the **Nautobot_ms_teams.zip** file containing the Chatops app from the [repository](https://github.com/nautobot/nautobot-app-chatops)
 2. Unzip he contents of the **Nautobot_ms_teams.zip** file to the **Nautobot_ms_teams** directory and open the **manifest.json** file for editing.
 3. Replace the following values with your bot's Microsoft App ID that we previous saved in [Add App Registration](#add-app-registration)
-   1. `id` on line 5
-   2. `botId` in **bots** array on line 43
-   3. `webApplicationInfo.id` on line 104
+    1. `id` on line 5
+    2. `botId` in **bots** array on line 43
+    3. `webApplicationInfo.id` on line 104
 4. Save the **manifest.json** file.
 5. Zip the contents of the **Nautobot_ms_teams** directory to create **Nautobot_ms_teams.zip**.
 !!! danger "Mac OSX"

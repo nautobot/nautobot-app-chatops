@@ -169,7 +169,12 @@ def parse_command_string(command_string):
 
     clean_text = convert_smart_quotes(text)
 
-    args = shlex.split(clean_text)
+    # Catches errors in shlex.split() when the text contains unmatched quotes
+    try:
+        args = shlex.split(clean_text)
+    except ValueError:
+        args = shlex.split(clean_text, posix=False)
+
     return command, subcommand, args
 
 
