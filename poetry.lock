@@ -2987,19 +2987,19 @@ pyyaml = ">=5.1"
 
 [[package]]
 name = "mkdocs-include-markdown-plugin"
-version = "6.0.3"
+version = "7.1.8"
 description = "Mkdocs Markdown includer plugin."
 optional = false
-python-versions = ">=3.8"
+python-versions = ">=3.9"
 groups = ["docs"]
 files = [
-    {file = "mkdocs_include_markdown_plugin-6.0.3-py3-none-any.whl", hash = "sha256:8f9262cf4246ebc33dcdfbdb40c1253b7c9ad79e0f8dc2a9e338b1fb761d8e02"},
-    {file = "mkdocs_include_markdown_plugin-6.0.3.tar.gz", hash = "sha256:9799ea8ac9179e9e91ab58869421be60a2585e3d9c4a53181d37a49d9a1780db"},
+    {file = "mkdocs_include_markdown_plugin-7.1.8-py3-none-any.whl", hash = "sha256:eed91cdb22c9035c8d8421523c97bee3796e2df626afefae11e97dd0c6854573"},
+    {file = "mkdocs_include_markdown_plugin-7.1.8.tar.gz", hash = "sha256:9cc79f60c452e4db885c32b4cd63feea1f96012b6720be49a2ce6a1fbad77458"},
 ]
 
 [package.dependencies]
 mkdocs = ">=1.4"
-wcmatch = ">=8,<9"
+wcmatch = "*"
 
 [package.extras]
 cache = ["platformdirs"]
@@ -6511,4 +6511,4 @@ slurpit = ["slurpit-sdk"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.9.2,<3.13"
-content-hash = "fff046d30e9062a6ad8765411fa58173f4775de1953baefa8c5b40a4f20fc940"
+content-hash = "18ccd0522684222b3720ae31a43b6b9653250cb4cdafd1d1144f4b94234b1402"

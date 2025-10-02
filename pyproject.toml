@@ -108,7 +108,7 @@ mkdocstrings = "0.25.2"
 mkdocstrings-python = "1.10.8"
 mkdocs-autorefs = "1.2.0"
 griffe = "1.1.1"
-mkdocs-include-markdown-plugin = "6.0.3"
+mkdocs-include-markdown-plugin = "7.1.8"
 
 [tool.poetry.extras]
 all = [
