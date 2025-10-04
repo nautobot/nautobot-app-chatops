@@ -7,10 +7,9 @@ to send requests and notifications to.
 from django.core.exceptions import ImproperlyConfigured
 from django.http import Http404
 from nautobot.apps.config import get_app_settings_or_config
-from nautobot.apps.views import NautobotUIViewSet
-from nautobot.core.ui.choices import SectionChoices
-from nautobot.core.ui.object_detail import ObjectDetailContent, ObjectFieldsPanel
-from nautobot.core.views.mixins import (
+from nautobot.apps.ui import ObjectDetailContent, ObjectFieldsPanel, SectionChoices
+from nautobot.apps.views import (
+    NautobotUIViewSet,
     ObjectChangeLogViewMixin,
     ObjectListViewMixin,
     ObjectNotesViewMixin,
