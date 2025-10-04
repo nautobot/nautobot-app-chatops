@@ -159,7 +159,7 @@ def get_plannings(dispatcher):
     )
 
 
-def handle_planning_search(dispatcher, sub_cmd, plannings, planning, latest, search=None, device_search=False):
+def handle_planning_search(dispatcher, sub_cmd, plannings, planning, latest, search=None, device_search=False):  # pylint: disable=too-many-positional-arguments, too-many-arguments
     """Handle planning search and display results."""
     latest_bool = str(latest).lower() == "true"
     planning_found = next((plan for plan in plannings if plan.get("slug") == planning), None)

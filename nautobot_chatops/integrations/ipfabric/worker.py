@@ -465,7 +465,7 @@ def get_int_drops(dispatcher, device, snapshot_id):
 
 
 # PATH LOOKUP COMMMAND
-def submit_pathlookup(dispatcher, sub_cmd, src_ip, dst_ip, protocol, src_port=None, dst_port=None, icmp_type=None):  # pylint: disable=too-many-arguments, too-many-locals
+def submit_pathlookup(dispatcher, sub_cmd, src_ip, dst_ip, protocol, src_port=None, dst_port=None, icmp_type=None):  # pylint: disable=too-many-arguments, too-many-locals, too-many-positional-arguments
     """Path simulation diagram lookup between source and target IP address."""
     snapshot_id = get_user_snapshot(dispatcher)
     # diagrams for 4.0 - 4.2 are not supported due to attribute changes in 4.3+
@@ -521,7 +521,7 @@ def submit_pathlookup(dispatcher, sub_cmd, src_ip, dst_ip, protocol, src_port=No
 
 
 @subcommand_of("ipfabric")
-def pathlookup(dispatcher, src_ip, dst_ip, src_port, dst_port, protocol):  # pylint: disable=too-many-arguments, too-many-locals
+def pathlookup(dispatcher, src_ip, dst_ip, src_port, dst_port, protocol):  # pylint: disable=too-many-arguments, too-many-locals, too-many-positional-arguments
     """Path simulation diagram lookup between source and target IP address."""
     sub_cmd = "pathlookup"
     supported_protocols = ["tcp", "udp"]

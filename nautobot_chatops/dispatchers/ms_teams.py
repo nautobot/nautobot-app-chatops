@@ -240,7 +240,7 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
         self._send({"text": message, "textFormat": "markdown"})
 
     @BACKEND_ACTION_BLOCKS.time()
-    def send_blocks(self, blocks, callback_id=None, modal=False, ephemeral=None, title=None):
+    def send_blocks(self, blocks, callback_id=None, modal=False, ephemeral=None, title=None):  # pylint: disable=too-many-positional-arguments
         """Send a series of formatting blocks to the user/channel specified by the context."""
         logger.debug("DEBUG: send_blocks() Sending Blocks = %s", blocks)
         if title and title not in str(blocks[0]):

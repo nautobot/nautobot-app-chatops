@@ -113,10 +113,6 @@ class AccessGrant(PrimaryModel):
         """String representation of an AccessGrant."""
         return f'cmd: "{self.command} {self.subcommand}", {self.grant_type}: "{self.name}" ({self.value})'
 
-    def get_absolute_url(self, api=False):
-        """Override the objects absolute url since we have no detail view."""
-        return reverse("plugins:nautobot_chatops:accessgrant_list")
-
     class Meta:
         """Meta-attributes of an AccessGrant."""
 
@@ -134,10 +130,6 @@ class CommandToken(PrimaryModel):
     def __str__(self):
         """String representation of a CommandToken."""
         return f'platform: "{self.platform}", token: "{self.token}", comment: "{self.comment}"'
-
-    def get_absolute_url(self, api=False):
-        """Override the objects absolute url since we have no detail view."""
-        return reverse("plugins:nautobot_chatops:commandtoken_list")
 
     class Meta:
         """Meta-attributes of a CommandToken."""

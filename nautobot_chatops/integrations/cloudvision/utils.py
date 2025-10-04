@@ -293,7 +293,7 @@ def get_active_events_data(apiserverAddr=None, token=None, certs=None, key=None,
 def get_active_events_data_filter(
     filter_type, filter_value, start_time, end_time, apiserverAddr=None, token=None, certs=None, key=None, ca=None
 ):
-    # pylint: disable=invalid-name,too-many-arguments,too-many-locals,too-many-branches,no-member, too-many-statements
+    # pylint: disable=invalid-name,too-many-arguments,too-many-locals,too-many-branches,no-member, too-many-statements, too-many-positional-arguments
     """Gets a list of active event types from CVP in a specific time range."""
     if check_on_prem():
         apiserverAddr = f"{CVP_HOST}:8443"
@@ -434,7 +434,7 @@ def get_applied_tags(device_id):
 
 def get_device_bugs_data(device_id, apiserverAddr=None, token=None, certs=None, key=None, ca=None):
     """Get bugs associated with a device."""
-    # pylint: disable=invalid-name,too-many-arguments
+    # pylint: disable=invalid-name,too-many-arguments,too-many-positional-arguments
     if check_on_prem():
         apiserverAddr = f"{CVP_HOST}:8443"
         get_token_crt()

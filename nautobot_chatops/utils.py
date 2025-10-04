@@ -59,7 +59,7 @@ def get_app_config_part(prefix: str) -> dict:
 
 
 @nautobot_task
-def celery_worker_task(command, subcommand, params, dispatcher_module, dispatcher_name, context):
+def celery_worker_task(command, subcommand, params, dispatcher_module, dispatcher_name, context):  # pylint: disable=too-many-positional-arguments
     """Task executed by Celery worker.
 
     Celery cannot serialize/deserialize objects, instead of passing the
@@ -140,7 +140,7 @@ def socket_check_and_enqueue_command(*args, **kwargs):
     return check_and_enqueue_command(*args, **kwargs)
 
 
-def check_and_enqueue_command(registry, command, subcommand, params, context, dispatcher_class):  # noqa: PLR0915 pylint:disable=too-many-statements
+def check_and_enqueue_command(registry, command, subcommand, params, context, dispatcher_class):  # noqa: PLR0915 pylint:disable=too-many-statements, too-many-positional-arguments
     """Check whether the given command is permitted by any access grants, and enqueue it if permitted.
 
     For a command/subcommand to be permitted, we must have:

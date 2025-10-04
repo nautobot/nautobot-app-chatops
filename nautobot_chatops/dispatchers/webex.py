@@ -113,7 +113,7 @@ class WebexDispatcher(AdaptiveCardsDispatcher):
         self.client.messages.create(roomId=self.context["channel_id"], markdown=message)
 
     @BACKEND_ACTION_BLOCKS.time()
-    def send_blocks(self, blocks, callback_id=None, modal=False, ephemeral=None, title=None):
+    def send_blocks(self, blocks, callback_id=None, modal=False, ephemeral=None, title=None):  # pylint: disable=too-many-positional-arguments
         """Send a series of formatting blocks to the user/channel specified by the context."""
         if title and title not in str(blocks[0]):
             blocks.insert(0, self.markdown_element(self.bold(title)))

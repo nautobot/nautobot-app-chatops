@@ -1,6 +1,6 @@
 """Django table classes for Nautobot."""
 
-from django_tables2 import LinkColumn, TemplateColumn
+from django_tables2 import Column, LinkColumn, TemplateColumn
 from nautobot.core.tables import BaseTable, ButtonsColumn, ToggleColumn
 
 # pylint: disable=W0611
@@ -16,6 +16,7 @@ from .models import AccessGrant, ChatOpsAccountLink, CommandLog, CommandToken
 class CommandLogTable(BaseTable):
     """Table for rendering a listing of CommandLog entries."""
 
+    pk = ToggleColumn()
     runtime = TemplateColumn(template_code="{{ record.runtime | shorter_timedelta }}")
 
     # pylint: disable=line-too-long
@@ -72,16 +73,9 @@ class AccessGrantTable(BaseTable):
     grant_type = TemplateColumn(template_code='<span class="label label-success">{{ record.grant_type }}</span>')
 
     value = TemplateColumn(template_code='<span style="font-family: monospace">{{ record.value }}</span>')
+    name = Column(linkify=True)
 
-    actions = TemplateColumn(
-        template_code="""
-<a href="{% url 'plugins:nautobot_chatops:accessgrant_changelog' pk=record.pk %}" class="btn btn-default btn-xs" title="Change log"><span class="mdi mdi-history"></span></a>
-{% if perms.nautobot_chatops.change_accessgrant %}
-<a href="{% url 'plugins:nautobot_chatops:accessgrant_edit' pk=record.pk %}" class="btn btn-xs btn-warning"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
-{% endif %}""",
-        attrs={"td": {"class": "text-right noprint"}},
-        verbose_name="",
-    )
+    actions = ButtonsColumn(AccessGrant)
 
     class Meta(BaseTable.Meta):
         """Metaclass attributes of AccessGrantTable."""
@@ -96,21 +90,18 @@ class CommandTokenTable(BaseTable):
 
     pk = ToggleColumn()
 
-    platform = TemplateColumn(template_code='<span style="font-family: monospace">{{ record.platform }}</span>')
+    platform = TemplateColumn(
+        template_code="""
+        <span style="font-family: monospace">
+        <a href="{% url "plugins:nautobot_chatops:commandtoken" pk=record.pk %}">{{ record.platform}}</a></span>
+        """
+    )
 
     token = TemplateColumn(template_code='<span style="font-family: monospace">{{ record.token }}</span>')
 
     comment = TemplateColumn(template_code='<span style="font-family: monospace">{{ record.comment }}</span>')
 
-    actions = TemplateColumn(
-        template_code="""
-<a href="{% url 'plugins:nautobot_chatops:commandtoken_changelog' pk=record.pk %}" class="btn btn-default btn-xs" title="Change log"><span class="mdi mdi-history"></span></a>
-{% if perms.nautobot_chatops.change_commandtoken %}
-<a href="{% url 'plugins:nautobot_chatops:commandtoken_edit' pk=record.pk %}" class="btn btn-xs btn-warning"><span class="glyphicon glyphicon-pencil" aria-hidden="true"></span></a>
-{% endif %}""",
-        attrs={"td": {"class": "text-right noprint"}},
-        verbose_name="",
-    )
+    actions = ButtonsColumn(CommandToken)
 
     class Meta(BaseTable.Meta):
         """Metaclass attributes of CommandTokenTable."""

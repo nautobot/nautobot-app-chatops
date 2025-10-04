@@ -123,7 +123,7 @@ class SlackDispatcher(Dispatcher):
 
     # More complex APIs for presenting structured data - these typically build on the more basic functions below
 
-    def command_response_header(self, command, subcommand, args, description="information", image_element=None):
+    def command_response_header(self, command, subcommand, args, description="information", image_element=None):  # pylint: disable=too-many-positional-arguments
         """Construct a consistently forwarded header including the command that was issued.
 
         Args:
@@ -186,7 +186,7 @@ class SlackDispatcher(Dispatcher):
 
     # pylint: disable=arguments-differ
     @BACKEND_ACTION_BLOCKS.time()
-    def send_blocks(self, blocks, callback_id=None, modal=False, ephemeral=None, title="Your attention please!"):
+    def send_blocks(self, blocks, callback_id=None, modal=False, ephemeral=None, title="Your attention please!"):  # pylint: disable=too-many-positional-arguments
         """Send a series of formatting blocks to the user/channel specified by the context.
 
         Slack distinguishes between simple inline interactive elements and modal dialogs. Modals can contain multiple
@@ -372,7 +372,7 @@ class SlackDispatcher(Dispatcher):
                 choices.append(("Next...", f"menu_offset-{new_offset}"))
         return choices
 
-    def prompt_from_menu(self, action_id, help_text, choices, default=(None, None), confirm=False, offset=0):  # pylint: disable=too-many-arguments
+    def prompt_from_menu(self, action_id, help_text, choices, default=(None, None), confirm=False, offset=0):  # pylint: disable=too-many-arguments, too-many-positional-arguments
         """Prompt the user for a selection from a menu.
 
         Args:

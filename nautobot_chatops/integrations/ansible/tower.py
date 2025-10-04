@@ -39,7 +39,7 @@ class Tower:  # pylint: disable=too-many-function-args
         username=_CONFIG["tower_username"],
         password=_CONFIG["tower_password"],
         verify_ssl=_CONFIG["tower_verify_ssl"],
-    ):  # pylint: disable=too-many-arguments
+    ):  # pylint: disable=too-many-arguments,too-many-positional-arguments
         """Initialization of Tower class.
 
         Args:

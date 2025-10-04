@@ -258,7 +258,7 @@ def get_applied_configlets(dispatcher, filter_type=None, filter_value=None):
             choices,
         )
         return False
-
+    applied_configlets = []
     if filter_type == "container":
         container_id = get_container_id_by_name(filter_value)
         applied_configlets = get_applied_configlets_container_id(container_id)
