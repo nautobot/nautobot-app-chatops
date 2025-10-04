@@ -183,7 +183,10 @@ def check_and_enqueue_command(registry, command, subcommand, params, context, di
     else:
         # Actual subcommand  - permit only if this particular subcommand (or all commands/subcommands) are permitted
         access_grants = AccessGrant.objects.filter(
-            Q(command="*") | Q(command=command, subcommand="*") | Q(command=command, subcommand=subcommand),
+            Q(command="*")
+            | Q(command=command, subcommand="*")
+            | Q(command=command, subcommand=subcommand)
+            | Q(command=command, subcommand__in=AccessGrant.regexMatch.match_re(subcommand))
         )
 
     org_grants = access_grants.filter(grant_type=AccessGrantTypeChoices.TYPE_ORGANIZATION)
