@@ -25,3 +25,5 @@ urlpatterns += [
     *grafana_urlpatterns,
     path("docs/", RedirectView.as_view(url=static("nautobot_chatops/docs/index.html")), name="docs"),
 ]
+
+app_name = "nautobot_chatops"

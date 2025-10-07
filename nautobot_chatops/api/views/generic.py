@@ -47,3 +47,10 @@ class ChatOpsAccountLinkViewSet(NautobotModelViewSet):
     queryset = ChatOpsAccountLink.objects.all()
     serializer_class = ChatOpsAccountLinkSerializer
     filterset_class = ChatOpsAccountLinkFilterSet
+
+    def get_queryset(self):
+        """Limit list view to only the user's own account links."""
+        queryset = super().get_queryset()
+        if self.action == "list":
+            queryset = queryset.filter(nautobot_user=self.request.user)
+        return queryset

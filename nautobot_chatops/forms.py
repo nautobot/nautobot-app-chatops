@@ -13,8 +13,6 @@ from .choices import AccessGrantTypeChoices, CommandStatusChoices, PlatformChoic
 from .constants import ACCESS_GRANT_COMMAND_HELP_TEXT, COMMAND_TOKEN_TOKEN_HELP_TEXT
 from .models import AccessGrant, ChatOpsAccountLink, CommandLog, CommandToken
 
-BLANK_CHOICE = (("", "--------"),)
-
 
 class AccessGrantFilterForm(NautobotFilterForm):
     """Form for filtering AccessGrant instances."""
@@ -22,7 +20,7 @@ class AccessGrantFilterForm(NautobotFilterForm):
     model = AccessGrant
     command = forms.CharField(required=False)
     subcommand = forms.CharField(required=False)
-    grant_type = forms.ChoiceField(choices=BLANK_CHOICE + AccessGrantTypeChoices.CHOICES, required=False)
+    grant_type = forms.ChoiceField(choices=add_blank_choice(AccessGrantTypeChoices.CHOICES), required=False)
 
 
 class AccessGrantForm(NautobotModelForm):

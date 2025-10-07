@@ -90,14 +90,9 @@ class CommandTokenTable(BaseTable):
 
     pk = ToggleColumn()
 
-    platform = TemplateColumn(
-        template_code="""
-        <span style="font-family: monospace">
-        <a href="{% url "plugins:nautobot_chatops:commandtoken" pk=record.pk %}">{{ record.platform}}</a></span>
-        """
-    )
+    platform = TemplateColumn(template_code='<span style="font-family: monospace">{{ record.platform }}</span>')
 
-    token = TemplateColumn(template_code='<span style="font-family: monospace">{{ record.token }}</span>')
+    token = Column(linkify=True)
 
     comment = TemplateColumn(template_code='<span style="font-family: monospace">{{ record.comment }}</span>')
 
@@ -108,7 +103,7 @@ class CommandTokenTable(BaseTable):
 
         model = CommandToken
         fields = ("pk", "platform", "token", "comment", "actions")
-        default_columns = ("pk", "platform", "comment", "actions")
+        default_columns = ("pk", "platform", "token", "comment", "actions")
 
 
 class ChatOpsAccountLinkTable(BaseTable):
