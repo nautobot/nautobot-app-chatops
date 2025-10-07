@@ -7,9 +7,6 @@
 {% block form %}
 <div class="panel panel-default">
     <div class="panel-body">
-        {% render_field form.command %}
-        {% render_field form.subcommand %}
-        {% render_field form.grant_type %}
         {% render_field form.name %}
         <div class="form-group">
             <label class="col-md-3 control-label"></label>
@@ -19,6 +16,9 @@
             </div>
         </div>
         {% render_field form.value %}
+        {% render_field form.command %}
+        {% render_field form.subcommand %}
+        {% render_field form.grant_type %}
     </div>
 </div>
 {% include 'inc/extras_features_edit_form_fields.html' %}
