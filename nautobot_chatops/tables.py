@@ -45,7 +45,9 @@ class CommandLogTable(BaseTable):
     def render_params(self, record):
         """Render the params column."""
         if record.params:
-            return format_html_join("", "<strong>{}</strong>:&nbsp;{}<br>", ((key, value) for key, value in record.params))
+            return format_html_join(
+                "", "<strong>{}</strong>:&nbsp;{}<br>", ((key, value) for key, value in record.params)
+            )
         return self.default
 
     def render_status(self, record):
