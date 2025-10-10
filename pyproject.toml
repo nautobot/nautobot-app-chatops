@@ -42,7 +42,8 @@ include = [
 [tool.poetry.dependencies]
 python = ">=3.9.2,<3.13"
 # Used for local development
-nautobot = ">=2.4.2,<3.0.0"
+nautobot = ">=2.4.16,<3.0.0"
+
 Markdown = "!=3.3.5"
 PyJWT = "^2.1.0"
 PyYAML = { version = "^6.0", optional = true }
@@ -75,7 +76,7 @@ slurpit-sdk = { version = ">=0.9.55", python = ">=3.8,<=3.13", optional = true }
 
 [tool.poetry.group.dev.dependencies]
 coverage = "*"
-django-debug-toolbar = "<6.0.0,>=4.4.6"
+django-debug-toolbar = "<6.0.0"
 invoke = "*"
 ipython = "*"
 # Python implementation of markdownlint

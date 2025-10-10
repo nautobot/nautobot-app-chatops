@@ -540,7 +540,7 @@ def get_neighbors(dispatcher, org_name=None, device_name=None):
 
 
 @subcommand_of("meraki")
-def configure_basic_access_port(  # pylint: disable=too-many-arguments
+def configure_basic_access_port(  # pylint: disable=too-many-arguments,too-many-positional-arguments
     dispatcher, org_name=None, device_name=None, port_number=None, enabled=None, vlan=None, port_desc=None
 ):
     """Configure an access port with description, VLAN and state."""

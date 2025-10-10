@@ -40,7 +40,7 @@ items = [
     ),
     NavMenuItem(
         link="plugins:nautobot_chatops:commandlog_list",
-        name="Command Usage Records",
+        name="Command Logs",
         permissions=["nautobot_chatops.view_commandlog"],
     ),
     *grafana_items,

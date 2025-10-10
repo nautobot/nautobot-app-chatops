@@ -82,6 +82,7 @@ async def main():
     async def process_interactive(client, req):
         client.logger.debug("Processing interactive.")
         payload = req.payload
+        selected_value = ""
 
         context = {
             "org_id": payload.get("team", {}).get("id"),
