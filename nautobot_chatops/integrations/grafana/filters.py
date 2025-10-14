@@ -1,12 +1,13 @@
-"""Filtering for nautobot_plugin_device_lifecycle_mgmt UI."""
+"""Filtering for Nautobot ChatOps Grafana integration."""
 
 from django.db.models import Q
 from django_filters import CharFilter, FilterSet
+from nautobot.apps.filters import NautobotFilterSet
 
 from nautobot_chatops.integrations.grafana.models import Dashboard, Panel, PanelVariable
 
 
-class DashboardFilter(FilterSet):
+class DashboardFilterSet(NautobotFilterSet):
     """Filter for Dashboards."""
 
     q = CharFilter(method="search", label="Search")
@@ -16,7 +17,7 @@ class DashboardFilter(FilterSet):
 
         model = Dashboard
 
-        fields = ("dashboard_slug", "dashboard_uid", "friendly_name")
+        fields = "__all__"
 
     def search(self, queryset, name, value):  # pylint: disable=unused-argument
         """Perform the filtered search."""
@@ -26,6 +27,10 @@ class DashboardFilter(FilterSet):
             Q(dashboard_slug__icontains=value) | Q(dashboard_uid__icontains=value) | Q(friendly_name__icontains=value)
         )
         return queryset.filter(qs_filter)
+
+
+# Backward compatibility alias until callers are updated.
+GrafanaDashboardFilterSet = DashboardFilterSet
 
 
 class PanelFilter(FilterSet):

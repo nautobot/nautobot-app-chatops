@@ -11,6 +11,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.shortcuts import redirect, render, reverse
 from django.template.response import TemplateResponse
 from nautobot.apps.config import get_app_settings_or_config
+from nautobot.apps.ui import ObjectDetailContent, ObjectFieldsPanel, SectionChoices
+from nautobot.apps.views import (
+    NautobotUIViewSet,
+)
 from nautobot.core.forms import ConfirmationForm
 from nautobot.core.views.generic import (
     BulkDeleteView,
@@ -21,11 +25,12 @@ from nautobot.core.views.generic import (
     ObjectListView,
 )
 
-from nautobot_chatops.integrations.grafana.filters import DashboardFilter, PanelFilter, VariableFilter
+from nautobot_chatops.integrations.grafana.api.serializers import GrafanaDashboardSerializer
+from nautobot_chatops.integrations.grafana.filters import DashboardFilterSet, PanelFilter, VariableFilter
 from nautobot_chatops.integrations.grafana.forms import (
-    DashboardBulkEditForm,
-    DashboardsFilterForm,
-    DashboardsForm,
+    DashboardFilterForm,
+    DashboardForm,
+    GrafanaDashboardBulkEditForm,
     PanelsBulkEditForm,
     PanelsFilterForm,
     PanelsForm,
@@ -85,35 +90,31 @@ class GrafanaViewMixin(LoginRequiredMixin):
         return super().dispatch(request, *args, **kwargs)
 
 
-class Dashboards(GrafanaViewMixin, ObjectListView):
+class GrafanaDashboardUIViewSet(GrafanaViewMixin, NautobotUIViewSet):
     """View for showing dashboard configuration."""
 
+    bulk_update_form_class = GrafanaDashboardBulkEditForm
     queryset = GrafanaDashboard.objects.all()
-    filterset = DashboardFilter
-    filterset_form = DashboardsFilterForm
-    table = GrafanaDashboardTable
+    filterset_class = DashboardFilterSet
+    filterset_form_class = DashboardFilterForm
+    table_class = GrafanaDashboardTable
+    form_class = DashboardForm
+    serializer_class = GrafanaDashboardSerializer
     action_buttons = ("add", "import")
-    template_name = "nautobot_chatops_grafana/dashboard_list.html"
+
+    object_detail_content = ObjectDetailContent(
+        panels=(
+            ObjectFieldsPanel(
+                section=SectionChoices.LEFT_HALF,
+                weight=100,
+                fields="__all__",
+            ),
+        )
+    )
 
     def get_required_permission(self):
         """Return required view permission."""
         return "nautobot_chatops.dashboard_read"
-
-
-class DashboardsCreate(GrafanaViewMixin, PermissionRequiredMixin, ObjectEditView):
-    """View for creating a new Dashboard."""
-
-    permission_required = "nautobot_chatops.dashboard_add"
-    model = GrafanaDashboard
-    queryset = GrafanaDashboard.objects.all()
-    model_form = DashboardsForm
-    default_return_url = "plugins:nautobot_chatops:grafanadashboard_list"
-
-
-class DashboardsEdit(DashboardsCreate):
-    """View for editing an existing Dashboard."""
-
-    permission_required = "nautobot_chatops.dashboard_edit"
 
 
 class DashboardsSync(GrafanaViewMixin, PermissionRequiredMixin, ObjectDeleteView):
@@ -151,47 +152,12 @@ class DashboardsSync(GrafanaViewMixin, PermissionRequiredMixin, ObjectDeleteView
         return redirect(reverse("plugins:nautobot_chatops:grafanadashboard_list"))
 
 
-class DashboardsDelete(GrafanaViewMixin, PermissionRequiredMixin, ObjectDeleteView):
-    """View for deleting one or more Dashboard records."""
-
-    queryset = GrafanaDashboard.objects.all()
-    permission_required = "nautobot_chatops.dashboard_delete"
-    default_return_url = "plugins:nautobot_chatops:grafanadashboard_list"
-
-
 class DashboardsBulkImportView(GrafanaViewMixin, BulkImportView):
     """View for bulk import of eox notices."""
 
     queryset = GrafanaDashboard.objects.all()
     table = GrafanaDashboardTable
     default_return_url = "plugins:nautobot_chatops:grafanadashboard_list"
-
-
-class DashboardsBulkDeleteView(GrafanaViewMixin, BulkDeleteView):
-    """View for deleting one or more Dashboard records."""
-
-    queryset = GrafanaDashboard.objects.all()
-    table = GrafanaDashboardTable
-    bulk_delete_url = "plugins:nautobot_chatops:grafanadashboard_bulk_delete"
-    default_return_url = "plugins:nautobot_chatops:grafanadashboard_list"
-
-    def get_required_permission(self):
-        """Return required delete permission."""
-        return "nautobot_chatops.dashboard_delete"
-
-
-class DashboardBulkEditView(GrafanaViewMixin, BulkEditView):
-    """View for editing one or more Dashboard records."""
-
-    queryset = GrafanaDashboard.objects.all()
-    filterset = DashboardFilter
-    table = GrafanaDashboardTable
-    form = DashboardBulkEditForm
-    bulk_edit_url = "plugins:nautobot_chatops:grafanadashboard_bulk_edit"
-
-    def get_required_permission(self):
-        """Return required change permission."""
-        return "nautobot_chatops.dashboard_edit"
 
 
 # -------------------------------------------------------------------------------------

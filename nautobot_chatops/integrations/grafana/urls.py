@@ -1,18 +1,14 @@
 """Django urlpatterns declaration for nautobot_chatops.integrations.grafana app."""
 
 from django.urls import path
+from nautobot.apps.urls import NautobotUIViewSetRouter
 from nautobot.extras.views import ObjectChangeLogView
 
-from nautobot_chatops.integrations.grafana.models import GrafanaDashboard, GrafanaPanel, GrafanaPanelVariable
+from nautobot_chatops.integrations.grafana.models import GrafanaPanel, GrafanaPanelVariable
 from nautobot_chatops.integrations.grafana.views import (
-    DashboardBulkEditView,
-    Dashboards,
-    DashboardsBulkDeleteView,
     DashboardsBulkImportView,
-    DashboardsCreate,
-    DashboardsDelete,
-    DashboardsEdit,
     DashboardsSync,
+    GrafanaDashboardUIViewSet,
     Panels,
     PanelsBulkDeleteView,
     PanelsBulkEditView,
@@ -31,21 +27,13 @@ from nautobot_chatops.integrations.grafana.views import (
     VariablesSync,
 )
 
-urlpatterns = [
+router = NautobotUIViewSetRouter()
+router.register("grafana/dashboards", viewset=GrafanaDashboardUIViewSet)
+urlpatterns = router.urls
+
+urlpatterns += [
     # Dashboard specific views.
-    path("grafana/dashboards/", Dashboards.as_view(), name="grafanadashboard_list"),
-    path(
-        "dashboards/<uuid:pk>/changelog/",
-        ObjectChangeLogView.as_view(),
-        name="grafanadashboard_changelog",
-        kwargs={"model": GrafanaDashboard},
-    ),
-    path("grafana/dashboards/add/", DashboardsCreate.as_view(), name="grafanadashboard_add"),
     path("grafana/dashboards/sync/", DashboardsSync.as_view(), name="grafanadashboard_sync"),
-    path("grafana/dashboards/<uuid:pk>/edit/", DashboardsEdit.as_view(), name="grafanadashboard_edit"),
-    path("grafana/dashboards/edit/", DashboardBulkEditView.as_view(), name="grafanadashboard_bulk_edit"),
-    path("grafana/dashboards/<uuid:pk>/delete/", DashboardsDelete.as_view(), name="grafanadashboard_delete"),
-    path("grafana/dashboards/delete/", DashboardsBulkDeleteView.as_view(), name="grafanadashboard_bulk_delete"),
     path("grafana/dashboards/import/", DashboardsBulkImportView.as_view(), name="grafanadashboard_import"),
     # Panel specific views.
     path("grafana/panels/", Panels.as_view(), name="grafanapanel_list"),
@@ -78,3 +66,5 @@ urlpatterns = [
     path("grafana/variables/delete/", VariablesBulkDeleteView.as_view(), name="grafanapanelvariable_bulk_delete"),
     path("grafana/variables/import/", VariablesBulkImportView.as_view(), name="grafanapanelvariable_import"),
 ]
+
+app_name = "nautobot_chatops"

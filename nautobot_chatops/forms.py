@@ -1,8 +1,13 @@
 """Forms for Nautobot."""
 
 from django import forms
+from nautobot.apps.forms import NautobotBulkEditForm
 from nautobot.core.forms import BootstrapMixin, StaticSelect2Multiple
 from nautobot.extras.forms import NautobotFilterForm
+
+from nautobot_chatops.integrations.grafana.forms import (
+    GrafanaDashboardBulkEditForm as GrafanaDashboardIntegrationBulkEditForm,
+)
 
 from .choices import AccessGrantTypeChoices, PlatformChoices
 from .constants import ACCESS_GRANT_COMMAND_HELP_TEXT, COMMAND_TOKEN_TOKEN_HELP_TEXT
@@ -101,7 +106,7 @@ class CommandTokenFilterForm(BootstrapMixin, forms.ModelForm):
 
         model = CommandToken
 
-        fields = ("platform", "comment")
+        fields = "__all__"
 
 
 class CommandTokenForm(BootstrapMixin, forms.ModelForm):
@@ -119,4 +124,22 @@ class CommandTokenForm(BootstrapMixin, forms.ModelForm):
 
         model = CommandToken
 
-        fields = ("platform", "comment", "token")
+        fields = "__all__"
+
+
+class CommandTokenBulkEditForm(NautobotBulkEditForm):
+    """Form for bulk editing CommandTokens."""
+
+    pk = forms.ModelMultipleChoiceField(queryset=CommandToken.objects.all(), widget=forms.MultipleHiddenInput)
+    comment = forms.CharField(max_length=255, required=False)
+
+    class Meta:
+        """Metaclass attributes of CommandTokenBulkEditForm."""
+
+        nullable_fields = [
+            "comment",
+        ]
+
+
+# Re-export Grafana dashboard bulk edit form for Nautobot's lookup utilities.
+GrafanaDashboardBulkEditForm = GrafanaDashboardIntegrationBulkEditForm

@@ -11,24 +11,36 @@ from django.forms import (
     ModelMultipleChoiceField,
     MultipleHiddenInput,
 )
+from nautobot.apps.forms import NautobotBulkEditForm, NautobotFilterForm, NautobotModelForm
 from nautobot.core.forms import BootstrapMixin, BulkEditForm
 
 from nautobot_chatops.integrations.grafana.models import Dashboard, Panel, PanelVariable
 
 
-class DashboardsForm(BootstrapMixin, ModelForm):
-    """Form for editing Dashboard instances."""
+class DashboardFilterForm(NautobotFilterForm):
+    """Form for filtering Dashboard instances."""
+
+    model = Dashboard
 
     dashboard_slug = CharField(max_length=64)
     dashboard_uid = CharField(max_length=64)
     friendly_name = CharField(max_length=255)
+
+
+class DashboardForm(NautobotModelForm):
+    """Form for editing Dashboard instances."""
 
     class Meta:
         """Metaclass attributes of Dashboard."""
 
         model = Dashboard
 
-        fields = ("dashboard_slug", "dashboard_uid", "friendly_name")
+        fields = "__all__"
+
+
+# Backward compatibility aliases.
+GrafanaDashboardsFilterForm = DashboardFilterForm
+GrafanaDashboardsForm = DashboardForm
 
 
 class DashboardsFilterForm(BootstrapMixin, ModelForm):
@@ -49,7 +61,7 @@ class DashboardsFilterForm(BootstrapMixin, ModelForm):
         widgets = {}
 
 
-class DashboardBulkEditForm(BootstrapMixin, BulkEditForm):
+class GrafanaDashboardBulkEditForm(NautobotBulkEditForm):
     """Dashboard bulk edit form."""
 
     pk = ModelMultipleChoiceField(queryset=Dashboard.objects.all(), widget=MultipleHiddenInput)

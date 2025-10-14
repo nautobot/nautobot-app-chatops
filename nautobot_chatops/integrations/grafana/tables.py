@@ -10,6 +10,7 @@ class GrafanaDashboardTable(BaseTable):  # pylint: disable=nb-sub-class-name
     """Table for rendering panels for dashboards in the grafana app."""
 
     pk = ToggleColumn()
+    dashboard_slug = Column(linkify=True)
 
     actions = ButtonsColumn(GrafanaDashboard, buttons=("changelog", "edit", "delete"))
 
