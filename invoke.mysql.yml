@@ -1,9 +1,9 @@
 ---
 nautobot_chatops:
   project_name: "nautobot-chatops"
-  nautobot_ver: "2.0.0"
+  nautobot_ver: "2.4.16"
   local: false
-  python_ver: "3.11"
+  python_ver: "3.12"
   compose_dir: "development"
   compose_files:
     - "docker-compose.base.yml"

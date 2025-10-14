@@ -2,9 +2,19 @@
 
 from nautobot.apps.api import NautobotModelViewSet
 
-from nautobot_chatops.api.serializers import AccessGrantSerializer, CommandLogSerializer, CommandTokenSerializer
-from nautobot_chatops.filters import AccessGrantFilterSet, CommandLogFilterSet, CommandTokenFilterSet
-from nautobot_chatops.models import AccessGrant, CommandLog, CommandToken
+from nautobot_chatops.api.serializers import (
+    AccessGrantSerializer,
+    ChatOpsAccountLinkSerializer,
+    CommandLogSerializer,
+    CommandTokenSerializer,
+)
+from nautobot_chatops.filters import (
+    AccessGrantFilterSet,
+    ChatOpsAccountLinkFilterSet,
+    CommandLogFilterSet,
+    CommandTokenFilterSet,
+)
+from nautobot_chatops.models import AccessGrant, ChatOpsAccountLink, CommandLog, CommandToken
 
 
 class CommandTokenViewSet(NautobotModelViewSet):  # pylint: disable=too-many-ancestors
@@ -29,3 +39,18 @@ class AccessGrantViewSet(NautobotModelViewSet):  # pylint: disable=too-many-ance
     queryset = AccessGrant.objects.all()
     serializer_class = AccessGrantSerializer
     filterset_class = AccessGrantFilterSet
+
+
+class ChatOpsAccountLinkViewSet(NautobotModelViewSet):
+    """API viewset for interacting with ChatOpsAccountLink objects."""
+
+    queryset = ChatOpsAccountLink.objects.all()
+    serializer_class = ChatOpsAccountLinkSerializer
+    filterset_class = ChatOpsAccountLinkFilterSet
+
+    def get_queryset(self):
+        """Limit list view to only the user's own account links."""
+        queryset = super().get_queryset()
+        if self.action == "list":
+            queryset = queryset.filter(nautobot_user=self.request.user)
+        return queryset

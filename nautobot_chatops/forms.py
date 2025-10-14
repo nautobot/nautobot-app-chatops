@@ -1,38 +1,33 @@
 """Forms for Nautobot."""
 
 from django import forms
-from nautobot.apps.forms import NautobotBulkEditForm
-from nautobot.core.forms import BootstrapMixin, StaticSelect2Multiple
-from nautobot.extras.forms import NautobotFilterForm
-
 from nautobot_chatops.integrations.grafana.forms import (
     GrafanaDashboardBulkEditForm as GrafanaDashboardIntegrationBulkEditForm,
 )
 
-from .choices import AccessGrantTypeChoices, PlatformChoices
+from nautobot.apps.forms import (
+    NautobotBulkEditForm,
+    NautobotFilterForm,
+    NautobotModelForm,
+    StaticSelect2Multiple,
+    add_blank_choice,
+)
+
+from .choices import AccessGrantTypeChoices, CommandStatusChoices, PlatformChoices
 from .constants import ACCESS_GRANT_COMMAND_HELP_TEXT, COMMAND_TOKEN_TOKEN_HELP_TEXT
 from .models import AccessGrant, ChatOpsAccountLink, CommandLog, CommandToken
 
-BLANK_CHOICE = (("", "--------"),)
 
-
-class AccessGrantFilterForm(BootstrapMixin, forms.ModelForm):
+class AccessGrantFilterForm(NautobotFilterForm):
     """Form for filtering AccessGrant instances."""
 
+    model = AccessGrant
     command = forms.CharField(required=False)
     subcommand = forms.CharField(required=False)
-
-    grant_type = forms.ChoiceField(choices=BLANK_CHOICE + AccessGrantTypeChoices.CHOICES, required=False)
-
-    class Meta:
-        """Metaclass attributes of AccessGrantFilterForm."""
-
-        model = AccessGrant
-
-        fields = ("command", "subcommand", "grant_type")
+    grant_type = forms.ChoiceField(choices=add_blank_choice(AccessGrantTypeChoices.CHOICES), required=False)
 
 
-class AccessGrantForm(BootstrapMixin, forms.ModelForm):
+class AccessGrantForm(NautobotModelForm):
     """Form for creating or editing an AccessGrant instance."""
 
     command = forms.CharField(
@@ -40,27 +35,46 @@ class AccessGrantForm(BootstrapMixin, forms.ModelForm):
         help_text=ACCESS_GRANT_COMMAND_HELP_TEXT,
         widget=forms.TextInput(attrs={"autofocus": True}),
     )
-    grant_type = forms.ChoiceField(choices=BLANK_CHOICE + AccessGrantTypeChoices.CHOICES)
 
     class Meta:
         """Metaclass attributes of AccessGrantForm."""
 
         model = AccessGrant
+        fields = "__all__"
 
-        fields = ("command", "subcommand", "grant_type", "name", "value")
+
+class AccessGrantBulkEditForm(NautobotBulkEditForm):
+    """Form for bulk editing AccessGrants."""
+
+    pk = forms.ModelMultipleChoiceField(queryset=AccessGrant.objects.all(), widget=forms.MultipleHiddenInput)
+
+    class Meta:
+        """Metaclass attributes of AccessGrantFormBulkEditForm."""
+
+        nullable_fields = []
 
 
-class ChatOpsAccountLinkForm(BootstrapMixin, forms.ModelForm):
+class ChatOpsAccountLinkForm(NautobotModelForm):
     """Form for creating or editing a ChatOps Account Link instance."""
 
-    email = forms.EmailField(required=False)
     platform = forms.ChoiceField(choices=PlatformChoices.CHOICES)
 
     class Meta:
         """Metaclass attributes of ChatOpsAccountLinkForm."""
 
         model = ChatOpsAccountLink
-        fields = ("platform", "email", "user_id")
+        fields = ("platform", "email", "user_id")  # pylint: disable = nb-use-fields-all
+
+
+class ChatOpsAccountLinkBulkEditForm(NautobotBulkEditForm):
+    """Form for bulk editing ChatOpsAccountLink."""
+
+    pk = forms.ModelMultipleChoiceField(queryset=ChatOpsAccountLink.objects.all(), widget=forms.MultipleHiddenInput)
+
+    class Meta:
+        """Metaclass attributes of CommandTokenBulkEditForm."""
+
+        nullable_fields = []
 
 
 class ChatOpsAccountLinkFilterForm(NautobotFilterForm):
@@ -75,41 +89,26 @@ class ChatOpsAccountLinkFilterForm(NautobotFilterForm):
     platform = forms.MultipleChoiceField(choices=PlatformChoices, required=False, widget=StaticSelect2Multiple())
 
 
-class CommandLogFilterForm(BootstrapMixin, forms.ModelForm):
+class CommandLogFilterForm(NautobotFilterForm):
     """Form for filtering Command Logs."""
 
+    platform = forms.ChoiceField(choices=PlatformChoices.CHOICES, required=False, widget=StaticSelect2Multiple())
     command = forms.CharField(required=False)
     subcommand = forms.CharField(required=False)
-
-    class Meta:
-        """Metaclass attributes of AccessGrantFilterForm."""
-
-        model = CommandLog
-
-        fields = [
-            "platform",
-            "command",
-            "subcommand",
-            "status",
-            "details",
-        ]
+    status = forms.ChoiceField(choices=add_blank_choice(CommandStatusChoices.CHOICES), required=False)
+    details = forms.CharField(required=False)
+    model = CommandLog
 
 
-class CommandTokenFilterForm(BootstrapMixin, forms.ModelForm):
+class CommandTokenFilterForm(NautobotFilterForm):
     """Form for filtering ComandToken instances."""
 
+    model = CommandToken
     platform = forms.ChoiceField(choices=PlatformChoices.CHOICES)
     comment = forms.CharField(required=False)
 
-    class Meta:
-        """Metaclass attributes of CommandTokenFilterForm."""
 
-        model = CommandToken
-
-        fields = "__all__"
-
-
-class CommandTokenForm(BootstrapMixin, forms.ModelForm):
+class CommandTokenForm(NautobotModelForm):
     """Form for creating or editing an CommandToken instance."""
 
     token = forms.CharField(

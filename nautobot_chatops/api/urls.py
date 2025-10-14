@@ -5,6 +5,7 @@ from nautobot.apps.api import OrderedDefaultRouter
 
 from nautobot_chatops.api.views.generic import (
     AccessGrantViewSet,
+    ChatOpsAccountLinkViewSet,
     CommandLogViewSet,
     CommandTokenViewSet,
 )
@@ -32,6 +33,7 @@ router = OrderedDefaultRouter()
 router.register("commandtoken", CommandTokenViewSet)
 router.register("accessgrant", AccessGrantViewSet)
 router.register("commandlog", CommandLogViewSet)
+router.register("accountlink", ChatOpsAccountLinkViewSet)
 
 app_name = "nautobot_chatops-api"
 urlpatterns += router.urls

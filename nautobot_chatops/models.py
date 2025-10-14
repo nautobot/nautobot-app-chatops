@@ -4,8 +4,7 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
-from nautobot.core.models.fields import ColorField
-from nautobot.core.models.generics import PrimaryModel
+from nautobot.apps.models import ColorField, PrimaryModel
 
 from .choices import AccessGrantTypeChoices, CommandStatusChoices, PlatformChoices
 from .constants import (
@@ -59,6 +58,8 @@ class CommandLog(PrimaryModel):  # pylint: disable=nb-string-field-blank-null
         null=True,
         related_name="command_log",
     )
+    is_dynamic_group_associable_model = False  # Disable dynamic group association for this model
+    is_contact_associable_model = False  # Disable contact association for this model
 
     @property
     def status_label_class(self):
@@ -103,6 +104,8 @@ class AccessGrant(PrimaryModel):
         max_length=255,
         help_text=ACCESS_GRANT_VALUE_HELP_TEXT,
     )
+    is_dynamic_group_associable_model = False  # Disable dynamic group association for this model
+    is_contact_associable_model = False  # Disable contact association for this model
 
     def clean(self):
         """Model validation logic."""
@@ -113,10 +116,6 @@ class AccessGrant(PrimaryModel):
     def __str__(self):
         """String representation of an AccessGrant."""
         return f'cmd: "{self.command} {self.subcommand}", {self.grant_type}: "{self.name}" ({self.value})'
-
-    def get_absolute_url(self, api=False):
-        """Override the objects absolute url since we have no detail view."""
-        return reverse("plugins:nautobot_chatops:accessgrant_list")
 
     class Meta:
         """Meta-attributes of an AccessGrant."""
@@ -131,14 +130,12 @@ class CommandToken(PrimaryModel):
     comment = models.CharField(max_length=255, help_text=COMMAND_TOKEN_COMMENT_HELP_TEXT, blank=True, default="")
     platform = models.CharField(max_length=32, choices=PlatformChoices)
     token = models.CharField(max_length=255, help_text=COMMAND_TOKEN_TOKEN_HELP_TEXT)
+    is_dynamic_group_associable_model = False  # Disable dynamic group association for this model
+    is_contact_associable_model = False  # Disable contact association for this model
 
     def __str__(self):
         """String representation of a CommandToken."""
         return f'platform: "{self.platform}", token: "{self.token}", comment: "{self.comment}"'
-
-    def get_absolute_url(self, api=False):
-        """Override the objects absolute url since we have no detail view."""
-        return reverse("plugins:nautobot_chatops:commandtoken_list")
 
     class Meta:
         """Meta-attributes of a CommandToken."""
@@ -159,6 +156,8 @@ class ChatOpsAccountLink(PrimaryModel):
     platform = models.CharField(max_length=32, choices=PlatformChoices)
     user_id = models.CharField(max_length=255, help_text=CHATOPS_USER_ID_HELP_TEXT, verbose_name="Chat User ID")
     email = models.EmailField(blank=True)
+    is_dynamic_group_associable_model = False  # Disable dynamic group association for this model
+    is_contact_associable_model = False  # Disable contact association for this model
 
     def __str__(self):
         """String representation of a ChatOps Account Link."""
