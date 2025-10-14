@@ -1,16 +1,16 @@
 """Forms for Nautobot."""
 
 from django import forms
-from nautobot_chatops.integrations.grafana.forms import (
-    GrafanaDashboardBulkEditForm as GrafanaDashboardIntegrationBulkEditForm,
-)
-
 from nautobot.apps.forms import (
     NautobotBulkEditForm,
     NautobotFilterForm,
     NautobotModelForm,
     StaticSelect2Multiple,
     add_blank_choice,
+)
+
+from nautobot_chatops.integrations.grafana.forms import (
+    GrafanaDashboardBulkEditForm as GrafanaDashboardIntegrationBulkEditForm,
 )
 
 from .choices import AccessGrantTypeChoices, CommandStatusChoices, PlatformChoices
