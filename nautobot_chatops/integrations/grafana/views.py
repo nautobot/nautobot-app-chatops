@@ -15,12 +15,9 @@ from nautobot.apps.ui import ObjectDetailContent, ObjectFieldsPanel, SectionChoi
 from nautobot.apps.views import NautobotUIViewSet
 from nautobot.core.forms import ConfirmationForm
 from nautobot.core.views.generic import (
-    BulkDeleteView,
-    BulkEditView,
     BulkImportView,
     ObjectDeleteView,
     ObjectEditView,
-    ObjectListView,
 )
 
 from nautobot_chatops.integrations.grafana.api.serializers import (
@@ -30,7 +27,7 @@ from nautobot_chatops.integrations.grafana.api.serializers import (
 from nautobot_chatops.integrations.grafana.filters import (
     GrafanaDashboardFilterSet,
     GrafanaPanelFilterSet,
-    VariableFilter,
+    GrafanaPanelVariableFilterSet,
 )
 from nautobot_chatops.integrations.grafana.forms import (
     GrafanaDashboardBulkEditForm,
@@ -39,10 +36,10 @@ from nautobot_chatops.integrations.grafana.forms import (
     GrafanaPanelBulkEditForm,
     GrafanaPanelFilterForm,
     GrafanaPanelForm,
+    GrafanaPanelVariableBulkEditForm,
+    GrafanaPanelVariableFilterForm,
+    GrafanaPanelVariableForm,
     PanelsSyncForm,
-    PanelVariablesBulkEditForm,
-    PanelVariablesFilterForm,
-    PanelVariablesForm,
     PanelVariablesSyncForm,
 )
 from nautobot_chatops.integrations.grafana.models import (
@@ -199,10 +196,6 @@ class GrafanaPanelUIViewSet(GrafanaViewMixin, NautobotUIViewSet):
         return "nautobot_chatops.panel_read"
 
 
-# Backward compatibility alias.
-GrafanaPanelsUIViewSet = GrafanaPanelUIViewSet
-
-
 class PanelsSync(GrafanaViewMixin, PermissionRequiredMixin, ObjectEditView):
     """View for synchronizing data between the Grafana Dashboard Panels and Nautobot."""
 
@@ -248,43 +241,31 @@ class PanelsBulkImportView(GrafanaViewMixin, BulkImportView):
 # -------------------------------------------------------------------------------------
 
 
-class Variables(GrafanaViewMixin, ObjectListView):
-    """View for showing panel-variables configuration."""
+class GrafanaPanelVariableUIViewSet(GrafanaViewMixin, NautobotUIViewSet):
+    """NautobotUIViewSet for Grafana panel variables."""
+
+    bulk_update_form_class = GrafanaPanelVariableBulkEditForm
 
     queryset = GrafanaPanelVariable.objects.all()
-    filterset = VariableFilter
-    filterset_form = PanelVariablesFilterForm
-    table = GrafanaPanelVariableTable
+    filterset_class = GrafanaPanelVariableFilterSet
+    filterset_form_class = GrafanaPanelVariableFilterForm
+    table_class = GrafanaPanelVariableTable
+    form_class = GrafanaPanelVariableForm
     action_buttons = ("add", "import")
-    template_name = "nautobot_chatops_grafana/variable_list.html"
+
+    object_detail_content = ObjectDetailContent(
+        panels=(
+            ObjectFieldsPanel(
+                section=SectionChoices.LEFT_HALF,
+                weight=100,
+                fields="__all__",
+            ),
+        )
+    )
 
     def get_required_permission(self):
         """Return required view permission."""
         return "nautobot_chatops.panelvariable_read"
-
-
-class VariablesCreate(GrafanaViewMixin, PermissionRequiredMixin, ObjectEditView):
-    """View for creating a new Variable."""
-
-    permission_required = "nautobot_chatops.panelvariable_add"
-    model = GrafanaPanelVariable
-    queryset = GrafanaPanelVariable.objects.all()
-    model_form = PanelVariablesForm
-    default_return_url = "plugins:nautobot_chatops:grafanapanelvariable_list"
-
-
-class VariablesEdit(VariablesCreate):
-    """View for editing an existing Variable."""
-
-    permission_required = "nautobot_chatops.panelvariable_edit"
-
-
-class VariablesDelete(GrafanaViewMixin, PermissionRequiredMixin, ObjectDeleteView):
-    """View for deleting one or more Variable records."""
-
-    queryset = GrafanaPanelVariable.objects.all()
-    permission_required = "nautobot_chatops.panelvariable_delete"
-    default_return_url = "plugins:nautobot_chatops:grafanapanelvariable_list"
 
 
 class VariablesBulkImportView(GrafanaViewMixin, BulkImportView):
@@ -293,33 +274,6 @@ class VariablesBulkImportView(GrafanaViewMixin, BulkImportView):
     queryset = GrafanaPanelVariable.objects.all()
     table = GrafanaPanelVariableTable
     default_return_url = "plugins:nautobot_chatops:grafanapanelvariable_list"
-
-
-class VariablesBulkDeleteView(GrafanaViewMixin, BulkDeleteView):
-    """View for deleting one or more Variable records."""
-
-    queryset = GrafanaPanelVariable.objects.all()
-    table = GrafanaPanelVariableTable
-    bulk_delete_url = "plugins:nautobot_chatops:grafanapanelvariable_bulk_delete"
-    default_return_url = "plugins:nautobot_chatops:grafanapanelvariable_list"
-
-    def get_required_permission(self):
-        """Return required delete permission."""
-        return "nautobot_chatops.panelvariable_delete"
-
-
-class VariablesBulkEditView(GrafanaViewMixin, BulkEditView):
-    """View for editing one or more Variable records."""
-
-    queryset = GrafanaPanelVariable.objects.all()
-    filterset = PanelVariablesFilterForm
-    table = GrafanaPanelVariableTable
-    form = PanelVariablesBulkEditForm
-    bulk_edit_url = "plugins:nautobot_chatops:grafanapanelvariable_bulk_edit"
-
-    def get_required_permission(self):
-        """Return required change permission."""
-        return "nautobot_chatops.panelvariable_edit"
 
 
 class VariablesSync(GrafanaViewMixin, PermissionRequiredMixin, ObjectEditView):

@@ -2,29 +2,23 @@
 
 from django.urls import path
 from nautobot.apps.urls import NautobotUIViewSetRouter
-from nautobot.extras.views import ObjectChangeLogView
 
-from nautobot_chatops.integrations.grafana.models import GrafanaPanelVariable
 from nautobot_chatops.integrations.grafana.views import (
     DashboardsBulkImportView,
     DashboardsSync,
     GrafanaDashboardUIViewSet,
     GrafanaPanelUIViewSet,
+    GrafanaPanelVariableUIViewSet,
     PanelsBulkImportView,
     PanelsSync,
-    Variables,
-    VariablesBulkDeleteView,
-    VariablesBulkEditView,
     VariablesBulkImportView,
-    VariablesCreate,
-    VariablesDelete,
-    VariablesEdit,
     VariablesSync,
 )
 
 router = NautobotUIViewSetRouter()
 router.register("grafana/dashboards", viewset=GrafanaDashboardUIViewSet)
 router.register("grafana/panels", viewset=GrafanaPanelUIViewSet)
+router.register("grafana/variables", viewset=GrafanaPanelVariableUIViewSet)
 
 urlpatterns = router.urls
 
@@ -36,19 +30,7 @@ urlpatterns += [
     path("grafana/panels/sync/", PanelsSync.as_view(), name="grafanapanel_sync"),
     path("grafana/panels/import/", PanelsBulkImportView.as_view(), name="grafanapanel_import"),
     # Panel-variables specific views.
-    path("grafana/variables/", Variables.as_view(), name="grafanapanelvariable_list"),
-    path(
-        "variables/<uuid:pk>/changelog/",
-        ObjectChangeLogView.as_view(),
-        name="grafanapanelvariable_changelog",
-        kwargs={"model": GrafanaPanelVariable},
-    ),
-    path("grafana/variables/add/", VariablesCreate.as_view(), name="grafanapanelvariable_add"),
     path("grafana/variables/sync/", VariablesSync.as_view(), name="grafanapanelvariable_sync"),
-    path("grafana/variables/<uuid:pk>/edit/", VariablesEdit.as_view(), name="grafanapanelvariable_edit"),
-    path("grafana/variables/edit/", VariablesBulkEditView.as_view(), name="grafanapanelvariable_bulk_edit"),
-    path("grafana/variables/<uuid:pk>/delete/", VariablesDelete.as_view(), name="grafanapanelvariable_delete"),
-    path("grafana/variables/delete/", VariablesBulkDeleteView.as_view(), name="grafanapanelvariable_bulk_delete"),
     path("grafana/variables/import/", VariablesBulkImportView.as_view(), name="grafanapanelvariable_import"),
 ]
 

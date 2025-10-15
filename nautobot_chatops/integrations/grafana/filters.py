@@ -1,7 +1,7 @@
 """Filtering for Nautobot ChatOps Grafana integration."""
 
 from django.db.models import Q
-from django_filters import CharFilter, FilterSet
+from django_filters import CharFilter
 from nautobot.apps.filters import NautobotFilterSet
 
 from nautobot_chatops.integrations.grafana.models import Dashboard, Panel, PanelVariable
@@ -55,7 +55,7 @@ class GrafanaPanelFilterSet(NautobotFilterSet):  # pylint: disable=nb-sub-class-
         return queryset.filter(qs_filter)
 
 
-class VariableFilter(FilterSet):
+class GrafanaPanelVariableFilterSet(NautobotFilterSet):  # pylint: disable=nb-sub-class-name
     """Filter for PanelVariables."""
 
     q = CharFilter(method="search", label="Search")
@@ -65,7 +65,7 @@ class VariableFilter(FilterSet):
 
         model = PanelVariable
 
-        fields = ("panel", "name", "friendly_name", "query", "modelattr", "value", "response")
+        fields = "__all__"
 
     def search(self, queryset, name, value):  # pylint: disable=unused-argument
         """Perform the filtered search."""

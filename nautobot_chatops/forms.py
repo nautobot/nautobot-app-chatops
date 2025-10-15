@@ -15,6 +15,9 @@ from nautobot_chatops.integrations.grafana.forms import (
 from nautobot_chatops.integrations.grafana.forms import (
     GrafanaPanelBulkEditForm as PanelBulkEditForm,
 )
+from nautobot_chatops.integrations.grafana.forms import (
+    GrafanaPanelVariableBulkEditForm as PanelVariableBulkEditForm,
+)
 
 from .choices import AccessGrantTypeChoices, CommandStatusChoices, PlatformChoices
 from .constants import ACCESS_GRANT_COMMAND_HELP_TEXT, COMMAND_TOKEN_TOKEN_HELP_TEXT
@@ -143,7 +146,7 @@ class CommandTokenBulkEditForm(NautobotBulkEditForm):
         ]
 
 
-# Re-export Grafana dashboard bulk edit form for Nautobot's lookup utilities.
+# Re-export bulk edit form for Nautobot's lookup utilities.
 GrafanaDashboardBulkEditForm = DashboardBulkEditForm
-# Re-export Grafana panel bulk edit form for Nautobot's lookup utilities.
 GrafanaPanelBulkEditForm = PanelBulkEditForm
+GrafanaPanelVariableBulkEditForm = PanelVariableBulkEditForm
