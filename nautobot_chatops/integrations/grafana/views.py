@@ -25,15 +25,15 @@ from nautobot.core.views.generic import (
     ObjectListView,
 )
 
-from nautobot_chatops.integrations.grafana.api.serializers import GrafanaDashboardSerializer
-from nautobot_chatops.integrations.grafana.filters import DashboardFilterSet, PanelFilter, VariableFilter
+from nautobot_chatops.integrations.grafana.api.serializers import GrafanaDashboardSerializer, GrafanaPanelSerializer
+from nautobot_chatops.integrations.grafana.filters import DashboardFilterSet, PanelFilterSet, VariableFilter
 from nautobot_chatops.integrations.grafana.forms import (
     DashboardFilterForm,
     DashboardForm,
     GrafanaDashboardBulkEditForm,
     PanelsBulkEditForm,
-    PanelsFilterForm,
-    PanelsForm,
+    PanelFilterForm,
+    PanelForm,
     PanelsSyncForm,
     PanelVariablesBulkEditForm,
     PanelVariablesFilterForm,
@@ -163,37 +163,36 @@ class DashboardsBulkImportView(GrafanaViewMixin, BulkImportView):
 # -------------------------------------------------------------------------------------
 # Panel Specific Views
 # -------------------------------------------------------------------------------------
+class GrafanaPanelUIViewSet(GrafanaViewMixin, NautobotUIViewSet):
+    """NautobotUIViewSet for Grafana panels."""
 
-
-class Panels(GrafanaViewMixin, ObjectListView):
-    """View for showing panels configuration."""
-
+    bulk_update_form_class = PanelsBulkEditForm
     queryset = GrafanaPanel.objects.all()
-    filterset = PanelFilter
-    filterset_form = PanelsFilterForm
-    table = GrafanaPanelTable
+    filterset_class = PanelFilterSet
+    filterset_form_class = PanelFilterForm
+    table_class = GrafanaPanelTable
+    serializer_class = GrafanaPanelSerializer
+    form_class = PanelForm
     action_buttons = ("add", "import")
-    template_name = "nautobot_chatops_grafana/panel_list.html"
+
+    object_detail_content = ObjectDetailContent(
+        panels=(
+            ObjectFieldsPanel(
+                section=SectionChoices.LEFT_HALF,
+                weight=100,
+                fields="__all__",
+            ),
+        )
+    )
+
 
     def get_required_permission(self):
         """Return required view permission."""
         return "nautobot_chatops.panel_read"
 
 
-class PanelsCreate(GrafanaViewMixin, PermissionRequiredMixin, ObjectEditView):
-    """View for creating a new Panel."""
-
-    permission_required = "nautobot_chatops.panel_add"
-    model = GrafanaPanel
-    queryset = GrafanaPanel.objects.all()
-    model_form = PanelsForm
-    default_return_url = "plugins:nautobot_chatops:grafanapanel_list"
-
-
-class PanelsEdit(PanelsCreate):
-    """View for editing an existing Panel."""
-
-    permission_required = "nautobot_chatops.panel_edit"
+# Backward compatibility alias.
+GrafanaPanelsUIViewSet = GrafanaPanelUIViewSet
 
 
 class PanelsSync(GrafanaViewMixin, PermissionRequiredMixin, ObjectEditView):
@@ -228,47 +227,12 @@ class PanelsSync(GrafanaViewMixin, PermissionRequiredMixin, ObjectEditView):
         return redirect(reverse("plugins:nautobot_chatops:grafanapanel_list"))
 
 
-class PanelsDelete(GrafanaViewMixin, PermissionRequiredMixin, ObjectDeleteView):
-    """View for deleting one or more Panel records."""
-
-    queryset = GrafanaPanel.objects.all()
-    permission_required = "nautobot_chatops.panel_delete"
-    default_return_url = "plugins:nautobot_chatops:grafanapanel_list"
-
-
 class PanelsBulkImportView(GrafanaViewMixin, BulkImportView):
     """View for bulk import of Panels."""
 
     queryset = GrafanaPanel.objects.all()
     table = GrafanaPanelTable
     default_return_url = "plugins:nautobot_chatops:grafanapanel_list"
-
-
-class PanelsBulkDeleteView(GrafanaViewMixin, BulkDeleteView):
-    """View for deleting one or more Panels records."""
-
-    queryset = GrafanaPanel.objects.all()
-    table = GrafanaPanelTable
-    bulk_delete_url = "plugins:nautobot_chatops:grafanapanel_bulk_delete"
-    default_return_url = "plugins:nautobot_chatops:grafanapanel_list"
-
-    def get_required_permission(self):
-        """Return required delete permission."""
-        return "nautobot_chatops.panel_delete"
-
-
-class PanelsBulkEditView(GrafanaViewMixin, BulkEditView):
-    """View for editing one or more Panels records."""
-
-    queryset = GrafanaPanel.objects.all()
-    filterset = PanelsFilterForm
-    table = GrafanaPanelTable
-    form = PanelsBulkEditForm
-    bulk_edit_url = "plugins:nautobot_chatops:grafanapanel_bulk_edit"
-
-    def get_required_permission(self):
-        """Return required change permission."""
-        return "nautobot_chatops.panel_edit"
 
 
 # -------------------------------------------------------------------------------------

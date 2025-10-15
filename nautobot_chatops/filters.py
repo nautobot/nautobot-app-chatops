@@ -7,6 +7,9 @@ from nautobot_chatops.choices import PlatformChoices
 from nautobot_chatops.integrations.grafana.filters import (
     DashboardFilterSet as GrafanaDashboardIntegrationFilterSet,
 )
+from nautobot_chatops.integrations.grafana.filters import (
+    PanelFilterSet as GrafanaPanelIntegrationFilterSet,
+)
 from nautobot_chatops.models import AccessGrant, ChatOpsAccountLink, CommandLog, CommandToken
 
 
@@ -89,3 +92,5 @@ class CommandTokenFilterSet(NautobotFilterSet):
 
 # Re-export Grafana dashboard filter for Nautobot's lookup utilities.
 GrafanaDashboardFilterSet = GrafanaDashboardIntegrationFilterSet
+# Re-export Grafana panel filter for Nautobot's lookup utilities.
+GrafanaPanelFilterSet = GrafanaPanelIntegrationFilterSet

@@ -33,7 +33,7 @@ class DashboardFilterSet(NautobotFilterSet):
 GrafanaDashboardFilterSet = DashboardFilterSet
 
 
-class PanelFilter(FilterSet):
+class PanelFilterSet(NautobotFilterSet):
     """Filter for Panels."""
 
     q = CharFilter(method="search", label="Search")
@@ -43,7 +43,7 @@ class PanelFilter(FilterSet):
 
         model = Panel
 
-        fields = ("dashboard", "command_name", "friendly_name", "panel_id")
+        fields = "__all__"
 
     def search(self, queryset, name, value):  # pylint: disable=unused-argument
         """Perform the filtered search."""
@@ -57,6 +57,10 @@ class PanelFilter(FilterSet):
             | Q(panel_id__icontains=value) & Q(action=value)
         )
         return queryset.filter(qs_filter)
+
+
+# Backward compatibility alias until callers are updated.
+GrafanaPanelFilterSet = PanelFilterSet
 
 
 class VariableFilter(FilterSet):

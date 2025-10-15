@@ -2,9 +2,9 @@
 
 from nautobot.apps.api import NautobotModelViewSet
 
-from nautobot_chatops.integrations.grafana.api.serializers import GrafanaDashboardSerializer
-from nautobot_chatops.integrations.grafana.filters import DashboardFilterSet
-from nautobot_chatops.integrations.grafana.models import GrafanaDashboard
+from nautobot_chatops.integrations.grafana.api.serializers import GrafanaDashboardSerializer, GrafanaPanelSerializer
+from nautobot_chatops.integrations.grafana.filters import DashboardFilterSet, PanelFilterSet
+from nautobot_chatops.integrations.grafana.models import GrafanaDashboard, GrafanaPanel
 
 
 class GrafanaDashboardViewSet(NautobotModelViewSet):
@@ -13,3 +13,11 @@ class GrafanaDashboardViewSet(NautobotModelViewSet):
     queryset = GrafanaDashboard.objects.all()
     serializer_class = GrafanaDashboardSerializer
     filterset_class = DashboardFilterSet
+
+
+class GrafanaPanelViewSet(NautobotModelViewSet):
+    """API viewset for Grafana panels."""
+
+    queryset = GrafanaPanel.objects.all()
+    serializer_class = GrafanaPanelSerializer
+    filterset_class = PanelFilterSet

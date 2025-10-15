@@ -2,7 +2,7 @@
 
 from nautobot.apps.api import NautobotModelSerializer, TaggedModelSerializerMixin
 
-from nautobot_chatops.integrations.grafana.models import GrafanaDashboard
+from nautobot_chatops.integrations.grafana.models import GrafanaDashboard, GrafanaPanel
 
 
 class GrafanaDashboardSerializer(TaggedModelSerializerMixin, NautobotModelSerializer):
@@ -12,4 +12,14 @@ class GrafanaDashboardSerializer(TaggedModelSerializerMixin, NautobotModelSerial
         """Meta attributes."""
 
         model = GrafanaDashboard
+        fields = "__all__"
+
+
+class GrafanaPanelSerializer(TaggedModelSerializerMixin, NautobotModelSerializer):
+    """Serializer for Grafana panels exposed via the API."""
+
+    class Meta:
+        """Meta attributes."""
+
+        model = GrafanaPanel
         fields = "__all__"

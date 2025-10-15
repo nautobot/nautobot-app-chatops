@@ -75,21 +75,15 @@ class GrafanaDashboardBulkEditForm(NautobotBulkEditForm):
         ]
 
 
-class PanelsForm(BootstrapMixin, ModelForm):
+class PanelForm(NautobotModelForm):
     """Form for editing Panel instances."""
 
-    dashboard = ModelChoiceField(queryset=Dashboard.objects.all())
-    command_name = CharField(max_length=64)
-    friendly_name = CharField(max_length=64)
-    panel_id = IntegerField()
-    active = BooleanField()
-
     class Meta:
-        """Metaclass attributes of Panel."""
+        """Metaclass attributes of Dashboard."""
 
         model = Panel
 
-        fields = ("dashboard", "command_name", "friendly_name", "panel_id", "active")
+        fields = "__all__"
 
 
 class PanelsSyncForm(BootstrapMixin, ModelForm):
@@ -105,8 +99,10 @@ class PanelsSyncForm(BootstrapMixin, ModelForm):
         fields = ("dashboard",)
 
 
-class PanelsFilterForm(BootstrapMixin, ModelForm):
+class PanelFilterForm(NautobotFilterForm):
     """Filter form to filter searches."""
+
+    model = Panel
 
     q = CharField(required=False, label="Search")
     dashboard = ModelChoiceField(required=False, queryset=Dashboard.objects.all())
@@ -115,17 +111,8 @@ class PanelsFilterForm(BootstrapMixin, ModelForm):
     panel_id = IntegerField(required=False, label="Panel ID")
     active = BooleanField(required=False)
 
-    class Meta:
-        """Meta attributes."""
 
-        model = Panel
-
-        fields = ("q", "dashboard", "command_name", "friendly_name", "panel_id", "active")
-
-        widgets = {}
-
-
-class PanelsBulkEditForm(BootstrapMixin, BulkEditForm):
+class PanelsBulkEditForm(NautobotBulkEditForm):
     """Panels bulk edit form."""
 
     pk = ModelMultipleChoiceField(queryset=Panel.objects.all(), widget=MultipleHiddenInput)
@@ -138,6 +125,11 @@ class PanelsBulkEditForm(BootstrapMixin, BulkEditForm):
         nullable_fields = [
             "friendly_name",
         ]
+
+
+# Backward compatibility aliases.
+PanelsForm = PanelForm
+PanelsFilterForm = PanelFilterForm
 
 
 class PanelVariablesForm(BootstrapMixin, ModelForm):

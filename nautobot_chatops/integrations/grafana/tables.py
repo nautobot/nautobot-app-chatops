@@ -32,6 +32,7 @@ class GrafanaPanelTable(BaseTable):  # pylint: disable=nb-sub-class-name
         template_code="<span class='text-muted'><i>/grafana get-{{ record.command_name }}</i></span>",
         verbose_name="Chat Command",
     )
+    friendly_name = Column(linkify=True)
     active = BooleanColumn(yesno="🟢,🔴")
 
     class Meta(BaseTable.Meta):  # pylint: disable=too-few-public-methods
