@@ -17,7 +17,7 @@ from nautobot.core.forms import BootstrapMixin, BulkEditForm
 from nautobot_chatops.integrations.grafana.models import Dashboard, Panel, PanelVariable
 
 
-class GrafanaDashboardFilterForm(NautobotFilterForm): # pylint: disable=nb-sub-class-name
+class GrafanaDashboardFilterForm(NautobotFilterForm):  # pylint: disable=nb-sub-class-name
     """Form for filtering Dashboard instances."""
 
     model = Dashboard
@@ -27,7 +27,7 @@ class GrafanaDashboardFilterForm(NautobotFilterForm): # pylint: disable=nb-sub-c
     friendly_name = CharField(max_length=255)
 
 
-class GrafanaDashboardForm(NautobotModelForm): # pylint: disable=nb-sub-class-name
+class GrafanaDashboardForm(NautobotModelForm):  # pylint: disable=nb-sub-class-name
     """Form for editing Dashboard instances."""
 
     class Meta:
@@ -70,7 +70,7 @@ class GrafanaDashboardBulkEditForm(NautobotBulkEditForm):
         ]
 
 
-class GrafanaPanelForm(NautobotModelForm): # pylint: disable=nb-sub-class-name
+class GrafanaPanelForm(NautobotModelForm):  # pylint: disable=nb-sub-class-name
     """Form for editing Panel instances."""
 
     class Meta:
@@ -94,7 +94,7 @@ class PanelsSyncForm(BootstrapMixin, ModelForm):
         fields = ("dashboard",)
 
 
-class GrafanaPanelFilterForm(NautobotFilterForm): # pylint: disable=nb-sub-class-name
+class GrafanaPanelFilterForm(NautobotFilterForm):  # pylint: disable=nb-sub-class-name
     """Filter form to filter searches."""
 
     model = Panel

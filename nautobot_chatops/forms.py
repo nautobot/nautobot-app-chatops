@@ -11,6 +11,8 @@ from nautobot.apps.forms import (
 
 from nautobot_chatops.integrations.grafana.forms import (
     GrafanaDashboardBulkEditForm as DashboardBulkEditForm,
+)
+from nautobot_chatops.integrations.grafana.forms import (
     GrafanaPanelBulkEditForm as PanelBulkEditForm,
 )
 
