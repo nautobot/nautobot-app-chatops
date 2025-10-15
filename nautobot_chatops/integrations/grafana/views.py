@@ -12,9 +12,7 @@ from django.shortcuts import redirect, render, reverse
 from django.template.response import TemplateResponse
 from nautobot.apps.config import get_app_settings_or_config
 from nautobot.apps.ui import ObjectDetailContent, ObjectFieldsPanel, SectionChoices
-from nautobot.apps.views import (
-    NautobotUIViewSet,
-)
+from nautobot.apps.views import NautobotUIViewSet
 from nautobot.core.forms import ConfirmationForm
 from nautobot.core.views.generic import (
     BulkDeleteView,
@@ -25,22 +23,33 @@ from nautobot.core.views.generic import (
     ObjectListView,
 )
 
-from nautobot_chatops.integrations.grafana.api.serializers import GrafanaDashboardSerializer, GrafanaPanelSerializer
-from nautobot_chatops.integrations.grafana.filters import DashboardFilterSet, PanelFilterSet, VariableFilter
+from nautobot_chatops.integrations.grafana.api.serializers import (
+    GrafanaDashboardSerializer,
+    GrafanaPanelSerializer,
+)
+from nautobot_chatops.integrations.grafana.filters import (
+    GrafanaDashboardFilterSet,
+    GrafanaPanelFilterSet,
+    VariableFilter,
+)
 from nautobot_chatops.integrations.grafana.forms import (
-    DashboardFilterForm,
-    DashboardForm,
     GrafanaDashboardBulkEditForm,
-    PanelsBulkEditForm,
-    PanelFilterForm,
-    PanelForm,
+    GrafanaDashboardFilterForm,
+    GrafanaDashboardForm,
+    GrafanaPanelBulkEditForm,
+    GrafanaPanelFilterForm,
+    GrafanaPanelForm,
     PanelsSyncForm,
     PanelVariablesBulkEditForm,
     PanelVariablesFilterForm,
     PanelVariablesForm,
     PanelVariablesSyncForm,
 )
-from nautobot_chatops.integrations.grafana.models import GrafanaDashboard, GrafanaPanel, GrafanaPanelVariable
+from nautobot_chatops.integrations.grafana.models import (
+    GrafanaDashboard,
+    GrafanaPanel,
+    GrafanaPanelVariable,
+)
 from nautobot_chatops.integrations.grafana.tables import (
     GrafanaDashboardTable,
     GrafanaPanelTable,
@@ -95,10 +104,10 @@ class GrafanaDashboardUIViewSet(GrafanaViewMixin, NautobotUIViewSet):
 
     bulk_update_form_class = GrafanaDashboardBulkEditForm
     queryset = GrafanaDashboard.objects.all()
-    filterset_class = DashboardFilterSet
-    filterset_form_class = DashboardFilterForm
+    filterset_class = GrafanaDashboardFilterSet
+    filterset_form_class = GrafanaDashboardFilterForm
     table_class = GrafanaDashboardTable
-    form_class = DashboardForm
+    form_class = GrafanaDashboardForm
     serializer_class = GrafanaDashboardSerializer
     action_buttons = ("add", "import")
 
@@ -166,13 +175,13 @@ class DashboardsBulkImportView(GrafanaViewMixin, BulkImportView):
 class GrafanaPanelUIViewSet(GrafanaViewMixin, NautobotUIViewSet):
     """NautobotUIViewSet for Grafana panels."""
 
-    bulk_update_form_class = PanelsBulkEditForm
+    bulk_update_form_class = GrafanaPanelBulkEditForm
     queryset = GrafanaPanel.objects.all()
-    filterset_class = PanelFilterSet
-    filterset_form_class = PanelFilterForm
+    filterset_class = GrafanaPanelFilterSet
+    filterset_form_class = GrafanaPanelFilterForm
     table_class = GrafanaPanelTable
     serializer_class = GrafanaPanelSerializer
-    form_class = PanelForm
+    form_class = GrafanaPanelForm
     action_buttons = ("add", "import")
 
     object_detail_content = ObjectDetailContent(
@@ -184,7 +193,6 @@ class GrafanaPanelUIViewSet(GrafanaViewMixin, NautobotUIViewSet):
             ),
         )
     )
-
 
     def get_required_permission(self):
         """Return required view permission."""

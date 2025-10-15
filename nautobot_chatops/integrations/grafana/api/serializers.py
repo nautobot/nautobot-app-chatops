@@ -15,7 +15,7 @@ class GrafanaDashboardSerializer(TaggedModelSerializerMixin, NautobotModelSerial
         fields = "__all__"
 
 
-class GrafanaPanelSerializer(TaggedModelSerializerMixin, NautobotModelSerializer):
+class GrafanaPanelSerializer(NautobotModelSerializer):
     """Serializer for Grafana panels exposed via the API."""
 
     class Meta:

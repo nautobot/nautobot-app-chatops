@@ -17,7 +17,7 @@ from nautobot.core.forms import BootstrapMixin, BulkEditForm
 from nautobot_chatops.integrations.grafana.models import Dashboard, Panel, PanelVariable
 
 
-class DashboardFilterForm(NautobotFilterForm):
+class GrafanaDashboardFilterForm(NautobotFilterForm): # pylint: disable=nb-sub-class-name
     """Form for filtering Dashboard instances."""
 
     model = Dashboard
@@ -27,7 +27,7 @@ class DashboardFilterForm(NautobotFilterForm):
     friendly_name = CharField(max_length=255)
 
 
-class DashboardForm(NautobotModelForm):
+class GrafanaDashboardForm(NautobotModelForm): # pylint: disable=nb-sub-class-name
     """Form for editing Dashboard instances."""
 
     class Meta:
@@ -36,11 +36,6 @@ class DashboardForm(NautobotModelForm):
         model = Dashboard
 
         fields = "__all__"
-
-
-# Backward compatibility aliases.
-GrafanaDashboardsFilterForm = DashboardFilterForm
-GrafanaDashboardsForm = DashboardForm
 
 
 class DashboardsFilterForm(BootstrapMixin, ModelForm):
@@ -75,7 +70,7 @@ class GrafanaDashboardBulkEditForm(NautobotBulkEditForm):
         ]
 
 
-class PanelForm(NautobotModelForm):
+class GrafanaPanelForm(NautobotModelForm): # pylint: disable=nb-sub-class-name
     """Form for editing Panel instances."""
 
     class Meta:
@@ -99,7 +94,7 @@ class PanelsSyncForm(BootstrapMixin, ModelForm):
         fields = ("dashboard",)
 
 
-class PanelFilterForm(NautobotFilterForm):
+class GrafanaPanelFilterForm(NautobotFilterForm): # pylint: disable=nb-sub-class-name
     """Filter form to filter searches."""
 
     model = Panel
@@ -112,8 +107,8 @@ class PanelFilterForm(NautobotFilterForm):
     active = BooleanField(required=False)
 
 
-class PanelsBulkEditForm(NautobotBulkEditForm):
-    """Panels bulk edit form."""
+class GrafanaPanelBulkEditForm(NautobotBulkEditForm):
+    """Panel bulk edit form."""
 
     pk = ModelMultipleChoiceField(queryset=Panel.objects.all(), widget=MultipleHiddenInput)
     friendly_name = CharField(max_length=255, required=False)
@@ -125,11 +120,6 @@ class PanelsBulkEditForm(NautobotBulkEditForm):
         nullable_fields = [
             "friendly_name",
         ]
-
-
-# Backward compatibility aliases.
-PanelsForm = PanelForm
-PanelsFilterForm = PanelFilterForm
 
 
 class PanelVariablesForm(BootstrapMixin, ModelForm):

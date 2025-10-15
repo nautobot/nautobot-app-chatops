@@ -7,7 +7,7 @@ from nautobot.apps.filters import NautobotFilterSet
 from nautobot_chatops.integrations.grafana.models import Dashboard, Panel, PanelVariable
 
 
-class DashboardFilterSet(NautobotFilterSet):
+class GrafanaDashboardFilterSet(NautobotFilterSet):  # pylint: disable=nb-sub-class-name
     """Filter for Dashboards."""
 
     q = CharFilter(method="search", label="Search")
@@ -29,11 +29,7 @@ class DashboardFilterSet(NautobotFilterSet):
         return queryset.filter(qs_filter)
 
 
-# Backward compatibility alias until callers are updated.
-GrafanaDashboardFilterSet = DashboardFilterSet
-
-
-class PanelFilterSet(NautobotFilterSet):
+class GrafanaPanelFilterSet(NautobotFilterSet):  # pylint: disable=nb-sub-class-name
     """Filter for Panels."""
 
     q = CharFilter(method="search", label="Search")
@@ -57,10 +53,6 @@ class PanelFilterSet(NautobotFilterSet):
             | Q(panel_id__icontains=value) & Q(action=value)
         )
         return queryset.filter(qs_filter)
-
-
-# Backward compatibility alias until callers are updated.
-GrafanaPanelFilterSet = PanelFilterSet
 
 
 class VariableFilter(FilterSet):

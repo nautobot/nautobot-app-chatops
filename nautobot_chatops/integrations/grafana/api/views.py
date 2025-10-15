@@ -3,7 +3,7 @@
 from nautobot.apps.api import NautobotModelViewSet
 
 from nautobot_chatops.integrations.grafana.api.serializers import GrafanaDashboardSerializer, GrafanaPanelSerializer
-from nautobot_chatops.integrations.grafana.filters import DashboardFilterSet, PanelFilterSet
+from nautobot_chatops.integrations.grafana.filters import GrafanaDashboardFilterSet, GrafanaPanelFilterSet
 from nautobot_chatops.integrations.grafana.models import GrafanaDashboard, GrafanaPanel
 
 
@@ -12,7 +12,7 @@ class GrafanaDashboardViewSet(NautobotModelViewSet):
 
     queryset = GrafanaDashboard.objects.all()
     serializer_class = GrafanaDashboardSerializer
-    filterset_class = DashboardFilterSet
+    filterset_class = GrafanaDashboardFilterSet
 
 
 class GrafanaPanelViewSet(NautobotModelViewSet):
@@ -20,4 +20,4 @@ class GrafanaPanelViewSet(NautobotModelViewSet):
 
     queryset = GrafanaPanel.objects.all()
     serializer_class = GrafanaPanelSerializer
-    filterset_class = PanelFilterSet
+    filterset_class = GrafanaPanelFilterSet
