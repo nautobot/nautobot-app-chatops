@@ -15,14 +15,14 @@ from nautobot.apps.ui import ObjectDetailContent, ObjectFieldsPanel, SectionChoi
 from nautobot.apps.views import NautobotUIViewSet
 from nautobot.core.forms import ConfirmationForm
 from nautobot.core.views.generic import (
-    BulkImportView,
     ObjectDeleteView,
     ObjectEditView,
 )
 
-from nautobot_chatops.integrations.grafana.api.serializers import (
+from nautobot_chatops.api.serializers import (
     GrafanaDashboardSerializer,
     GrafanaPanelSerializer,
+    GrafanaPanelVariableSerializer,
 )
 from nautobot_chatops.integrations.grafana.filters import (
     GrafanaDashboardFilterSet,
@@ -158,14 +158,6 @@ class DashboardsSync(GrafanaViewMixin, PermissionRequiredMixin, ObjectDeleteView
         return redirect(reverse("plugins:nautobot_chatops:grafanadashboard_list"))
 
 
-class DashboardsBulkImportView(GrafanaViewMixin, BulkImportView):
-    """View for bulk import of eox notices."""
-
-    queryset = GrafanaDashboard.objects.all()
-    table = GrafanaDashboardTable
-    default_return_url = "plugins:nautobot_chatops:grafanadashboard_list"
-
-
 # -------------------------------------------------------------------------------------
 # Panel Specific Views
 # -------------------------------------------------------------------------------------
@@ -206,10 +198,6 @@ class PanelsSync(GrafanaViewMixin, PermissionRequiredMixin, ObjectEditView):
     template_name = "nautobot_chatops_grafana/panels_sync.html"
     default_return_url = "plugins:nautobot_chatops:grafanapanel_list"
 
-    def get_permission_required(self):
-        """Permissions over-rride for the Panels Sync view."""
-        return "nautobot_chatops.panel_sync"
-
     def post(self, request, *args, **kwargs):
         """Post request for the Panels Sync view."""
         dashboard_pk = request.POST.get("dashboard")
@@ -228,14 +216,6 @@ class PanelsSync(GrafanaViewMixin, PermissionRequiredMixin, ObjectEditView):
         return redirect(reverse("plugins:nautobot_chatops:grafanapanel_list"))
 
 
-class PanelsBulkImportView(GrafanaViewMixin, BulkImportView):
-    """View for bulk import of Panels."""
-
-    queryset = GrafanaPanel.objects.all()
-    table = GrafanaPanelTable
-    default_return_url = "plugins:nautobot_chatops:grafanapanel_list"
-
-
 # -------------------------------------------------------------------------------------
 # Panel Variable Specific Views
 # -------------------------------------------------------------------------------------
@@ -251,6 +231,7 @@ class GrafanaPanelVariableUIViewSet(GrafanaViewMixin, NautobotUIViewSet):
     filterset_form_class = GrafanaPanelVariableFilterForm
     table_class = GrafanaPanelVariableTable
     form_class = GrafanaPanelVariableForm
+    serializer_class = GrafanaPanelVariableSerializer
     action_buttons = ("add", "import")
 
     object_detail_content = ObjectDetailContent(
@@ -268,14 +249,6 @@ class GrafanaPanelVariableUIViewSet(GrafanaViewMixin, NautobotUIViewSet):
         return "nautobot_chatops.panelvariable_read"
 
 
-class VariablesBulkImportView(GrafanaViewMixin, BulkImportView):
-    """View for bulk import of Variables."""
-
-    queryset = GrafanaPanelVariable.objects.all()
-    table = GrafanaPanelVariableTable
-    default_return_url = "plugins:nautobot_chatops:grafanapanelvariable_list"
-
-
 class VariablesSync(GrafanaViewMixin, PermissionRequiredMixin, ObjectEditView):
     """View for synchronizing data between the Grafana Dashboard Variables and Nautobot."""
 
@@ -285,10 +258,6 @@ class VariablesSync(GrafanaViewMixin, PermissionRequiredMixin, ObjectEditView):
     model_form = PanelVariablesSyncForm
     template_name = "nautobot_chatops_grafana/variables_sync.html"
     default_return_url = "plugins:nautobot_chatops:grafanapanelvariable_list"
-
-    def get_permission_required(self):
-        """Permissions over-ride for the Panels Sync view."""
-        return "nautobot_chatops.panelvariable_sync"
 
     def post(self, request, *args, **kwargs):
         """Post request for the Panels Sync view."""

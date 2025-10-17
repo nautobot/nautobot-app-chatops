@@ -33,6 +33,7 @@ class GrafanaPanelTable(BaseTable):  # pylint: disable=nb-sub-class-name
         verbose_name="Chat Command",
     )
     friendly_name = Column(linkify=True)
+    dashboard = Column(linkify=True)
     active = BooleanColumn(yesno="🟢,🔴")
 
     class Meta(BaseTable.Meta):  # pylint: disable=too-few-public-methods
@@ -46,7 +47,7 @@ class GrafanaPanelVariableTable(BaseTable):  # pylint: disable=nb-sub-class-name
     """Table for rendering panel variables for dashboards in the grafana app."""
 
     pk = ToggleColumn()
-
+    panel = Column(linkify=True)
     actions = ButtonsColumn(GrafanaPanelVariable, buttons=("changelog", "edit", "delete"))
     value = TemplateColumn(
         template_code=(
