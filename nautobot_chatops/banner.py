@@ -4,11 +4,11 @@ from typing import Optional
 
 from django.urls import reverse
 from django.utils.html import format_html
+from nautobot.apps.ui import Banner
 from nautobot.extras.choices import BannerClassChoices
-from nautobot.extras.plugins import PluginBanner
 
 
-def banner(context, *args, **kwargs) -> Optional[PluginBanner]:
+def banner(context, *args, **kwargs) -> Optional[Banner]:
     """
     Construct the ChatOps Account Link Banner.
 
@@ -24,5 +24,5 @@ def banner(context, *args, **kwargs) -> Optional[PluginBanner]:
             'visit the <a href="{}">Admin Site</a>',
             reverse("admin:nautobot_chatops_chatopsaccountlink_changelist"),
         )
-        return PluginBanner(content=content, banner_class=BannerClassChoices.CLASS_INFO)
+        return Banner(content=content, banner_class=BannerClassChoices.CLASS_INFO)
     return None
