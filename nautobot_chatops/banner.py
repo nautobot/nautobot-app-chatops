@@ -4,8 +4,7 @@ from typing import Optional
 
 from django.urls import reverse
 from django.utils.html import format_html
-from nautobot.apps.ui import Banner
-from nautobot.extras.choices import BannerClassChoices
+from nautobot.apps.ui import Banner, BannerClassChoices
 
 
 def banner(context, *args, **kwargs) -> Optional[Banner]:
