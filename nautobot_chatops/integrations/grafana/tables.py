@@ -1,6 +1,9 @@
 """Django table classes for Nautobot."""
 
-from django_tables2 import BooleanColumn, Column, TemplateColumn
+from django_tables2 import Column, TemplateColumn
+from nautobot.apps.tables import (
+    BooleanColumn,
+)
 from nautobot.core.tables import BaseTable, ButtonsColumn, ToggleColumn
 
 from nautobot_chatops.integrations.grafana.models import GrafanaDashboard, GrafanaPanel, GrafanaPanelVariable
@@ -34,7 +37,7 @@ class GrafanaPanelTable(BaseTable):  # pylint: disable=nb-sub-class-name
     )
     friendly_name = Column(linkify=True)
     dashboard = Column(linkify=True)
-    active = BooleanColumn(yesno="🟢,🔴")
+    active = BooleanColumn()
 
     class Meta(BaseTable.Meta):  # pylint: disable=too-few-public-methods
         """Meta for class PanelViewTable."""
@@ -55,8 +58,8 @@ class GrafanaPanelVariableTable(BaseTable):  # pylint: disable=nb-sub-class-name
         )
     )
     positional_order = Column(verbose_name="Order")
-    includeincmd = BooleanColumn(verbose_name="In CMD", yesno="🟢,🔴")
-    includeinurl = BooleanColumn(verbose_name="In URL", yesno="🟢,🔴")
+    includeincmd = BooleanColumn(verbose_name="In CMD")
+    includeinurl = BooleanColumn(verbose_name="In URL")
 
     class Meta(BaseTable.Meta):  # pylint: disable=too-few-public-methods
         """Meta for class PanelVariableViewTable."""
