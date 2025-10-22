@@ -50,15 +50,13 @@ class AccessGrantSerializer(NautobotModelSerializer, TaggedModelSerializerMixin)
         fields = "__all__"
 
 
-"""
-These aliases are required because Nautobot's model lookup helpers (e.g., get_form_for_model, get_filterset_for_model)
-expect serializers, filters, and forms to be defined in standard module locations (like filters.py or forms.py).
-However, our Grafana integration defines these only within the integration module.
-These assignments ensure that lookups for Grafana models resolve correctly.
-This can be removed once Nautobot supports custom model registration or dynamic lookup that includes integration paths
-(or if we move these classes into the main app structure).
+# These aliases are required because Nautobot's model lookup helpers (e.g., get_form_for_model, get_filterset_for_model)
+# expect serializers, filters, and forms to be defined in standard module locations (like filters.py or forms.py).
+# However, our Grafana integration defines these only within the integration module.
+# These assignments ensure that lookups for Grafana models resolve correctly.
+# This can be removed once Nautobot supports custom model registration or dynamic lookup that includes integration paths
+# (or if we move these classes into the main app structure).
 
-"""
 
 GrafanaDashboardSerializer = DashboardSerializer
 GrafanaPanelSerializer = PanelSerializer
