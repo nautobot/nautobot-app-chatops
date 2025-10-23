@@ -19,7 +19,6 @@ class NautobotChatOpsAppConfig(NautobotAppConfig):
     base_url = "chatops"
     required_settings = []
     default_settings = {}
-    caching_config = {}
     docs_view_name = "plugins:nautobot_chatops:docs"
     searchable_models = ["commandlog"]
 
