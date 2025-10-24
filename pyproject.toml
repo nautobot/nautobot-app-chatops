@@ -200,6 +200,10 @@ notes = """,
     XXX,
     """
 
+[tool.pylint.similarities]
+ignore-imports = true
+min-similarity-lines = 0
+
 [tool.ruff]
 line-length = 120
 target-version = "py310"
