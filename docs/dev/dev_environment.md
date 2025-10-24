@@ -218,15 +218,9 @@ This will start all of the Docker containers used for hosting Nautobot. You shou
 ```bash
 ➜ docker ps
 ****CONTAINER ID   IMAGE                            COMMAND                  CREATED          STATUS          PORTS                                       NAMES
-<<<<<<< HEAD
-ee90fbfabd77   nautobot-chatops/nautobot:2.0.0-py3.11  "nautobot-server cel…"   16 seconds ago   Up 13 seconds                                               nautobot_chatops_worker_1
-b8adb781d013   nautobot-chatops/nautobot:2.0.0-py3.11  "/docker-entrypoint.…"   20 seconds ago   Up 15 seconds   0.0.0.0:8080->8080/tcp, :::8080->8080/tcp   nautobot_chatops_nautobot_1
-d64ebd60675d   nautobot-chatops/nautobot:2.0.0-py3.11  "mkdocs serve -v -a …"   25 seconds ago   Up 18 seconds   0.0.0.0:8001->8080/tcp, :::8001->8080/tcp   nautobot_chatops_docs_1
-=======
 ee90fbfabd77   nautobot-chatops/nautobot:2.4.20-py3.12  "nautobot-server rqw…"   16 seconds ago   Up 13 seconds                                               nautobot_chatops_worker_1
 b8adb781d013   nautobot-chatops/nautobot:2.4.20-py3.12  "/docker-entrypoint.…"   20 seconds ago   Up 15 seconds   0.0.0.0:8080->8080/tcp, :::8080->8080/tcp   nautobot_chatops_nautobot_1
 d64ebd60675d   nautobot-chatops/nautobot:2.4.20-py3.12  "mkdocs serve -v -a …"   25 seconds ago   Up 18 seconds   0.0.0.0:8001->8080/tcp, :::8001->8080/tcp   nautobot_chatops_docs_1
->>>>>>> ba1d4e3 (Cookie updated by NetworkToCode Cookie Drift Manager Tool)
 e72d63129b36   postgres:13-alpine               "docker-entrypoint.s…"   25 seconds ago   Up 19 seconds   0.0.0.0:5432->5432/tcp, :::5432->5432/tcp   nautobot_chatops_postgres_1
 96c6ff66997c   redis:6-alpine                   "docker-entrypoint.s…"   25 seconds ago   Up 21 seconds   0.0.0.0:6379->6379/tcp, :::6379->6379/tcp   nautobot_chatops_redis_1
 ```
@@ -422,11 +416,7 @@ namespace.configure(
     {
         "nautobot_chatops": {
             ...
-<<<<<<< HEAD
-            "nautobot_ver": "2.4.16",
-=======
             "nautobot_ver": "2.4.20",
->>>>>>> ba1d4e3 (Cookie updated by NetworkToCode Cookie Drift Manager Tool)
 	    ...
         }
     }

@@ -52,11 +52,7 @@ namespace = Collection("nautobot_chatops")
 namespace.configure(
     {
         "nautobot_chatops": {
-<<<<<<< HEAD
-            "nautobot_ver": "2.4.16",
-=======
             "nautobot_ver": "2.4.20",
->>>>>>> ba1d4e3 (Cookie updated by NetworkToCode Cookie Drift Manager Tool)
             "project_name": "nautobot-chatops",
             "python_ver": "3.12",
             "local": False,

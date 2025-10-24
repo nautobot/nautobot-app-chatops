@@ -35,7 +35,6 @@ class NautobotChatOpsConfig(NautobotAppConfig):
     """
     base_url = "chatops"
     required_settings = []
-<<<<<<< HEAD
     default_settings = {
         # = Common Settings ==================
         # Should menus, text input fields, etc. be deleted from the chat history after the user makes a selection?
@@ -147,9 +146,6 @@ class NautobotChatOpsConfig(NautobotAppConfig):
 
     caching_config = {}
     home_view_name = "plugins:nautobot_chatops:commandlog_list"
-=======
-    default_settings = {}
->>>>>>> ba1d4e3 (Cookie updated by NetworkToCode Cookie Drift Manager Tool)
     docs_view_name = "plugins:nautobot_chatops:docs"
     searchable_models = ["commandlog"]
 

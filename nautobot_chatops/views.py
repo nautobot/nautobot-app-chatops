@@ -1,14 +1,8 @@
 """Views module for the nautobot_chatops Nautobot App.
 
-<<<<<<< HEAD
 The views implemented in this module act as endpoints for various chat platforms
 to send requests and notifications to.
 """
-=======
-from nautobot.apps.views import NautobotUIViewSet
-from nautobot.apps.ui import ObjectDetailContent, ObjectFieldsPanel, ObjectsTablePanel, SectionChoices
-from nautobot.core.templatetags import helpers
->>>>>>> ba1d4e3 (Cookie updated by NetworkToCode Cookie Drift Manager Tool)
 
 from django.core.exceptions import ImproperlyConfigured
 from django.http import Http404
@@ -77,20 +71,7 @@ class AccessGrantUIViewSet(
                 weight=100,
                 fields="__all__",
             ),
-<<<<<<< HEAD
         )
-=======
-            # If there is a ForeignKey or M2M with this model we can use ObjectsTablePanel
-            # to display them in a table format.
-            # ObjectsTablePanel(
-                # weight=200,
-                # section=SectionChoices.RIGHT_HALF,
-                # table_class=tables.CommandLogTable,
-                # You will want to filter the table using the related_name
-                # filter="commandlogs",
-            # ),
-        ],
->>>>>>> ba1d4e3 (Cookie updated by NetworkToCode Cookie Drift Manager Tool)
     )
 
 
