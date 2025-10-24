@@ -13,7 +13,6 @@ classifiers = [
     "Intended Audience :: Developers",
     "Development Status :: 5 - Production/Stable",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
@@ -40,9 +39,9 @@ include = [
 "slurpit" = "nautobot_chatops.integrations.slurpit.worker:slurpit"
 
 [tool.poetry.dependencies]
-python = ">=3.9.2,<3.13"
+python = ">=3.10,<3.13"
 # Used for local development
-nautobot = ">=2.4.16,<3.0.0"
+nautobot = ">=2.4.20,<3.0.0"
 
 Markdown = "!=3.3.5"
 PyJWT = "^2.1.0"
@@ -85,8 +84,8 @@ Markdown = "*"
 responses = "^0.24.0"
 prybar = "*"
 pylint = "*"
-pylint-django = "*"
-pylint-nautobot = "*"
+pylint-django = ">=2.5.4"
+pylint-nautobot = ">=0.3.1"
 requests-mock = "^1.9.3"
 ruff = "0.5.5"
 yamllint = "*"
@@ -96,6 +95,7 @@ to-json-schema = "*"
 jsonschema = "*"
 djlint = ">=1.36.4,<2.0.0"
 djhtml = ">=3.0.8,<4.0.0"
+tomli = { version = "*", markers = "python_version < '3.11'" }  # tomli is included in the stdlib as of Python 3.11
 
 [tool.poetry.group.docs.dependencies]
 # Render custom markdown for version added/changed/remove notes
@@ -204,14 +204,9 @@ notes = """,
 ignore-imports = true
 min-similarity-lines = 0
 
-[tool.pylint-nautobot]
-supported_nautobot_versions = [
-    "2"
-]
-
 [tool.ruff]
 line-length = 120
-target-version = "py38"
+target-version = "py310"
 
 [tool.ruff.lint]
 select = [
@@ -279,6 +274,11 @@ filename = "docs/admin/release_notes/version_X.Y.md"
 template = "development/towncrier_template.j2"
 start_string = "<!-- towncrier release notes start -->"
 issue_format = "[#{issue}](https://github.com/nautobot/nautobot-app-chatops/issues/{issue})"
+
+[[tool.towncrier.type]]
+directory = "breaking"
+name = "Breaking Changes"
+showcontent = true
 
 [[tool.towncrier.type]]
 directory = "security"
