@@ -58,7 +58,7 @@ def prompt_for_device(action_id, help_text, dispatcher, devices=None, offset=0):
     return dispatcher.prompt_from_menu(action_id, help_text, choices, offset=offset)
 
 
-def prompt_for_vlan(action_id, help_text, dispatcher, filter_type, filter_value_1, vlans=None):
+def prompt_for_vlan(action_id, help_text, dispatcher, filter_type, filter_value_1, vlans=None):  # pylint: disable=too-many-positional-arguments
     """Prompt the user to select a valid vlan id from a drop-down menu."""
     if vlans is None:
         vlans = VLAN.objects.restrict(dispatcher.user, "view").order_by("vid", "name")
@@ -177,6 +177,7 @@ def get_vlans(dispatcher, filter_type=None, filter_value_1=None):
         return False
     if menu_item_check(filter_value_1):
         # One parameter Slash Command All
+        choices = []
         if filter_type == "all":
             vlans = VLAN.objects.restrict(dispatcher.user, "view")
             dispatcher.send_blocks(
@@ -380,6 +381,7 @@ def get_interface_connections(dispatcher, filter_type, filter_value_1, filter_va
 
     filter_type = filter_type.lower()
     if menu_item_check(filter_value_1):
+        choices = []
         if filter_type in ["device", "location"]:
             # Since the device filter prompts the user to pick a location first in order to further
             # query devices located in the chosen location, the device filter will start off with

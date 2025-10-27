@@ -8,7 +8,7 @@ from .base import Dispatcher
 class AdaptiveCardsDispatcher(Dispatcher):
     """Semi-abstract class for chat platforms that use Adaptive Cards for presentation."""
 
-    def command_response_header(self, command, subcommand, args, description="information", image_element=None):
+    def command_response_header(self, command, subcommand, args, description="information", image_element=None):  # pylint: disable=too-many-positional-arguments
         """Construct a consistently forwarded header including the command that was issued.
 
         Args:
@@ -153,7 +153,7 @@ class AdaptiveCardsDispatcher(Dispatcher):
         blocks = [self.markdown_block(help_text), self.actions_block("TODO", [textentry, buttons])]
         return self.send_blocks(blocks, ephemeral=True, title=title)
 
-    def prompt_from_menu(self, action_id, help_text, choices, default=(None, None), confirm=False, offset=0):  # noqa: PLR0913, pylint: disable=too-many-arguments
+    def prompt_from_menu(self, action_id, help_text, choices, default=(None, None), confirm=False, offset=0):  # noqa: PLR0913, pylint: disable=too-many-arguments, too-many-positional-arguments
         """Prompt the user to make a selection from a menu of choices.
 
         Args:

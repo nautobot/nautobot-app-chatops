@@ -145,6 +145,7 @@ class NautobotChatOpsConfig(NautobotAppConfig):
     }
 
     caching_config = {}
+    home_view_name = "plugins:nautobot_chatops:commandlog_list"
     docs_view_name = "plugins:nautobot_chatops:docs"
     searchable_models = ["commandlog"]
 

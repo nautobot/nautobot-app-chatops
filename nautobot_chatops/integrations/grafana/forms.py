@@ -11,24 +11,31 @@ from django.forms import (
     ModelMultipleChoiceField,
     MultipleHiddenInput,
 )
+from nautobot.apps.forms import NautobotBulkEditForm, NautobotFilterForm, NautobotModelForm
 from nautobot.core.forms import BootstrapMixin, BulkEditForm
 
 from nautobot_chatops.integrations.grafana.models import Dashboard, Panel, PanelVariable
 
 
-class DashboardsForm(BootstrapMixin, ModelForm):
-    """Form for editing Dashboard instances."""
+class GrafanaDashboardFilterForm(NautobotFilterForm):  # pylint: disable=nb-sub-class-name
+    """Form for filtering Dashboard instances."""
+
+    model = Dashboard
 
     dashboard_slug = CharField(max_length=64)
     dashboard_uid = CharField(max_length=64)
     friendly_name = CharField(max_length=255)
+
+
+class GrafanaDashboardForm(NautobotModelForm):  # pylint: disable=nb-sub-class-name
+    """Form for editing Dashboard instances."""
 
     class Meta:
         """Metaclass attributes of Dashboard."""
 
         model = Dashboard
 
-        fields = ("dashboard_slug", "dashboard_uid", "friendly_name")
+        fields = "__all__"
 
 
 class DashboardsFilterForm(BootstrapMixin, ModelForm):
@@ -49,7 +56,7 @@ class DashboardsFilterForm(BootstrapMixin, ModelForm):
         widgets = {}
 
 
-class DashboardBulkEditForm(BootstrapMixin, BulkEditForm):
+class GrafanaDashboardBulkEditForm(NautobotBulkEditForm):
     """Dashboard bulk edit form."""
 
     pk = ModelMultipleChoiceField(queryset=Dashboard.objects.all(), widget=MultipleHiddenInput)
@@ -63,21 +70,15 @@ class DashboardBulkEditForm(BootstrapMixin, BulkEditForm):
         ]
 
 
-class PanelsForm(BootstrapMixin, ModelForm):
+class GrafanaPanelForm(NautobotModelForm):  # pylint: disable=nb-sub-class-name
     """Form for editing Panel instances."""
 
-    dashboard = ModelChoiceField(queryset=Dashboard.objects.all())
-    command_name = CharField(max_length=64)
-    friendly_name = CharField(max_length=64)
-    panel_id = IntegerField()
-    active = BooleanField()
-
     class Meta:
-        """Metaclass attributes of Panel."""
+        """Metaclass attributes of Dashboard."""
 
         model = Panel
 
-        fields = ("dashboard", "command_name", "friendly_name", "panel_id", "active")
+        fields = "__all__"
 
 
 class PanelsSyncForm(BootstrapMixin, ModelForm):
@@ -93,8 +94,10 @@ class PanelsSyncForm(BootstrapMixin, ModelForm):
         fields = ("dashboard",)
 
 
-class PanelsFilterForm(BootstrapMixin, ModelForm):
+class GrafanaPanelFilterForm(NautobotFilterForm):  # pylint: disable=nb-sub-class-name
     """Filter form to filter searches."""
+
+    model = Panel
 
     q = CharField(required=False, label="Search")
     dashboard = ModelChoiceField(required=False, queryset=Dashboard.objects.all())
@@ -103,18 +106,9 @@ class PanelsFilterForm(BootstrapMixin, ModelForm):
     panel_id = IntegerField(required=False, label="Panel ID")
     active = BooleanField(required=False)
 
-    class Meta:
-        """Meta attributes."""
 
-        model = Panel
-
-        fields = ("q", "dashboard", "command_name", "friendly_name", "panel_id", "active")
-
-        widgets = {}
-
-
-class PanelsBulkEditForm(BootstrapMixin, BulkEditForm):
-    """Panels bulk edit form."""
+class GrafanaPanelBulkEditForm(NautobotBulkEditForm):
+    """Panel bulk edit form."""
 
     pk = ModelMultipleChoiceField(queryset=Panel.objects.all(), widget=MultipleHiddenInput)
     friendly_name = CharField(max_length=255, required=False)
@@ -128,7 +122,7 @@ class PanelsBulkEditForm(BootstrapMixin, BulkEditForm):
         ]
 
 
-class PanelVariablesForm(BootstrapMixin, ModelForm):
+class GrafanaPanelVariableForm(NautobotModelForm):  # pylint: disable=nb-sub-class-name
     """Form for editing Panel Variable instances."""
 
     panel = ModelChoiceField(queryset=Panel.objects.all())
@@ -148,23 +142,13 @@ class PanelVariablesForm(BootstrapMixin, ModelForm):
 
         model = PanelVariable
 
-        fields = [
-            "panel",
-            "name",
-            "friendly_name",
-            "query",
-            "modelattr",
-            "value",
-            "response",
-            "positional_order",
-            "includeincmd",
-            "includeinurl",
-            "filter",
-        ]
+        fields = "__all__"
 
 
-class PanelVariablesFilterForm(BootstrapMixin, ModelForm):
+class GrafanaPanelVariableFilterForm(NautobotFilterForm):  # pylint: disable=nb-sub-class-name
     """Filter form to filter searches."""
+
+    model = PanelVariable
 
     q = CharField(
         required=False,
@@ -181,29 +165,8 @@ class PanelVariablesFilterForm(BootstrapMixin, ModelForm):
     includeinurl = BooleanField(required=False)
     positional_order = IntegerField(required=False)
 
-    class Meta:
-        """Meta attributes."""
 
-        model = PanelVariable
-
-        fields = [
-            "q",
-            "panel",
-            "name",
-            "friendly_name",
-            "query",
-            "modelattr",
-            "value",
-            "response",
-            "positional_order",
-            "includeincmd",
-            "includeinurl",
-        ]
-
-        widgets = {}
-
-
-class PanelVariablesBulkEditForm(BootstrapMixin, BulkEditForm):
+class GrafanaPanelVariableBulkEditForm(BootstrapMixin, BulkEditForm):
     """PanelVariables bulk edit form."""
 
     pk = ModelMultipleChoiceField(queryset=PanelVariable.objects.all(), widget=MultipleHiddenInput)
