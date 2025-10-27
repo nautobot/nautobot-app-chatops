@@ -1,6 +1,9 @@
 """Django table classes for Nautobot."""
 
-from django_tables2 import BooleanColumn, Column, TemplateColumn
+from django_tables2 import Column, TemplateColumn
+from nautobot.apps.tables import (
+    BooleanColumn,
+)
 from nautobot.core.tables import BaseTable, ButtonsColumn, ToggleColumn
 
 from nautobot_chatops.integrations.grafana.models import GrafanaDashboard, GrafanaPanel, GrafanaPanelVariable
@@ -10,6 +13,7 @@ class GrafanaDashboardTable(BaseTable):  # pylint: disable=nb-sub-class-name
     """Table for rendering panels for dashboards in the grafana app."""
 
     pk = ToggleColumn()
+    dashboard_slug = Column(linkify=True)
 
     actions = ButtonsColumn(GrafanaDashboard, buttons=("changelog", "edit", "delete"))
 
@@ -31,7 +35,9 @@ class GrafanaPanelTable(BaseTable):  # pylint: disable=nb-sub-class-name
         template_code="<span class='text-muted'><i>/grafana get-{{ record.command_name }}</i></span>",
         verbose_name="Chat Command",
     )
-    active = BooleanColumn(yesno="🟢,🔴")
+    friendly_name = Column(linkify=True)
+    dashboard = Column(linkify=True)
+    active = BooleanColumn()
 
     class Meta(BaseTable.Meta):  # pylint: disable=too-few-public-methods
         """Meta for class PanelViewTable."""
@@ -44,7 +50,7 @@ class GrafanaPanelVariableTable(BaseTable):  # pylint: disable=nb-sub-class-name
     """Table for rendering panel variables for dashboards in the grafana app."""
 
     pk = ToggleColumn()
-
+    panel = Column(linkify=True)
     actions = ButtonsColumn(GrafanaPanelVariable, buttons=("changelog", "edit", "delete"))
     value = TemplateColumn(
         template_code=(
@@ -52,8 +58,8 @@ class GrafanaPanelVariableTable(BaseTable):  # pylint: disable=nb-sub-class-name
         )
     )
     positional_order = Column(verbose_name="Order")
-    includeincmd = BooleanColumn(verbose_name="In CMD", yesno="🟢,🔴")
-    includeinurl = BooleanColumn(verbose_name="In URL", yesno="🟢,🔴")
+    includeincmd = BooleanColumn(verbose_name="In CMD")
+    includeinurl = BooleanColumn(verbose_name="In URL")
 
     class Meta(BaseTable.Meta):  # pylint: disable=too-few-public-methods
         """Meta for class PanelVariableViewTable."""

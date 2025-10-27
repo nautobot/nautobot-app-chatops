@@ -3,6 +3,11 @@
 from nautobot.apps.api import NautobotModelSerializer, TaggedModelSerializerMixin
 
 from nautobot_chatops import models
+from nautobot_chatops.integrations.grafana.api.serializers import (
+    GrafanaDashboardSerializer,
+    GrafanaPanelSerializer,
+    GrafanaPanelVariableSerializer,
+)
 
 
 class ChatOpsAccountLinkSerializer(NautobotModelSerializer, TaggedModelSerializerMixin):
@@ -43,3 +48,14 @@ class AccessGrantSerializer(NautobotModelSerializer, TaggedModelSerializerMixin)
 
         model = models.AccessGrant
         fields = "__all__"
+
+
+__all__ = (
+    "ChatOpsAccountLinkSerializer",
+    "CommandLogSerializer",
+    "CommandTokenSerializer",
+    "AccessGrantSerializer",
+    "GrafanaDashboardSerializer",
+    "GrafanaPanelSerializer",
+    "GrafanaPanelVariableSerializer",
+)
