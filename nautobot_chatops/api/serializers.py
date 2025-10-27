@@ -3,11 +3,7 @@
 from nautobot.apps.api import NautobotModelSerializer, TaggedModelSerializerMixin
 
 from nautobot_chatops import models
-from nautobot_chatops.integrations.grafana.api.serializers import GrafanaDashboardSerializer as DashboardSerializer
-from nautobot_chatops.integrations.grafana.api.serializers import GrafanaPanelSerializer as PanelSerializer
-from nautobot_chatops.integrations.grafana.api.serializers import (
-    GrafanaPanelVariableSerializer as PanelVariableSerializer,
-)
+from nautobot_chatops.integrations.grafana.api.serializers import GrafanaDashboardSerializer, GrafanaPanelSerializer, GrafanaPanelVariableSerializer
 
 
 class ChatOpsAccountLinkSerializer(NautobotModelSerializer, TaggedModelSerializerMixin):
