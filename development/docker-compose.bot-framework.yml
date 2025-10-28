@@ -5,7 +5,8 @@
 services:
   nautobot:
     extra_hosts:
-      - "localhost:host-gateway" # Allow Nautobot to communicate with the Bot Framework Emulator running on the host machine.
+      - "localhost:host-gateway"  # Allow Nautobot to communicate with the Bot Framework Emulator running on the host machine.
+
   worker:
     extra_hosts:
-      - "localhost:host-gateway" # Allow Nautobot to communicate with the Bot Framework Emulator running on the host machine.
+      - "localhost:host-gateway"  # Allow Nautobot to communicate with the Bot Framework Emulator running on the host machine.

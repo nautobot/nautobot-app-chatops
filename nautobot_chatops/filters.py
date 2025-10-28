@@ -1,40 +1,61 @@
 """Django FilterSet classes for Nautobot."""
 
 import django_filters
-from nautobot.apps.filters import BaseFilterSet, NautobotFilterSet, SearchFilter
+from nautobot.apps.filters import NautobotFilterSet, SearchFilter
 
 from nautobot_chatops.choices import PlatformChoices
+from nautobot_chatops.integrations.grafana.filters import (
+    GrafanaDashboardFilterSet as DashboardFilterSet,
+)
+from nautobot_chatops.integrations.grafana.filters import (
+    GrafanaPanelFilterSet as PanelFilterSet,
+)
+from nautobot_chatops.integrations.grafana.filters import (
+    GrafanaPanelVariableFilterSet as PanelVariableFilterSet,
+)
 from nautobot_chatops.models import AccessGrant, ChatOpsAccountLink, CommandLog, CommandToken
 
 
-class CommandLogFilterSet(BaseFilterSet):
+class CommandLogFilterSet(NautobotFilterSet):
     """FilterSet for filtering a set of CommandLog objects."""
+
+    q = SearchFilter(
+        filter_predicates={
+            "user_name": "icontains",
+            "nautobot_user__username": "icontains",
+            "platform": "icontains",
+            "command": "icontains",
+            "subcommand": "icontains",
+            "status": "icontains",
+            "details": "icontains",
+        },
+    )
 
     class Meta:
         """Metaclass attributes of CommandLogFilterSet."""
 
         model = CommandLog
-        fields = [
-            "start_time",
-            "runtime",
-            "user_name",
-            "user_id",
-            "platform",
-            "command",
-            "subcommand",
-            "status",
-            "details",
-        ]
+        fields = "__all__"
 
 
-class AccessGrantFilterSet(BaseFilterSet):
+class AccessGrantFilterSet(NautobotFilterSet):
     """FilterSet for filtering a set of AccessGrant objects."""
+
+    q = SearchFilter(
+        filter_predicates={
+            "name": "icontains",
+            "command": "icontains",
+            "subcommand": "icontains",
+            "value": "icontains",
+            "grant_type": "icontains",
+        },
+    )
 
     class Meta:
         """Metaclass attributes of AccessGrantFilterSet."""
 
         model = AccessGrant
-        fields = ["command", "subcommand", "grant_type", "value"]
+        fields = "__all__"
 
 
 class ChatOpsAccountLinkFilterSet(NautobotFilterSet):
@@ -55,11 +76,24 @@ class ChatOpsAccountLinkFilterSet(NautobotFilterSet):
         fields = "__all__"
 
 
-class CommandTokenFilterSet(BaseFilterSet):
+class CommandTokenFilterSet(NautobotFilterSet):
     """FilterSet for filtering a set of CommandToken objects."""
+
+    q = SearchFilter(
+        filter_predicates={
+            "comment": "icontains",
+            "platform": "icontains",
+        },
+    )
 
     class Meta:
         """Metaclass attributes of CommandTokenFilterSet."""
 
         model = CommandToken
-        fields = ["comment", "platform"]
+        fields = "__all__"
+
+
+# Re-export filters for Nautobot's lookup utilities.
+GrafanaDashboardFilterSet = DashboardFilterSet
+GrafanaPanelFilterSet = PanelFilterSet
+GrafanaPanelVariableFilterSet = PanelVariableFilterSet
