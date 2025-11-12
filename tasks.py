@@ -64,7 +64,6 @@ namespace.configure(
                 "mattermost/docker-compose.yml",
                 "ansible/docker-compose.yml",
                 "docker-compose.dev.yml",
-                "grafana/docker-compose.yml",
             ],
             "compose_http_timeout": "86400",
         }
