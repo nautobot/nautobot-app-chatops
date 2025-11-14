@@ -57,7 +57,7 @@ ipaddr = { version = "^2.2.0", optional = true }
 ipfabric = { version = "^6.6.2", optional = true }
 isodate =  { version = "^0.6.1", optional = true }
 meraki = { version = ">=1.7.2,<=1.45.0", optional = true }
-nautobot-capacity-metrics = {git = "https://github.com/nautobot/nautobot-app-capacity-metrics.git", rev = "next-3.0"}
+nautobot-capacity-metrics = ">=4.0.0a1,<4.0.0rc99"
 # nautobot-capacity-metrics = "^4.0.0"  # TODO: Uncomment after v4.0.0 is released
 netmiko = { version = "^4.0.0", optional = true }
 netutils = { version = "^1.1.0", optional = true }
