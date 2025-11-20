@@ -17,12 +17,12 @@ from nautobot.apps.views import (
 
 from nautobot_chatops import filters, forms, tables
 from nautobot_chatops.api import serializers
-from nautobot_chatops.models import AccessGrant, ChatOpsAccountLink, CommandLog, CommandToken
 from nautobot_chatops.integrations.grafana.views import (
     GrafanaDashboardUIViewSet,
     GrafanaPanelUIViewSet,
-    GrafanaPanelVariableUIViewSet
+    GrafanaPanelVariableUIViewSet,
 )
+from nautobot_chatops.models import AccessGrant, ChatOpsAccountLink, CommandLog, CommandToken
 
 
 class SettingsControlledViewMixin:
