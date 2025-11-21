@@ -159,7 +159,7 @@ jobs:
             nautobot-version: "3.0.0"
           - python-version: "3.12"
             db-backend: "mysql"
-            nautobot-version: "3.0.0"
+            nautobot-version: "stable"
     runs-on: "ubuntu-22.04"
     env:
       INVOKE_NAUTOBOT_CHATOPS_PYTHON_VER: "${{ matrix.python-version }}"
