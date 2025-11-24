@@ -17,3 +17,5 @@ We will continue to support the previous major release for users of Nautobot LTM
 ### Fixed
 
 - [#408](https://github.com/nautobot/nautobot-app-chatops/issues/408) - Fixed bulk operations on Grafana views.
+
+## [v4.0.0a1 (2025-11-14)](https://github.com/nautobot/nautobot-app-chatops/releases/tag/v4.0.0a1)
