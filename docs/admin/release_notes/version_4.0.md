@@ -17,8 +17,10 @@ We will continue to support the previous major release for users of Nautobot LTM
 ## [v4.0.0 (2025-11-24)](https://github.com/nautobot/nautobot-app-chatops/releases/tag/v4.0.0)
 
 ### Added
+
 - Added support for Nautobot 3.0.
 - Added support for Python 3.13.
+
 ### Fixed
 
 - [#408](https://github.com/nautobot/nautobot-app-chatops/issues/408) - Fixed bulk operations on Grafana views.
