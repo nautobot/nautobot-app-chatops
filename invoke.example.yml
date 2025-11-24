@@ -1,6 +1,6 @@
 ---
 nautobot_chatops:
-  nautobot_ver: "next"  # TODO: Change to 3.0.0 after v3.0.0 is released
+  nautobot_ver: "3.0.0"
   python_ver: "3.11"
   # local: false
   # compose_dir: "/full/path/to/nautobot-app-chatops/development"
