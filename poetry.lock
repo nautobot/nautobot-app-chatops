@@ -3111,19 +3111,19 @@ pyyaml = ">=5.1"
 
 [[package]]
 name = "mkdocs-include-markdown-plugin"
-version = "6.0.3"
+version = "7.1.8"
 description = "Mkdocs Markdown includer plugin."
 optional = false
-python-versions = ">=3.8"
+python-versions = ">=3.9"
 groups = ["docs"]
 files = [
-    {file = "mkdocs_include_markdown_plugin-6.0.3-py3-none-any.whl", hash = "sha256:8f9262cf4246ebc33dcdfbdb40c1253b7c9ad79e0f8dc2a9e338b1fb761d8e02"},
-    {file = "mkdocs_include_markdown_plugin-6.0.3.tar.gz", hash = "sha256:9799ea8ac9179e9e91ab58869421be60a2585e3d9c4a53181d37a49d9a1780db"},
+    {file = "mkdocs_include_markdown_plugin-7.1.8-py3-none-any.whl", hash = "sha256:eed91cdb22c9035c8d8421523c97bee3796e2df626afefae11e97dd0c6854573"},
+    {file = "mkdocs_include_markdown_plugin-7.1.8.tar.gz", hash = "sha256:9cc79f60c452e4db885c32b4cd63feea1f96012b6720be49a2ce6a1fbad77458"},
 ]
 
 [package.dependencies]
 mkdocs = ">=1.4"
-wcmatch = ">=8,<9"
+wcmatch = "*"
 
 [package.extras]
 cache = ["platformdirs"]
@@ -3920,7 +3920,7 @@ description = "A simple Python library for easily displaying tabular data in a v
 optional = true
 python-versions = ">=3.6"
 groups = ["main"]
-markers = "extra == \"all\" or extra == \"aci\""
+markers = "extra == \"aci\" or extra == \"all\""
 files = [
     {file = "prettytable-2.5.0-py3-none-any.whl", hash = "sha256:1411c65d21dca9eaa505ba1d041bed75a6d629ae22f5109a923f4e719cfecba4"},
     {file = "prettytable-2.5.0.tar.gz", hash = "sha256:f7da57ba63d55116d65e5acb147bfdfa60dceccabf0d607d6817ee2888a05f2c"},
@@ -4848,7 +4848,7 @@ colorama = {version = ">=0.4.5", markers = "sys_platform == \"win32\""}
 dill = [
     {version = ">=0.2", markers = "python_version < \"3.11\""},
     {version = ">=0.3.7", markers = "python_version >= \"3.12\""},
-    {version = ">=0.3.6", markers = "python_version >= \"3.11\""},
+    {version = ">=0.3.6", markers = "python_version == \"3.11\""},
 ]
 isort = ">=4.2.5,<5.13 || >5.13,<7"
 mccabe = ">=0.6,<0.8"
@@ -6777,4 +6777,4 @@ slurpit = ["slurpit-sdk"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.14"
-content-hash = "4187fe848db2d78a73cf44367ac0d2708eb630bbd1823ce5d545cbc5164a408d"
+content-hash = "05992a42eb89f1323567585c4600141fb98161e275252a01d1250ebbcc97d59b"
