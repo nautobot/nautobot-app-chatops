@@ -170,6 +170,7 @@ def examine_termination_endpoints(circuit):
 def get_vlans(dispatcher, filter_type=None, filter_value_1=None):
     """Return a filtered list of VLANs based on filter type and/or `filter_value_1`."""
     content_type = ContentType.objects.get_for_model(VLAN)
+    choices = []
     # pylint: disable=no-else-return
     if not filter_type:
         prompt_for_vlan_filter_type("nautobot get-vlans", "select a vlan filter", dispatcher)
