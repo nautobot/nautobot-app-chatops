@@ -17,6 +17,11 @@ from nautobot.apps.views import (
 
 from nautobot_chatops import filters, forms, tables
 from nautobot_chatops.api import serializers
+from nautobot_chatops.integrations.grafana.views import (
+    GrafanaDashboardUIViewSet,
+    GrafanaPanelUIViewSet,
+    GrafanaPanelVariableUIViewSet,
+)
 from nautobot_chatops.models import AccessGrant, ChatOpsAccountLink, CommandLog, CommandToken
 
 
@@ -134,3 +139,14 @@ class ChatOpsAccountLinkUIViewSet(NautobotUIViewSet):
                 self.request.user.email if self.request.user.is_authenticated else None
             )
         return obj
+
+
+__all__ = [
+    "CommandLogUIViewSet",
+    "AccessGrantUIViewSet",
+    "CommandTokenUIViewSet",
+    "ChatOpsAccountLinkUIViewSet",
+    "GrafanaDashboardUIViewSet",
+    "GrafanaPanelUIViewSet",
+    "GrafanaPanelVariableUIViewSet",
+]
