@@ -1,1 +1,0 @@
-Refactored GrafanaDashboard related UI views to use `NautobotUIViewSet` and `UI component framework`.
