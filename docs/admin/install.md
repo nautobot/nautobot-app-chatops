@@ -2,19 +2,17 @@
 
 This guide outlines the process of enabling Nautobot ChatOps, which includes:
 
-<!--- pyml disable list-anchored-indent --->
 - [Nautobot ChatOps Installation Guide](#nautobot-chatops-installation-guide)
-  - [Prerequisites](#prerequisites)
-    - [Potential Apps Conflicts](#potential-apps-conflicts)
-  - [Chat Platforms Configuration](#chat-platforms-configuration)
-  - [Installation Guide](#installation-guide)
-  - [Install Guide](#install-guide)
-  - [Configuration Guide](#configuration-guide)
-  - [Granting Access to the Chat Platform](#granting-access-to-the-chat-platform)
-  - [Link Nautobot Account](#link-nautobot-account)
-  - [Test Your Chatbot](#test-your-chatbot)
-  - [Integrations Configuration](#integrations-configuration)
-<!--- pyml enable list-anchored-indent --->
+    - [Prerequisites](#prerequisites)
+        - [Potential Apps Conflicts](#potential-apps-conflicts)
+    - [Chat Platforms Configuration](#chat-platforms-configuration)
+    - [Installation Guide](#installation-guide)
+    - [Install Guide](#install-guide)
+    - [Configuration Guide](#configuration-guide)
+    - [Granting Access to the Chat Platform](#granting-access-to-the-chat-platform)
+    - [Link Nautobot Account](#link-nautobot-account)
+    - [Test Your Chatbot](#test-your-chatbot)
+    - [Integrations Configuration](#integrations-configuration)
 
 {% include-markdown '../glossary.md' heading-offset=1 %}
 
