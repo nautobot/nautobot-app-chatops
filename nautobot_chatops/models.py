@@ -24,6 +24,26 @@ from .constants import (
 )
 from .integrations.grafana.models import GrafanaDashboard, GrafanaPanel, GrafanaPanelVariable
 
+import re
+
+
+class QuerySetRegexMatch(models.QuerySet):
+    """Customized QuerySet to match string agains regexes stored in database.
+
+    Return a list of matched records.
+    """
+
+    def match_re(self, value):
+        records = self.all()
+
+        results = []
+        for row in records:
+            if row.subcommand == "*":  # skip as it is not a valid regex expression and would raise exception
+                continue
+            if re.match(row.subcommand, value):
+                results.append(row.subcommand)
+        return results
+
 
 class CommandLog(PrimaryModel):  # pylint: disable=nb-string-field-blank-null
     """Record of a single fully-executed Nautobot command.
@@ -96,6 +116,7 @@ class AccessGrant(PrimaryModel):
         max_length=64,
         help_text=ACCESS_GRANT_SUBCOMMAND_HELP_TEXT,
     )
+    regexMatch = QuerySetRegexMatch.as_manager()
 
     grant_type = models.CharField(max_length=32, choices=AccessGrantTypeChoices)
 
