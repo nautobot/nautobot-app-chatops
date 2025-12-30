@@ -1,7 +1,11 @@
 ---
 nautobot_chatops:
   nautobot_ver: "3.0.0"
+<<<<<<< HEAD
   python_ver: "3.11"
+=======
+  python_ver: "3.12"
+>>>>>>> c29eb58 (Cookie updated targeting develop by NetworkToCode Cookie Drift Manager Tool)
   # local: false
   # compose_dir: "/full/path/to/nautobot-app-chatops/development"
 
