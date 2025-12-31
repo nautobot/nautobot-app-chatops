@@ -146,11 +146,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-<<<<<<< HEAD
-        python-version: ["3.11"]
-=======
         python-version: ["3.10"]
->>>>>>> c29eb58 (Cookie updated targeting develop by NetworkToCode Cookie Drift Manager Tool)
         nautobot-version: ["3.0.0"]
     env:
       INVOKE_NAUTOBOT_CHATOPS_PYTHON_VER: "${{ matrix.python-version }}"
@@ -203,11 +199,7 @@ jobs:
           - python-version: "3.10"
             db-backend: "postgresql"
             nautobot-version: "3.0.0"
-<<<<<<< HEAD
-          - python-version: "3.12"
-=======
           - python-version: "3.13"
->>>>>>> c29eb58 (Cookie updated targeting develop by NetworkToCode Cookie Drift Manager Tool)
             db-backend: "mysql"
             nautobot-version: "stable"
     runs-on: "ubuntu-22.04"

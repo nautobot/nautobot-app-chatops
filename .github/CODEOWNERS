@@ -1,5 +1,4 @@
 # Default owner(s) of all files in this repository
-<<<<<<< HEAD
 * @glennmatthews @smk4664 @romanukes
 /nautobot_chatops/integrations/aci/ @pato23arg
 /nautobot_chatops/integrations/ansible/ @smk4664
@@ -8,6 +7,3 @@
 /nautobot_chatops/integrations/meraki/ @jeffkala
 /nautobot_chatops/integrations/ipfabric/ @alhogan @pke11y
 /nautobot_chatops/integrations/panorama/ @jdrew82
-=======
-* @glennmatthews @jvanderaa @smk4664
->>>>>>> c29eb58 (Cookie updated targeting develop by NetworkToCode Cookie Drift Manager Tool)
