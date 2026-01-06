@@ -11,9 +11,9 @@ from django.http import HttpResponse
 from django.utils.decorators import method_decorator
 from django.views import View
 from django.views.decorators.csrf import csrf_exempt
-from slack_sdk import WebClient
 
 from nautobot_chatops.dispatchers.slack import SlackDispatcher
+from nautobot_chatops.helpers.slack import RotationAwareWebClient, get_slack_api_token
 from nautobot_chatops.metrics import signature_error_cntr
 from nautobot_chatops.utils import check_and_enqueue_command
 from nautobot_chatops.views import SettingsControlledViewMixin
@@ -153,7 +153,7 @@ class SlackInteractionView(SlackView):
         # Check for channel_name if channel_id is present
         if context["channel_name"] is None and context["channel_id"] is not None:
             # Build a Slack Client Object
-            slack_client = WebClient(token=settings.PLUGINS_CONFIG["nautobot_chatops"]["slack_api_token"])
+            slack_client = RotationAwareWebClient(token=get_slack_api_token())
 
             # Get the channel information from Slack API
             channel_info = slack_client.conversations_info(channel=context["channel_id"])

@@ -65,6 +65,10 @@ class NautobotChatOpsConfig(NautobotAppConfig):
         # this can be ignored.
         # If neither option is provided, then no static images (like Nautobot Logo) will be shown.
         "slack_socket_static_host": "",
+        # Enable Slack token rotation (use refresh token to rotate access token)
+        "slack_enable_token_rotation": False,
+        "slack_client_id": "",
+        "slack_client_secret": "",
         # - Cisco Webex ----------------------
         "webex_token": "",
         "webex_signing_secret": "",
@@ -142,6 +146,14 @@ class NautobotChatOpsConfig(NautobotAppConfig):
         ),
         "enable_nso": ConstanceConfigItem(default=False, help_text="Enable NSO Integration.", field_type=bool),
         "enable_slurpit": ConstanceConfigItem(default=False, help_text="Enable Slurpit Integration.", field_type=bool),
+        # Slack token rotation support
+        "slack_refresh_token": ConstanceConfigItem(default="", help_text="Current Slack refresh token. One-time use."),
+        "slack_access_token": ConstanceConfigItem(
+            default="", help_text="Current Slack access token. Expires after 12 hours."
+        ),
+        "slack_access_token_timestamp": ConstanceConfigItem(
+            default="", help_text="Creation timestamp of the current Slack access token (ISO8601 string)."
+        ),
     }
 
     home_view_name = "plugins:nautobot_chatops:commandlog_list"

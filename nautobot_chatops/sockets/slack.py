@@ -8,9 +8,9 @@ from django.conf import settings
 from slack_sdk.socket_mode.aiohttp import SocketModeClient
 from slack_sdk.socket_mode.request import SocketModeRequest
 from slack_sdk.socket_mode.response import SocketModeResponse
-from slack_sdk.web.async_client import AsyncWebClient
 
 from nautobot_chatops.dispatchers.slack import SlackDispatcher
+from nautobot_chatops.helpers.slack import RotationAwareAsyncWebClient, get_slack_api_token
 from nautobot_chatops.utils import database_sync_to_async, socket_check_and_enqueue_command
 from nautobot_chatops.workers import commands_help, get_commands_registry, parse_command_string
 
@@ -22,7 +22,7 @@ async def main():
     SLASH_PREFIX = settings.PLUGINS_CONFIG["nautobot_chatops"].get("slack_slash_command_prefix")
     client = SocketModeClient(
         app_token=settings.PLUGINS_CONFIG["nautobot_chatops"].get("slack_app_token"),
-        web_client=AsyncWebClient(token=settings.PLUGINS_CONFIG["nautobot_chatops"]["slack_api_token"]),
+        web_client=RotationAwareAsyncWebClient(token=get_slack_api_token()),
     )
 
     async def process(client: SocketModeClient, req: SocketModeRequest):
@@ -49,7 +49,7 @@ async def main():
             await client.send_socket_mode_response(response)
             await process_mention(client, req)
 
-    async def process_slash_command(client, req):
+    async def process_slash_command(client: SocketModeClient, req: SocketModeRequest):
         client.logger.debug("Processing slash command.")
         command = req.payload.get("command")
         command = command.replace(SLASH_PREFIX, "")
@@ -79,7 +79,7 @@ async def main():
         return await socket_check_and_enqueue_command(registry, command, subcommand, params, context, SlackDispatcher)
 
     # pylint: disable-next=too-many-locals,too-many-return-statements,too-many-branches,too-many-statements
-    async def process_interactive(client, req):
+    async def process_interactive(client: SocketModeClient, req: SocketModeRequest):
         client.logger.debug("Processing interactive.")
         payload = req.payload
         selected_value = ""
@@ -224,7 +224,7 @@ async def main():
 
         return await socket_check_and_enqueue_command(registry, command, subcommand, params, context, SlackDispatcher)
 
-    async def process_mention(client, req):
+    async def process_mention(client: SocketModeClient, req: SocketModeRequest):
         context = {
             "org_id": req.payload.get("team_id"),
             "org_name": req.payload.get("team_domain"),
