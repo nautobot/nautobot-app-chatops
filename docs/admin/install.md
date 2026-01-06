@@ -20,7 +20,8 @@ This guide outlines the process of enabling Nautobot ChatOps, which includes:
 
 Ensure the following before beginning the installation:
 
-- Nautobot 2.4.2 or higher is installed.
+- Nautobot 3.0.0 or higher is installed.
+- Databases supported: PostgreSQL, MySQL
 - Your chat platform can access Nautobot via an HTTPS URL.
     - Some chat platforms require **SSL certificate verification** to communicate with the Nautobot server.
     - For development, you may use HTTP.
