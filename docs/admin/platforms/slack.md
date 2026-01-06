@@ -2,14 +2,17 @@
 
 These are the distinct configuration values you will need to configure in `nautobot_config.py`.
 
-| Configuration Setting        | Mandatory? | Default | Available on Admin Config |
-| ---------------------------- | ---------- | ------- | ------------------------- |
-| `enable_slack`               | **Yes**    | False   | Yes                       |
-| `slack_api_token`            | **Yes**    | --      | No                        |
-| `slack_app_token`            | Socket Mode| --      | No                        |
-| `slack_signing_secret`       | **Yes**    | --      | No                        |
-| `slack_slash_command_prefix` | No         | `"/"`   | No                        |
-| `slack_socket_static_host`   | No         | --      | No                        |
+| Configuration Setting        | Mandatory?    | Default | Available on Admin Config |
+| ---------------------------- | ------------- | ------- | ------------------------- |
+| `enable_slack`               | **Yes**       | False   | Yes                       |
+| `slack_api_token`            | **Yes**       | --      | No                        |
+| `slack_app_token`            | Socket Mode   | --      | No                        |
+| `slack_signing_secret`       | **Yes**       | --      | No                        |
+| `slack_slash_command_prefix` | No            | `"/"`   | No                        |
+| `slack_socket_static_host`   | No            | --      | No                        |
+| `slack_enable_token_rotation`| No            | --      | No                        |
+| `slack_client_id`            | Token Rotation| --      | No                        |
+| `slack_client_secret`        | Token Rotation| --      | No                        |
 
 These values will be used in the `nautobot_config.py` file, once we get to the section where we cover server configuration.
 For now, take a mental note that in this section where we are configuring the Slack application, we will need to explicitly note the
@@ -139,6 +142,37 @@ PLUGINS_CONFIG = {
 ![slack integration invite](../../images/add_nautobot.png)
 
 Once these steps are completed, you can proceed to the [Install Guide](../install.md#install-guide) section.
+
+### Automatic Token Rotation
+If your slack app has [token rotation](https://docs.slack.dev/authentication/using-token-rotation/) enabled, you'll need to configure Nautobot ChatOps as follows:
+
+```python
+PLUGINS_CONFIG = {
+    "nautobot_chatops": {
+        # ...
+        "slack_enable_token_rotation": True,
+        "slack_api_token": "<slack-refresh-token>",
+        "slack_client_id": "<slack-client-id>",
+        "slack_client_secret": "<slack-client-secret>",
+        # ...
+    }
+}
+```
+
+Note that `slack_api_token` now contains the refresh token, and not a Slack bot token.  
+You can get the first refresh token after enabling token rotation with a call to the oauth.v2.exchange endpoint:  
+
+```bash
+BOT_TOKEN="<NEW_BOT_USER_TOKEN_HERE>"  # from OAuth & Permission tab
+CLIENT_ID="<CLIENT_ID_HERE>"           # from Basic Information tab
+CLIENT_SECRET="<CLIENT_SECRET_HERE>"   # from Basic Information tab
+curl -k -X POST -H "Content-type: application/x-www-form-urlencoded" "https://slack.com/api/oauth.v2.exchange" -d "client_id=$CLIENT_ID&client_secret=$CLIENT_SECRET&token=$BOT_TOKEN"
+```
+
+After the bot token is exchanged for the first time, the current refresh token can be retrieved from the "Oauth & Permission" tab of your slack app.  
+Slack refresh tokens don't expire, but are one-time use. Nautobot Chatops will consume the refresh token you specify in `PLUGINS_CONFIG` to acquire a new access and refresh token pair.  
+The new access token will be used to authenticate with Slack, and the new refresh token will be persisted in the Nautobot database and used when it's time to get a new access token.  
+To avoid token rotation delays, you should enable the `Rotate Slack Access Token` job to run periodically (like every hour).  
 
 ## Configuring Multiple Chatbots in a Workspace
 

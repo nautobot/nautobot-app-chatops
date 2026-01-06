@@ -8,10 +8,10 @@ from typing import Optional
 
 from django.conf import settings
 from django.templatetags.static import static
-from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError, SlackClientError
 from slack_sdk.webhook.client import WebhookClient
 
+from nautobot_chatops.helpers.slack import RotationAwareWebClient, get_slack_api_token
 from nautobot_chatops.metrics import backend_action_sum
 
 from .base import Dispatcher
@@ -45,7 +45,7 @@ class SlackDispatcher(Dispatcher):
     def __init__(self, *args, **kwargs):
         """Init a SlackDispatcher."""
         super().__init__(*args, **kwargs)
-        self.slack_client = WebClient(token=settings.PLUGINS_CONFIG["nautobot_chatops"]["slack_api_token"])
+        self.slack_client = RotationAwareWebClient(token=get_slack_api_token())
         self.slack_menu_limit = int(os.getenv("SLACK_MENU_LIMIT", "100"))
 
     # pylint: disable=too-many-branches
