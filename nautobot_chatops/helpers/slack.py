@@ -104,5 +104,5 @@ class RotationAwareAsyncWebClient(AsyncWebClient):
 
     async def api_call(self, api_method: str, **kwargs):
         """Override api_call to refresh token if needed before making the call."""
-        self.token = await database_sync_to_async(get_slack_api_token)
+        self.token = await database_sync_to_async(get_slack_api_token)()
         return await super().api_call(api_method, **kwargs)
