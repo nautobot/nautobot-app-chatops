@@ -110,6 +110,7 @@ async def main():
             action = payload["actions"][0]
             action_id = action.get("action_id", "")
             block_id = action.get("block_id", "")
+            selected_value = ""  # Ensure variable is always defined
             if action["type"] == "static_select":
                 value = action.get("selected_option", {}).get("value", "")
                 selected_value = f"'{value}'"

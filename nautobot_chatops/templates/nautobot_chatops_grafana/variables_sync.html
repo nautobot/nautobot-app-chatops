@@ -6,9 +6,9 @@
 <h1>{% block title %}Synchronize a Grafana Dashboards Panel Variables{% endblock title %}</h1>
 
 {% block form %}
-<div class="panel panel-default">
-    <div class="panel-body">
-        <p class="lead text-right">
+<div class="card">
+    <div class="card-body">
+        <p class="lead text-end">
             <small>This may overwrite local commands with data from the <a href="{{ grafana_url }}/dashboards" target="_blank">Grafana Dashboards</a>. </small>
         </p>
         {% render_field form.dashboard %}

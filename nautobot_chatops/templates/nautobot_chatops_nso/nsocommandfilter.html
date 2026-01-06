@@ -2,11 +2,11 @@
 {% load helpers %}
 
 {% block content_left_page %}
-        <div class="panel panel-default">
-            <div class="panel-heading">
+        <div class="card">
+            <div class="card-header">
                 <strong>Command Filter</strong>
             </div>
-            <table class="table table-hover panel-body attr-table">
+            <table class="table table-hover card-body attr-table">
                 <tr>
                     <td>Command</td>
                     <td>
@@ -23,15 +23,15 @@
                 </tr>
             </table>
         </div>
-        <div class="panel panel-default">
-            <div class="panel-heading">
+        <div class="card">
+            <div class="card-header">
                 <strong>Comments</strong>
             </div>
-            <div class="panel-body rendered-markdown">
+            <div class="card-body rendered-markdown">
                 {% if object.comments %}
                     {{ object.comments|render_markdown }}
                 {% else %}
-                    <span class="text-muted">None</span>
+                    <span class="text-secondary">None</span>
                 {% endif %}
             </div>
         </div>
