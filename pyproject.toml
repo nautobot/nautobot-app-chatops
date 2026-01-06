@@ -38,6 +38,7 @@ include = [
 "panorama" = "nautobot_chatops.integrations.panorama.worker:panorama"
 "nso" = "nautobot_chatops.integrations.nso.worker:nso"
 "slurpit" = "nautobot_chatops.integrations.slurpit.worker:slurpit"
+"nautobotgpt" = "nautobot_chatops.integrations.nautobotgpt.worker:nautobotgpt"
 
 [tool.poetry.dependencies]
 python = ">=3.10,<3.14"

@@ -119,6 +119,7 @@ nav:
           - "user/integrations/panorama.md"
           - "user/integrations/nso.md"
           - "user/integrations/slurpit.md"
+          - "user/integrations/nautobotgpt.md"
   - Administrator Guide:
       - Install and Configure: "admin/install.md"
       - Platforms:
@@ -136,6 +137,7 @@ nav:
           - "admin/integrations/panorama.md"
           - "admin/integrations/nso.md"
           - "admin/integrations/slurpit.md"
+          - "admin/integrations/nautobotgpt.md"
       - Upgrade: "admin/upgrade.md"
       - Uninstall: "admin/uninstall.md"
       - Compatibility Matrix: "admin/compatibility_matrix.md"

@@ -2,19 +2,17 @@
 
 This guide outlines the process of enabling Nautobot ChatOps, which includes:
 
-<!--- pyml disable list-anchored-indent --->
 - [Nautobot ChatOps Installation Guide](#nautobot-chatops-installation-guide)
-  - [Prerequisites](#prerequisites)
-    - [Potential Apps Conflicts](#potential-apps-conflicts)
-  - [Chat Platforms Configuration](#chat-platforms-configuration)
-  - [Installation Guide](#installation-guide)
-  - [Install Guide](#install-guide)
-  - [Configuration Guide](#configuration-guide)
-  - [Granting Access to the Chat Platform](#granting-access-to-the-chat-platform)
-  - [Link Nautobot Account](#link-nautobot-account)
-  - [Test Your Chatbot](#test-your-chatbot)
-  - [Integrations Configuration](#integrations-configuration)
-<!--- pyml enable list-anchored-indent --->
+    - [Prerequisites](#prerequisites)
+        - [Potential Apps Conflicts](#potential-apps-conflicts)
+    - [Chat Platforms Configuration](#chat-platforms-configuration)
+    - [Installation Guide](#installation-guide)
+    - [Install Guide](#install-guide)
+    - [Configuration Guide](#configuration-guide)
+    - [Granting Access to the Chat Platform](#granting-access-to-the-chat-platform)
+    - [Link Nautobot Account](#link-nautobot-account)
+    - [Test Your Chatbot](#test-your-chatbot)
+    - [Integrations Configuration](#integrations-configuration)
 
 {% include-markdown '../glossary.md' heading-offset=1 %}
 
@@ -44,6 +42,7 @@ Conflicting Apps list:
 - `nautobot_plugin_chatops_grafana`
 - `nautobot_plugin_chatops_meraki`
 - `nautobot_plugin_chatops_panorama`
+- `nautobot_plugin_chatops_nautobotgpt`
 
 To prevent conflicts during `nautobot-chatops` upgrade:
 
@@ -166,3 +165,4 @@ Set up integrations using the specific guides:
 - [Cisco NSO](./integrations/nso.md)
 - [Palo Alto Panorama](./integrations/panorama.md)
 - [Slurpit](./integrations/slurpit.md)
+- [NautobotGPT](./integrations/nautobotgpt.md)
