@@ -54,19 +54,19 @@ def rotate_slack_access_token() -> str | None:
     """
     slack_client_id = get_app_settings_or_config("nautobot_chatops", "slack_client_id")
     if not slack_client_id:
-        logger.error("No Slack client ID found in Constance.")
+        logger.error("No Slack client ID found.")
         return None
 
     slack_client_secret = get_app_settings_or_config("nautobot_chatops", "slack_client_secret")
     if not slack_client_secret:
-        logger.error("No Slack client secret found in Constance.")
+        logger.error("No Slack client secret found.")
         return None
 
     # not using get_app_settings_or_config here because we want to prioritize Constance for the refresh token
     refresh_token = config.nautobot_chatops__slack_refresh_token or \
         settings.PLUGINS_CONFIG["nautobot_chatops"].get("slack_api_token", "")
     if not refresh_token:
-        logger.error("No Slack refresh token found in Constance.")
+        logger.error("No Slack refresh token found.")
         return None
 
     new_timestamp = datetime.now(timezone.utc).isoformat()
