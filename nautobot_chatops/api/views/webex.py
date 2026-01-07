@@ -20,8 +20,10 @@ from nautobot_chatops.views import SettingsControlledViewMixin
 from nautobot_chatops.workers import commands_help, get_commands_registry, parse_command_string
 
 logger = logging.getLogger(__name__)
+BOT_ID = None
 
-
+API = None
+BOT_ID = None
 if WEBEX_CONFIG.get("enabled"):
     try:
         TOKEN = WEBEX_CONFIG["token"]
@@ -38,8 +40,6 @@ if WEBEX_CONFIG.get("enabled"):
             "Missing or invalid WEBEX_TOKEN setting. "
             "This may be ignored if you are not running Nautobot as a Webex chatbot."
         )
-        API = None
-        BOT_ID = None
 
 # TODO: the app should verify that the webhooks are correctly set up, or else make API calls to create them
 

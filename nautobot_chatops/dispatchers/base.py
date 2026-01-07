@@ -174,7 +174,7 @@ class Dispatcher:
 
     # More complex APIs for presenting structured data - these typically build on the more basic functions below
 
-    def command_response_header(self, command, subcommand, args, description="information", image_element=None):
+    def command_response_header(self, command, subcommand, args, description="information", image_element=None):  # pylint: disable=too-many-positional-arguments
         """Construct a consistently forwarded header including the command that was issued.
 
         Args:
@@ -265,7 +265,7 @@ class Dispatcher:
         modal=False,
         ephemeral=None,
         title=None,
-    ):
+    ):  # pylint: disable=too-many-positional-arguments
         """Send a series of formatting blocks to the user/channel specified by the context."""
         # pylint: disable=unused-argument
         if ephemeral is None:
@@ -305,7 +305,7 @@ class Dispatcher:
         """
         raise NotImplementedError
 
-    def prompt_from_menu(self, action_id, help_text, choices, default=(None, None), confirm=False, offset=0):  # pylint: disable=too-many-arguments
+    def prompt_from_menu(self, action_id, help_text, choices, default=(None, None), confirm=False, offset=0):  # pylint: disable=too-many-arguments, too-many-positional-arguments
         """Prompt the user to make a selection from a menu of choices.
 
         Args:

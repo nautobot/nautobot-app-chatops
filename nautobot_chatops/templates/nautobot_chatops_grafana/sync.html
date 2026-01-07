@@ -9,11 +9,11 @@
     {{ field }}
     {% endfor %}
     <div class="row">
-        <div class="col-md-6 col-md-offset-3">
+        <div class="col-lg-6 offset-lg-3">
             <h3>
                 {% if settings.DOCS_ROOT %}
-                <div class="pull-right">
-                    <button type="button" class="btn btn-link btn-xs" data-toggle="modal" data-target="#docs_modal" title="Help">
+                <div class="float-end">
+                    <button type="button" class="btn btn-link btn-sm" data-bs-toggle="modal" data-bs-target="#docs_modal" title="Help">
                         <i class="mdi mdi-help-circle"></i>
                     </button>
                 </div>
@@ -22,17 +22,17 @@
             </h3>
             {% block tabs %}{% endblock tabs %}
             {% if form.non_field_errors %}
-            <div class="panel panel-danger">
-                <div class="panel-heading"><strong>Errors</strong></div>
-                <div class="panel-body">
+            <div class="card border-danger">
+                <div class="card-header bg-danger-subtle border-danger text-body"><strong>Errors</strong></div>
+                <div class="card-body">
                     {{ form.non_field_errors }}
                 </div>
             </div>
             {% endif %}
             {% block form %}
-            <div class="panel panel-default">
-                <div class="panel-heading"><strong>{{ obj_type|capfirst }}</strong></div>
-                <div class="panel-body">
+            <div class="card">
+                <div class="card-header"><strong>{{ obj_type|capfirst }}</strong></div>
+                <div class="card-body">
                     {% block form_fields %}
                     {% render_form form %}
                     {% endblock form_fields %}
@@ -43,10 +43,10 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-md-6 col-md-offset-3 text-right">
+        <div class="col-lg-6 offset-lg-3 text-end">
             {% block buttons %}
             <button type="submit" name="_create" class="btn btn-warning"><span class="mdi mdi-database-sync-outline"></span>Sync</button>
-            <a href="{{ return_url }}" class="btn btn-default">Cancel</a>
+            <a href="{{ return_url }}" class="btn btn-secondary">Cancel</a>
             {% endblock buttons %}
         </div>
     </div>
