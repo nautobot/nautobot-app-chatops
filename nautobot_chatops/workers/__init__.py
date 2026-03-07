@@ -11,9 +11,13 @@ import logging
 import shlex
 from datetime import datetime, timezone
 from functools import wraps
-
-import pkg_resources
+from importlib.metadata import entry_points as _metadata_entry_points
 from django.conf import settings
+
+try:
+    import pkg_resources
+except ImportError:
+    pkg_resources = None  # optional: only needed for tests using prybar
 from django.db.models import Q
 from nautobot.extras.context_managers import web_request_context
 
@@ -74,7 +78,25 @@ def get_commands_registry():
     # In other words, we can't guarantee that we process a command before we process its subcommands,
     # so don't treat the subcommand-before-command case as an error.
 
-    for worker in pkg_resources.iter_entry_points("nautobot.workers"):
+    try:
+        # Python 3.10+ supports group parameter
+        workers_entry_points = _metadata_entry_points(group="nautobot.workers")
+    except TypeError:
+        # Python 3.8-3.9: entry_points() returns a dict-like object
+        workers_entry_points = _metadata_entry_points().get("nautobot.workers", [])
+    
+    # Convert EntryPoints object to list for consistent iteration
+    workers_entry_points = list(workers_entry_points) if workers_entry_points else []
+    seen_names = {ep.name for ep in workers_entry_points}
+
+    # Include dynamic entry points from pkg_resources (e.g. from prybar in tests)
+    if pkg_resources is not None:
+        for ep in pkg_resources.iter_entry_points("nautobot.workers"):
+            if ep.name not in seen_names:
+                workers_entry_points.append(ep)
+                seen_names.add(ep.name)
+
+    for worker in workers_entry_points:
         if worker.name in DISABLED_INTEGRATIONS:
             logger.info("`%s` integration disabled, skipping.", worker.name)
             continue
