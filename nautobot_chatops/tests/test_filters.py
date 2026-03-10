@@ -6,7 +6,7 @@ from nautobot_chatops import filters, models
 from nautobot_chatops.tests import fixtures
 
 
-class CommandLogFilterTestCase(FilterTestCases.FilterTestCase):
+class CommandLogFilterTestCase(FilterTestCases.FilterTestCase):  # pylint: disable=too-many-ancestors
     """CommandLog Filter Test Case."""
 
     queryset = models.CommandLog.objects.all()

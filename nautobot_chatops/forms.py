@@ -31,7 +31,7 @@ class CommandLogBulkEditForm(TagsBulkEditFormMixin, NautobotBulkEditForm):  # py
         ]
 
 
-class CommandLogFilterForm(NautobotFilterForm):
+class CommandLogFilterForm(NautobotFilterForm):  # pylint: disable=too-many-ancestors
     """Filter form to filter searches."""
 
     model = models.CommandLog
