@@ -7,12 +7,17 @@ This document provides an overview of the App including critical information and
 
 ## Description
 
+<<<<<<< HEAD
 The ChatOps framework provides Network Engineers power to query Nautobot or their Network (through ChatOps apps) while staying within their preferred Chat application. The goal of ChatOps is to bring people, processes and Automation together.
 
 {%
     include-markdown '../glossary.md'
     heading-offset=1
 %}
+=======
+![Main Page](../media/ss_main_page_light.png#only-light)
+![Main Page](../media/ss_main_page_dark.png#only-dark)
+>>>>>>> c0abeaf (Cookie updated targeting develop by NetworkToCode Cookie Drift Manager Tool)
 
 ## Audience (User Personas) - Who should use this App?
 
