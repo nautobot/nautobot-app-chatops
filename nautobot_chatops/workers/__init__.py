@@ -57,6 +57,19 @@ _commands_registry = {
 
 def _iter_worker_entry_points():
     """Return worker entry points across supported Python versions."""
+    # `prybar.dynamic_entrypoint` (used in tests) patches pkg_resources entry points at runtime.
+    # Prefer that source when available so dynamic test commands are discoverable.
+    try:
+        import warnings
+
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=UserWarning, message="pkg_resources is deprecated as an API.*")
+            import pkg_resources  # pylint: disable=import-outside-toplevel  # type: ignore[import-not-found]
+
+        return pkg_resources.iter_entry_points("nautobot.workers")
+    except ImportError:
+        logger.debug("pkg_resources is unavailable; using importlib.metadata entry points.")
+
     all_entry_points = entry_points()
     if isinstance(all_entry_points, dict):
         return all_entry_points.get("nautobot.workers", ())
