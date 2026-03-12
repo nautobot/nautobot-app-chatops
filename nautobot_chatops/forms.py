@@ -95,13 +95,8 @@ class ChatOpsAccountLinkFilterForm(NautobotFilterForm):
     platform = forms.MultipleChoiceField(choices=PlatformChoices, required=False, widget=StaticSelect2Multiple())
 
 
-<<<<<<< HEAD
-class CommandLogFilterForm(NautobotFilterForm):
-    """Form for filtering Command Logs."""
-=======
 class CommandLogFilterForm(NautobotFilterForm):  # pylint: disable=too-many-ancestors
     """Filter form to filter searches."""
->>>>>>> e9eb759 (Cookie updated targeting develop by NetworkToCode Cookie Drift Manager Tool)
 
     platform = forms.ChoiceField(choices=PlatformChoices.CHOICES, required=False, widget=StaticSelect2Multiple())
     command = forms.CharField(required=False)
