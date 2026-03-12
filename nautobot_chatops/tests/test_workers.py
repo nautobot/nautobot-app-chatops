@@ -1,10 +1,10 @@
 """Test cases for the Nautobot workers module."""
 
 from django.test import SimpleTestCase
-from prybar import dynamic_entrypoint
 
 import nautobot_chatops.workers
 from nautobot_chatops.tests.workers.dynamic_commands import dynamic_command, dynamic_subcommand
+from nautobot_chatops.tests.workers.dynamic_entrypoint import dynamic_entrypoint
 from nautobot_chatops.workers import add_subcommand, convert_smart_quotes, get_commands_registry, parse_command_string
 
 
