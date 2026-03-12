@@ -9,6 +9,7 @@ back to the chat using the provided ``dispatchers`` instance's generic API.
 import inspect
 import logging
 import shlex
+import warnings
 from datetime import datetime, timezone
 from functools import wraps
 from importlib.metadata import entry_points
@@ -60,8 +61,6 @@ def _iter_worker_entry_points():
     # `prybar.dynamic_entrypoint` (used in tests) patches pkg_resources entry points at runtime.
     # Prefer that source when available so dynamic test commands are discoverable.
     try:
-        import warnings
-
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore", category=UserWarning, message="pkg_resources is deprecated as an API.*")
             import pkg_resources  # pylint: disable=import-outside-toplevel  # type: ignore[import-not-found]
