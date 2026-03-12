@@ -10,6 +10,7 @@ from nautobot_chatops.workers import add_subcommand, convert_smart_quotes, get_c
 
 class TestFunctions(SimpleTestCase):
     """Test the generic functions provided by nautobot_chatops.workers."""
+
     databases = {"default"}
 
     def setUp(self):
