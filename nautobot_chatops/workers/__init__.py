@@ -58,9 +58,9 @@ _commands_registry = {
 def _iter_worker_entry_points():
     """Return worker entry points across supported Python versions."""
     all_entry_points = entry_points()
-    if hasattr(all_entry_points, "select"):
-        return all_entry_points.select(group="nautobot.workers")
-    return all_entry_points.get("nautobot.workers", ())
+    if isinstance(all_entry_points, dict):
+        return all_entry_points.get("nautobot.workers", ())
+    return all_entry_points.select(group="nautobot.workers")
 
 
 def get_commands_registry():

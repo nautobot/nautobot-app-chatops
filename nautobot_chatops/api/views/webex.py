@@ -22,7 +22,7 @@ from nautobot_chatops.workers import commands_help, get_commands_registry, parse
 logger = logging.getLogger(__name__)
 BOT_ID = None
 
-API = None
+api = None
 BOT_ID = None
 if WEBEX_CONFIG.get("enabled"):
     try:
@@ -33,8 +33,8 @@ if WEBEX_CONFIG.get("enabled"):
         raise KeyError(ERROR_MSG) from err
 
     try:
-        API = WebexTeamsAPI(access_token=TOKEN)
-        BOT_ID = API.people.me().id
+        api = WebexTeamsAPI(access_token=TOKEN)
+        BOT_ID = api.people.me().id
     except (AccessTokenError, ApiError):
         logger.warning(
             "Missing or invalid WEBEX_TOKEN setting. "
@@ -86,7 +86,7 @@ class WebexView(SettingsControlledViewMixin, View):
     # pylint: disable=too-many-locals,too-many-return-statements,too-many-branches
     def post(self, request, *args, **kwargs):
         """Process an inbound HTTP POST request."""
-        if not API:
+        if not api:
             return HttpResponse(reason="Incomplete or incorrect bot setup")
 
         valid, reason = verify_signature(request)
@@ -115,14 +115,14 @@ class WebexView(SettingsControlledViewMixin, View):
         }
 
         # In Webex, the webhook doesn't contain the user/channel/org names. We have to call back for them.
-        # For whatever reason, API.organizations.get() is only permitted by admin users, which the bot is not.
-        # context["org_name"] = API.organizations.get(context["org_id"]).displayName
-        context["channel_name"] = API.rooms.get(context["channel_id"]).title
-        context["user_name"] = API.people.get(context["user_id"]).displayName
+        # For whatever reason, api.organizations.get() is only permitted by admin users, which the bot is not.
+        # context["org_name"] = api.organizations.get(context["org_id"]).displayName
+        context["channel_name"] = api.rooms.get(context["channel_id"]).title
+        context["user_name"] = api.people.get(context["user_id"]).displayName
 
         if body.get("resource") == "messages":
             # In Webex, the webhook notification doesn't contain the message text. We have to call back for it.
-            message = API.messages.get(context["message_id"])
+            message = api.messages.get(context["message_id"])
             command = message.text.strip()
             # Check for a mention of the bot in the HTML (i.e., if this is not a direct message), and remove it if so.
             if message.html:
@@ -132,7 +132,7 @@ class WebexView(SettingsControlledViewMixin, View):
             command, subcommand, params = parse_command_string(command)
         elif body.get("resource") == "attachmentActions":
             # In Webex, the webhook notification doesn't contain the action details. We have to call back for it.
-            action = API.attachment_actions.get(body.get("data", {}).get("id"))
+            action = api.attachment_actions.get(body.get("data", {}).get("id"))
             if settings.PLUGINS_CONFIG["nautobot_chatops"].get("delete_input_on_submission"):
                 # Delete the card that this action was triggered from
                 WebexDispatcher(context).delete_message(context["message_id"])
