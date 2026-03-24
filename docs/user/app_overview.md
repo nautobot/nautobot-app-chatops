@@ -13,8 +13,6 @@ The ChatOps framework provides Network Engineers power to query Nautobot or thei
     include-markdown '../glossary.md'
     heading-offset=1
 %}
-![Main Page](../media/ss_main_page_light.png#only-light)
-![Main Page](../media/ss_main_page_dark.png#only-dark)
 
 ## Audience (User Personas) - Who should use this App?
 
