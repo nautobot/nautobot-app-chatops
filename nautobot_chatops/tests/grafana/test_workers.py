@@ -1,13 +1,60 @@
 """Test cases for the Nautobot workers module."""
 
 from django.test import TestCase
-from prybar import dynamic_entrypoint
 
 import nautobot_chatops.workers
 from nautobot_chatops.integrations.grafana.models import Dashboard, Panel
 from nautobot_chatops.integrations.grafana.worker import initialize_subcommands
-from nautobot_chatops.tests.workers.dynamic_commands import dynamic_command, dynamic_subcommand
+from nautobot_chatops.tests.workers import dynamic_commands, two_commands
 from nautobot_chatops.workers import add_subcommand, get_commands_registry, parse_command_string
+
+
+def _load_test_commands():
+    """Load test command modules directly."""
+    # Register the command functions
+    add_subcommand(
+        command_name="first_command",
+        command_func=two_commands.first_command,
+        subcommand_name="first-subcommand",
+        subcommand_spec={
+            "worker": two_commands.first_subcommand,
+            "params": [],
+            "doc": "Do the first thing of the first command.",
+        },
+    )
+
+    add_subcommand(
+        command_name="second_command",
+        command_func=two_commands.second_command,
+        subcommand_name="second-subcommand",
+        subcommand_spec={
+            "worker": two_commands.second_subcommand,
+            "params": [],
+            "doc": "Do the second thing of the second command.",
+        },
+    )
+
+    add_subcommand(
+        command_name="third_command",
+        command_func=dynamic_commands.third_command,
+        subcommand_name="third-subcommand",
+        subcommand_spec={
+            "worker": dynamic_commands.third_subcommand,
+            "params": [],
+            "doc": "Do the third thing of the third command.",
+        },
+    )
+
+    add_subcommand(
+        command_name="dynamic_command",
+        command_func=dynamic_commands.dynamic_command,
+        subcommand_name="dynamic-subcommand-name",
+        subcommand_spec={
+            "worker": dynamic_commands.dynamic_subcommand,
+            "params": ["param1", "param2"],
+            "doc": "Do Something Dynamically",
+        },
+    )
 
 
 class TestGrafana(TestCase):
@@ -65,99 +112,74 @@ class TestGrafana(TestCase):
 
     def test_get_commands_registry_multiple_same_file(self):
         """Verify that a single file can contain multiple command workers and their subcommands."""
-        with dynamic_entrypoint(
-            "nautobot.workers", name="first_command", module="nautobot_chatops.tests.workers.two_commands"
-        ):
-            with dynamic_entrypoint(
-                "nautobot.workers", name="second_command", module="nautobot_chatops.tests.workers.two_commands"
-            ):
-                registry = get_commands_registry()
+        _load_test_commands()
+        registry = get_commands_registry()
 
-                # Make sure both commands and both subcommands were loaded
+        # Make sure both commands and both subcommands were loaded
 
-                self.assertIn("first_command", registry)
-                self.assertIn("function", registry["first_command"])
-                self.assertTrue(callable(registry["first_command"]["function"]))
-                self.assertIn("subcommands", registry["first_command"])
-                self.assertIn("first-subcommand", registry["first_command"]["subcommands"])
-                self.assertIn("worker", registry["first_command"]["subcommands"]["first-subcommand"])
-                self.assertTrue(callable(registry["first_command"]["subcommands"]["first-subcommand"]["worker"]))
+        self.assertIn("first_command", registry)
+        self.assertIn("function", registry["first_command"])
+        self.assertTrue(callable(registry["first_command"]["function"]))
+        self.assertIn("subcommands", registry["first_command"])
+        self.assertIn("first-subcommand", registry["first_command"]["subcommands"])
+        self.assertIn("worker", registry["first_command"]["subcommands"]["first-subcommand"])
+        self.assertTrue(callable(registry["first_command"]["subcommands"]["first-subcommand"]["worker"]))
 
-                self.assertIn("second_command", registry)
-                self.assertIn("function", registry["second_command"])
-                self.assertTrue(callable(registry["second_command"]["function"]))
-                self.assertIn("subcommands", registry["second_command"])
-                self.assertIn("second-subcommand", registry["second_command"]["subcommands"])
-                self.assertIn("worker", registry["second_command"]["subcommands"]["second-subcommand"])
-                self.assertTrue(callable(registry["second_command"]["subcommands"]["second-subcommand"]["worker"]))
+        self.assertIn("second_command", registry)
+        self.assertIn("function", registry["second_command"])
+        self.assertTrue(callable(registry["second_command"]["function"]))
+        self.assertIn("subcommands", registry["second_command"])
+        self.assertIn("second-subcommand", registry["second_command"]["subcommands"])
+        self.assertIn("worker", registry["second_command"]["subcommands"]["second-subcommand"])
+        self.assertTrue(callable(registry["second_command"]["subcommands"]["second-subcommand"]["worker"]))
 
     def test_get_commands_registry_dynamic_subcommands(self):
         """Verify Dynamic Commands."""
-        with dynamic_entrypoint(
-            "nautobot.workers", name="dynamic_command", module="nautobot_chatops.tests.workers.dynamic_commands"
-        ):
-            with dynamic_entrypoint(
-                "nautobot.workers", name="third_command", module="nautobot_chatops.tests.workers.dynamic_commands"
-            ):
-                subcommand_spec = {
-                    "worker": dynamic_subcommand,
-                    "params": ["param1", "param2"],
-                    "doc": "Do Something Dynamically",
-                }
-                add_subcommand(
-                    command_name="dynamic_command",
-                    command_func=dynamic_command,
-                    subcommand_name="dynamic-subcommand-name",
-                    subcommand_spec=subcommand_spec,
-                )
+        _load_test_commands()
+        registry = get_commands_registry()
 
-                registry = get_commands_registry()
+        # Make sure the dynamic command is loaded
 
-                # Make sure the dynamic command is loaded
+        self.assertIn("dynamic_command", registry)
+        self.assertIn("function", registry["dynamic_command"])
+        self.assertTrue(callable(registry["dynamic_command"]["function"]))
+        self.assertIn("subcommands", registry["dynamic_command"])
+        self.assertIn("dynamic-subcommand-name", registry["dynamic_command"]["subcommands"])
+        self.assertIn("worker", registry["dynamic_command"]["subcommands"]["dynamic-subcommand-name"])
+        self.assertIn("param1", registry["dynamic_command"]["subcommands"]["dynamic-subcommand-name"]["params"])
+        self.assertIn("param2", registry["dynamic_command"]["subcommands"]["dynamic-subcommand-name"]["params"])
+        self.assertTrue(callable(registry["dynamic_command"]["subcommands"]["dynamic-subcommand-name"]["worker"]))
 
-                self.assertIn("dynamic_command", registry)
-                self.assertIn("function", registry["dynamic_command"])
-                self.assertTrue(callable(registry["dynamic_command"]["function"]))
-                self.assertIn("subcommands", registry["dynamic_command"])
-                self.assertIn("dynamic-subcommand-name", registry["dynamic_command"]["subcommands"])
-                self.assertIn("worker", registry["dynamic_command"]["subcommands"]["dynamic-subcommand-name"])
-                self.assertIn("param1", registry["dynamic_command"]["subcommands"]["dynamic-subcommand-name"]["params"])
-                self.assertIn("param2", registry["dynamic_command"]["subcommands"]["dynamic-subcommand-name"]["params"])
-                self.assertTrue(
-                    callable(registry["dynamic_command"]["subcommands"]["dynamic-subcommand-name"]["worker"])
-                )
+        # Make sure the static command is also loaded
 
-                # Make sure the static command is also loaded
+        self.assertIn("third_command", registry)
+        self.assertIn("function", registry["third_command"])
+        self.assertTrue(callable(registry["third_command"]["function"]))
+        self.assertIn("subcommands", registry["third_command"])
+        self.assertIn("third-subcommand", registry["third_command"]["subcommands"])
+        self.assertIn("worker", registry["third_command"]["subcommands"]["third-subcommand"])
+        self.assertTrue(callable(registry["third_command"]["subcommands"]["third-subcommand"]["worker"]))
 
-                self.assertIn("third_command", registry)
-                self.assertIn("function", registry["third_command"])
-                self.assertTrue(callable(registry["third_command"]["function"]))
-                self.assertIn("subcommands", registry["third_command"])
-                self.assertIn("third-subcommand", registry["third_command"]["subcommands"])
-                self.assertIn("worker", registry["third_command"]["subcommands"]["third-subcommand"])
-                self.assertTrue(callable(registry["third_command"]["subcommands"]["third-subcommand"]["worker"]))
+        # Make sure the default nautobot command is still loaded
 
-                # Make sure the default nautobot command is still loaded
-
-                self.assertIn("nautobot", registry)
+        self.assertIn("nautobot", registry)
 
     def test_grafana_commands_registry_dynamic_subcommands(self):
         """Specific testing for the Grafana Chatops App."""
-        with dynamic_entrypoint("nautobot.workers", name="grafana", module="nautobot_chatops.grafana.worker"):
-            registry = get_commands_registry()
+        registry = get_commands_registry()
 
-            # Populate the command registry with the dynamic Grafana commands.
-            initialize_subcommands()
+        # Populate the command registry with the dynamic Grafana commands.
+        initialize_subcommands()
 
-            self.assertIn("grafana", registry)
+        self.assertIn("grafana", registry)
 
-            # Make sure there is a top-level callable function
-            self.assertIn("function", registry["grafana"])
-            self.assertTrue(callable(registry["grafana"]["function"]))
+        # Make sure there is a top-level callable function
+        self.assertIn("function", registry["grafana"])
+        self.assertTrue(callable(registry["grafana"]["function"]))
 
-            # Test that subcommands are being dynamically generated and have a callable function
-            self.assertIn("subcommands", registry["grafana"])
-            self.assertIn("get-test-command-1", registry["grafana"]["subcommands"])
-            self.assertIn("worker", registry["grafana"]["subcommands"]["get-test-command-1"])
-            self.assertIn("timespan", str(registry["grafana"]["subcommands"]["get-test-command-1"]["params"]))
-            self.assertTrue(callable(registry["grafana"]["subcommands"]["get-test-command-1"]["worker"]))
+        # Test that subcommands are being dynamically generated and have a callable function
+        self.assertIn("subcommands", registry["grafana"])
+        self.assertIn("get-test-command-1", registry["grafana"]["subcommands"])
+        self.assertIn("worker", registry["grafana"]["subcommands"]["get-test-command-1"])
+        self.assertIn("timespan", str(registry["grafana"]["subcommands"]["get-test-command-1"]["params"]))
+        self.assertTrue(callable(registry["grafana"]["subcommands"]["get-test-command-1"]["worker"]))
