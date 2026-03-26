@@ -57,8 +57,7 @@ def check_credentials(dispatcher):
             return False
     elif not CONFIG.get("cvaas_token"):
         dispatcher.send_warning(
-            "Please ensure environment variable ARISTACV_CVAAS_TOKEN "
-            "is set and your nautobot config file is updated."
+            "Please ensure environment variable ARISTACV_CVAAS_TOKEN is set and your nautobot config file is updated."
         )
         return False
     return True

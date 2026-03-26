@@ -4419,23 +4419,6 @@ files = [
 ]
 
 [[package]]
-name = "prybar"
-version = "1.0.0"
-description = "Create temporary pkg_resources entry points at runtime."
-optional = false
-python-versions = "~=3.6"
-groups = ["dev"]
-files = [
-    {file = "prybar-1.0.0-py2.py3-none-any.whl", hash = "sha256:07d5b12fb12da703fb266d67d3a117e1c20a30cd9daa274586cc4af8081baea7"},
-    {file = "prybar-1.0.0.tar.gz", hash = "sha256:9f2af7b4fdce2d0febf6fb73a0854956a384fad65df19c3f57caab7c4726a88a"},
-]
-
-[package.extras]
-dev = ["flake8"]
-doc = ["sphinx"]
-test = ["pytest", "pytest-cov"]
-
-[[package]]
 name = "psutil"
 version = "7.2.2"
 description = "Cross-platform lib for process and system monitoring."
@@ -7439,4 +7422,4 @@ slurpit = ["slurpit-sdk"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.13"
-content-hash = "169f03d6310077cecea6da84e72f1f52a836b0d218fc931dbae190fa54ea336b"
+content-hash = "0df020a70d6b5cbd805b538566d8b913e6f50da1634e1a47df6c6f5a3c8b378c"

@@ -11,8 +11,8 @@ import logging
 import shlex
 from datetime import datetime, timezone
 from functools import wraps
-
 from importlib.metadata import entry_points
+
 from django.conf import settings
 from django.db.models import Q
 from nautobot.extras.context_managers import web_request_context
@@ -75,7 +75,9 @@ def get_commands_registry():
     # so don't treat the subcommand-before-command case as an error.
 
     # https://docs.python.org/3.11/library/importlib.metadata.html#entry-points
-    for worker in entry_points(group="nautobot.workers"):
+    eps = entry_points()
+    workers = eps.select(group="nautobot.workers")
+    for worker in workers:
         if worker.name in DISABLED_INTEGRATIONS:
             logger.info("`%s` integration disabled, skipping.", worker.name)
             continue
