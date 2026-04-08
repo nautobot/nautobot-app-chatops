@@ -22,7 +22,7 @@ async def main():
     SLASH_PREFIX = settings.PLUGINS_CONFIG["nautobot_chatops"].get("slack_slash_command_prefix")
     client = SocketModeClient(
         app_token=settings.PLUGINS_CONFIG["nautobot_chatops"].get("slack_app_token"),
-        web_client=RotationAwareAsyncWebClient(token=get_slack_api_token()),
+        web_client=RotationAwareAsyncWebClient(token=await database_sync_to_async(get_slack_api_token)()),
     )
 
     async def process(client: SocketModeClient, req: SocketModeRequest):
@@ -110,7 +110,6 @@ async def main():
             action = payload["actions"][0]
             action_id = action.get("action_id", "")
             block_id = action.get("block_id", "")
-            selected_value = ""  # Ensure variable is always defined
             if action["type"] == "static_select":
                 value = action.get("selected_option", {}).get("value", "")
                 selected_value = f"'{value}'"

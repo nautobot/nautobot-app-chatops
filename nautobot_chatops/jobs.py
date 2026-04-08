@@ -38,7 +38,7 @@ class RotateSlackTokenJob(Job):
         if new_token:
             self.logger.success("Slack access token rotated successfully.")
         else:
-            self.logger.failure("Slack token rotation failed; will retry on next scheduled run.")
+            self.fail("Slack token rotation failed; will retry on next scheduled run.")
 
 
 register_jobs(RotateSlackTokenJob)

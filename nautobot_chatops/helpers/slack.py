@@ -23,23 +23,6 @@ def get_slack_api_token() -> str:
     if not get_app_settings_or_config("nautobot_chatops", "slack_enable_token_rotation"):
         return get_app_settings_or_config("nautobot_chatops", "slack_api_token")
 
-    token_time_str = config.nautobot_chatops__slack_access_token_timestamp
-    now = datetime.now(timezone.utc)
-    token_time = None
-    if token_time_str:
-        try:
-            token_time = datetime.fromisoformat(token_time_str)
-        except Exception as e:
-            logger.warning(f"Could not parse slack_access_token_timestamp: {e}")
-            token_time = None
-
-    is_access_token_expired = token_time is None or (now - token_time) > timedelta(hours=12)
-    if is_access_token_expired:
-        logger.info("Slack access token is expired or missing, attempting rotation. "
-                    "Consider enabling the renewal job to avoid delays.")
-        return rotate_slack_access_token()
-
-    logger.debug("Using existing Slack access token.")
     return config.nautobot_chatops__slack_access_token
 
 

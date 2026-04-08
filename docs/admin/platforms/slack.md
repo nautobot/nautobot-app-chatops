@@ -144,7 +144,9 @@ PLUGINS_CONFIG = {
 Once these steps are completed, you can proceed to the [Install Guide](../install.md#install-guide) section.
 
 ### Automatic Token Rotation
-If your slack app has [token rotation](https://docs.slack.dev/authentication/using-token-rotation/) enabled, you'll need to configure Nautobot ChatOps as follows:
+If your slack app has [token rotation](https://docs.slack.dev/authentication/using-token-rotation/) enabled, you'll need to:
+
+1. Configure Nautobot ChatOps as follows
 
 ```python
 PLUGINS_CONFIG = {
@@ -158,8 +160,7 @@ PLUGINS_CONFIG = {
     }
 }
 ```
-
-Note that `slack_api_token` now contains the refresh token, and not a Slack bot token.  
+Note that `slack_api_token` now contains a refresh token, and not the Slack bot token.  
 You can get the first refresh token after enabling token rotation with a call to the oauth.v2.exchange endpoint:  
 
 ```bash
@@ -169,10 +170,13 @@ CLIENT_SECRET="<CLIENT_SECRET_HERE>"   # from Basic Information tab
 curl -k -X POST -H "Content-type: application/x-www-form-urlencoded" "https://slack.com/api/oauth.v2.exchange" -d "client_id=$CLIENT_ID&client_secret=$CLIENT_SECRET&token=$BOT_TOKEN"
 ```
 
+2. Enable the `Rotate Slack Access Token` job;
+3. Schedule the job to run periodically (like every hour).  
+
+
 After the bot token is exchanged for the first time, the current refresh token can be retrieved from the "Oauth & Permission" tab of your slack app.  
 Slack refresh tokens don't expire, but are one-time use. Nautobot Chatops will consume the refresh token you specify in `PLUGINS_CONFIG` to acquire a new access and refresh token pair.  
-The new access token will be used to authenticate with Slack, and the new refresh token will be persisted in the Nautobot database and used when it's time to get a new access token.  
-To avoid token rotation delays, you should enable the `Rotate Slack Access Token` job to run periodically (like every hour).  
+The new access token will be used to authenticate with Slack, and the new refresh token will be persisted in the Nautobot database and used by the `Rotate Slack Access Token` job when it's time to get a new access token.  
 
 ## Configuring Multiple Chatbots in a Workspace
 
