@@ -75,9 +75,7 @@ def get_commands_registry():
     # so don't treat the subcommand-before-command case as an error.
 
     # https://docs.python.org/3.11/library/importlib.metadata.html#entry-points
-    eps = entry_points()
-    workers = eps.select(group="nautobot.workers")
-    for worker in workers:
+    for worker in entry_points().select(group="nautobot.workers"):
         if worker.name in DISABLED_INTEGRATIONS:
             logger.info("`%s` integration disabled, skipping.", worker.name)
             continue
