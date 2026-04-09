@@ -1043,30 +1043,15 @@ def generate_app_config_schema(context):
     - `NautobotAppConfig.default_settings`
     - `NautobotAppConfig.required_settings`
     """
-<<<<<<< HEAD
-    start(context, service="nautobot")
-    nbshell(
-        context,
-        file="development/app_config_schema.py",
-        env={"APP_CONFIG_SCHEMA_COMMAND": "generate"},
-    )
-=======
     start(context, service=["nautobot"])
     nbshell(context, file="development/app_config_schema.py", env={"APP_CONFIG_SCHEMA_COMMAND": "generate"})
->>>>>>> 9d6b681 (Cookie updated targeting develop by NetworkToCode Cookie Drift Manager Tool)
 
 
 @task
 def validate_app_config(context):
     """Validate the app config based on the app config schema."""
-<<<<<<< HEAD
-    start(context, service="nautobot")
-    nbshell(
-        context,
-        plain=True,
-        file="development/app_config_schema.py",
-        env={"APP_CONFIG_SCHEMA_COMMAND": "validate"},
-    )
+    start(context, service=["nautobot"])
+    nbshell(context, plain=True, file="development/app_config_schema.py", env={"APP_CONFIG_SCHEMA_COMMAND": "validate"})
 
 
 # ------------------------------------------------------------------------------
@@ -1115,7 +1100,3 @@ def connect_awx_container(context, container_name="tools_awx_1"):
     bridge_network = f"{context.nautobot_chatops.project_name}_awx"
     context.run(f"docker network connect --alias awx {bridge_network} {container_name}")
     print(f"Container {container_name} connected to {bridge_network} network")
-=======
-    start(context, service=["nautobot"])
-    nbshell(context, plain=True, file="development/app_config_schema.py", env={"APP_CONFIG_SCHEMA_COMMAND": "validate"})
->>>>>>> 9d6b681 (Cookie updated targeting develop by NetworkToCode Cookie Drift Manager Tool)
