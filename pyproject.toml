@@ -17,6 +17,7 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
 ]
 packages = [
     { include = "nautobot_chatops" },
@@ -40,7 +41,8 @@ include = [
 "slurpit" = "nautobot_chatops.integrations.slurpit.worker:slurpit"
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.14"
+python = ">=3.10,<3.15"
+# Used for local development
 nautobot = ">=3.0.0,<4.0.0"
 Markdown = "!=3.3.5"
 PyJWT = "^2.1.0"
@@ -109,6 +111,8 @@ mkdocstrings-python = "1.10.8"
 mkdocs-autorefs = "1.2.0"
 griffe = "1.1.1"
 mkdocs-include-markdown-plugin = "6.0.3"
+# Image lightboxing in mkdocs
+mkdocs-glightbox = "~0.5.2"
 
 [tool.poetry.extras]
 all = [
