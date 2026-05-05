@@ -1,3 +1,0 @@
-Added importlib.metadata.entry_points to replace pkg_resources.iter_entry_points.
-Added packaging.version.Version to replace pkg_resources.parse_version.
-Added _load_test_commands in unittests to replace prybar.dynamic_entrypoint.
