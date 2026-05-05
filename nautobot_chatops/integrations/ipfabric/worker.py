@@ -13,7 +13,7 @@ from nautobot.core.settings_funcs import is_truthy
 from nautobot.extras.models import JobResult
 from netutils.ip import is_ip
 from netutils.mac import is_valid_mac
-from pkg_resources import parse_version
+from packaging.version import Version
 
 from nautobot_chatops.choices import CommandStatusChoices
 from nautobot_chatops.dispatchers import Dispatcher
@@ -471,7 +471,7 @@ def submit_pathlookup(dispatcher, sub_cmd, src_ip, dst_ip, protocol, src_port=No
     # diagrams for 4.0 - 4.2 are not supported due to attribute changes in 4.3+
     try:
         os_version = ipfabric_api.client.os_version
-        if os_version and parse_version(os_version) < parse_version("4.3"):
+        if os_version and Version(os_version) < Version("4.3"):
             raise RuntimeError(
                 "Diagrams only supported in IP Fabric version 4.3+ and current version is "
                 f"{str(ipfabric_api.client.os_version)}"
