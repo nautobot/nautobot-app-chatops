@@ -275,7 +275,7 @@ class MSTeamsDispatcher(AdaptiveCardsDispatcher):
             open(image_path, "rb"),  # pylint: disable=consider-using-with
             headers={
                 "Content-Length": str(file_size),
-                "Content-Range": f"bytes 0-{file_size-1}/{file_size}",
+                "Content-Range": f"bytes 0-{file_size - 1}/{file_size}",
             },
             timeout=15,
         )
