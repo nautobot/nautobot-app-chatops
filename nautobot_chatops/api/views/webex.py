@@ -22,7 +22,7 @@ from nautobot_chatops.workers import commands_help, get_commands_registry, parse
 logger = logging.getLogger(__name__)
 BOT_ID = None
 
-API = None
+API = None  # pylint: disable=invalid-name
 BOT_ID = None
 if WEBEX_CONFIG.get("enabled"):
     try:
@@ -33,7 +33,7 @@ if WEBEX_CONFIG.get("enabled"):
         raise KeyError(ERROR_MSG) from err
 
     try:
-        API = WebexTeamsAPI(access_token=TOKEN)
+        API = WebexTeamsAPI(access_token=TOKEN)  # pylint: disable=invalid-name
         BOT_ID = API.people.me().id
     except (AccessTokenError, ApiError):
         logger.warning(

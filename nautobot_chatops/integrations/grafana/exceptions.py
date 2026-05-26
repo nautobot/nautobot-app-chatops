@@ -13,7 +13,7 @@ class DefaultArgsError(BaseException):
 
         if isinstance(err, ValidationError):
             self.message = (
-                f"\"{element}\" is an invalid {err.errors()[0]['loc'][0].replace('default_', '')}, "
+                f'"{element}" is an invalid {err.errors()[0]["loc"][0].replace("default_", "")}, '
                 f"{err.errors()[0]['msg']}."
             )
         elif isinstance(err, ISO8601Error):

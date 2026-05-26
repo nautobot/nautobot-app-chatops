@@ -14,6 +14,18 @@ We will continue to support the previous major release for users of Nautobot LTM
 
 <!-- towncrier release notes start -->
 
+## [v4.0.1 (2026-05-26)](https://github.com/nautobot/nautobot-app-chatops/releases/tag/v4.0.1)
+
+### Removed
+
+- [#417](https://github.com/nautobot/nautobot-app-chatops/issues/417) - Removed former employee from codeowners and cookiecutter.
+
+### Housekeeping
+
+- [#432](https://github.com/nautobot/nautobot-app-chatops/issues/432) - Housekeeping for deprecated dependency: pkg_resources and prybar.
+- Rebaked from the cookie `nautobot-app-v3.0.0`.
+- Rebaked from the cookie `nautobot-app-v3.1.3`.
+
 ## [v4.0.0 (2025-11-24)](https://github.com/nautobot/nautobot-app-chatops/releases/tag/v4.0.0)
 
 ### Added

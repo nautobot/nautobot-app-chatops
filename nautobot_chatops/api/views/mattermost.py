@@ -179,7 +179,7 @@ class MattermostInteractionView(MattermostView):
             )
 
             # Get the channel information from Mattermost API
-            channel_info = mm_client.get(f'/channels/{context["channel_id"]}')
+            channel_info = mm_client.get(f"/channels/{context['channel_id']}")
 
             # Assign the Channel name out of the conversations info end point
             context["channel_name"] = channel_info["name"]
@@ -194,7 +194,7 @@ class MattermostInteractionView(MattermostView):
             )
 
             # Get the channel information from Mattermost API
-            user_info = mm_client.get(f'/users/{context["user_id"]}')
+            user_info = mm_client.get(f"/users/{context['user_id']}")
 
             # Assign the Channel name out of the conversations info end point
             context["user_name"] = user_info["username"]
