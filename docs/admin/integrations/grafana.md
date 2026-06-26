@@ -52,7 +52,7 @@ PLUGINS_CONFIG = {
         "grafana_default_width": 0,
         "grafana_default_height": 0,
         "grafana_default_theme": "dark",
-        "grafana_default_timespan": "0",
+        "grafana_default_timespan": 0,
         "grafana_org_id": 1,
         "grafana_default_tz": "America/Denver",
     }
@@ -100,7 +100,7 @@ PLUGINS_CONFIG = {
             "grafana_default_width": 0,
             "grafana_default_height": 0,
             "grafana_default_theme": "dark",
-            "grafana_default_timespan": "0",
+            "grafana_default_timespan": 0,
             "grafana_org_id": 1,
             "grafana_default_tz": "America/Denver",
         }

@@ -4,7 +4,7 @@ This document describes all new features and changes in the release. The format 
 
 ## Release Overview
 
-This major release marks the compatibility of the Circuit Maintenance App with Nautobot 3.0.0. Check out the [full details](https://docs.nautobot.com/projects/core/en/stable/release-notes/version-3.0/) of the changes included in this new major release of Nautobot. Highlights:
+This major release marks the compatibility of the ChatOps App with Nautobot 3.0.0. Check out the [full details](https://docs.nautobot.com/projects/core/en/stable/release-notes/version-3.0/) of the changes included in this new major release of Nautobot. Highlights:
 
 * Minimum Nautobot version supported is 3.0.
 * Added support for Python 3.13 and removed support for 3.9.
@@ -13,6 +13,16 @@ This major release marks the compatibility of the Circuit Maintenance App with N
 We will continue to support the previous major release for users of Nautobot LTM 2.4 only with critical bug and security fixes as per the [Software Lifecycle Policy](https://networktocode.com/company/legal/software-lifecycle-policy/).
 
 <!-- towncrier release notes start -->
+
+## [v4.0.2 (2026-06-26)](https://github.com/nautobot/nautobot-app-chatops/releases/tag/v4.0.2)
+
+### Fixed
+
+- [#438](https://github.com/nautobot/nautobot-app-chatops/issues/438) - Fixed `grafana_default_timespan` to be 0 if not provided.
+
+### Documentation
+
+- Fixed some typos in the documentation and module docstrings.
 
 ## [v4.0.1 (2026-05-26)](https://github.com/nautobot/nautobot-app-chatops/releases/tag/v4.0.1)
 

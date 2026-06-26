@@ -1,4 +1,4 @@
-"""Navigation for Circuit Maintenance."""
+"""Navigation for ChatOps."""
 
 from nautobot.apps.ui import NavMenuItem
 
