@@ -4,7 +4,7 @@ This document describes all new features and changes in the release. The format 
 
 ## Release Overview
 
-This major release marks the compatibility of the Circuit Maintenance App with Nautobot 3.0.0. Check out the [full details](https://docs.nautobot.com/projects/core/en/stable/release-notes/version-3.0/) of the changes included in this new major release of Nautobot. Highlights:
+This major release marks the compatibility of the ChatOps App with Nautobot 3.0.0. Check out the [full details](https://docs.nautobot.com/projects/core/en/stable/release-notes/version-3.0/) of the changes included in this new major release of Nautobot. Highlights:
 
 * Minimum Nautobot version supported is 3.0.
 * Added support for Python 3.13 and removed support for 3.9.
