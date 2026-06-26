@@ -244,7 +244,7 @@ class GrafanaPanel(DiffSync):
             if existing.get("panel"):
                 if command in existing["panel"].keys():
                     if panel_iterator.get(command):
-                        command = f"{command}-{panel_iterator.get(command)+1}"
+                        command = f"{command}-{panel_iterator.get(command) + 1}"
                     else:
                         command = f"{command}-1"
                         panel_iterator[command] = 1
