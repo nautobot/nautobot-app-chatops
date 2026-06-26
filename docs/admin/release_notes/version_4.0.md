@@ -14,6 +14,16 @@ We will continue to support the previous major release for users of Nautobot LTM
 
 <!-- towncrier release notes start -->
 
+## [v4.0.2 (2026-06-26)](https://github.com/nautobot/nautobot-app-chatops/releases/tag/v4.0.2)
+
+### Fixed
+
+- [#438](https://github.com/nautobot/nautobot-app-chatops/issues/438) - Fixed `grafana_default_timespan` to be 0 if not provided.
+
+### Documentation
+
+- Fixed some typos in the documentation and module docstrings.
+
 ## [v4.0.1 (2026-05-26)](https://github.com/nautobot/nautobot-app-chatops/releases/tag/v4.0.1)
 
 ### Removed
