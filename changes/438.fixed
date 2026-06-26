@@ -1,1 +1,0 @@
-Fixed `grafana_default_timespan` to be 0 if not provided.
