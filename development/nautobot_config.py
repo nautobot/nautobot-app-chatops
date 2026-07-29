@@ -148,6 +148,9 @@ PLUGINS_CONFIG = {
         "slack_app_token": os.environ.get("SLACK_APP_TOKEN"),
         "slack_signing_secret": os.environ.get("SLACK_SIGNING_SECRET"),
         "slack_slash_command_prefix": os.environ.get("SLACK_SLASH_COMMAND_PREFIX", "/"),
+        "slack_enable_token_rotation": is_truthy(os.getenv("SLACK_ENABLE_TOKEN_ROTATION", "false")),
+        "slack_client_id": os.environ.get("SLACK_CLIENT_ID"),
+        "slack_client_secret": os.environ.get("SLACK_CLIENT_SECRET"),
         # - Cisco Webex ----------------------
         "webex_msg_char_limit": int(os.getenv("WEBEX_MSG_CHAR_LIMIT", "7439")),
         "webex_signing_secret": os.environ.get("WEBEX_SIGNING_SECRET"),
