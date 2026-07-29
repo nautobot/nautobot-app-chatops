@@ -2,9 +2,10 @@
 
 import ssl
 
-import arista.tag.v1 as tag
 import grpc
 import requests
+from arista.tag.v2 import services as tag_services
+from arista.tag.v2 import tag_pb2
 from google.protobuf import wrappers_pb2 as wrappers
 
 from .utils import CVAAS_ADDR, DEFAULT_TIMEOUT
@@ -61,16 +62,20 @@ def disconnect_cv():
 def get_device_tags(device_id: str, settings):
     """Get tags for specific device."""
     connect_cv(settings)
-    tag_stub = tag.services.DeviceTagAssignmentConfigServiceStub(_channel)
-    req = tag.services.DeviceTagAssignmentConfigStreamRequest(
+    tag_stub = tag_services.TagAssignmentConfigServiceStub(_channel)
+    # protobuf-generated members are set dynamically and are invisible to pylint's static analysis
+    # pylint: disable=no-member
+    req = tag_services.TagAssignmentConfigStreamRequest(
         partial_eq_filter=[
-            tag.models.DeviceTagAssignmentConfig(
-                key=tag.models.DeviceTagAssignmentKey(
-                    device_id=wrappers.StringValue(value=device_id),  # pylint: disable=no-member
+            tag_pb2.TagAssignmentConfig(
+                key=tag_pb2.TagAssignmentKey(
+                    element_type=tag_pb2.ELEMENT_TYPE_DEVICE,
+                    device_id=wrappers.StringValue(value=device_id),
                 )
             )
         ]
     )
+    # pylint: enable=no-member
     responses = tag_stub.GetAll(req)
     tags = []
     for resp in responses:
