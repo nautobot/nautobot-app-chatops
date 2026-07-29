@@ -1,0 +1,1 @@
+Updated the `aristacv` (Arista CloudVision) extra to require `cloudvision>=1.25` and `protobuf>=5,<6`, restoring compatibility with Nautobot 3.x, which requires protobuf 5.
