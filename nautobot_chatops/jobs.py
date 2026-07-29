@@ -1,4 +1,5 @@
-""""Job to rotate Slack access token using refresh token. Schedule to run every hour or so."""
+"""Job to rotate Slack access token using refresh token. Schedule to run every hour or so."""
+
 from datetime import datetime, timedelta, timezone
 
 from constance import config
@@ -11,6 +12,7 @@ from nautobot_chatops.helpers.slack import rotate_slack_access_token
 
 class RotateSlackTokenJob(Job):
     """Rotate the Slack access token using the refresh token."""
+
     force_rotate = BooleanVar(
         description="Rotate the Slack access token now, regardless of expiration.",
         default=False,
@@ -18,6 +20,7 @@ class RotateSlackTokenJob(Job):
 
     class Meta:
         """Meta attributes for the RotateSlackTokenJob."""
+
         name = "Rotate Slack Access Token"
         description = "Rotate the Slack access token if neeeded, using the refresh token."
         has_sensitive_variables = False
