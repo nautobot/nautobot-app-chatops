@@ -25,7 +25,7 @@ class RotateSlackTokenJob(Job):
         description = "Rotate the Slack access token if neeeded, using the refresh token."
         has_sensitive_variables = False
 
-    def run(self, force_rotate):
+    def run(self, force_rotate):  # pylint: disable=arguments-differ
         """__Run the job to rotate the Slack access token."""
         if not get_app_settings_or_config("nautobot_chatops", "slack_enable_token_rotation"):
             self.logger.error("Slack token rotation is not enabled.")
