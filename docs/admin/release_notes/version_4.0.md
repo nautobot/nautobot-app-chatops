@@ -14,6 +14,20 @@ We will continue to support the previous major release for users of Nautobot LTM
 
 <!-- towncrier release notes start -->
 
+## [v4.0.3 (2026-07-29)](https://github.com/nautobot/nautobot-app-chatops/releases/tag/v4.0.3)
+
+### Added
+
+- [#421](https://github.com/nautobot/nautobot-app-chatops/issues/421) - Add Slack token rotation support.
+
+### Dependencies
+
+- Updated the `aristacv` (Arista CloudVision) extra to require `cloudvision>=1.25` and `protobuf>=5,<6`, and migrated the CloudVision device-tag lookup from the `arista.tag.v1` to the `arista.tag.v2` API, restoring compatibility with Nautobot 3.2, which requires protobuf 5.
+
+### Housekeeping
+
+- [#428](https://github.com/nautobot/nautobot-app-chatops/issues/428) - Removed duplicate pull request template file.
+
 ## [v4.0.2 (2026-06-26)](https://github.com/nautobot/nautobot-app-chatops/releases/tag/v4.0.2)
 
 ### Fixed

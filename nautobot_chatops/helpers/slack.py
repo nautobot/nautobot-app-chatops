@@ -1,7 +1,7 @@
 """Helper functions and classes for Slack integration."""
 
 import logging
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 
 from constance import config
 from django.conf import settings
@@ -46,8 +46,9 @@ def rotate_slack_access_token() -> str | None:
         return None
 
     # not using get_app_settings_or_config here because we want to prioritize Constance for the refresh token
-    refresh_token = config.nautobot_chatops__slack_refresh_token or \
-        settings.PLUGINS_CONFIG["nautobot_chatops"].get("slack_api_token", "")
+    refresh_token = config.nautobot_chatops__slack_refresh_token or settings.PLUGINS_CONFIG["nautobot_chatops"].get(
+        "slack_api_token", ""
+    )
     if not refresh_token:
         logger.error("No Slack refresh token found.")
         return None
@@ -55,8 +56,12 @@ def rotate_slack_access_token() -> str | None:
     new_timestamp = datetime.now(timezone.utc).isoformat()
     try:
         oauth_client = WebClient()
-        response = oauth_client.oauth_v2_access(client_id=slack_client_id, client_secret=slack_client_secret,
-                                                grant_type="refresh_token", refresh_token=refresh_token)
+        response = oauth_client.oauth_v2_access(
+            client_id=slack_client_id,
+            client_secret=slack_client_secret,
+            grant_type="refresh_token",
+            refresh_token=refresh_token,
+        )
 
         new_access_token = response["access_token"]
         new_refresh_token = response["refresh_token"]
