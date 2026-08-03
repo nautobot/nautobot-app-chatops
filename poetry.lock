@@ -221,7 +221,7 @@ description = "Reusable constraint types to use with typing.Annotated"
 optional = true
 python-versions = ">=3.10"
 groups = ["main"]
-markers = "extra == \"all\" or extra == \"ipfabric\" or extra == \"grafana\""
+markers = "extra == \"all\" or extra == \"grafana\" or extra == \"ipfabric\""
 files = [
     {file = "annotated_types-0.8.0-py3-none-any.whl", hash = "sha256:f072f4d804ea359e4eaf198b1af7a8b0943881a87f31bb764f8bf219bb9419e0"},
     {file = "annotated_types-0.8.0.tar.gz", hash = "sha256:13b2beaad985e05e2d6407ee4c4f35590b11f8d693a258a561055cac8f64cab7"},
@@ -1316,19 +1316,25 @@ files = [
 
 [[package]]
 name = "diffsync"
-version = "1.4.0"
+version = "2.2.3"
 description = "Library to easily sync/diff/update 2 different data sources"
 optional = true
-python-versions = ">=3.6.2,<4.0.0"
+python-versions = "<3.14,>=3.10"
 groups = ["main"]
 markers = "extra == \"all\" or extra == \"grafana\""
 files = [
-    {file = "diffsync-1.4.0-py3-none-any.whl", hash = "sha256:92f4b54e7cd813180c1c88c43ac1885fbf7dd2ab6e6f119b80c22705c02a604c"},
-    {file = "diffsync-1.4.0.tar.gz", hash = "sha256:34b432290f59a342bb71607a2221717d3f1c24e33aa558aa09cfbed2025ee2ac"},
+    {file = "diffsync-2.2.3-py3-none-any.whl", hash = "sha256:dfc0018822c024cccf9cc0c0f688d84a65c52ea0a96b67b60261748dd11c1e8c"},
+    {file = "diffsync-2.2.3.tar.gz", hash = "sha256:4fe22ccfff783409eee2801513d51adabd2afcc5162e0f55f26d7ea9f8395115"},
 ]
 
+[package.dependencies]
+packaging = ">=21.3"
+pydantic = ">=2.0.0,<3.0.0"
+structlog = ">=20.1.0"
+typing-extensions = {version = ">=4.0.1", markers = "python_version < \"3.11\""}
+
 [package.extras]
-docs = ["colorama (>=0.4.3,<0.5.0)", "dataclasses (>=0.7,<0.8) ; python_version == \"3.6\"", "m2r2 (>=0.2.7,<0.3.0)", "pydantic (>=1.7.4,!=1.8,!=1.8.1,<2.0.0)", "sphinx (>=4.0.2,<5.0.0)", "sphinx-rtd-theme (>=0.5.2,<0.6.0)", "structlog (>=20.1.0,<22.0.0)", "toml (>=0.10.2,<0.11.0)"]
+redis = ["redis (>=4.3,<5.0)"]
 
 [[package]]
 name = "dill"
@@ -4740,7 +4746,7 @@ description = "Data validation using Python type hints"
 optional = true
 python-versions = ">=3.9"
 groups = ["main"]
-markers = "extra == \"all\" or extra == \"ipfabric\" or extra == \"grafana\""
+markers = "extra == \"all\" or extra == \"grafana\" or extra == \"ipfabric\""
 files = [
     {file = "pydantic-2.13.4-py3-none-any.whl", hash = "sha256:45a282cde31d808236fd7ea9d919b128653c8b38b393d1c4ab335c62924d9aba"},
     {file = "pydantic-2.13.4.tar.gz", hash = "sha256:c40756b57adaa8b1efeeced5c196f3f3b7c435f90e84ea7f443901bec8099ef6"},
@@ -4763,7 +4769,7 @@ description = "Core functionality for Pydantic validation and serialization"
 optional = true
 python-versions = ">=3.9"
 groups = ["main"]
-markers = "extra == \"all\" or extra == \"ipfabric\" or extra == \"grafana\""
+markers = "extra == \"all\" or extra == \"grafana\" or extra == \"ipfabric\""
 files = [
     {file = "pydantic_core-2.46.4-cp310-cp310-macosx_10_12_x86_64.whl", hash = "sha256:a396dcc17e5a0b164dbe026896245a4fa9ff402edca1dff0be3d53a517f74de4"},
     {file = "pydantic_core-2.46.4-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:da4b951fe36dc7c3a1ccb4e3cd1747c3542b8c9ceede8fc86cae054e764485f5"},
@@ -7024,7 +7030,7 @@ description = "Runtime typing introspection tools"
 optional = true
 python-versions = ">=3.9"
 groups = ["main"]
-markers = "extra == \"all\" or extra == \"ipfabric\" or extra == \"grafana\""
+markers = "extra == \"all\" or extra == \"grafana\" or extra == \"ipfabric\""
 files = [
     {file = "typing_inspection-0.4.2-py3-none-any.whl", hash = "sha256:4ed1cacbdc298c220f1bd249ed5287caa16f34d44ef4e9c3d0cbad5b521545e7"},
     {file = "typing_inspection-0.4.2.tar.gz", hash = "sha256:ba561c48a67c5958007083d386c3295464928b01faa735ab8547c5692e87f464"},
@@ -7433,4 +7439,4 @@ slurpit = ["slurpit-sdk"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.13"
-content-hash = "d951f9dc6141ecfb32f4f31eb3dc2c1329152488bc2077837fdb82104e60e5e8"
+content-hash = "169f03d6310077cecea6da84e72f1f52a836b0d218fc931dbae190fa54ea336b"
