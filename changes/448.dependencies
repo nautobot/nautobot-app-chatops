@@ -1,2 +1,1 @@
-Updated `ipfabric` optional dependency to `>=6.6.2,<8.0.0`.
 Updated `diffsync` optional dependency to `^2.0.0` and updated the `grafana` integration accordingly.
