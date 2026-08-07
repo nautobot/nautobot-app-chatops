@@ -20,9 +20,13 @@ This guide outlines the process of enabling Nautobot ChatOps, which includes:
 
 ## Prerequisites
 
+<<<<<<< HEAD
 Ensure the following before beginning the installation:
 
 - Nautobot 3.0.0 or higher is installed.
+=======
+- The app is compatible with Nautobot 3.1.0 and higher.
+>>>>>>> 7c20df0 (Cookie updated targeting develop by NetworkToCode Cookie Drift Manager Tool)
 - Databases supported: PostgreSQL, MySQL
 - Your chat platform can access Nautobot via an HTTPS URL.
     - Some chat platforms require **SSL certificate verification** to communicate with the Nautobot server.
