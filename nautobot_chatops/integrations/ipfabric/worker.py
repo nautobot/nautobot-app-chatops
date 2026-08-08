@@ -5,6 +5,7 @@ import os
 import tempfile
 import uuid
 from datetime import datetime
+import pandas as pd
 
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
@@ -1102,11 +1103,15 @@ def table_diff(dispatcher, category, table, view, snapshot):  # pylint: disable=
     else:
         for key in diff:
             if len(diff[key]) > 0:
-                dispatcher.send_large_table(
-                    diff[key][0].keys(),
-                    [[row[i] for i in row] for row in diff[key]],
-                    title=f"{key.title()}",
-                )
+                try:
+                    dispatcher.send_large_table(
+                        diff[key][0].keys(),
+                        [[row[i] for i in row] for row in diff[key]],
+                        title=f"{key.title()}",
+                    )
+                except ValueError:
+                    text = pd.DataFrame(diff[key])
+                    dispatcher.send_snippet(text=text.to_csv(index=False), title=key)
             else:
                 dispatcher.send_markdown(f"{key.title()}: None")
     return CommandStatusChoices.STATUS_SUCCEEDED
