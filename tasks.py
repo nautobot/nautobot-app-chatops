@@ -29,6 +29,8 @@ ORIGINAL_COMPOSE_FILES = [
     "docker-compose.base.yml",
     "docker-compose.redis.yml",
     "docker-compose.postgres.yml",
+    "mattermost/docker-compose.yml",
+    "ansible/docker-compose.yml",
     "docker-compose.dev.yml",
 ]
 
@@ -67,14 +69,7 @@ namespace.configure(
             "local": False,
             "ephemeral_ports": False,
             "compose_dir": os.path.join(os.path.dirname(__file__), "development"),
-            "compose_files": [
-                "docker-compose.base.yml",
-                "docker-compose.redis.yml",
-                "docker-compose.postgres.yml",
-                "mattermost/docker-compose.yml",
-                "ansible/docker-compose.yml",
-                "docker-compose.dev.yml",
-            ],
+            "compose_files": ORIGINAL_COMPOSE_FILES.copy(),
             "compose_http_timeout": "86400",
         }
     }
