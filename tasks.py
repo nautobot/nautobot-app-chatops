@@ -150,13 +150,8 @@ def docker_compose(context, command, **kwargs):
         compose_file_path = os.path.join(context.nautobot_chatops.compose_dir, compose_file)
         compose_command_tokens.append(f' -f "{compose_file_path}"')
 
-    if (
-        context.nautobot_chatops.ephemeral_ports
-        and context.nautobot_chatops.compose_files == ORIGINAL_COMPOSE_FILES
-    ):
-        compose_file_path = os.path.join(
-            context.nautobot_chatops.compose_dir, "docker-compose.ephemeral-ports.yml"
-        )
+    if context.nautobot_chatops.ephemeral_ports and context.nautobot_chatops.compose_files == ORIGINAL_COMPOSE_FILES:
+        compose_file_path = os.path.join(context.nautobot_chatops.compose_dir, "docker-compose.ephemeral-ports.yml")
         compose_command_tokens.append(f' -f "{compose_file_path}"')
 
     compose_command_tokens.append(command)
@@ -871,10 +866,7 @@ def pylint(context, target=None, recursive=False):
     if target is not None:
         for target_item in target:
             target_item_normalized = Path(target_item).resolve()
-            if (
-                target_item_normalized in (app_dir, migrations_dir)
-                or target_item == migrations_target_module
-            ):
+            if target_item_normalized in (app_dir, migrations_dir) or target_item == migrations_target_module:
                 run_migrations_check = True
                 break
 
