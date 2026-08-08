@@ -67,7 +67,6 @@ namespace.configure(
             "local": False,
             "ephemeral_ports": False,
             "compose_dir": os.path.join(os.path.dirname(__file__), "development"),
-<<<<<<< HEAD
             "compose_files": [
                 "docker-compose.base.yml",
                 "docker-compose.redis.yml",
@@ -76,9 +75,6 @@ namespace.configure(
                 "ansible/docker-compose.yml",
                 "docker-compose.dev.yml",
             ],
-=======
-            "compose_files": ORIGINAL_COMPOSE_FILES.copy(),
->>>>>>> 7c20df0 (Cookie updated targeting develop by NetworkToCode Cookie Drift Manager Tool)
             "compose_http_timeout": "86400",
         }
     }

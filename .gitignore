@@ -310,9 +310,7 @@ public
 /dump.sql
 .service_ports.json
 /nautobot_chatops/static/nautobot_chatops/docs
-<<<<<<< HEAD
 docs/admin/release_notes/version_X.Y.md
-=======
 
 # Claude Code local settings
 .claude/settings.local.json
@@ -339,4 +337,3 @@ GEMINI.md
 .ollama/
 # https://github.com/kirodotdev/Kiro
 .kiro/
->>>>>>> 7c20df0 (Cookie updated targeting develop by NetworkToCode Cookie Drift Manager Tool)
