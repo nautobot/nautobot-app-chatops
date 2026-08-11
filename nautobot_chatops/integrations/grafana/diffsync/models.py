@@ -2,7 +2,7 @@
 
 from typing import List, Optional
 
-from diffsync import DiffSync, DiffSyncModel
+from diffsync import Adapter, DiffSyncModel
 
 from nautobot_chatops.integrations.grafana.helpers import format_command
 from nautobot_chatops.integrations.grafana.models import Dashboard, Panel, PanelVariable
@@ -20,21 +20,21 @@ class DashboardModel(DiffSyncModel):
 
     slug: str
     uid: str
-    friendly_name: Optional[str]
+    friendly_name: Optional[str] = None
 
     @classmethod
-    def create(cls, diffsync: DiffSync, ids: dict, attrs: dict) -> Optional[DiffSyncModel]:
+    def create(cls, adapter: Adapter, ids: dict, attrs: dict) -> Optional[DiffSyncModel]:
         """Handler to create an object if it does not exist as per the diff.
 
         Args:
-            diffsync (DiffSync): DiffSync
+            adapter (Adapter): DiffSync adapter
             ids (dict): Identifiers in the DiffSync model
             attrs (dict): Additional attributes in the DiffSync model
 
         Returns:
             Optional[DiffSyncModel]: [description]
         """
-        item = super().create(ids=ids, diffsync=diffsync, attrs=attrs)
+        item = super().create(ids=ids, adapter=adapter, attrs=attrs)
         Dashboard.objects.create(
             dashboard_slug=ids["slug"],
             dashboard_uid=attrs["uid"],
@@ -70,7 +70,7 @@ class DashboardModel(DiffSyncModel):
         return self
 
 
-class NautobotDashboard(DiffSync):
+class NautobotDashboard(Adapter):
     """NautobotDashboard class used to represent the data model for nautobot_chatops.integrations.grafana.models.Dashboard."""
 
     dashboard = DashboardModel
@@ -90,7 +90,7 @@ class NautobotDashboard(DiffSync):
             )
 
 
-class GrafanaDashboard(DiffSync):
+class GrafanaDashboard(Adapter):
     """GrafanaDashboard class used to represent the data model from the Grafana API."""
 
     dashboard = DashboardModel
@@ -132,21 +132,21 @@ class PanelModel(DiffSyncModel):
     command_name: str
     panel_id: int
     dashboard: Dashboard
-    friendly_name: Optional[str]
+    friendly_name: Optional[str] = None
 
     @classmethod
-    def create(cls, diffsync: DiffSync, ids: dict, attrs: dict) -> Optional[DiffSyncModel]:
+    def create(cls, adapter: Adapter, ids: dict, attrs: dict) -> Optional[DiffSyncModel]:
         """Handler to create an object if it does not exist as per the diff.
 
         Args:
-            diffsync (DiffSync): DiffSync
+            adapter (Adapter): DiffSync adapter
             ids (dict): Identifiers in the DiffSync model
             attrs (dict): Additional attributes in the DiffSync model
 
         Returns:
             Optional[DiffSyncModel]: [description]
         """
-        item = super().create(ids=ids, diffsync=diffsync, attrs=attrs)
+        item = super().create(ids=ids, adapter=adapter, attrs=attrs)
         Panel.objects.create(
             dashboard=attrs["dashboard"],
             command_name=ids["command_name"],
@@ -184,7 +184,7 @@ class PanelModel(DiffSyncModel):
         return self
 
 
-class NautobotPanel(DiffSync):
+class NautobotPanel(Adapter):
     """NautobotPanel class used to represent the data model for nautobot_chatops.integrations.grafana.models.Panel."""
 
     panel = PanelModel
@@ -207,7 +207,7 @@ class NautobotPanel(DiffSync):
             )
 
 
-class GrafanaPanel(DiffSync):
+class GrafanaPanel(Adapter):
     """GrafanaPanel class used to represent the data model from the Grafana API."""
 
     panel = PanelModel
@@ -244,7 +244,7 @@ class GrafanaPanel(DiffSync):
             if existing.get("panel"):
                 if command in existing["panel"].keys():
                     if panel_iterator.get(command):
-                        command = f"{command}-{panel_iterator.get(command)+1}"
+                        command = f"{command}-{panel_iterator.get(command) + 1}"
                     else:
                         command = f"{command}-1"
                         panel_iterator[command] = 1
@@ -277,21 +277,21 @@ class VariableModel(DiffSyncModel):
     includeincmd: bool
     includeinurl: bool
     response: str
-    friendly_name: Optional[str]
+    friendly_name: Optional[str] = None
 
     @classmethod
-    def create(cls, diffsync: DiffSync, ids: dict, attrs: dict) -> Optional[DiffSyncModel]:
+    def create(cls, adapter: Adapter, ids: dict, attrs: dict) -> Optional[DiffSyncModel]:
         """Handler to create an object if it does not exist as per the diff.
 
         Args:
-            diffsync (DiffSync): DiffSync
+            adapter (Adapter): DiffSync adapter
             ids (dict): Identifiers in the DiffSync model
             attrs (dict): Additional attributes in the DiffSync model
 
         Returns:
             Optional[DiffSyncModel]: [description]
         """
-        item = super().create(ids=ids, diffsync=diffsync, attrs=attrs)
+        item = super().create(ids=ids, adapter=adapter, attrs=attrs)
         PanelVariable.objects.create(
             panel=ids["panel"],
             name=ids["name"],
@@ -334,7 +334,7 @@ class VariableModel(DiffSyncModel):
         return self
 
 
-class NautobotVariable(DiffSync):
+class NautobotVariable(Adapter):
     """NautobotVariable class used to represent the model for nautobot_chatops.integrations.grafana.models.PanelVariable."""
 
     variable = VariableModel
@@ -359,7 +359,7 @@ class NautobotVariable(DiffSync):
             )
 
 
-class GrafanaVariable(DiffSync):
+class GrafanaVariable(Adapter):
     """GrafanaVariable class used to represent the data model from the Grafana API."""
 
     variable = VariableModel
