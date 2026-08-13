@@ -14,6 +14,16 @@ We will continue to support the previous major release for users of Nautobot LTM
 
 <!-- towncrier release notes start -->
 
+## [v4.0.4 (2026-08-13)](https://github.com/nautobot/nautobot-app-chatops/releases/tag/v4.0.4)
+
+### Dependencies
+
+- [#448](https://github.com/nautobot/nautobot-app-chatops/issues/448) - Updated `diffsync` optional dependency to `^2.0.0` and updated the `grafana` integration accordingly.
+
+### Housekeeping
+
+- Rebaked from the cookie `nautobot-app-v3.1.4`.
+
 ## [v4.0.3 (2026-07-29)](https://github.com/nautobot/nautobot-app-chatops/releases/tag/v4.0.3)
 
 ### Added
