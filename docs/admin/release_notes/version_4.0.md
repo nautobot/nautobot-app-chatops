@@ -13,7 +13,6 @@ This major release marks the compatibility of the ChatOps App with Nautobot 3.0.
 We will continue to support the previous major release for users of Nautobot LTM 2.4 only with critical bug and security fixes as per the [Software Lifecycle Policy](https://networktocode.com/company/legal/software-lifecycle-policy/).
 
 <!-- towncrier release notes start -->
-
 ## [v4.0.4 (2026-08-13)](https://github.com/nautobot/nautobot-app-chatops/releases/tag/v4.0.4)
 
 ### Dependencies
