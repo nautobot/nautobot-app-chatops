@@ -8,6 +8,17 @@ This document describes all new features and changes in the release. The format 
 - Dropped support for Python 3.9.
 
 <!-- towncrier release notes start -->
+## [v3.3.1 (2026-08-14)](https://github.com/nautobot/nautobot-app-chatops/releases/tag/v3.3.1)
+
+### Dependencies
+
+- [#448](https://github.com/nautobot/nautobot-app-chatops/issues/448) - Updated `diffsync` optional dependency to `^2.0.0` and updated the `grafana` integration accordingly.
+
+### Housekeeping
+
+- [#432](https://github.com/nautobot/nautobot-app-chatops/issues/432) - Housekeeping for deprecated dependency: pkg_resources and prybar.
+- Rebaked from the cookie `nautobot-app-v2.7.3`.
+
 ## [v3.3.0 (2025-12-05)](https://github.com/nautobot/nautobot-app-chatops/releases/tag/v3.3.0)
 
 ### Added
