@@ -8,7 +8,7 @@ This document describes all new features and changes in the release. The format 
 - Dropped support for Python 3.9.
 
 <!-- towncrier release notes start -->
-## [v3.3.1 (2026-08-13)](https://github.com/nautobot/nautobot-app-chatops/releases/tag/v3.3.1)
+## [v3.3.1 (2026-08-14)](https://github.com/nautobot/nautobot-app-chatops/releases/tag/v3.3.1)
 
 ### Dependencies
 
