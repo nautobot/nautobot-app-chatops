@@ -3824,21 +3824,6 @@ remote-storage = ["django-storages (>=1.14.6,<1.15)"]
 sso = ["social-auth-core[saml] (>=4.9.1,<4.10)"]
 
 [[package]]
-name = "nautobot-capacity-metrics"
-version = "4.1.1"
-description = "App to improve the instrumentation of Nautobot and expose additional metrics (Application Metrics, RQ Worker)."
-optional = false
-python-versions = "<3.15,>=3.10"
-groups = ["main"]
-files = [
-    {file = "nautobot_capacity_metrics-4.1.1-py3-none-any.whl", hash = "sha256:8dd95d634e65ebe5010283461d48402deef51d9e920abe6e5298efd93af26657"},
-    {file = "nautobot_capacity_metrics-4.1.1.tar.gz", hash = "sha256:9bde7ae06d38f99ab36d2e17396fe3120222bd3cf619450d5d357bff85210da0"},
-]
-
-[package.dependencies]
-nautobot = ">=3.0.0,<4.0.0"
-
-[[package]]
 name = "netaddr"
 version = "1.3.0"
 description = "A network address manipulation library for Python"
@@ -7899,4 +7884,4 @@ slurpit = ["slurpit-sdk"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.15"
-content-hash = "a9e693b75f47eaacf90c12964f4596fc02dc63880c1646e6a38637603cf5d617"
+content-hash = "d873c12e01866bacfd63be209e2faf8c9c9720057f51e996e6fe09a0b7060fb5"
