@@ -121,7 +121,6 @@ if not _TESTING:
 
 # Enable installed Apps. Add the name of each App to the list.
 PLUGINS = [
-    "nautobot_capacity_metrics",
     "nautobot_chatops",
 ]
 

@@ -131,6 +131,15 @@ Adjust the App's behavior with the following settings:
 | `fallback_chatops_user` | Nautobot User for Chat Commands to use if the user has not linked their account | Yes | `chatbot` | Yes |
 | `session_cache_timeout` | Controls session cache | No | `86400` | No |
 
+## Metrics
+
+ChatOps registers the `nautobot_command_library` metric with Nautobot core.
+
+- Set `METRICS_ENABLED = True` in `nautobot_config.py`, and scrape the `/metrics` endpoint.
+- To turn off the ChatOps metric, add `"nautobot_chatops"` to `METRICS_DISABLED_APPS`.
+
+For more information, see the [Nautobot Prometheus metrics guide](https://docs.nautobot.com/projects/core/en/stable/user-guide/administration/guides/prometheus-metrics/).
+
 ## Granting Access to the Chat Platform
 
 {%
