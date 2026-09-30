@@ -1,1 +1,0 @@
-Moved the `nautobot_command_library` metric from the `nautobot_capacity_metrics` endpoint to the Nautobot core `/metrics` endpoint.
