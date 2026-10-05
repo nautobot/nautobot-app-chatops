@@ -1,0 +1,1 @@
+Moved the `nautobot_command_library` metric from `/api/plugins/capacity-metrics/app-metrics` to the Nautobot core `/metrics` endpoint. Set `METRICS_ENABLED = True`, update the Prometheus scrape job, and remove `nautobot_capacity_metrics` from `PLUGINS` if the package is not installed.

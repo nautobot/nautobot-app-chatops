@@ -9,3 +9,11 @@ When a new release comes out it may be necessary to run a migration of the datab
 ### Upgrading to ChatOps 3.0
 
 Introduced in 3.0.0 is [Account Linking](../models/chatopsaccountlink.md), users will now need to link their Chat Platform User with their Nautobot User. Until this is done, the `fallback_chatops_user` setting controls the default Nautobot User and should have proper Nautobot Permissions applied.
+
+### Upgrading to ChatOps 5.0
+
+ChatOps no longer depends on `nautobot-capacity-metrics`.
+
+- The `nautobot_command_library` metric moved from `/api/plugins/capacity-metrics/app-metrics` to `/metrics`. Update your Prometheus scrape job, and set `METRICS_ENABLED = True`. Core serves `/metrics` only when `METRICS_ENABLED` is `True`, and it is `False` by default.
+- If no other app needs it, remove `nautobot_capacity_metrics` from `PLUGINS`, and uninstall the package.
+- If `nautobot_capacity_metrics` stays in `PLUGINS` and the package is not installed, Nautobot does not start and raises `PluginNotFound`. Remove the entry from `PLUGINS` before you rebuild the image.

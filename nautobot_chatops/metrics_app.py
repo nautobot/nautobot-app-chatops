@@ -1,4 +1,4 @@
-"""Nautobot app application level metrics exposed through nautobot_metrics_ext."""
+"""Nautobot app application level metrics exposed through the Nautobot core `/metrics` endpoint."""
 
 from prometheus_client.core import CounterMetricFamily
 
@@ -29,3 +29,6 @@ def metric_commands():
             counters.add_metric([command, subcommand], 1)
 
     yield counters
+
+
+metrics = [metric_commands]
