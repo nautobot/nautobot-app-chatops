@@ -1,0 +1,1 @@
+Changed `/ipfabric table-diff` to list the tables provided by the installed `ipfabric` SDK instead of a fixed list.
