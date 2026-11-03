@@ -2551,7 +2551,7 @@ description = "A pure-Python, bring-your-own-I/O implementation of HTTP/1.1"
 optional = true
 python-versions = ">=3.8"
 groups = ["main"]
-markers = "python_full_version <= \"3.13.0\" and (extra == \"all\" or extra == \"slurpit\" or extra == \"ipfabric\") or python_version == \"3.10\" and (extra == \"all\" or extra == \"ipfabric\") or python_version >= \"3.12\" and (extra == \"all\" or extra == \"ipfabric\")"
+markers = "(python_full_version <= \"3.13.0\" or extra == \"all\" or extra == \"ipfabric\") and (extra == \"all\" or extra == \"slurpit\" or extra == \"ipfabric\")"
 files = [
     {file = "h11-0.16.0-py3-none-any.whl", hash = "sha256:63cf8bbe7522de3bf65932fda1d9c2772064ffb3dae62d55932da54b31cb6c86"},
     {file = "h11-0.16.0.tar.gz", hash = "sha256:4e35b956cf45792e4caa5885e69fba00bdbc6ffafbfa020300e549b208ee5ff1"},
@@ -3456,7 +3456,7 @@ description = "Cisco Meraki Dashboard API library"
 optional = true
 python-versions = ">=3.8"
 groups = ["main"]
-markers = "extra == \"all\" or extra == \"meraki\""
+markers = "python_version == \"3.10\" and (extra == \"all\" or extra == \"meraki\")"
 files = [
     {file = "meraki-1.45.0-py3-none-any.whl", hash = "sha256:8681d107fbd6b93a5fc1f98e0c3d5b611dd2df520a83de6293bd423851e89087"},
     {file = "meraki-1.45.0.tar.gz", hash = "sha256:3c179ea2128dcc032511d023cc1f1fb153dcfa697e99c6961e85563de3fddc1a"},
@@ -3465,6 +3465,23 @@ files = [
 [package.dependencies]
 aiohttp = "*"
 requests = "*"
+
+[[package]]
+name = "meraki"
+version = "3.3.0"
+description = "Cisco Meraki Dashboard API library"
+optional = true
+python-versions = ">=3.11"
+groups = ["main"]
+markers = "(extra == \"all\" or extra == \"meraki\") and python_version >= \"3.11\""
+files = [
+    {file = "meraki-3.3.0-py3-none-any.whl", hash = "sha256:b3f6e3c7199a3bef3e4eca798bed17b6aae8c3716fa5353c13e1fda952121f06"},
+    {file = "meraki-3.3.0.tar.gz", hash = "sha256:2523119060be47a9bcc8fb2a6e16b1ceaab59be1f8f67a2ccd2db593b31b7d78"},
+]
+
+[package.dependencies]
+aiohttp = ">=3.13.5,<4"
+requests = ">=2.33.1,<3"
 
 [[package]]
 name = "mergedeep"
@@ -5935,7 +5952,7 @@ description = "Read key-value pairs from a .env file and set them as environment
 optional = true
 python-versions = ">=3.10"
 groups = ["main"]
-markers = "python_full_version <= \"3.13.0\" and (extra == \"all\" or extra == \"slurpit\" or extra == \"ipfabric\" or extra == \"grafana\") or python_version == \"3.10\" and (extra == \"all\" or extra == \"ipfabric\" or extra == \"grafana\") or python_version >= \"3.12\" and (extra == \"all\" or extra == \"ipfabric\" or extra == \"grafana\")"
+markers = "(python_full_version <= \"3.13.0\" or extra == \"all\" or extra == \"ipfabric\" or extra == \"grafana\") and (extra == \"all\" or extra == \"slurpit\" or extra == \"ipfabric\" or extra == \"grafana\")"
 files = [
     {file = "python_dotenv-1.2.2-py3-none-any.whl", hash = "sha256:1d8214789a24de455a8b8bd8ae6fe3c6b69a5e3d64aa8a8e5d68e694bbcb285a"},
     {file = "python_dotenv-1.2.2.tar.gz", hash = "sha256:2c371a91fbd7ba082c2c1dc1f8bf89ca22564a087c2c287cd9b662adde799cf3"},
@@ -8084,16 +8101,16 @@ propcache = ">=0.2.1"
 
 [extras]
 aci = ["prettytable"]
-all = ["PyYAML", "certifi", "cloudvision", "cvprac", "defusedxml", "diffsync", "ipaddr", "ipfabric", "isodate", "meraki", "netmiko", "netutils", "pan-os-python", "prettytable", "protobuf", "pydantic", "schema-enforcer", "slurpit-sdk", "termcolor"]
+all = ["PyYAML", "certifi", "cloudvision", "cvprac", "defusedxml", "diffsync", "ipaddr", "ipfabric", "isodate", "meraki", "meraki", "netmiko", "netutils", "pan-os-python", "prettytable", "protobuf", "pydantic", "schema-enforcer", "slurpit-sdk", "termcolor"]
 ansible = ["PyYAML"]
 aristacv = ["certifi", "cloudvision", "cvprac", "protobuf"]
 grafana = ["diffsync", "isodate", "pydantic", "schema-enforcer", "termcolor"]
 ipfabric = ["ipfabric", "netutils"]
-meraki = ["meraki"]
+meraki = ["meraki", "meraki"]
 panorama = ["defusedxml", "ipaddr", "netmiko", "netutils", "pan-os-python"]
 slurpit = ["slurpit-sdk"]
 
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<3.15"
-content-hash = "0b4da72fa7f8115cf56df51bc50c1f453f25ebce753a0db089cb96212d6a2761"
+content-hash = "8a69978224d9ea4534995584efdc54beea4f2c445e367a422fca3c6f787f633f"
