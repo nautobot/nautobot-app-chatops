@@ -1,0 +1,1 @@
+Fixed `ipfabric` dependency conflict with `nautobot-ssot[ipfabric]` by allowing `ipfabric` SDK versions 7.x and 8.x.
