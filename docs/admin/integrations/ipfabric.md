@@ -12,6 +12,24 @@ Before configuring the integration, please ensure the following:
     ```
 - `nautobot-chatops` App is set up with at least one [enabled chat platform](../install.md#chat-platforms-configuration) and [tested](./../install.md#test-your-chatbot).
 
+## IP Fabric SDK Version
+
+The major version of the [`ipfabric`](https://pypi.org/project/ipfabric/) Python SDK must match the major version of your IP Fabric server. The SDK refuses to connect when they differ. `nautobot-chatops[ipfabric]` supports SDK versions 6.x, 7.x, and 8.x, so pin the SDK to the release that matches your server:
+
+```shell
+# IP Fabric 6.x
+pip install nautobot-chatops[ipfabric] "ipfabric>=6.6.2,<7"
+
+# IP Fabric 7.x
+pip install nautobot-chatops[ipfabric] "ipfabric>=7,<8"
+
+# IP Fabric 8.x
+pip install nautobot-chatops[ipfabric] "ipfabric>=8,<9"
+```
+
+!!! note
+    `nautobot-ssot[ipfabric]` requires `ipfabric` 7.3.1 or later. To install both apps with IP Fabric support, your IP Fabric server must be version 7.x or later.
+
 ## Version Matrix
 
 Here is a compatibility matrix and the minimum versions required to run this app:
