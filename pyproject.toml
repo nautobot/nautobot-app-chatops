@@ -56,7 +56,8 @@ cvprac = { version = "^1.0.6", optional = true }
 defusedxml = { version = "^0.7.1", optional = true }
 diffsync = { version = "^2.0.0", optional = true }
 ipaddr = { version = "^2.2.0", optional = true }
-ipfabric = { version = "^6.6.2", optional = true }
+# The ipfabric SDK major version must match the IP Fabric server major version.
+ipfabric = { version = ">=6.6.2,<9.0.0", optional = true }
 isodate =  { version = "^0.6.1", optional = true }
 # meraki 3.x requires Python >=3.11. v3.0.0 and v3.0.1 include some regression bugs.
 # Kept in sync with nautobot-ssot[meraki] so both apps can be installed together.

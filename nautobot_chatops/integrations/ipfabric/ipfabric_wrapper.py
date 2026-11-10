@@ -1,10 +1,37 @@
 """IPFabric API integration."""
 
+import inspect
 import logging
 
 from ipfabric import IPFClient
+from ipfabric.models import Inventory, Table, Technology
 
 logger = logging.getLogger("nautobot")
+
+
+def _is_table(return_type):
+    return inspect.isclass(return_type) and issubclass(return_type, Table)
+
+
+def _table_names(model):
+    return sorted(name for name, field in model.model_computed_fields.items() if _is_table(field.return_type))
+
+
+def discover_table_choices():
+    """Build the table-diff menu from the tables defined by the installed `ipfabric` SDK.
+
+    The available tables change between SDK releases, which track the IP Fabric server version, so they are read
+    from the SDK's `Technology` and `Inventory` models instead of being listed by hand.
+
+    Returns:
+        dict: Mapping of category name to a sorted list of table names, e.g. `{"routing": ["bgp_neighbors", ...]}`.
+    """
+    choices = {"inventory": _table_names(Inventory)}
+    for category, field in Technology.model_computed_fields.items():
+        # Technology also exposes a few tables directly (e.g. `serial_ports`); only nested categories are menus.
+        if inspect.isclass(field.return_type) and not _is_table(field.return_type):
+            choices[category] = _table_names(field.return_type)
+    return dict(sorted(choices.items()))
 
 
 # pylint: disable=R0904, disable=R0903
@@ -33,8 +60,6 @@ class IpFabric:
     ]
     DEVICE_INFO_COLUMNS = ["hostname", "siteName", "vendor", "platform", "model"]
     INTERFACE_LOAD_COLUMNS = ["intName", "bytes", "pkts"]
-    INTERFACE_ERRORS_COLUMNS = ["intName", "errPktsPct", "errRate"]
-    INTERFACE_DROPS_COLUMNS = ["intName", "dropsPktsPct", "dropsRate"]
     BGP_NEIGHBORS_COLUMNS = [
         "hostname",
         "localAs",
@@ -86,346 +111,7 @@ class IpFabric:
     # Sort
     INTERFACE_SORT = {"order": "desc", "column": "intName"}
 
-    # Tables
-    table_choices = {
-        "addressing": [
-            "arp_table",
-            "ipv6_neighbor_discovery",
-            "mac_table",
-            "managed_duplicate_ip",
-            "managed_ip_ipv4",
-            "managed_ip_ipv6",
-            "nat_pools",
-            "nat_rules",
-        ],
-        "cloud": ["virtual_interfaces", "virtual_machines"],
-        "dhcp": [
-            "relay_global_stats_received",
-            "relay_global_stats_relayed",
-            "relay_global_stats_sent",
-            "relay_global_stats_summary",
-            "relay_interfaces",
-            "relay_interfaces_stats_received",
-            "relay_interfaces_stats_relayed",
-            "relay_interfaces_stats_sent",
-            "server_excluded_interfaces",
-            "server_excluded_ranges",
-            "server_leases",
-            "server_pools",
-            "server_summary",
-        ],
-        "fhrp": [
-            "balancing",
-            "glbp_forwarders",
-            "group_members",
-            "group_state",
-            "stproot_alignment",
-            "virtual_gateways",
-        ],
-        "interfaces": [
-            "average_rates_data_bidirectional",
-            "average_rates_data_bidirectional_per_device",
-            "average_rates_data_inbound",
-            "average_rates_data_inbound_per_device",
-            "average_rates_data_outbound",
-            "average_rates_data_outbound_per_device",
-            "average_rates_drops_bidirectional",
-            "average_rates_drops_bidirectional_per_device",
-            "average_rates_drops_inbound",
-            "average_rates_drops_inbound_per_device",
-            "average_rates_drops_outbound",
-            "average_rates_drops_outbound_per_device",
-            "average_rates_errors_bidirectional",
-            "average_rates_errors_bidirectional_per_device",
-            "average_rates_errors_inbound",
-            "average_rates_errors_inbound_per_device",
-            "average_rates_errors_outbound",
-            "average_rates_errors_outbound_per_device",
-            "connectivity_matrix",
-            "connectivity_matrix_unmanaged_neighbors_detail",
-            "connectivity_matrix_unmanaged_neighbors_summary",
-            "counters_inbound",
-            "counters_outbound",
-            "current_rates_data_bidirectional",
-            "current_rates_data_inbound",
-            "current_rates_data_outbound",
-            "duplex",
-            "err_disabled",
-            "mtu",
-            "point_to_point_over_ethernet",
-            "point_to_point_over_ethernet_sessions",
-            "storm_control_all",
-            "storm_control_broadcast",
-            "storm_control_multicast",
-            "storm_control_unicast",
-            "switchport",
-            "transceivers",
-            "transceivers_errors",
-            "transceivers_statistics",
-            "transceivers_triggered_thresholds",
-            "tunnels_ipv4",
-            "tunnels_ipv6",
-        ],
-        "ip_telephony": ["phones"],
-        "inventory": [
-            "devices",
-            "families",
-            "fans",
-            "hosts",
-            "interfaces",
-            "models",
-            "modules",
-            "os_version_consistency",
-            "phones",
-            "platforms",
-            "pn",
-            "sites",
-            "vendors",
-        ],
-        "load_balancing": [
-            "virtual_servers",
-            "virtual_servers_f5_partitions",
-            "virtual_servers_pool_members",
-            "virtual_servers_pools",
-        ],
-        "managed_networks": ["gateway_redundancy", "networks"],
-        "management": [
-            "aaa_accounting",
-            "aaa_authentication",
-            "aaa_authorization",
-            "aaa_lines",
-            "aaa_password_strength",
-            "aaa_servers",
-            "aaa_users",
-            "cisco_smart_licenses_authorization",
-            "cisco_smart_licenses_registration",
-            "cisco_smart_licenses_reservations",
-            "dns_resolver_servers",
-            "dns_resolver_settings",
-            "flow_overview",
-            "license_summary",
-            "licenses",
-            "licenses_detail",
-            "logging_local",
-            "logging_remote",
-            "logging_summary",
-            "netflow_collectors",
-            "netflow_devices",
-            "netflow_interfaces",
-            "ntp_sources",
-            "ntp_summary",
-            "port_mirroring",
-            "ptp_interfaces",
-            "ptp_local_clock",
-            "ptp_masters",
-            "saved_config_consistency",
-            "sflow_collectors",
-            "sflow_devices",
-            "sflow_sources",
-            "snmp_communities",
-            "snmp_summary",
-            "snmp_trap_hosts",
-            "snmp_users",
-            "telnet_access",
-        ],
-        "mpls": [
-            "l2vpn_circuit_cross_connect",
-            "l2vpn_point_to_multipoint",
-            "l2vpn_point_to_point_vpws",
-            "l2vpn_pseudowires",
-            "l3vpn_pe_routers",
-            "l3vpn_pe_routes",
-            "l3vpn_pe_vrfs",
-            "l3vpn_vrf_targets",
-            "ldp_interfaces",
-            "ldp_neighbors",
-            "rsvp_forwarding",
-            "rsvp_interfaces",
-            "rsvp_neighbors",
-        ],
-        "multicast": [
-            "igmp_groups",
-            "igmp_interfaces",
-            "igmp_snooping_global_config",
-            "igmp_snooping_groups",
-            "igmp_snooping_vlans",
-            "mac_table",
-            "mroute_counters",
-            "mroute_first_hop_router",
-            "mroute_oil_detail",
-            "mroute_overview",
-            "mroute_sources",
-            "mroute_table",
-            "pim_neighbors",
-            "rp_bsr",
-            "rp_mappings",
-            "rp_mappings_groups",
-            "rp_overview",
-        ],
-        "neighbors": [
-            "neighbors_all",
-            "neighbors_endpoints",
-            "neighbors_unidirectional",
-            "neighbors_unmanaged",
-        ],
-        "oam": [
-            "unidirectional_link_detection_interfaces",
-            "unidirectional_link_detection_neighbors",
-        ],
-        "platforms": [
-            "cisco_fex_interfaces",
-            "cisco_fex_modules",
-            "cisco_vdc_devices",
-            "cisco_vss_chassis",
-            "cisco_vss_vsl",
-            "environment_fans",
-            "environment_modules",
-            "environment_power_supplies",
-            "environment_power_supplies_fans",
-            "juniper_cluster",
-            "platform_cisco_vss",
-            "poe_devices",
-            "poe_interfaces",
-            "poe_modules",
-            "stacks",
-            "stacks_members",
-            "stacks_stack_ports",
-        ],
-        "port_channels": [
-            "inbound_balancing_table",
-            "member_status_table",
-            "mlag_cisco_vpc",
-            "mlag_pairs",
-            "mlag_peers",
-            "mlag_switches",
-            "outbound_balancing_table",
-        ],
-        "qos": [
-            "marking",
-            "policing",
-            "policy_maps",
-            "priority_queuing",
-            "queuing",
-            "random_drops",
-            "shapping",
-        ],
-        "routing": [
-            "bgp_address_families",
-            "bgp_neighbors",
-            "eigrp_interfaces",
-            "eigrp_neighbors",
-            "isis_interfaces",
-            "isis_neighbors",
-            "ospf_interfaces",
-            "ospf_neighbors",
-            "ospfv3_interfaces",
-            "ospfv3_neighbors",
-            "path_lookup_checks",
-            "rip_interfaces",
-            "rip_neighbors",
-            "route_stability",
-            "routes_ipv4",
-            "routes_ipv6",
-            "summary_protocols",
-            "summary_protocols_bgp",
-            "summary_protocols_eigrp",
-            "summary_protocols_isis",
-            "summary_protocols_ospf",
-            "summary_protocols_ospfv3",
-            "summary_protocols_rip",
-            "vrf_detail",
-            "vrf_interfaces",
-            "vrf_summary",
-        ],
-        "sdn": [
-            "aci_dtep",
-            "aci_endpoints",
-            "aci_vlan",
-            "aci_vrf",
-            "apic_applications",
-            "apic_bridge_domains",
-            "apic_contexts",
-            "apic_contracts",
-            "apic_controllers",
-            "apic_endpoint_groups",
-            "apic_endpoint_groups_contracts",
-            "vxlan_interfaces",
-            "vxlan_peers",
-            "vxlan_vni",
-            "vxlan_vtep",
-        ],
-        "sdwan": ["links", "sites"],
-        "security": [
-            "acl",
-            "acl_global_policies",
-            "acl_interface",
-            "dhcp_snooping",
-            "dhcp_snooping_bindings",
-            "dmvpn",
-            "ipsec_gateways",
-            "ipsec_tunnels",
-            "secure_ports_devices",
-            "secure_ports_interfaces",
-            "secure_ports_users",
-            "zone_firewall_interfaces",
-            "zone_firewall_policies",
-        ],
-        "stp": [
-            "bridges",
-            "guards",
-            "inconsistencies",
-            "inconsistencies_details",
-            "inconsistencies_multiple_stp",
-            "inconsistencies_ports_multiple_neighbors",
-            "inconsistencies_ports_vlan_mismatch",
-            "inconsistencies_stp_cdp_ports_mismatch",
-            "instances",
-            "neighbors",
-            "ports",
-            "stability",
-            "vlans",
-        ],
-        "vlans": [
-            "device_detail",
-            "device_summary",
-            "l3_gateways",
-            "network_summary",
-            "site_summary",
-        ],
-        "wireless": [
-            "access_points",
-            "clients",
-            "controllers",
-            "radios_detail",
-            "radios_ssid_summary",
-        ],
-    }
-
-    all_tables = []
-
-    for k, v in table_choices.items():
-        all_tables.extend(v)
-
-    skip_properties = [
-        "stpDomain",
-        "siteKey",
-        "rd",
-        "taskKey",
-        "source",
-        "target",
-        "neiSiteKey",
-        "srcSiteKey",
-        "dstSiteKey",
-        "inDropsPktsPct",
-        "inDropsRate",
-        "inImpactDrops",
-        "outDropsPktsPct",
-        "outDropsRate",
-        "outImpactDrops",
-        "outBytesRate",
-        "uniqId",
-        "license",
-    ]
+    table_choices = discover_table_choices()
 
     def __init__(self, base_url, token, verify=False, timeout=10):
         """Initialise the IP Fabric wrapper object to provide access to the client and diagram API.
