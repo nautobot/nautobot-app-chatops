@@ -292,7 +292,7 @@ def interfaces(dispatcher, device=None, metric=None):
     devices = [
         (inventory_device["hostname"], inventory_device["hostname"].lower()) for inventory_device in inventory_data
     ]
-    metrics = ["load", "errors", "drops"]
+    metrics = ["load"]
     metric_choices = [(intf_metric.capitalize(), intf_metric) for intf_metric in metrics]
 
     if not devices:
@@ -331,8 +331,14 @@ def interfaces(dispatcher, device=None, metric=None):
         dispatcher.multi_input_dialog(f"{BASE_CMD}", f"{sub_cmd}", "Interface Metrics", dialog_list)
         return CommandStatusChoices.STATUS_SUCCEEDED
 
-    cmd_map = {metrics[0]: get_int_load, metrics[1]: get_int_errors, metrics[2]: get_int_drops}
-    cmd_map[metric](dispatcher, device, snapshot_id)
+    if metric not in metrics:
+        dispatcher.send_error(
+            f"`{metric}` is not a supported interface metric. Supported metrics: {', '.join(metrics)}. "
+            "Interface error and drop rates are no longer available from the IP Fabric API."
+        )
+        return CommandStatusChoices.STATUS_FAILED
+
+    get_int_load(dispatcher, device, snapshot_id)
     return True
 
 
@@ -373,92 +379,6 @@ def get_int_load(dispatcher, device, snapshot_id):
             for interface in int_load
         ],
         title="Interface Load",
-    )
-
-    return True
-
-
-def get_int_errors(dispatcher, device, snapshot_id):
-    """Get interface errors per device."""
-    sub_cmd = "interfaces"
-    dispatcher.send_markdown(f"Load in interfaces for *{device}* in snapshot *{snapshot_id}*.")
-    filter_api = {"hostname": [IpFabric.IEQ, device]}
-    int_errors = list(
-        ipfabric_api.client.technology.interfaces.average_rates_errors_bidirectional.fetch(
-            columns=IpFabric.INTERFACE_ERRORS_COLUMNS,
-            filters=filter_api,
-            limit=IpFabric.DEFAULT_PAGE_LIMIT,
-            snapshot_id=get_user_snapshot(dispatcher),
-            sort=IpFabric.INTERFACE_SORT,
-        )
-    )
-
-    dispatcher.send_blocks(
-        [
-            *dispatcher.command_response_header(
-                f"{BASE_CMD}",
-                f"{sub_cmd}",
-                [("Device", device), ("Metric", "errors")],
-                "interface error data",
-                ipfabric_logo(dispatcher),
-            ),
-            dispatcher.markdown_block(f"{str(ipfabric_api.ui_url)}technology/interfaces/error-rates/bidirectional"),
-        ]
-    )
-
-    dispatcher.send_large_table(
-        ["IntName", "Error %", "Error Rate"],
-        [
-            [
-                interface.get(IpFabric.INTERFACE_ERRORS_COLUMNS[i], IpFabric.EMPTY)
-                for i in range(len(IpFabric.INTERFACE_ERRORS_COLUMNS))
-            ]
-            for interface in int_errors
-        ],
-        title="Interface Errors",
-    )
-
-    return True
-
-
-def get_int_drops(dispatcher, device, snapshot_id):
-    """Get bi-directional interface drops per device."""
-    sub_cmd = "interfaces"
-    dispatcher.send_markdown(f"Load in interfaces for *{device}* in snapshot *{snapshot_id}*.")
-    filter_api = {"hostname": [IpFabric.IEQ, device]}
-    int_drops = list(
-        ipfabric_api.client.technology.interfaces.average_rates_drops_bidirectional.fetch(
-            columns=IpFabric.INTERFACE_DROPS_COLUMNS,
-            filters=filter_api,
-            limit=IpFabric.DEFAULT_PAGE_LIMIT,
-            snapshot_id=get_user_snapshot(dispatcher),
-            sort=IpFabric.INTERFACE_SORT,
-        )
-    )
-
-    dispatcher.send_blocks(
-        [
-            *dispatcher.command_response_header(
-                f"{BASE_CMD}",
-                f"{sub_cmd}",
-                [("Device", device), ("Metric", "drops")],
-                "interface average drop data",
-                ipfabric_logo(dispatcher),
-            ),
-            dispatcher.markdown_block(f"{str(ipfabric_api.ui_url)}technology/interfaces/drop-rates/bidirectional"),
-        ]
-    )
-
-    dispatcher.send_large_table(
-        ["IntName", "% Drops", "Drop Rate"],
-        [
-            [
-                interface.get(IpFabric.INTERFACE_DROPS_COLUMNS[i], IpFabric.EMPTY)
-                for i in range(len(IpFabric.INTERFACE_DROPS_COLUMNS))
-            ]
-            for interface in int_drops
-        ],
-        title="Interface Drops",
     )
 
     return True
@@ -1032,6 +952,10 @@ def table_diff(dispatcher, category, table, view, snapshot):  # pylint: disable=
         )
         return False
 
+    if category not in ipfabric_api.table_choices:
+        dispatcher.send_error(f"{category} is not a valid category.")
+        return CommandStatusChoices.STATUS_FAILED
+
     if not table:
         dispatcher.prompt_from_menu(
             f"{BASE_CMD} {sub_cmd} {category}",
@@ -1041,7 +965,7 @@ def table_diff(dispatcher, category, table, view, snapshot):  # pylint: disable=
         )
         return False
 
-    if category not in ipfabric_api.table_choices or table not in ipfabric_api.table_choices[category]:
+    if table not in ipfabric_api.table_choices[category]:
         dispatcher.send_error(f"{category}/{table} is not a valid table.")
         return CommandStatusChoices.STATUS_FAILED
 

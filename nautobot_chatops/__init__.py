@@ -156,6 +156,7 @@ class NautobotChatOpsConfig(NautobotAppConfig):
         ),
     }
 
+    metrics = "metrics_app.metrics"
     home_view_name = "plugins:nautobot_chatops:commandlog_list"
     docs_view_name = "plugins:nautobot_chatops:docs"
     searchable_models = ["commandlog"]
@@ -165,16 +166,12 @@ class NautobotChatOpsConfig(NautobotAppConfig):
         super().ready()
         # pylint: disable=import-outside-toplevel
         from django.conf import settings
-        from nautobot_capacity_metrics import register_metric_func
-
-        from .metrics_app import metric_commands
 
         intersection = set(_CONFLICTING_APP_NAMES).intersection(set(settings.PLUGINS))
         if intersection:
             raise RuntimeError(
                 f"The following apps are installed and conflict with `nautobot-chatops`: {', '.join(intersection)}."
             )
-        register_metric_func(metric_commands)
 
 
 config = NautobotChatOpsConfig  # pylint:disable=invalid-name

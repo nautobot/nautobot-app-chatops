@@ -2,7 +2,7 @@
 {% load static %}
 {% load form_helpers %}
 
-<h1>{% block title %}{% if obj.present_in_database %}Editing{% else %}Add a new{% endif %} Nautobot Access Grant{% endblock title %}</h1>
+{% block title %}{% if obj.present_in_database %}Editing{% else %}Add a new{% endif %} Nautobot Access Grant{% endblock title %}
 
 {% block form %}
 <div class="card">
@@ -25,7 +25,7 @@
 {% endblock form %}
 
 {% block javascript %}
-<script type="text/javascript">
+<script>
 $(document).ready(function() {
     $("#name-lookup").click(function() {
         let grant_type = $("#id_grant_type").val();

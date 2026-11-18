@@ -30,7 +30,7 @@
 - Write a command once and run it on every supported platform, including rich content formatting.
 - Extensible - other Nautobot apps can provide additional commands which will be dynamically discovered.
 - Automatic generation of basic help menus (accessed via `help`, `/command help`, or `/command sub-command help`).
-- Metrics of command usage via the `nautobot_capacity_metrics` app.
+- Metrics of command usage on the Nautobot `/metrics` endpoint (requires `METRICS_ENABLED = True`).
 
 ### Screenshots
 

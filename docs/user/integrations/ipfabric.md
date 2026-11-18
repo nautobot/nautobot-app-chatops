@@ -10,7 +10,7 @@ Interact with IPFabric by utilizing the following sub-commands:
 | `get-snapshot` | | Get snapshot as reference for commands. |
 | `get-loaded-snapshots` | | IP Fabric Loaded Snapshot list. |
 | `get-inventory` | `[filter_key=None]` `[filter_value=None]` | IP Fabric Inventory device list. |
-| `interfaces` | `[device=None]` `[metric=None]` | Get interface metrics for a device. |
+| `interfaces` | `[device=None]` `[metric=None]` | Get interface metrics for a device. The only supported metric is `load`. |
 | `pathlookup` | `[src_ip]` `[dst_ip]` `[src_port]` `[dst_port]` `[protocol]` | Path simulation diagram lookup between source and target IP address. |
 | `pathlookup-icmp` | `[src_ip]` `[dst_ip]` `[icmp_type]` | Path simulation diagram lookup between source and target IP address. |
 | `routing` | `[device=None]` `[protocol=None]` `[filter_opt=None]` | Get routing information for a device. |
