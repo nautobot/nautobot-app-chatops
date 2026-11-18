@@ -1,1 +1,0 @@
-Removed the `errors` and `drops` metrics from `/ipfabric interfaces` because IP Fabric no longer provides interface error and drop rates through its API.
