@@ -1,0 +1,1 @@
+Updated range of permitted `protobuf` versions to unblock usage of newer `cloudvision` and `cryptography` versions.
